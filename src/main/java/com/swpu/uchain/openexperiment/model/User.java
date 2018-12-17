@@ -14,4 +14,5 @@ public class User {
     private String mobilePhone;//手机号
     private String fixPhone;//固定电话
     private String email;
+    private Integer id;
 }
