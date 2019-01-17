@@ -12,7 +12,7 @@ public class UserProjectGroup implements Serializable {
 
     private String technicalRole;
 
-    private Byte memberRole;
+    private Integer memberRole;
 
     private String personalSkills;
 
@@ -52,11 +52,11 @@ public class UserProjectGroup implements Serializable {
         this.technicalRole = technicalRole == null ? null : technicalRole.trim();
     }
 
-    public Byte getMemberRole() {
+    public Integer getMemberRole() {
         return memberRole;
     }
 
-    public void setMemberRole(Byte memberRole) {
+    public void setMemberRole(Integer memberRole) {
         this.memberRole = memberRole;
     }
 

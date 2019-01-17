@@ -6,7 +6,7 @@
     <result column="project_group_id" property="projectGroupId" jdbcType="BIGINT" />
     <result column="user_id" property="userId" jdbcType="BIGINT" />
     <result column="technical_role" property="technicalRole" jdbcType="VARCHAR" />
-    <result column="member_role" property="memberRole" jdbcType="TINYINT" />
+    <result column="member_role" property="memberRole" jdbcType="INTEGER" />
     <result column="personal_skills" property="personalSkills" jdbcType="VARCHAR" />
     <result column="join_time" property="joinTime" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -19,7 +19,7 @@
       technical_role, member_role, personal_skills, 
       join_time)
     values (#{id,jdbcType=BIGINT}, #{projectGroupId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
-      #{technicalRole,jdbcType=VARCHAR}, #{memberRole,jdbcType=TINYINT}, #{personalSkills,jdbcType=VARCHAR}, 
+      #{technicalRole,jdbcType=VARCHAR}, #{memberRole,jdbcType=INTEGER}, #{personalSkills,jdbcType=VARCHAR}, 
       #{joinTime,jdbcType=TIMESTAMP})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectGroup" >
@@ -27,7 +27,7 @@
     set project_group_id = #{projectGroupId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=BIGINT},
       technical_role = #{technicalRole,jdbcType=VARCHAR},
-      member_role = #{memberRole,jdbcType=TINYINT},
+      member_role = #{memberRole,jdbcType=INTEGER},
       personal_skills = #{personalSkills,jdbcType=VARCHAR},
       join_time = #{joinTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
