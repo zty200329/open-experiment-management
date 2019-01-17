@@ -1,7 +1,5 @@
 server:
   port: 8080
-
-
 #应用维护
 #启动shutdown模块
 management:
