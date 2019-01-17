@@ -1,27 +1,63 @@
 package com.swpu.uchain.openexperiment.domain;
 
-import lombok.Data;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @Author: clf
- * @Date: 19-1-16
- * @Description:
- * 角色
- */
-@Data
-public class Role {
-    /**角色自增id主键*/
-    @Id
-    @GeneratedValue
+public class Role implements Serializable {
     private Long id;
-    /**角色名*/
-    private String name;
-    /**创建时间*/
+
     private Date createTime;
-    /**更新时间*/
+
+    private String name;
+
     private Date updateTime;
+
+    private static final long serialVersionUID = 1L;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        sb.append(", id=").append(id);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", name=").append(name);
+        sb.append(", updateTime=").append(updateTime);
+        sb.append(", serialVersionUID=").append(serialVersionUID);
+        sb.append("]");
+        return sb.toString();
+    }
 }

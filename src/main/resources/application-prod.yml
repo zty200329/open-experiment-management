@@ -1,6 +1,7 @@
 server:
   port: 8080
 
+
 #应用维护
 #启动shutdown模块
 management:
@@ -15,3 +16,7 @@ management:
   server:
     port: ${server.port}
     address: 127.0.0.1
+spring:
+  datasource:
+    username: username
+    password: password

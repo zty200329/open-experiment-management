@@ -11,7 +11,6 @@
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="qq_num" property="qqNum" jdbcType="VARCHAR" />
     <result column="real_name" property="realName" jdbcType="VARCHAR" />
-    <result column="role_id" property="roleId" jdbcType="INTEGER" />
     <result column="sex" property="sex" jdbcType="VARCHAR" />
     <result column="user_type" property="userType" jdbcType="INTEGER" />
   </resultMap>
@@ -23,13 +22,11 @@
     insert into user (id, code, email, 
       fix_phone, id_card, mobile_phone, 
       `password`, qq_num, real_name, 
-      role_id, sex, user_type
-      )
+      sex, user_type)
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
       #{fixPhone,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, 
       #{password,jdbcType=VARCHAR}, #{qqNum,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, 
-      #{roleId,jdbcType=INTEGER}, #{sex,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER}
-      )
+      #{sex,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.User" >
     update user
@@ -41,20 +38,19 @@
       `password` = #{password,jdbcType=VARCHAR},
       qq_num = #{qqNum,jdbcType=VARCHAR},
       real_name = #{realName,jdbcType=VARCHAR},
-      role_id = #{roleId,jdbcType=INTEGER},
       sex = #{sex,jdbcType=VARCHAR},
       user_type = #{userType,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select id, code, email, fix_phone, id_card, mobile_phone, `password`, qq_num, real_name, 
-    role_id, sex, user_type
+    sex, user_type
     from user
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select id, code, email, fix_phone, id_card, mobile_phone, `password`, qq_num, real_name, 
-    role_id, sex, user_type
+    sex, user_type
     from user
   </select>
 </mapper>

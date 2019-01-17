@@ -6,6 +6,8 @@ import java.util.Date;
 public class ProjectFile implements Serializable {
     private Long id;
 
+    private Long projectGroupId;
+
     private Integer downloadTimes;
 
     private String fileName;
@@ -26,6 +28,14 @@ public class ProjectFile implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getProjectGroupId() {
+        return projectGroupId;
+    }
+
+    public void setProjectGroupId(Long projectGroupId) {
+        this.projectGroupId = projectGroupId;
     }
 
     public Integer getDownloadTimes() {
@@ -83,6 +93,7 @@ public class ProjectFile implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", projectGroupId=").append(projectGroupId);
         sb.append(", downloadTimes=").append(downloadTimes);
         sb.append(", fileName=").append(fileName);
         sb.append(", fileType=").append(fileType);

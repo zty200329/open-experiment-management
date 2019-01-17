@@ -21,8 +21,6 @@ public class User implements Serializable {
 
     private String realName;
 
-    private Integer roleId;
-
     private String sex;
 
     private Integer userType;
@@ -101,14 +99,6 @@ public class User implements Serializable {
         this.realName = realName == null ? null : realName.trim();
     }
 
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
-    }
-
     public String getSex() {
         return sex;
     }
@@ -140,7 +130,6 @@ public class User implements Serializable {
         sb.append(", password=").append(password);
         sb.append(", qqNum=").append(qqNum);
         sb.append(", realName=").append(realName);
-        sb.append(", roleId=").append(roleId);
         sb.append(", sex=").append(sex);
         sb.append(", userType=").append(userType);
         sb.append(", serialVersionUID=").append(serialVersionUID);

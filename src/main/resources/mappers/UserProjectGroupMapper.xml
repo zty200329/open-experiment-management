@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swpu.uchain.openexperiment.dao.UserProjectGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.UserProjectGroup" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="project_group_id" property="projectGroupId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="technical_role" property="technicalRole" jdbcType="VARCHAR" />
+    <result column="member_role" property="memberRole" jdbcType="TINYINT" />
+    <result column="personal_skills" property="personalSkills" jdbcType="VARCHAR" />
+    <result column="join_time" property="joinTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from user_project_group
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectGroup" >
+    insert into user_project_group (id, project_group_id, user_id, 
+      technical_role, member_role, personal_skills, 
+      join_time)
+    values (#{id,jdbcType=BIGINT}, #{projectGroupId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{technicalRole,jdbcType=VARCHAR}, #{memberRole,jdbcType=TINYINT}, #{personalSkills,jdbcType=VARCHAR}, 
+      #{joinTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectGroup" >
+    update user_project_group
+    set project_group_id = #{projectGroupId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      technical_role = #{technicalRole,jdbcType=VARCHAR},
+      member_role = #{memberRole,jdbcType=TINYINT},
+      personal_skills = #{personalSkills,jdbcType=VARCHAR},
+      join_time = #{joinTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, project_group_id, user_id, technical_role, member_role, personal_skills, 
+    join_time
+    from user_project_group
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, project_group_id, user_id, technical_role, member_role, personal_skills, 
+    join_time
+    from user_project_group
+  </select>
+</mapper>

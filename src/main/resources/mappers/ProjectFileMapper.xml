@@ -3,6 +3,7 @@
 <mapper namespace="com.swpu.uchain.openexperiment.dao.ProjectFileMapper" >
   <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.ProjectFile" >
     <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="project_group_id" property="projectGroupId" jdbcType="BIGINT" />
     <result column="download_times" property="downloadTimes" jdbcType="INTEGER" />
     <result column="file_name" property="fileName" jdbcType="VARCHAR" />
     <result column="file_type" property="fileType" jdbcType="INTEGER" />
@@ -15,16 +16,17 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile" >
-    insert into project_file (id, download_times, file_name, 
-      file_type, `size`, upload_time, 
-      upload_user_id)
-    values (#{id,jdbcType=BIGINT}, #{downloadTimes,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR}, 
-      #{fileType,jdbcType=INTEGER}, #{size,jdbcType=VARCHAR}, #{uploadTime,jdbcType=TIMESTAMP}, 
-      #{uploadUserId,jdbcType=BIGINT})
+    insert into project_file (id, project_group_id, download_times, 
+      file_name, file_type, `size`, 
+      upload_time, upload_user_id)
+    values (#{id,jdbcType=BIGINT}, #{projectGroupId,jdbcType=BIGINT}, #{downloadTimes,jdbcType=INTEGER}, 
+      #{fileName,jdbcType=VARCHAR}, #{fileType,jdbcType=INTEGER}, #{size,jdbcType=VARCHAR}, 
+      #{uploadTime,jdbcType=TIMESTAMP}, #{uploadUserId,jdbcType=BIGINT})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile" >
     update project_file
-    set download_times = #{downloadTimes,jdbcType=INTEGER},
+    set project_group_id = #{projectGroupId,jdbcType=BIGINT},
+      download_times = #{downloadTimes,jdbcType=INTEGER},
       file_name = #{fileName,jdbcType=VARCHAR},
       file_type = #{fileType,jdbcType=INTEGER},
       `size` = #{size,jdbcType=VARCHAR},
@@ -33,12 +35,14 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select id, download_times, file_name, file_type, `size`, upload_time, upload_user_id
+    select id, project_group_id, download_times, file_name, file_type, `size`, upload_time, 
+    upload_user_id
     from project_file
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, download_times, file_name, file_type, `size`, upload_time, upload_user_id
+    select id, project_group_id, download_times, file_name, file_type, `size`, upload_time, 
+    upload_user_id
     from project_file
   </select>
 </mapper>

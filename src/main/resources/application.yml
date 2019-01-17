@@ -2,10 +2,8 @@ spring:
   profiles:
     active: dev
   datasource:
+    driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/openexperiment?characterEncoding=utf-8&useSSL=false
-  jpa:
-    hibernate:
-      ddl-auto: update
 mybatis:
   type-aliases-package: com.swpu.uchain.openexperiment.domain
   mapper-locations: classpath:mappers/*.xml
