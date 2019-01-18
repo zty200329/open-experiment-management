@@ -34,7 +34,9 @@
     from acl
   </select>
     <select id="selectByUserId" resultMap="BaseResultMap">
-      select acl.id,acl.description,acl.`name`,acl.url from acl
-      inner join user_role inner join role inner join role_acl where user_id=1
+    select acl.id,acl.description,acl.`name`,acl.url from acl
+    inner join user_role inner join role inner join role_acl on acl.id = role_acl.acl_id
+    and role.id = role_acl.role_id and role.id = user_role.role_id
+    where user_role.user_id=1 group by acl.id
     </select>
 </mapper>
