@@ -41,7 +41,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
         Result result = Result.error(CodeMsg.AUTHENTICATION_ERROR);
-        log.info("需要省份认证:{}",result);
+        log.info("需要身份认证:{}",result);
         response.getWriter().append(JSON.toJSONString(result));
     }
 }

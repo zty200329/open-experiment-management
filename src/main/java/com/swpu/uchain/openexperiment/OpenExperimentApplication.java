@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 启动类
  */
 @SpringBootApplication
-@MapperScan("com.swpu.uchain.experiment.dao")
+@MapperScan("com.swpu.uchain.openexperiment.dao")
 public class OpenExperimentApplication {
     public static void main(String[] args) {
         SpringApplication.run(OpenExperimentApplication.class, args);

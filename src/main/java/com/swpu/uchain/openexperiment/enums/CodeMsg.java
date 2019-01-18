@@ -17,7 +17,9 @@ public enum CodeMsg {
     REQUEST_METHOD_ERROR(550,"不支持%s的请求方式" ),
     SERVER_ERROR(500,"服务器未知错误:%s" ),
     BIND_ERROR(511,"参数校验错误:%s"),
-    ;
+    USER_NO_EXIST(503, "用户不存在"),
+    VERIFY_CODE_ERROR(504, "验证码错误"),
+    SEND_CODE_ERROR(505, "发送验证码失败");
 
     private Integer code;
     private String msg;

@@ -53,4 +53,7 @@
     sex, user_type
     from user
   </select>
+    <select id="selectByUserCode" resultMap="BaseResultMap">
+      select * from user where code = #{userCode}
+    </select>
 </mapper>

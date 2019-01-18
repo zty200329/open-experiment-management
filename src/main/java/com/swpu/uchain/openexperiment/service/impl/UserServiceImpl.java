@@ -1,13 +1,30 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.swpu.uchain.openexperiment.DTO.VerifyCode;
 import com.swpu.uchain.openexperiment.dao.UserMapper;
 import com.swpu.uchain.openexperiment.domain.User;
+import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.LoginForm;
+import com.swpu.uchain.openexperiment.redis.RedisService;
+import com.swpu.uchain.openexperiment.redis.UserKey;
+import com.swpu.uchain.openexperiment.redis.VerifyCodeKey;
 import com.swpu.uchain.openexperiment.result.Result;
+import com.swpu.uchain.openexperiment.security.JwtTokenUtil;
 import com.swpu.uchain.openexperiment.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import sun.misc.BASE64Encoder;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
@@ -17,10 +34,18 @@ import java.io.IOException;
  * 用户登录实现类
  */
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
-
+    @Autowired
+    private RedisService redisService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private UserDetailsService userDetailsService;
     @Override
     public boolean insert(User user) {
         if (userMapper.insert(user) == 1){
@@ -44,31 +69,75 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result login(String clientIp, LoginForm loginForm) {
-        //TODO
-        return null;
+        log.info("当前请求ip : {}",clientIp);
+        if (!checkVerifyCode(clientIp, loginForm.getVerifyCode())){
+            return Result.error(CodeMsg.VERIFY_CODE_ERROR);
+        }
+        User user = selectByUserCode(loginForm.getUserCode());
+        if (user == null){
+            return Result.error(CodeMsg.USER_NO_EXIST);
+        }
+        log.info("=============校验用户的密码================");
+        Authentication token = new UsernamePasswordAuthenticationToken(loginForm.getUserCode(), loginForm.getPassword());
+        Authentication authentication = authenticationManager.authenticate(token);
+        //认证通过放入容器中
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginForm.getUserCode());
+        log.info("加载数据库中的userDetails: {}", userDetails);
+        //生成真正的token
+        final String realToken = jwtTokenUtil.generateToken(userDetails);
+        redisService.delete(VerifyCodeKey.getByClientIp, clientIp);
+        return Result.success(realToken);
     }
 
     @Override
     public String sendVerifyCode(String clientIp) throws IOException {
-        //TODO
-        return null;
+        VerifyCode code = new VerifyCode();
+        BufferedImage image = code.getImage();
+        String text = code.getText();
+        StringBuffer randomCode = new StringBuffer();
+        randomCode.append(text);
+        redisService.set(VerifyCodeKey.getByClientIp, clientIp, text.toLowerCase());
+        log.info("redis-signCode =======> {}", randomCode.toString());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "jpg", baos);
+        byte[] bytes = baos.toByteArray();
+        BASE64Encoder encoder = new BASE64Encoder();
+        String jpg_base64 = encoder.encode(bytes).trim();
+        jpg_base64 = jpg_base64.replaceAll("\n", "").replaceAll("\r", "");
+        return jpg_base64;
     }
 
     @Override
     public boolean checkVerifyCode(String clientIp, String code) {
-        //TODO
+        code = code.toLowerCase();
+        String verifyCode = redisService.get(VerifyCodeKey.getByClientIp, clientIp, String.class);
+        if (code.equals(verifyCode)){
+            return true;
+        }
         return false;
     }
 
     @Override
     public User getCurrentUser() {
-        //TODO
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String name = authentication.getName();
+        if (authentication != null && !"anonymousUser".equals(name)){
+            return selectByUserCode(name);
+        }
         return null;
     }
 
     @Override
     public User selectByUserCode(String userCode) {
-        //TODO
-        return null;
+        User user = redisService.get(UserKey.userKey, userCode, User.class);
+        if (user != null){
+            return user;
+        }
+        user = userMapper.selectByUserCode(userCode);
+        if (user != null){
+            redisService.set(UserKey.userKey, userCode, user);
+        }
+        return user;
     }
 }

@@ -33,4 +33,8 @@
     select id, description, `name`, url
     from acl
   </select>
+    <select id="selectByUserId" resultMap="BaseResultMap">
+      select acl.id,acl.description,acl.`name`,acl.url from acl
+      inner join user_role inner join role inner join role_acl where user_id=1
+    </select>
 </mapper>
