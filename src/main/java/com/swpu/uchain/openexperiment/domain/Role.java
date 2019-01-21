@@ -7,7 +7,7 @@ public class Role implements Serializable {
     private Long id;
 
     private Date createTime;
-
+    //角色名称
     private String name;
 
     private Date updateTime;
