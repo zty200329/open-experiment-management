@@ -9,6 +9,7 @@
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="member_role" property="memberRole" jdbcType="INTEGER" />
     <result column="personal_judge" property="personalJudge" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="join_time" property="joinTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
@@ -18,10 +19,12 @@
   <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectGroup" >
     insert into user_project_group (id, project_group_id, user_id, 
       technical_role, `status`, member_role, 
-      personal_judge, join_time)
+      personal_judge, update_time, join_time
+      )
     values (#{id,jdbcType=BIGINT}, #{projectGroupId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
       #{technicalRole,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{memberRole,jdbcType=INTEGER}, 
-      #{personalJudge,jdbcType=VARCHAR}, #{joinTime,jdbcType=TIMESTAMP})
+      #{personalJudge,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{joinTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectGroup" >
     update user_project_group
@@ -31,18 +34,19 @@
       `status` = #{status,jdbcType=INTEGER},
       member_role = #{memberRole,jdbcType=INTEGER},
       personal_judge = #{personalJudge,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
       join_time = #{joinTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select id, project_group_id, user_id, technical_role, `status`, member_role, personal_judge, 
-    join_time
+    update_time, join_time
     from user_project_group
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select id, project_group_id, user_id, technical_role, `status`, member_role, personal_judge, 
-    join_time
+    update_time, join_time
     from user_project_group
   </select>
 </mapper>

@@ -14,11 +14,25 @@ public class ProjectGroup implements Serializable {
 
     private Date endTime;
 
+    private String experimentCondition;
+
+    private Integer suggestGroupType;
+
     private String examination;
 
     private Integer experimentType;
 
+    private String achievementCheck;
+
+    private String limitCollege;
+
+    private String limitMajor;
+
+    private Integer limitGrade;
+
     private Integer fitPeopleNum;
+
+    private Integer totalHours;
 
     private String labName;
 
@@ -74,6 +88,22 @@ public class ProjectGroup implements Serializable {
         this.endTime = endTime;
     }
 
+    public String getExperimentCondition() {
+        return experimentCondition;
+    }
+
+    public void setExperimentCondition(String experimentCondition) {
+        this.experimentCondition = experimentCondition == null ? null : experimentCondition.trim();
+    }
+
+    public Integer getSuggestGroupType() {
+        return suggestGroupType;
+    }
+
+    public void setSuggestGroupType(Integer suggestGroupType) {
+        this.suggestGroupType = suggestGroupType;
+    }
+
     public String getExamination() {
         return examination;
     }
@@ -90,12 +120,52 @@ public class ProjectGroup implements Serializable {
         this.experimentType = experimentType;
     }
 
+    public String getAchievementCheck() {
+        return achievementCheck;
+    }
+
+    public void setAchievementCheck(String achievementCheck) {
+        this.achievementCheck = achievementCheck == null ? null : achievementCheck.trim();
+    }
+
+    public String getLimitCollege() {
+        return limitCollege;
+    }
+
+    public void setLimitCollege(String limitCollege) {
+        this.limitCollege = limitCollege == null ? null : limitCollege.trim();
+    }
+
+    public String getLimitMajor() {
+        return limitMajor;
+    }
+
+    public void setLimitMajor(String limitMajor) {
+        this.limitMajor = limitMajor == null ? null : limitMajor.trim();
+    }
+
+    public Integer getLimitGrade() {
+        return limitGrade;
+    }
+
+    public void setLimitGrade(Integer limitGrade) {
+        this.limitGrade = limitGrade;
+    }
+
     public Integer getFitPeopleNum() {
         return fitPeopleNum;
     }
 
     public void setFitPeopleNum(Integer fitPeopleNum) {
         this.fitPeopleNum = fitPeopleNum;
+    }
+
+    public Integer getTotalHours() {
+        return totalHours;
+    }
+
+    public void setTotalHours(Integer totalHours) {
+        this.totalHours = totalHours;
     }
 
     public String getLabName() {
@@ -157,9 +227,16 @@ public class ProjectGroup implements Serializable {
         sb.append(", createTime=").append(createTime);
         sb.append(", creatorId=").append(creatorId);
         sb.append(", endTime=").append(endTime);
+        sb.append(", experimentCondition=").append(experimentCondition);
+        sb.append(", suggestGroupType=").append(suggestGroupType);
         sb.append(", examination=").append(examination);
         sb.append(", experimentType=").append(experimentType);
+        sb.append(", achievementCheck=").append(achievementCheck);
+        sb.append(", limitCollege=").append(limitCollege);
+        sb.append(", limitMajor=").append(limitMajor);
+        sb.append(", limitGrade=").append(limitGrade);
         sb.append(", fitPeopleNum=").append(fitPeopleNum);
+        sb.append(", totalHours=").append(totalHours);
         sb.append(", labName=").append(labName);
         sb.append(", projectName=").append(projectName);
         sb.append(", projectType=").append(projectType);

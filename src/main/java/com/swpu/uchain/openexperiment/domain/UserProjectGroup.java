@@ -18,6 +18,8 @@ public class UserProjectGroup implements Serializable {
 
     private String personalJudge;
 
+    private Date updateTime;
+
     private Date joinTime;
 
     private static final long serialVersionUID = 1L;
@@ -78,6 +80,14 @@ public class UserProjectGroup implements Serializable {
         this.personalJudge = personalJudge == null ? null : personalJudge.trim();
     }
 
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     public Date getJoinTime() {
         return joinTime;
     }
@@ -99,6 +109,7 @@ public class UserProjectGroup implements Serializable {
         sb.append(", status=").append(status);
         sb.append(", memberRole=").append(memberRole);
         sb.append(", personalJudge=").append(personalJudge);
+        sb.append(", updateTime=").append(updateTime);
         sb.append(", joinTime=").append(joinTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

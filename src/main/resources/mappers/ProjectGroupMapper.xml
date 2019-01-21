@@ -7,9 +7,16 @@
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="creator_id" property="creatorId" jdbcType="BIGINT" />
     <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="experiment_condition" property="experimentCondition" jdbcType="VARCHAR" />
+    <result column="suggest_group_type" property="suggestGroupType" jdbcType="INTEGER" />
     <result column="examination" property="examination" jdbcType="VARCHAR" />
     <result column="experiment_type" property="experimentType" jdbcType="INTEGER" />
+    <result column="achievement_check" property="achievementCheck" jdbcType="VARCHAR" />
+    <result column="limit_college" property="limitCollege" jdbcType="VARCHAR" />
+    <result column="limit_major" property="limitMajor" jdbcType="VARCHAR" />
+    <result column="limit_grade" property="limitGrade" jdbcType="INTEGER" />
     <result column="fit_people_num" property="fitPeopleNum" jdbcType="INTEGER" />
+    <result column="total_hours" property="totalHours" jdbcType="INTEGER" />
     <result column="lab_name" property="labName" jdbcType="VARCHAR" />
     <result column="project_name" property="projectName" jdbcType="VARCHAR" />
     <result column="project_type" property="projectType" jdbcType="INTEGER" />
@@ -23,15 +30,21 @@
   </delete>
   <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup" >
     insert into project_group (id, address, create_time, 
-      creator_id, end_time, examination, 
-      experiment_type, fit_people_num, lab_name, 
-      project_name, project_type, start_time, 
-      `status`, update_time)
+      creator_id, end_time, experiment_condition, 
+      suggest_group_type, examination, experiment_type, 
+      achievement_check, limit_college, limit_major, 
+      limit_grade, fit_people_num, total_hours, 
+      lab_name, project_name, project_type, 
+      start_time, `status`, update_time
+      )
     values (#{id,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{creatorId,jdbcType=BIGINT}, #{endTime,jdbcType=TIMESTAMP}, #{examination,jdbcType=VARCHAR}, 
-      #{experimentType,jdbcType=INTEGER}, #{fitPeopleNum,jdbcType=INTEGER}, #{labName,jdbcType=VARCHAR}, 
-      #{projectName,jdbcType=VARCHAR}, #{projectType,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, 
-      #{status,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
+      #{creatorId,jdbcType=BIGINT}, #{endTime,jdbcType=TIMESTAMP}, #{experimentCondition,jdbcType=VARCHAR}, 
+      #{suggestGroupType,jdbcType=INTEGER}, #{examination,jdbcType=VARCHAR}, #{experimentType,jdbcType=INTEGER}, 
+      #{achievementCheck,jdbcType=VARCHAR}, #{limitCollege,jdbcType=VARCHAR}, #{limitMajor,jdbcType=VARCHAR}, 
+      #{limitGrade,jdbcType=INTEGER}, #{fitPeopleNum,jdbcType=INTEGER}, #{totalHours,jdbcType=INTEGER}, 
+      #{labName,jdbcType=VARCHAR}, #{projectName,jdbcType=VARCHAR}, #{projectType,jdbcType=INTEGER}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup" >
     update project_group
@@ -39,9 +52,16 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       creator_id = #{creatorId,jdbcType=BIGINT},
       end_time = #{endTime,jdbcType=TIMESTAMP},
+      experiment_condition = #{experimentCondition,jdbcType=VARCHAR},
+      suggest_group_type = #{suggestGroupType,jdbcType=INTEGER},
       examination = #{examination,jdbcType=VARCHAR},
       experiment_type = #{experimentType,jdbcType=INTEGER},
+      achievement_check = #{achievementCheck,jdbcType=VARCHAR},
+      limit_college = #{limitCollege,jdbcType=VARCHAR},
+      limit_major = #{limitMajor,jdbcType=VARCHAR},
+      limit_grade = #{limitGrade,jdbcType=INTEGER},
       fit_people_num = #{fitPeopleNum,jdbcType=INTEGER},
+      total_hours = #{totalHours,jdbcType=INTEGER},
       lab_name = #{labName,jdbcType=VARCHAR},
       project_name = #{projectName,jdbcType=VARCHAR},
       project_type = #{projectType,jdbcType=INTEGER},
@@ -51,14 +71,18 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select id, address, create_time, creator_id, end_time, examination, experiment_type, 
-    fit_people_num, lab_name, project_name, project_type, start_time, `status`, update_time
+    select id, address, create_time, creator_id, end_time, experiment_condition, suggest_group_type, 
+    examination, experiment_type, achievement_check, limit_college, limit_major, limit_grade, 
+    fit_people_num, total_hours, lab_name, project_name, project_type, start_time, `status`, 
+    update_time
     from project_group
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, address, create_time, creator_id, end_time, examination, experiment_type, 
-    fit_people_num, lab_name, project_name, project_type, start_time, `status`, update_time
+    select id, address, create_time, creator_id, end_time, experiment_condition, suggest_group_type, 
+    examination, experiment_type, achievement_check, limit_college, limit_major, limit_grade, 
+    fit_people_num, total_hours, lab_name, project_name, project_type, start_time, `status`, 
+    update_time
     from project_group
   </select>
 </mapper>
