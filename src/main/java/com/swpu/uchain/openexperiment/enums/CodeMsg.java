@@ -19,7 +19,9 @@ public enum CodeMsg {
     BIND_ERROR(511,"参数校验错误:%s"),
     USER_NO_EXIST(503, "用户不存在"),
     VERIFY_CODE_ERROR(504, "验证码错误"),
-    SEND_CODE_ERROR(505, "发送验证码失败");
+    SEND_CODE_ERROR(505, "发送验证码失败"),
+    ACL_EXIST(506,"ACL已存在" ),
+    ACL_NOT_EXIST(507,"ACL不存在");
 
     private Integer code;
     private String msg;
