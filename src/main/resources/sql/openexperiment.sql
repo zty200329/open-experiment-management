@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50724
 File Encoding         : 65001
 
-Date: 2019-01-17 12:06:52
+Date: 2019-01-21 15:54:50
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,7 +25,47 @@ CREATE TABLE `acl` (
   `name` varchar(255) DEFAULT NULL COMMENT '权限名称',
   `url` varchar(255) DEFAULT NULL COMMENT '具体接口的url',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for announcement
+-- ----------------------------
+DROP TABLE IF EXISTS `announcement`;
+CREATE TABLE `announcement` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `publisher_id` bigint(20) DEFAULT NULL COMMENT '发布者id',
+  `title` varchar(255) DEFAULT NULL COMMENT '公告标题',
+  `content` varchar(2000) DEFAULT NULL COMMENT '公告主要内容',
+  `publish_time` datetime DEFAULT NULL COMMENT '发布时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for notice
+-- ----------------------------
+DROP TABLE IF EXISTS `notice`;
+CREATE TABLE `notice` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL COMMENT '通知标题',
+  `sender_id` bigint(20) DEFAULT NULL COMMENT '发送者id',
+  `message` varchar(255) DEFAULT NULL COMMENT '具体消息',
+  `send_time` datetime DEFAULT NULL COMMENT '发送时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for polemic_group
+-- ----------------------------
+DROP TABLE IF EXISTS `polemic_group`;
+CREATE TABLE `polemic_group` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL COMMENT '分组名称',
+  `status` int(11) DEFAULT NULL COMMENT '答辩分组状态:1.立项答辩,2.中期答辩,3.结项答辩',
+  `group_num` int(11) DEFAULT NULL COMMENT '一个答辩组限制的项目组数量',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for project_file
@@ -66,6 +106,29 @@ CREATE TABLE `project_group` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Table structure for project_polemic
+-- ----------------------------
+DROP TABLE IF EXISTS `project_polemic`;
+CREATE TABLE `project_polemic` (
+  `id` bigint(20) NOT NULL,
+  `project_group_id` bigint(20) DEFAULT NULL COMMENT '项目组id',
+  `polemic_group_id` bigint(20) DEFAULT NULL COMMENT '答辩组id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for receive_notice
+-- ----------------------------
+DROP TABLE IF EXISTS `receive_notice`;
+CREATE TABLE `receive_notice` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `notice_id` bigint(20) DEFAULT NULL COMMENT '通知id',
+  `receiver_id` bigint(20) DEFAULT NULL COMMENT '接收者id',
+  `status` int(11) DEFAULT NULL COMMENT '消息状态(1.已读,2.未读)',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
 -- Table structure for role
 -- ----------------------------
 DROP TABLE IF EXISTS `role`;
@@ -75,7 +138,7 @@ CREATE TABLE `role` (
   `name` varchar(255) DEFAULT NULL COMMENT '角色名称',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for role_acl
@@ -86,7 +149,7 @@ CREATE TABLE `role_acl` (
   `role_id` bigint(20) DEFAULT NULL,
   `acl_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for user
@@ -104,8 +167,12 @@ CREATE TABLE `user` (
   `real_name` varchar(255) DEFAULT NULL COMMENT '真实姓名',
   `sex` varchar(10) DEFAULT NULL COMMENT '性别',
   `user_type` int(11) DEFAULT NULL COMMENT '用户类型：1.学生，2.教师',
+  `institute` varchar(255) DEFAULT NULL COMMENT '学院',
+  `major` varchar(255) DEFAULT NULL COMMENT '专业',
+  `grade` int(11) DEFAULT NULL COMMENT '年级',
+  `class_num` int(11) DEFAULT NULL COMMENT '班级',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for user_project_group
@@ -116,8 +183,9 @@ CREATE TABLE `user_project_group` (
   `project_group_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) DEFAULT NULL,
   `technical_role` varchar(255) DEFAULT NULL COMMENT '技术职称',
-  `member_role` tinyint(4) DEFAULT NULL COMMENT '成员身份：1.指导教师2.项目组长3.普通成员',
-  `personal_skills` varchar(255) DEFAULT NULL COMMENT '个人特长',
+  `status` int(11) DEFAULT NULL COMMENT '参与状态:1.申请,已加入',
+  `member_role` int(4) DEFAULT NULL COMMENT '成员身份：1.指导教师2.项目组长3.普通成员',
+  `personal_judge` varchar(2000) DEFAULT NULL COMMENT '自我评价',
   `join_time` datetime DEFAULT NULL COMMENT '加入时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -131,4 +199,4 @@ CREATE TABLE `user_role` (
   `user_id` bigint(20) DEFAULT NULL,
   `role_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;

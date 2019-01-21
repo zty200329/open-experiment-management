@@ -25,6 +25,14 @@ public class User implements Serializable {
 
     private Integer userType;
 
+    private String institute;
+
+    private String major;
+
+    private Integer grade;
+
+    private Integer classNum;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -115,6 +123,38 @@ public class User implements Serializable {
         this.userType = userType;
     }
 
+    public String getInstitute() {
+        return institute;
+    }
+
+    public void setInstitute(String institute) {
+        this.institute = institute == null ? null : institute.trim();
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major == null ? null : major.trim();
+    }
+
+    public Integer getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Integer grade) {
+        this.grade = grade;
+    }
+
+    public Integer getClassNum() {
+        return classNum;
+    }
+
+    public void setClassNum(Integer classNum) {
+        this.classNum = classNum;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -132,6 +172,10 @@ public class User implements Serializable {
         sb.append(", realName=").append(realName);
         sb.append(", sex=").append(sex);
         sb.append(", userType=").append(userType);
+        sb.append(", institute=").append(institute);
+        sb.append(", major=").append(major);
+        sb.append(", grade=").append(grade);
+        sb.append(", classNum=").append(classNum);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

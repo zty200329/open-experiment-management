@@ -12,9 +12,11 @@ public class UserProjectGroup implements Serializable {
 
     private String technicalRole;
 
+    private Integer status;
+
     private Integer memberRole;
 
-    private String personalSkills;
+    private String personalJudge;
 
     private Date joinTime;
 
@@ -52,6 +54,14 @@ public class UserProjectGroup implements Serializable {
         this.technicalRole = technicalRole == null ? null : technicalRole.trim();
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public Integer getMemberRole() {
         return memberRole;
     }
@@ -60,12 +70,12 @@ public class UserProjectGroup implements Serializable {
         this.memberRole = memberRole;
     }
 
-    public String getPersonalSkills() {
-        return personalSkills;
+    public String getPersonalJudge() {
+        return personalJudge;
     }
 
-    public void setPersonalSkills(String personalSkills) {
-        this.personalSkills = personalSkills == null ? null : personalSkills.trim();
+    public void setPersonalJudge(String personalJudge) {
+        this.personalJudge = personalJudge == null ? null : personalJudge.trim();
     }
 
     public Date getJoinTime() {
@@ -86,8 +96,9 @@ public class UserProjectGroup implements Serializable {
         sb.append(", projectGroupId=").append(projectGroupId);
         sb.append(", userId=").append(userId);
         sb.append(", technicalRole=").append(technicalRole);
+        sb.append(", status=").append(status);
         sb.append(", memberRole=").append(memberRole);
-        sb.append(", personalSkills=").append(personalSkills);
+        sb.append(", personalJudge=").append(personalJudge);
         sb.append(", joinTime=").append(joinTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
