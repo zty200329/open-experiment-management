@@ -15,4 +15,6 @@ public interface AclMapper {
     int updateByPrimaryKey(Acl record);
 
     List<Acl> selectByUserId(Long userId);
+
+    Acl selectByName(String name);
 }
