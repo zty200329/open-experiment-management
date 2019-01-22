@@ -31,4 +31,7 @@
     select id, role_id, acl_id
     from role_acl
   </select>
+    <select id="selectByRoleIdAndAclId" resultMap="BaseResultMap">
+      select * from role_acl where role_id = #{param1} and acl_id = #{param2}
+    </select>
 </mapper>

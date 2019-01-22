@@ -10,5 +10,5 @@ public class UserKey extends BasePrefix{
     public UserKey(int expireSeconds, String prefix) {
         super(expireSeconds, prefix);
     }
-    public static UserKey userKey = new UserKey(300, "user");
+    public static UserKey getUserByUserCode = new UserKey(300, "userCode");
 }

@@ -24,12 +24,12 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
-    @PostMapping("/createApply")
+    @PostMapping(value = "/createApply", name = "申请立项接口")
     private Object createApply(@Valid CreateProjectApplyForm createProjectApplyForm){
         return projectService.applyCreateProject(createProjectApplyForm);
     }
 
-    @PostMapping("/joinApply")
+    @PostMapping(value = "/joinApply", name = "申请参与项目接口")
     public Object joinApply(@Valid JoinProjectApplyForm joinProjectApplyForm){
         return projectService.applyJoinProject(joinProjectApplyForm);
     }

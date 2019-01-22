@@ -1,6 +1,8 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.domain.Acl;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface AclMapper {
@@ -16,5 +18,7 @@ public interface AclMapper {
 
     List<Acl> selectByUserId(Long userId);
 
-    Acl selectByName(String name);
+    List<Acl> selectByRandom(@Param("info") String info);
+
+    Acl selectByUrl(String url);
 }

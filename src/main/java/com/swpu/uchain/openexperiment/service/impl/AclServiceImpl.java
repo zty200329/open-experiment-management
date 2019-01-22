@@ -1,30 +1,56 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.dao.AclMapper;
+import com.swpu.uchain.openexperiment.dao.RoleAclMapper;
 import com.swpu.uchain.openexperiment.domain.Acl;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.form.permission.AclUpdateForm;
+import com.swpu.uchain.openexperiment.redis.AclKey;
+import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AclService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @Author: clf
  * @Date: 19-1-17
- * @Description: 实现权限管理模块
+ * @Description:
+ * 实现权限管理模块
  */
 @Service
+@Slf4j
 public class AclServiceImpl implements AclService {
     @Autowired
     private AclMapper aclMapper;
+    @Autowired
+    private RoleAclMapper roleAclMapper;
+    @Autowired
+    private RedisService redisService;
+
+    @Override
+    public boolean insert(Acl acl) {
+        return aclMapper.insert(acl) == 1;
+    }
+
+    @Override
+    public boolean update(Acl acl) {
+        return aclMapper.updateByPrimaryKey(acl) == 1;
+    }
 
     @Override
     public List<String> getUserAclUrl(Long userId) {
-        List<Acl> acls = aclMapper.selectByUserId(userId);
+        List<Acl> acls = redisService.get(AclKey.getByUserId, userId + "", List.class);
         List<String> list = new ArrayList<>();
+        if (acls == null){
+            acls = aclMapper.selectByUserId(userId);
+            if (acls != null){
+                redisService.set(AclKey.getByUserId, userId + "", acls);
+            }
+        }
         for (Acl acl : acls) {
             list.add(acl.getUrl());
         }
@@ -32,55 +58,31 @@ public class AclServiceImpl implements AclService {
     }
 
     @Override
-    public boolean insert(Acl acl) {
-        return (aclMapper.insert(acl) == 1);
+    public Acl selectByUrl(String url) {
+        return aclMapper.selectByUrl(url);
     }
 
     @Override
-    public boolean update(Acl acl) {
-        return (aclMapper.updateByPrimaryKey(acl) == 1);
-    }
-
-    @Override
-    public boolean delete(Long id) {
-        return (aclMapper.deleteByPrimaryKey(id) == 1);
-    }
-
-    @Override
-    public Acl selectByName(String name) {
-        return aclMapper.selectByName(name);
-    }
-
-    @Override
-    public Result insertAcl(Acl acl) {
-        if (selectByName(acl.getName()) != null) {
-            return Result.error(CodeMsg.ACL_EXIST);
-        }
-        if (insert(acl)) {
-            return Result.success(acl);
-        }
-        return Result.error(CodeMsg.SERVER_ERROR);
-    }
-
-    @Override
-    public Result updateAcl(Acl acl) {
-        if (selectByName(acl.getName()) == null) {
+    public Result updateAcl(AclUpdateForm aclUpdateForm) {
+        Acl acl = aclMapper.selectByPrimaryKey(aclUpdateForm.getAclId());
+        if (acl == null) {
             return Result.error(CodeMsg.ACL_NOT_EXIST);
         }
+        acl.setDescription(aclUpdateForm.getDescription());
         if (update(acl)) {
-            return Result.success(acl);
-        }
-        return Result.error(CodeMsg.SERVER_ERROR);
-    }
-
-    @Override
-    public Result deleteAcl(Long id) {
-        if (aclMapper.selectByPrimaryKey(id) == null) {
-            return Result.error(CodeMsg.ACL_NOT_EXIST);
-        }
-        if (delete(id)) {
             return Result.success();
         }
-        return Result.error(CodeMsg.SERVER_ERROR);
+        return Result.error(CodeMsg.UPDATE_ERROR);
     }
+
+    @Override
+    public Result selectByRandom(String info) {
+        return Result.success(aclMapper.selectByRandom(info));
+    }
+
+    @Override
+    public Result selectAll() {
+        return Result.success(aclMapper.selectAll());
+    }
+
 }

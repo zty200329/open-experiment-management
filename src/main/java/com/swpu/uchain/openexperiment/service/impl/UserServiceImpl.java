@@ -130,13 +130,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User selectByUserCode(String userCode) {
-        User user = redisService.get(UserKey.userKey, userCode, User.class);
+        User user = redisService.get(UserKey.getUserByUserCode, userCode, User.class);
         if (user != null){
             return user;
         }
         user = userMapper.selectByUserCode(userCode);
         if (user != null){
-            redisService.set(UserKey.userKey, userCode, user);
+            redisService.set(UserKey.getUserByUserCode, userCode, user);
         }
         return user;
     }

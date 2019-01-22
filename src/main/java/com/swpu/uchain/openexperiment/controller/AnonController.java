@@ -5,6 +5,7 @@ import com.swpu.uchain.openexperiment.form.LoginForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.UserService;
 import com.swpu.uchain.openexperiment.util.ClientUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,7 @@ import java.io.IOException;
  */
 @RequestMapping("/anon")
 @RestController
+@Slf4j
 public class AnonController {
     @Autowired
     private UserService userService;
@@ -32,7 +34,7 @@ public class AnonController {
      * @param request
      * @return
      */
-    @PostMapping("/login")
+    @PostMapping(value = "/login", name = "登录接口")
     public Object login(@Valid LoginForm loginForm, HttpServletRequest request){
         String ip = ClientUtil.getClientIpAddress(request);
         return userService.login(ip, loginForm);
@@ -43,7 +45,7 @@ public class AnonController {
      * @param request
      * @return
      */
-    @GetMapping("/sendVerifyCode")
+    @GetMapping(value = "/sendVerifyCode", name = "返送验证码接口")
     public Object sendVerifyCode(HttpServletRequest request){
         String ip = ClientUtil.getClientIpAddress(request);
         String verifyCode = null;
@@ -54,4 +56,11 @@ public class AnonController {
         }
         return Result.success(verifyCode);
     }
+
+    @GetMapping("/test")
+    public Object test(HttpServletRequest request){
+        return Result.success();
+    }
+
+
 }

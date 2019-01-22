@@ -20,8 +20,16 @@ public enum CodeMsg {
     USER_NO_EXIST(503, "用户不存在"),
     VERIFY_CODE_ERROR(504, "验证码错误"),
     SEND_CODE_ERROR(505, "发送验证码失败"),
-    ACL_EXIST(506,"ACL已存在" ),
-    ACL_NOT_EXIST(507,"ACL不存在");
+    ACL_EXIST(506, "ACL已存在" ),
+    ACL_NOT_EXIST(507,"ACL不存在"),
+    UPDATE_ERROR(508, "更新数据库失败"),
+    ROLE_NAME_CANT_BE_NULL(509, "角色名称不能名称为空" ),
+    ROLE_HAD_EXIST(510, "当前角色已经存在" ),
+    ADD_ERROR(511, "添加失败" ),
+    USER_ROLE_HAD_EXIST(512, "当前用户已配置该角色,不能重复添加" ),
+    PARAM_CANT_BE_NULL(513, "参数不能为空" ),
+    ROLE_NOT_EXIST(514, "当前角色不存在" ),
+    ROLE_ACL_HAD_EXIST(515, "当前角色已拥有该权限,不能重复添加" );
 
     private Integer code;
     private String msg;

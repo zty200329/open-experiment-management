@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
-    @GetMapping("/url")
+    @GetMapping(value = "/url", name = "测试接口")
     public Object url(){
         return Result.success("测试成功");
     }
 
-    @GetMapping("/permission")
+    @GetMapping(value = "/permission", name = "测试permission")
     public Object test(){
         return Result.success();
     }

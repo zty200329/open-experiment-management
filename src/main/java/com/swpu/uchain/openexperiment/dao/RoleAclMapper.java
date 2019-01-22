@@ -13,4 +13,6 @@ public interface RoleAclMapper {
     List<RoleAcl> selectAll();
 
     int updateByPrimaryKey(RoleAcl record);
+
+    RoleAcl selectByRoleIdAndAclId(Long roleId, Long aclId);
 }

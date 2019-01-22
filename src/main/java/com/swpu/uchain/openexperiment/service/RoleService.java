@@ -1,8 +1,8 @@
 package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.Role;
-
-import java.util.List;
+import com.swpu.uchain.openexperiment.form.permission.RoleForm;
+import com.swpu.uchain.openexperiment.result.Result;
 
 /**
  * @Author: clf
@@ -11,10 +11,58 @@ import java.util.List;
  * 角色模块
  */
 public interface RoleService {
+
     /**
-     * 获取当前用户的所有角色
-     * @param userCode
+     * 添加角色
+     * @param role
      * @return
      */
-    List<Role> getUserRole(String userCode);
+    boolean insert(Role role);
+
+    /**
+     * 更新角色
+     * @param role
+     * @return
+     */
+    boolean update(Role role);
+
+    /**
+     * 删除role
+     * @param roleId
+     */
+    void delete(Long roleId);
+
+    /**
+     * 按id查找角色
+     * @param id
+     * @return
+     */
+    Role selectByRoleId(Long id);
+
+    /**
+     * 根据角色名进行查找
+     * @param roleName
+     * @return
+     */
+    Role selectRoleName(String roleName);
+
+    /**
+     * 添加角色
+     * @param roleName
+     * @return
+     */
+    Result addRole(String roleName);
+
+    /**
+     * 更新角色名
+     * @param roleForm
+     * @return
+     */
+    Result updateRoleName(RoleForm roleForm);
+
+    /**
+     * 查询所有角色信息
+     * @return
+     */
+    Result selectAllRole();
 }

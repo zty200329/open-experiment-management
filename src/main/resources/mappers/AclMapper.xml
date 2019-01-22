@@ -39,4 +39,11 @@
     and role.id = role_acl.role_id and role.id = user_role.role_id
     where user_role.user_id=1 group by acl.id
     </select>
+  <select id="selectByRandom" resultMap="BaseResultMap">
+    select * from acl where acl.`name` like '%${info}%'
+    or acl.url like '%${info}%'
+  </select>
+    <select id="selectByUrl" resultMap="BaseResultMap">
+      select * from acl where acl.url = #{url}
+    </select>
 </mapper>
