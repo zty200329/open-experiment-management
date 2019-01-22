@@ -4,10 +4,7 @@ import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
 import com.swpu.uchain.openexperiment.form.project.JoinProjectApplyForm;
 import com.swpu.uchain.openexperiment.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -32,5 +29,10 @@ public class ProjectController {
     @PostMapping(value = "/joinApply", name = "申请参与项目接口")
     public Object joinApply(@Valid JoinProjectApplyForm joinProjectApplyForm){
         return projectService.applyJoinProject(joinProjectApplyForm);
+    }
+
+    @GetMapping(value = "/getOwnProjects", name = "获取自己相关的项目信息")
+    public Object getOwnProjects(){
+        return null;
     }
 }
