@@ -75,4 +75,11 @@ public interface ProjectFileService {
      * @return:
      */
     Result uploadFile(MultipartFile file);
+
+    /**
+    * 下载文件
+    * @param
+    * @return:
+    */
+    Result downloadFile(String fileName);
 }

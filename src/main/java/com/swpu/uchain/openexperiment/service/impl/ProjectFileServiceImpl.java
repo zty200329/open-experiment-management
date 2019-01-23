@@ -150,4 +150,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return Result.error(CodeMsg.SERVER_ERROR);
         }
     }
+
+    @Override
+    public Result downloadFile(String fileName) {
+
+        return null;
+    }
 }
