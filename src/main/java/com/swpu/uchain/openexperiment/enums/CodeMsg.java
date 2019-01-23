@@ -21,7 +21,15 @@ public enum CodeMsg {
     VERIFY_CODE_ERROR(504, "验证码错误"),
     SEND_CODE_ERROR(505, "发送验证码失败"),
     ACL_EXIST(506,"ACL已存在" ),
-    ACL_NOT_EXIST(507,"ACL不存在");
+    ACL_NOT_EXIST(507,"ACL不存在"),
+    FILE_EXIST(601,"文件已存在" ),
+    FILE_NOT_EXIST(602,"文件不存在"),
+    NOT_BE_EMPTY(603,"上传文件不能为空"),
+    FORMAT_UNSUPPORTED(604,"文件格式不支持" ),
+    UPLOAD_ERROR(605,"文件上传失败"),
+    DIR_NOT_EXIST(606,"文件夹不存在" ),
+    FILE_OVERSIZE(607,"文件过大")
+    ;
 
     private Integer code;
     private String msg;
