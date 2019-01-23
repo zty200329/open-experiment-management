@@ -4,7 +4,7 @@ import com.swpu.uchain.openexperiment.dao.ProjectFileMapper;
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
-import com.swpu.uchain.openexperiment.redis.ProjectFileKey;
+import com.swpu.uchain.openexperiment.redis.key.ProjectFileKey;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.ProjectFileService;
