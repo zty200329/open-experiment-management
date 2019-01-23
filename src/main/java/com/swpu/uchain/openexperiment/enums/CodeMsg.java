@@ -32,7 +32,8 @@ public enum CodeMsg {
     ROLE_ACL_HAD_EXIST(515, "当前角色已拥有该权限,不能重复添加" ),
     PROJECT_GROUP_NOT_EXIST(516, "项目组不存在" ),
     NOT_MATCH_LIMIT(517, "不符合选择限制" ),
-    REACH_NUM_MAX(518,"已经达到人数限制,无法进行申请" );
+    REACH_NUM_MAX(518,"已经达到人数限制,无法进行申请" ),
+    PROJECT_GROUP_HAD_EXIST(519,"该项目已存在,请修改项目名" );
 
     private Integer code;
     private String msg;

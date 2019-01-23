@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.swpu.uchain.openexperiment.dao.AclMapper;
 import com.swpu.uchain.openexperiment.dao.RoleAclMapper;
 import com.swpu.uchain.openexperiment.domain.Acl;
@@ -9,6 +10,7 @@ import com.swpu.uchain.openexperiment.redis.key.AclKey;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AclService;
+import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,18 +45,15 @@ public class AclServiceImpl implements AclService {
 
     @Override
     public List<String> getUserAclUrl(Long userId) {
-        List<Acl> acls = redisService.get(AclKey.getByUserId, userId + "", List.class);
-        List<String> list = new ArrayList<>();
-        if (acls == null){
-            acls = aclMapper.selectByUserId(userId);
+        List<String> aclUrls = redisService.get(AclKey.getByUserId, userId + "", List.class);
+        if (aclUrls == null){
+            List<Acl> acls = aclMapper.selectByUserId(userId);
             if (acls != null){
-                redisService.set(AclKey.getByUserId, userId + "", acls);
+                aclUrls = ConvertUtil.fromAclsTogetUrls(acls);
+                redisService.set(AclKey.getByUserId, userId + "", aclUrls);
             }
         }
-        for (Acl acl : acls) {
-            list.add(acl.getUrl());
-        }
-        return list;
+        return aclUrls;
     }
 
     @Override

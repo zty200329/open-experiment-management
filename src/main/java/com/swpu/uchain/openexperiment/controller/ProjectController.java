@@ -36,6 +36,6 @@ public class ProjectController {
 
     @GetMapping(value = "/getOwnProjects", name = "获取自己相关的项目信息")
     public Object getOwnProjects(){
-        return null;
+        return projectService.getCurrentUserProjects();
     }
 }

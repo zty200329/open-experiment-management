@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swpu.uchain.openexperiment.dao.ProjectGroupFundsMapper">
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.ProjectGroupFunds">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="project_group_id" jdbcType="BIGINT" property="projectGroupId" />
+    <result column="funds_id" jdbcType="BIGINT" property="fundsId" />
+    <result column="applicant_id" jdbcType="BIGINT" property="applicantId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from project_group_funds
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroupFunds">
+    insert into project_group_funds (id, project_group_id, funds_id, 
+      applicant_id, `status`, create_time, 
+      update_time)
+    values (#{id,jdbcType=BIGINT}, #{projectGroupId,jdbcType=BIGINT}, #{fundsId,jdbcType=BIGINT}, 
+      #{applicantId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroupFunds">
+    update project_group_funds
+    set project_group_id = #{projectGroupId,jdbcType=BIGINT},
+      funds_id = #{fundsId,jdbcType=BIGINT},
+      applicant_id = #{applicantId,jdbcType=BIGINT},
+      `status` = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, project_group_id, funds_id, applicant_id, `status`, create_time, update_time
+    from project_group_funds
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, project_group_id, funds_id, applicant_id, `status`, create_time, update_time
+    from project_group_funds
+  </select>
+</mapper>
