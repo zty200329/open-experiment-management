@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
+
 import java.util.List;
 
 public interface ProjectFileMapper {
@@ -15,4 +16,6 @@ public interface ProjectFileMapper {
     int updateByPrimaryKey(ProjectFile record);
 
     ProjectFile selectByProjectName(String fileName);
+
+    int updateFileDownloadTime(Long id);
 }
