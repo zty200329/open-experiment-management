@@ -12,6 +12,8 @@ public class UserProjectGroup implements Serializable {
 
     private String technicalRole;
 
+    private String workDivision;
+
     private Integer status;
 
     private Integer memberRole;
@@ -54,6 +56,14 @@ public class UserProjectGroup implements Serializable {
 
     public void setTechnicalRole(String technicalRole) {
         this.technicalRole = technicalRole == null ? null : technicalRole.trim();
+    }
+
+    public String getWorkDivision() {
+        return workDivision;
+    }
+
+    public void setWorkDivision(String workDivision) {
+        this.workDivision = workDivision == null ? null : workDivision.trim();
     }
 
     public Integer getStatus() {
@@ -106,6 +116,7 @@ public class UserProjectGroup implements Serializable {
         sb.append(", projectGroupId=").append(projectGroupId);
         sb.append(", userId=").append(userId);
         sb.append(", technicalRole=").append(technicalRole);
+        sb.append(", workDivision=").append(workDivision);
         sb.append(", status=").append(status);
         sb.append(", memberRole=").append(memberRole);
         sb.append(", personalJudge=").append(personalJudge);

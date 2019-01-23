@@ -1,35 +1,35 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.swpu.uchain.openexperiment.dao.RoleMapper" >
-  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.Role" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swpu.uchain.openexperiment.dao.RoleMapper">
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.Role">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from role inner join role_acl on role.id = role_acl.role_id
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from role
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.Role" >
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.Role">
     insert into role (id, create_time, `name`, 
       update_time)
     values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{name,jdbcType=VARCHAR}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.Role" >
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.Role">
     update role
     set create_time = #{createTime,jdbcType=TIMESTAMP},
       `name` = #{name,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select id, create_time, `name`, update_time
     from role
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap" >
+  <select id="selectAll" resultMap="BaseResultMap">
     select id, create_time, `name`, update_time
     from role
   </select>

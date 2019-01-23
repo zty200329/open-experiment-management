@@ -1,4 +1,4 @@
-package com.swpu.uchain.openexperiment.redis;
+package com.swpu.uchain.openexperiment.redis.key;
 
 /**
  * @Author: clf

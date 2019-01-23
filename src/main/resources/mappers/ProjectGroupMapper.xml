@@ -1,34 +1,34 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.swpu.uchain.openexperiment.dao.ProjectGroupMapper" >
-  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.ProjectGroup" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="address" property="address" jdbcType="VARCHAR" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="creator_id" property="creatorId" jdbcType="BIGINT" />
-    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
-    <result column="experiment_condition" property="experimentCondition" jdbcType="VARCHAR" />
-    <result column="suggest_group_type" property="suggestGroupType" jdbcType="INTEGER" />
-    <result column="examination" property="examination" jdbcType="VARCHAR" />
-    <result column="experiment_type" property="experimentType" jdbcType="INTEGER" />
-    <result column="achievement_check" property="achievementCheck" jdbcType="VARCHAR" />
-    <result column="limit_college" property="limitCollege" jdbcType="VARCHAR" />
-    <result column="limit_major" property="limitMajor" jdbcType="VARCHAR" />
-    <result column="limit_grade" property="limitGrade" jdbcType="INTEGER" />
-    <result column="fit_people_num" property="fitPeopleNum" jdbcType="INTEGER" />
-    <result column="total_hours" property="totalHours" jdbcType="INTEGER" />
-    <result column="lab_name" property="labName" jdbcType="VARCHAR" />
-    <result column="project_name" property="projectName" jdbcType="VARCHAR" />
-    <result column="project_type" property="projectType" jdbcType="INTEGER" />
-    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
-    <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swpu.uchain.openexperiment.dao.ProjectGroupMapper">
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.ProjectGroup">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="experiment_condition" jdbcType="VARCHAR" property="experimentCondition" />
+    <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
+    <result column="examination" jdbcType="VARCHAR" property="examination" />
+    <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
+    <result column="achievement_check" jdbcType="VARCHAR" property="achievementCheck" />
+    <result column="limit_college" jdbcType="VARCHAR" property="limitCollege" />
+    <result column="limit_major" jdbcType="VARCHAR" property="limitMajor" />
+    <result column="limit_grade" jdbcType="INTEGER" property="limitGrade" />
+    <result column="fit_people_num" jdbcType="INTEGER" property="fitPeopleNum" />
+    <result column="total_hours" jdbcType="INTEGER" property="totalHours" />
+    <result column="lab_name" jdbcType="VARCHAR" property="labName" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="project_type" jdbcType="INTEGER" property="projectType" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from project_group
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup" >
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
     insert into project_group (id, address, create_time, 
       creator_id, end_time, experiment_condition, 
       suggest_group_type, examination, experiment_type, 
@@ -46,7 +46,7 @@
       #{startTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup" >
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
     update project_group
     set address = #{address,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -70,7 +70,7 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select id, address, create_time, creator_id, end_time, experiment_condition, suggest_group_type, 
     examination, experiment_type, achievement_check, limit_college, limit_major, limit_grade, 
     fit_people_num, total_hours, lab_name, project_name, project_type, start_time, `status`, 
@@ -78,7 +78,7 @@
     from project_group
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap" >
+  <select id="selectAll" resultMap="BaseResultMap">
     select id, address, create_time, creator_id, end_time, experiment_condition, suggest_group_type, 
     examination, experiment_type, achievement_check, limit_college, limit_major, limit_grade, 
     fit_people_num, total_hours, lab_name, project_name, project_type, start_time, `status`, 

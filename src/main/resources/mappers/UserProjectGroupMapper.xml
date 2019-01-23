@@ -1,36 +1,38 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.swpu.uchain.openexperiment.dao.UserProjectGroupMapper" >
-  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.UserProjectGroup" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="project_group_id" property="projectGroupId" jdbcType="BIGINT" />
-    <result column="user_id" property="userId" jdbcType="BIGINT" />
-    <result column="technical_role" property="technicalRole" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="member_role" property="memberRole" jdbcType="INTEGER" />
-    <result column="personal_judge" property="personalJudge" jdbcType="VARCHAR" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="join_time" property="joinTime" jdbcType="TIMESTAMP" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swpu.uchain.openexperiment.dao.UserProjectGroupMapper">
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.UserProjectGroup">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="project_group_id" jdbcType="BIGINT" property="projectGroupId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="technical_role" jdbcType="VARCHAR" property="technicalRole" />
+    <result column="work_division" jdbcType="VARCHAR" property="workDivision" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="member_role" jdbcType="INTEGER" property="memberRole" />
+    <result column="personal_judge" jdbcType="VARCHAR" property="personalJudge" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="join_time" jdbcType="TIMESTAMP" property="joinTime" />
   </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from user_project_group
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectGroup" >
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectGroup">
     insert into user_project_group (id, project_group_id, user_id, 
-      technical_role, `status`, member_role, 
-      personal_judge, update_time, join_time
-      )
+      technical_role, work_division, `status`, 
+      member_role, personal_judge, update_time, 
+      join_time)
     values (#{id,jdbcType=BIGINT}, #{projectGroupId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
-      #{technicalRole,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{memberRole,jdbcType=INTEGER}, 
-      #{personalJudge,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{joinTime,jdbcType=TIMESTAMP}
-      )
+      #{technicalRole,jdbcType=VARCHAR}, #{workDivision,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{memberRole,jdbcType=INTEGER}, #{personalJudge,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{joinTime,jdbcType=TIMESTAMP})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectGroup" >
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectGroup">
     update user_project_group
     set project_group_id = #{projectGroupId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=BIGINT},
       technical_role = #{technicalRole,jdbcType=VARCHAR},
+      work_division = #{workDivision,jdbcType=VARCHAR},
       `status` = #{status,jdbcType=INTEGER},
       member_role = #{memberRole,jdbcType=INTEGER},
       personal_judge = #{personalJudge,jdbcType=VARCHAR},
@@ -38,15 +40,21 @@
       join_time = #{joinTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select id, project_group_id, user_id, technical_role, `status`, member_role, personal_judge, 
-    update_time, join_time
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, project_group_id, user_id, technical_role, work_division, `status`, member_role, 
+    personal_judge, update_time, join_time
     from user_project_group
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap" >
-    select id, project_group_id, user_id, technical_role, `status`, member_role, personal_judge, 
-    update_time, join_time
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, project_group_id, user_id, technical_role, work_division, `status`, member_role, 
+    personal_judge, update_time, join_time
     from user_project_group
+  </select>
+  <select id="selectByProjectGroupIdAndUserId" resultMap="BaseResultMap">
+    select * from user_project_group where project_group_id = #{param1} and user_id = #{param2}
+  </select>
+  <select id="selectByProjectGroupId" resultMap="BaseResultMap">
+    select * from user_project_group where project_group_id = #{projectGroupId}
   </select>
 </mapper>

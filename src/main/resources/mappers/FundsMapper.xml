@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swpu.uchain.openexperiment.dao.FundsMapper" >
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.Funds" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="amount" property="amount" jdbcType="INTEGER" />
+    <result column="use" property="use" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from funds
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.Funds" >
+    insert into funds (id, amount, `use`, 
+      `type`)
+    values (#{id,jdbcType=BIGINT}, #{amount,jdbcType=INTEGER}, #{use,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.Funds" >
+    update funds
+    set amount = #{amount,jdbcType=INTEGER},
+      `use` = #{use,jdbcType=VARCHAR},
+      `type` = #{type,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, amount, `use`, `type`
+    from funds
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, amount, `use`, `type`
+    from funds
+  </select>
+</mapper>

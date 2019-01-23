@@ -5,6 +5,7 @@ import com.swpu.uchain.openexperiment.form.LoginForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @Author: clf
@@ -69,4 +70,11 @@ public interface UserService {
      * @return
      */
     User selectByUserCode(String userCode);
+
+    /**
+     * 查询某项目参与的人员
+     * @param projectId
+     * @return
+     */
+    List<User> selectProjectJoinedUsers(Long projectId);
 }

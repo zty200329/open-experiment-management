@@ -31,6 +31,8 @@ public class User implements Serializable {
 
     private Integer grade;
 
+    private String workUnit;
+
     private Integer classNum;
 
     private static final long serialVersionUID = 1L;
@@ -147,6 +149,14 @@ public class User implements Serializable {
         this.grade = grade;
     }
 
+    public String getWorkUnit() {
+        return workUnit;
+    }
+
+    public void setWorkUnit(String workUnit) {
+        this.workUnit = workUnit == null ? null : workUnit.trim();
+    }
+
     public Integer getClassNum() {
         return classNum;
     }
@@ -175,6 +185,7 @@ public class User implements Serializable {
         sb.append(", institute=").append(institute);
         sb.append(", major=").append(major);
         sb.append(", grade=").append(grade);
+        sb.append(", workUnit=").append(workUnit);
         sb.append(", classNum=").append(classNum);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

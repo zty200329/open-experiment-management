@@ -1,0 +1,148 @@
+package com.swpu.uchain.openexperiment.service.impl;
+
+import com.swpu.uchain.openexperiment.dao.UserProjectGroupMapper;
+import com.swpu.uchain.openexperiment.domain.ProjectGroup;
+import com.swpu.uchain.openexperiment.domain.User;
+import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
+import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.enums.JoinStatus;
+import com.swpu.uchain.openexperiment.enums.MemberRole;
+import com.swpu.uchain.openexperiment.form.project.JoinProjectApplyForm;
+import com.swpu.uchain.openexperiment.redis.RedisService;
+import com.swpu.uchain.openexperiment.redis.key.UserProjectGroupKey;
+import com.swpu.uchain.openexperiment.result.Result;
+import com.swpu.uchain.openexperiment.service.ProjectService;
+import com.swpu.uchain.openexperiment.service.UserProjectService;
+import com.swpu.uchain.openexperiment.service.UserService;
+import com.swpu.uchain.openexperiment.util.CountUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @Author: clf
+ * @Date: 19-1-23
+ * @Description:
+ */
+@Service
+public class UserProjectServiceImpl implements UserProjectService {
+    @Autowired
+    private UserProjectGroupMapper userProjectGroupMapper;
+    @Autowired
+    private ProjectService projectService;
+    @Autowired
+    private RedisService redisService;
+    @Autowired
+    private UserService userService;
+    @Override
+    public boolean insert(UserProjectGroup userProjectGroup) {
+        int result = userProjectGroupMapper.insert(userProjectGroup);
+        if (result == 1){
+            redisService.set(UserProjectGroupKey.getByProjectGroupIdAndUserId,
+                    userProjectGroup.getId() + "_" + userProjectGroup.getUserId(),
+                    userProjectGroup);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean update(UserProjectGroup userProjectGroup) {
+        int result = userProjectGroupMapper.updateByPrimaryKey(userProjectGroup);
+        if (result == 1){
+            redisService.set(UserProjectGroupKey.getByProjectGroupIdAndUserId,
+                    userProjectGroup.getId() + "_" +  userProjectGroup.getUserId(),
+                    userProjectGroup);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void delete(Long id) {
+        UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByPrimaryKey(id);
+        if (userProjectGroup == null){
+            return;
+        }
+        redisService.delete(UserProjectGroupKey.getByProjectGroupIdAndUserId,
+                userProjectGroup.getProjectGroupId() + "_" + userProjectGroup.getUserId());
+        userProjectGroupMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public UserProjectGroup selectByProjectGroupIdAndUserId(Long projectGroupId, Long userId) {
+        UserProjectGroup userProjectGroup = redisService.get(UserProjectGroupKey.getByProjectGroupIdAndUserId,
+                projectGroupId + "_" + userId,
+                UserProjectGroup.class);
+        if (userProjectGroup == null){
+            userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, userId);
+            if (userProjectGroup != null){
+                redisService.set(UserProjectGroupKey.getByProjectGroupIdAndUserId,
+                        projectGroupId + "_" + userId,
+                        userProjectGroup);
+            }
+        }
+        return userProjectGroup;
+    }
+
+    @Override
+    public Result applyJoinProject(JoinProjectApplyForm joinProjectApplyForm) {
+        User user = userService.getCurrentUser();
+        if (user == null){
+            return Result.error(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        ProjectGroup projectGroup = projectService.selectByProjectGroupId(joinProjectApplyForm.getProjectGroupId());
+        if (projectGroup == null){
+            return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+        }
+        //检验申请条件
+        Result result = checkUserMatch(user, projectGroup);
+        //检验通过
+        if (result.getCode().intValue()
+                == Result.success().getCode().intValue()){
+            UserProjectGroup userProjectGroup = new UserProjectGroup();
+            userProjectGroup.setMemberRole(MemberRole.NORMAL_MEMBER.getValue());
+            userProjectGroup.setPersonalJudge(joinProjectApplyForm.getPersonalJudge());
+            userProjectGroup.setProjectGroupId(joinProjectApplyForm.getProjectGroupId());
+            userProjectGroup.setStatus(JoinStatus.APPLYING.getValue());
+            userProjectGroup.setJoinTime(new Date());
+            userProjectGroup.setUpdateTime(new Date());
+            userProjectGroup.setUserId(user.getId());
+            userProjectGroup.setTechnicalRole(userProjectGroup.getTechnicalRole());
+            if (insert(userProjectGroup)) {
+                return Result.success("已申请");
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 检查用户是否符合选则该项目的条件
+     * @param user
+     * @param projectGroup
+     * @return
+     */
+    private Result checkUserMatch(User user, ProjectGroup projectGroup){
+        List<User> users = userService.selectProjectJoinedUsers(projectGroup.getId());
+        if (users.size() < projectGroup.getFitPeopleNum()
+                && userProjectGroupMapper.selectByProjectGroupId(projectGroup.getId()).size()
+                < CountUtil.getMaxApplyNum(projectGroup.getFitPeopleNum())){
+            if (projectGroup.getLimitGrade() != null
+                    && projectGroup.getLimitGrade().intValue() != user.getGrade().intValue()){
+                return Result.error(CodeMsg.NOT_MATCH_LIMIT);
+            }
+            if (projectGroup.getLimitCollege() != null
+                    && !projectGroup.getLimitCollege().equals(user.getInstitute())){
+                return Result.error(CodeMsg.NOT_MATCH_LIMIT);
+            }
+            if (projectGroup.getLimitMajor() != null
+                    && !projectGroup.getLimitMajor().equals(user.getMajor())){
+                return Result.error(CodeMsg.NOT_MATCH_LIMIT);
+            }
+            return Result.success();
+        }
+        return Result.error(CodeMsg.REACH_NUM_MAX);
+    }
+}

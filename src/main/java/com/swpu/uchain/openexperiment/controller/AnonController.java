@@ -56,11 +56,4 @@ public class AnonController {
         }
         return Result.success(verifyCode);
     }
-
-    @GetMapping("/test")
-    public Object test(HttpServletRequest request){
-        return Result.success();
-    }
-
-
 }

@@ -6,8 +6,8 @@ import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.LoginForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
-import com.swpu.uchain.openexperiment.redis.UserKey;
-import com.swpu.uchain.openexperiment.redis.VerifyCodeKey;
+import com.swpu.uchain.openexperiment.redis.key.UserKey;
+import com.swpu.uchain.openexperiment.redis.key.VerifyCodeKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.security.JwtTokenUtil;
 import com.swpu.uchain.openexperiment.service.UserService;
@@ -26,6 +26,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @Author: clf
@@ -139,5 +140,10 @@ public class UserServiceImpl implements UserService {
             redisService.set(UserKey.getUserByUserCode, userCode, user);
         }
         return user;
+    }
+
+    @Override
+    public List<User> selectProjectJoinedUsers(Long projectId) {
+        return userMapper.selectProjectJoinedUsers(projectId);
     }
 }

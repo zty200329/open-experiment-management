@@ -15,4 +15,6 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     User selectByUserCode(String userCode);
+
+    List<User> selectProjectJoinedUsers(Long projectId);
 }
