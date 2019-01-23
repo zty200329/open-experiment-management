@@ -33,7 +33,13 @@ public enum CodeMsg {
     PROJECT_GROUP_NOT_EXIST(516, "项目组不存在" ),
     NOT_MATCH_LIMIT(517, "不符合选择限制" ),
     REACH_NUM_MAX(518,"已经达到人数限制,无法进行申请" );
-
+    FILE_EXIST(601,"文件已存在" ),
+    FILE_NOT_EXIST(602,"文件不存在"),
+    NOT_BE_EMPTY(603,"上传文件不能为空"),
+    FORMAT_UNSUPPORTED(604,"文件格式不支持" ),
+    UPLOAD_ERROR(605,"文件上传失败"),
+    DIR_NOT_EXIST(606,"文件夹不存在" ),
+    FILE_OVERSIZE(607,"文件过大");
     private Integer code;
     private String msg;
 

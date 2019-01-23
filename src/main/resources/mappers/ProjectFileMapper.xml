@@ -45,4 +45,8 @@
     upload_user_id
     from project_file
   </select>
+  <select id="selectByProjectName" resultMap="BaseResultMap">
+    select * from project_file
+    where file_name = fileName
+  </select>
 </mapper>
