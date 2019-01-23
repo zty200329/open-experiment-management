@@ -66,6 +66,6 @@
     from user
   </select>
   <select id="selectByUserCode" resultMap="BaseResultMap">
-    select * from user where user_code = #{userCode}
+    select * from user where code = #{code}
   </select>
 </mapper>
