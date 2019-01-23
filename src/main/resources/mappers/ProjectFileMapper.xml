@@ -49,4 +49,8 @@
     select * from project_file
     where file_name = fileName
   </select>
+  <update id="updateFileDownloadTime" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile">
+    update project_file
+    set download_times = download_times+1
+  </update>
 </mapper>
