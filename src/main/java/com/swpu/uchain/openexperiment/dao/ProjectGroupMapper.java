@@ -13,4 +13,6 @@ public interface ProjectGroupMapper {
     List<ProjectGroup> selectAll();
 
     int updateByPrimaryKey(ProjectGroup record);
+
+    ProjectGroup selectByName(String projectName);
 }

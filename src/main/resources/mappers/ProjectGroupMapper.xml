@@ -85,4 +85,7 @@
     update_time
     from project_group
   </select>
+    <select id="selectByName" resultMap="BaseResultMap">
+      select * from where name = #{projectName}
+    </select>
 </mapper>
