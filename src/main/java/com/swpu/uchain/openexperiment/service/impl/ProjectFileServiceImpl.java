@@ -115,9 +115,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return Result.error(CodeMsg.FILE_OVERSIZE);
         }
         User user = userService.getCurrentUser();
-        //同一用户不能上传相同文件
-        if (user.getId().equals(projectFile.getUploadUserId()) &&
-                projectFileMapper.selectByProjectName(fileName) != null) {
+        //TODO 同一用户不能上传相同文件
+        if (projectFileMapper.selectByFileNameAndUploadId(fileName, user.getId()) != null) {
             return Result.error(CodeMsg.FILE_EXIST);
         }
         assert fileName != null;
@@ -132,7 +131,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile.setFileName(fileName);
         projectFile.setSize(size);
         projectFile.setUploadTime(new Date());
-        projectFile.setId(user.getId());
+        projectFile.setUploadUserId(user.getId());
         projectFile.setDownloadTimes(0);
         File dest = new File(path + "/" + fileName);
         //判断父目录是否存在
