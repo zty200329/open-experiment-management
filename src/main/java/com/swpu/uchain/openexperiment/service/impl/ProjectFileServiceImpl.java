@@ -123,7 +123,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         assert fileName != null;
         //获得文件后缀名
         String suffix = fileName.substring(fileName.lastIndexOf("."));
-        System.out.println(suffix);
         FileTypeUtil fileTypeUtil = new FileTypeUtil();
         int type = fileTypeUtil.getType(suffix);
         if (type == 0) {
@@ -153,7 +152,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public Result downloadFile(String fileName) {
-
         return null;
     }
 }
