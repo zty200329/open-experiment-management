@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service;
 
+import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import com.swpu.uchain.openexperiment.form.project.JoinProjectApplyForm;
@@ -35,6 +36,26 @@ public interface UserProjectService {
     void delete(Long id);
 
     /**
+     * 删除项目组的所有成员
+     * @param projectGroupId
+     */
+    void deleteByProjectGroupId(Long projectGroupId);
+
+    /**
+     * 添加用户参与项目组关系
+     * @param userProjectGroup
+     * @return
+     */
+    Result addUserProject(UserProjectGroup userProjectGroup);
+
+    /**
+     * 获取项目组的所有成员id
+     * @param projectGroupId
+     * @return
+     */
+    List<UserProjectGroup> selectByProjectGroupId(Long projectGroupId);
+
+    /**
      * 按项目组id和用户id进行查找
      * @param projectGroupId
      * @param userId
@@ -48,4 +69,12 @@ public interface UserProjectService {
      * @return
      */
     Result applyJoinProject(JoinProjectApplyForm joinProjectApplyForm);
+
+    /**
+     * 校验当前用户是满足进行申请加入条件
+     * @param user
+     * @param projectGroup
+     * @return
+     */
+    Result checkUserMatch(User user, ProjectGroup projectGroup);
 }

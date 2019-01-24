@@ -17,7 +17,11 @@
     delete from user_project_group
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectGroup">
+    <delete id="deleteByProjectGroupId">
+      delete from user_project_group
+      where project_group_id = #{projectGroupId}
+    </delete>
+    <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectGroup">
     insert into user_project_group (id, project_group_id, user_id, 
       technical_role, work_division, `status`, 
       member_role, personal_judge, update_time, 

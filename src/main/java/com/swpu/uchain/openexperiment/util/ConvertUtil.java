@@ -1,6 +1,11 @@
 package com.swpu.uchain.openexperiment.util;
 
+import com.swpu.uchain.openexperiment.VO.ApplyPointFormInfoVO;
+import com.swpu.uchain.openexperiment.VO.UserDetailVO;
 import com.swpu.uchain.openexperiment.domain.Acl;
+import com.swpu.uchain.openexperiment.domain.User;
+import com.swpu.uchain.openexperiment.enums.UserType;
+import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,5 +22,38 @@ public class ConvertUtil {
             urls.add(acl.getUrl());
         }
         return urls;
+    }
+
+    public static String getTechnicalRole(int type){
+        switch (type){
+            case 1:
+                return UserType.STUDENT.getMessage();
+            case 2:
+                return UserType.LECTURER.getMessage();
+            case 3:
+                return UserType.PROFESS.getMessage();
+            case 4:
+                return UserType.ASSOCIATE_PROFESSOR.getMessage();
+            default:
+                return null;
+        }
+    }
+
+    public static ApplyPointFormInfoVO addUserDetailVO(List<User> users){
+        List<UserDetailVO> guideTeachers = new ArrayList<>();
+        List<UserDetailVO> stuMembers = new ArrayList<>();
+        for (User user : users) {
+            UserDetailVO userDetailVO = new UserDetailVO();
+            BeanUtils.copyProperties(user, userDetailVO);
+            if (user.getUserType().intValue() == UserType.STUDENT.getValue()){
+                stuMembers.add(userDetailVO);
+            }else {
+                guideTeachers.add(userDetailVO);
+            }
+        }
+        ApplyPointFormInfoVO applyPointFormInfoVO = new ApplyPointFormInfoVO();
+        applyPointFormInfoVO.setStuMembers(stuMembers);
+        applyPointFormInfoVO.setGuideTeachers(guideTeachers);
+        return applyPointFormInfoVO;
     }
 }

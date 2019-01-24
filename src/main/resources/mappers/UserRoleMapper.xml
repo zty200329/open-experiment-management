@@ -34,4 +34,7 @@
     <select id="selectByUserIdAndRoleId" resultMap="BaseResultMap">
       select * from user_role where user_id = #{param1} and role_id = #{param2}
     </select>
+    <select id="selectByRoleId" resultMap="BaseResultMap">
+      select * from user_role where role_id = #{roleId}
+    </select>
 </mapper>

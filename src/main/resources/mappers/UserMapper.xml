@@ -79,4 +79,10 @@
   where user_project_group.project_id = #{projectId}
   and user_project_group.status = 2
   </select>
+  <select id="selectByRandom" resultMap="BaseResultMap">
+    select * from user
+    where code like '%${keyWord}%'
+    or real_name like '%${keyWord}%'
+    or mobile_phone like '%${keyWord}%'
+  </select>
 </mapper>

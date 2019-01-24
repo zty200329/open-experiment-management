@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.dao.UserRoleMapper;
+import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserRole;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.permission.UserRoleForm;
@@ -8,6 +9,8 @@ import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.UserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @Author: clf
@@ -42,5 +45,10 @@ public class UserRoleServiceImpl implements UserRoleService {
             return Result.success();
         }
         return Result.error(CodeMsg.ADD_ERROR);
+    }
+
+    @Override
+    public List<UserRole> selectUsersByRoleId(Long roleId) {
+        return userRoleMapper.selectByRoleId(roleId);
     }
 }
