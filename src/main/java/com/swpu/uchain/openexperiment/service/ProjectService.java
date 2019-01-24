@@ -33,10 +33,10 @@ public interface ProjectService {
 
     /**
      * 根据项目组id进行查找
-     * @param id
+     * @param projectGroupId
      * @return
      */
-    ProjectGroup selectByProjectGroupId(Long id);
+    ProjectGroup selectByProjectGroupId(Long projectGroupId);
 
     /**
      * 立项申请接口
@@ -45,4 +45,9 @@ public interface ProjectService {
      */
     Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm);
 
+    /**
+     * 获取当前用户的所有参与的项目
+     * @return
+     */
+    Result getCurrentUserProjects();
 }
