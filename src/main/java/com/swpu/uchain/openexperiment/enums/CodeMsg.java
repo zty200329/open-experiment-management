@@ -39,7 +39,8 @@ public enum CodeMsg {
     FORMAT_UNSUPPORTED(604,"文件格式不支持" ),
     UPLOAD_ERROR(605,"文件上传失败"),
     DIR_NOT_EXIST(606,"文件夹不存在" ),
-    FILE_OVERSIZE(607,"文件过大");
+    FILE_OVERSIZE(607,"文件过大"),
+    FILE_ALREADY_UPLOAD(608,"同一文件不能上传多次" );
     private Integer code;
     private String msg;
 
