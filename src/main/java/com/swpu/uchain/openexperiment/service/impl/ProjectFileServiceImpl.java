@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Path;
@@ -112,7 +111,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         String fileName = file.getOriginalFilename();
         ProjectFile projectFile = new ProjectFile();
         String size = "" + file.getSize();
-        if (file.getSize() > (1024 * 10000000)) {
+        if (file.getSize() > (1024 * 10000)) {
             return Result.error(CodeMsg.FILE_OVERSIZE);
         }
         User user = userService.getCurrentUser();
@@ -137,6 +136,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         File dest = new File(path + "/" + fileName);
         //判断父目录是否存在
         if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
             return Result.error(CodeMsg.DIR_NOT_EXIST);
         }
         try {
@@ -149,11 +149,12 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return Result.error(CodeMsg.SERVER_ERROR);
         }
     }
-
     @Override
     public Result downloadFile(String fileName, HttpServletResponse response) {
         String realPath = path + "";
+        System.out.println(path);
         File file = new File(realPath, fileName);
+        System.out.println(file);
         if (file.exists()) {
             byte[] buffer = new byte[1024];
             FileInputStream fis = null;
