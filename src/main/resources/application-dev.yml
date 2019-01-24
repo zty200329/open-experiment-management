@@ -9,6 +9,6 @@ spring:
     multipart:
       enabled: true
       # 设置文件大小限制
-      max-file-size: 102400
+      max-file-size: 10240000000
       # 设置总上传数据总大小
-      max-request-size: 307200
+      max-request-size: 30720000000

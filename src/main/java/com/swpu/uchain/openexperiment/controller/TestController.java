@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @Author: clf
  * @Date: 19-1-18
@@ -35,5 +37,12 @@ public class TestController {
     @PostMapping(value = "/uploadtest", name = "测试文件上传")
     public Object uploadTest(MultipartFile file) {
         return projectFileService.uploadFile(file);
+    }
+
+    @PostMapping(value = "/downloadtest",name = "测试文件下载")
+    public Object downloadTest(String fileName, HttpServletResponse response){
+        response.setContentType("application/force-download");
+        response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);
+        return projectFileService.downloadFile(fileName,response);
     }
 }

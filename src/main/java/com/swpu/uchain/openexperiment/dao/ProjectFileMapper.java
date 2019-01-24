@@ -17,7 +17,7 @@ public interface ProjectFileMapper {
 
     ProjectFile selectByProjectName(String fileName);
 
-    int updateFileDownloadTime(Long id);
+    int updateFileDownloadTime(String fileName);
 
     ProjectFile selectByFileNameAndUploadId(String fileName,Long uploadUserId);
 }

@@ -41,7 +41,9 @@ public enum CodeMsg {
     UPLOAD_ERROR(605,"文件上传失败"),
     DIR_NOT_EXIST(606,"文件夹不存在" ),
     FILE_OVERSIZE(607,"文件过大"),
-    FILE_ALREADY_UPLOAD(608,"同一文件不能上传多次" );
+    FILE_ALREADY_UPLOAD(608,"同一文件不能上传多次" ),
+    FILENAME_BE_NULL(609,"文件名为空" ),
+    DOWNLOAD_ERROR(610,"下载失败" );
     private Integer code;
     private String msg;
 

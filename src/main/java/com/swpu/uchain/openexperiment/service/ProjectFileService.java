@@ -4,6 +4,9 @@ import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import com.swpu.uchain.openexperiment.result.Result;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @Description
  * @Author cby
@@ -81,5 +84,5 @@ public interface ProjectFileService {
     * @param
     * @return:
     */
-    Result downloadFile(String fileName);
+    Result downloadFile(String fileName,  HttpServletResponse response);
 }
