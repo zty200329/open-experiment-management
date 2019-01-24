@@ -15,8 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -111,7 +112,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         String fileName = file.getOriginalFilename();
         ProjectFile projectFile = new ProjectFile();
         String size = "" + file.getSize();
-        if (file.getSize() > 102400) {
+        if (file.getSize() > (1024*10000000)) {
             return Result.error(CodeMsg.FILE_OVERSIZE);
         }
         User user = userService.getCurrentUser();
@@ -150,7 +151,50 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public Result downloadFile(String fileName) {
-        return null;
+    public Result downloadFile(String fileName, HttpServletRequest request, HttpServletResponse response) {
+        if (fileName != null) {
+            String realPath = path + "";
+            File file = new File(realPath, fileName);
+            if (file.exists()) {
+                // TODO 设置强制下载不打开
+                response.setContentType("application/force-download");
+                response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);
+                byte[] buffer = new byte[1024];
+                FileInputStream fis = null;
+                BufferedInputStream bis = null;
+                try {
+                    fis = new FileInputStream(file);
+                    bis = new BufferedInputStream(fis);
+                    OutputStream outputStream = response.getOutputStream();
+                    int i = bis.read(buffer);
+                    while (i != -1) {
+                        outputStream.write(buffer, 0, i);
+                        i = bis.read(buffer);
+                    }
+                    ProjectFile projectFile = projectFileMapper.selectByProjectName(fileName);
+                    projectFileMapper.updateFileDownloadTime(fileName);
+                    return Result.success(fileName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (bis != null) {
+                        try {
+                            bis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
+        }
+        return Result.error(CodeMsg.SERVER_ERROR);
     }
 }
