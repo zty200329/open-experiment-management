@@ -13,5 +13,5 @@ spring:
       # 设置总上传数据总大小 30MB
       max-request-size: 307200000
 
-file:
-  uploadDir: /home/hobo/upload_dir
+upload:
+  uploadDir: "/home/upload_dir"

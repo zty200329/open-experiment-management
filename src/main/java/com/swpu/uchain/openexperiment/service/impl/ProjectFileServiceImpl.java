@@ -4,6 +4,7 @@ import com.swpu.uchain.openexperiment.dao.ProjectFileMapper;
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.form.file.UploadFileForm;
 import com.swpu.uchain.openexperiment.redis.key.ProjectFileKey;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -13,13 +14,12 @@ import com.swpu.uchain.openexperiment.util.FileTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Date;
 
 /**
@@ -29,13 +29,14 @@ import java.util.Date;
  **/
 @Service
 @Slf4j
+@Component
 public class ProjectFileServiceImpl implements ProjectFileService {
 
     //文件上传路径
 //    private final Path path = Paths.get("upload_dir");
 
-    @Value("${path.uploadDir}")
-    private String path;
+    //    @Value("${upload.uploadDir}")
+    private String path = "/home/hobo/upload_dir";
 
     @Autowired
     private ProjectFileMapper projectFileMapper;
@@ -108,7 +109,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public Result uploadFile(MultipartFile file) {
+    public Result uploadFile(MultipartFile file, Long projectGroupId) {
         if (file.isEmpty()) {
             return Result.error(CodeMsg.NOT_BE_EMPTY);
         }
@@ -119,7 +120,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return Result.error(CodeMsg.FILE_OVERSIZE);
         }
         User user = userService.getCurrentUser();
-        //TODO 同一用户不能上传相同文件
         if (projectFileMapper.selectByFileNameAndUploadId(fileName, user.getId()) != null) {
             return Result.error(CodeMsg.FILE_ALREADY_UPLOAD);
         }
@@ -137,17 +137,19 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile.setUploadTime(new Date());
         projectFile.setUploadUserId(user.getId());
         projectFile.setDownloadTimes(0);
-        System.out.println(path);
+        projectFile.setProjectGroupId(projectGroupId);
         File dest = new File(path + "/" + fileName);
         //判断父目录是否存在
         if (!dest.getParentFile().exists()) {
-            dest.getParentFile().mkdirs();
             return Result.error(CodeMsg.DIR_NOT_EXIST);
         }
         try {
             log.info(user.getRealName() + "上传文件：" + projectFile.getFileName());
             file.transferTo(dest);
             insert(projectFile);
+            ProjectFile projectFile1 = projectFileMapper.selectByFileNameAndUploadId(fileName, user.getId());
+            projectFile1.setFileName(projectFile1.getId() + "." + fileName);
+            projectFileMapper.updateByPrimaryKey(projectFile1);
             return Result.success(projectFile);
         } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
@@ -157,11 +159,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public Result downloadFile(String fileName, HttpServletResponse response) {
-        System.out.println(path);
         String realPath = path + "";
-        System.out.println(path);
         File file = new File(realPath, fileName);
-        System.out.println(file);
         if (!file.exists()) {
             return Result.error(CodeMsg.FILE_NOT_EXIST);
         }

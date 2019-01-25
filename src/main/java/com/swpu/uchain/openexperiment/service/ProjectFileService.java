@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
+import com.swpu.uchain.openexperiment.form.file.UploadFileForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -75,9 +76,10 @@ public interface ProjectFileService {
      * 上传文件
      *
      * @param file
+//     * @param projectGroupId
      * @return:
      */
-    Result uploadFile(MultipartFile file);
+    Result uploadFile(MultipartFile file,Long projectGroupId);
 
     /**
     * 下载文件
