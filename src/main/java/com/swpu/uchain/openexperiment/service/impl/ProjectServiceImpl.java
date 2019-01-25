@@ -1,19 +1,19 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.swpu.uchain.openexperiment.VO.ApplyPointFormInfoVO;
+import com.swpu.uchain.openexperiment.VO.ApplyGeneralFormInfoVO;
+import com.swpu.uchain.openexperiment.VO.ApplyKeyFormInfoVO;
+import com.swpu.uchain.openexperiment.VO.MyProjectVO;
 import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
-import com.swpu.uchain.openexperiment.enums.CodeMsg;
-import com.swpu.uchain.openexperiment.enums.JoinStatus;
-import com.swpu.uchain.openexperiment.enums.ProjectStatus;
-import com.swpu.uchain.openexperiment.enums.UserType;
+import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.form.project.JoinForm;
 import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
+import com.swpu.uchain.openexperiment.service.FundsService;
 import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.service.UserService;
@@ -41,6 +41,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private UserProjectService userProjectService;
     //TODO,注入文件的Service,答辩小组Service,资金模块的Service,
+    @Autowired
+    private FundsService fundsService;
     @Override
     public boolean insert(ProjectGroup projectGroup) {
         if (projectGroupMapper.insert(projectGroup) == 1){
@@ -172,10 +174,20 @@ public class ProjectServiceImpl implements ProjectService {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
         List<User> users = userService.selectProjectJoinedUsers(projectGroupId);
-        ApplyPointFormInfoVO applyPointFormInfoVO = ConvertUtil.addUserDetailVO(users);
-
-        //TODO,完成重点项目立项表单数据展示
-        return null;
+        if (projectGroup.getProjectType().intValue() == ProjectType.KEY.getValue()){
+            ApplyKeyFormInfoVO applyKeyFormInfoVO = ConvertUtil.addUserDetailVO(users, ApplyKeyFormInfoVO.class);
+            applyKeyFormInfoVO.setFundsDetails(fundsService.getFundsDetails(projectGroupId));
+            BeanUtils.copyProperties(projectGroup, applyKeyFormInfoVO);
+            applyKeyFormInfoVO.setProjectGroupId(projectGroup.getId());
+            //TODO,添加立项表文件id
+            return Result.success(applyKeyFormInfoVO);
+        }else {
+            ApplyGeneralFormInfoVO applyGeneralFormInfoVO = ConvertUtil.addUserDetailVO(users, ApplyGeneralFormInfoVO.class);
+            BeanUtils.copyProperties(projectGroup, applyGeneralFormInfoVO);
+            applyGeneralFormInfoVO.setProjectGroupId(projectGroup.getId());
+            //TODO,添加立项表文件id
+            return Result.success(applyGeneralFormInfoVO);
+        }
     }
 
 }

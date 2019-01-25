@@ -11,11 +11,11 @@ import java.util.Date;
  * 我的项目管理
  */
 @Data
-public class ProjectVO {
+public class MyProjectVO {
     /**
      * 项目id
      */
-    private Long id;
+    private Long projectGroupId;
     /**
      * 项目名称
      */

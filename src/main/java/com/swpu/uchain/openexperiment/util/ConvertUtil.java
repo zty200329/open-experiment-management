@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.util;
 
-import com.swpu.uchain.openexperiment.VO.ApplyPointFormInfoVO;
+import com.swpu.uchain.openexperiment.VO.ApplyGeneralFormInfoVO;
+import com.swpu.uchain.openexperiment.VO.ApplyKeyFormInfoVO;
 import com.swpu.uchain.openexperiment.VO.UserDetailVO;
 import com.swpu.uchain.openexperiment.domain.Acl;
 import com.swpu.uchain.openexperiment.domain.User;
@@ -39,7 +40,7 @@ public class ConvertUtil {
         }
     }
 
-    public static ApplyPointFormInfoVO addUserDetailVO(List<User> users){
+    public static <T> T addUserDetailVO(List<User> users,Class<T> clazz){
         List<UserDetailVO> guideTeachers = new ArrayList<>();
         List<UserDetailVO> stuMembers = new ArrayList<>();
         for (User user : users) {
@@ -51,9 +52,16 @@ public class ConvertUtil {
                 guideTeachers.add(userDetailVO);
             }
         }
-        ApplyPointFormInfoVO applyPointFormInfoVO = new ApplyPointFormInfoVO();
-        applyPointFormInfoVO.setStuMembers(stuMembers);
-        applyPointFormInfoVO.setGuideTeachers(guideTeachers);
-        return applyPointFormInfoVO;
+        if (clazz == ApplyKeyFormInfoVO.class){
+            ApplyKeyFormInfoVO applyKeyFormInfoVO = new ApplyKeyFormInfoVO();
+            applyKeyFormInfoVO.setStuMembers(stuMembers);
+            applyKeyFormInfoVO.setGuideTeachers(guideTeachers);
+            return (T) applyKeyFormInfoVO;
+        }else {
+            ApplyGeneralFormInfoVO applyGeneralFormInfoVO = new ApplyGeneralFormInfoVO();
+            applyGeneralFormInfoVO.setStuMembers(stuMembers);
+            applyGeneralFormInfoVO.setGuideTeachers(guideTeachers);
+            return (T) applyGeneralFormInfoVO;
+        }
     }
 }

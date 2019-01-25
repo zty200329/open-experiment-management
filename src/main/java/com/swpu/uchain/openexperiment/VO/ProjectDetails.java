@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.VO;
 
 import com.swpu.uchain.openexperiment.domain.Funds;
+import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import lombok.Data;
 
 import java.util.List;
@@ -44,4 +45,8 @@ public class ProjectDetails {
      * 经费详情
      */
     private List<Funds> fundsDetails;
+    /**
+     * 项目相关文件
+     */
+    private List<ProjectFile> projectFiles;
 }
