@@ -18,8 +18,6 @@ public class ProjectGroup implements Serializable {
 
     private Integer suggestGroupType;
 
-    private String examination;
-
     private Integer experimentType;
 
     private String achievementCheck;
@@ -102,14 +100,6 @@ public class ProjectGroup implements Serializable {
 
     public void setSuggestGroupType(Integer suggestGroupType) {
         this.suggestGroupType = suggestGroupType;
-    }
-
-    public String getExamination() {
-        return examination;
-    }
-
-    public void setExamination(String examination) {
-        this.examination = examination == null ? null : examination.trim();
     }
 
     public Integer getExperimentType() {
@@ -229,7 +219,6 @@ public class ProjectGroup implements Serializable {
         sb.append(", endTime=").append(endTime);
         sb.append(", experimentCondition=").append(experimentCondition);
         sb.append(", suggestGroupType=").append(suggestGroupType);
-        sb.append(", examination=").append(examination);
         sb.append(", experimentType=").append(experimentType);
         sb.append(", achievementCheck=").append(achievementCheck);
         sb.append(", limitCollege=").append(limitCollege);
