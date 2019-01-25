@@ -12,6 +12,7 @@ import com.swpu.uchain.openexperiment.service.UserService;
 import com.swpu.uchain.openexperiment.util.FileTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,7 +32,10 @@ import java.util.Date;
 public class ProjectFileServiceImpl implements ProjectFileService {
 
     //文件上传路径
-    private final Path path = Paths.get("upload_dir");
+//    private final Path path = Paths.get("upload_dir");
+
+    @Value("${path.uploadDir}")
+    private String path;
 
     @Autowired
     private ProjectFileMapper projectFileMapper;
@@ -133,6 +137,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile.setUploadTime(new Date());
         projectFile.setUploadUserId(user.getId());
         projectFile.setDownloadTimes(0);
+        System.out.println(path);
         File dest = new File(path + "/" + fileName);
         //判断父目录是否存在
         if (!dest.getParentFile().exists()) {
@@ -149,12 +154,17 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return Result.error(CodeMsg.SERVER_ERROR);
         }
     }
+
     @Override
     public Result downloadFile(String fileName, HttpServletResponse response) {
+        System.out.println(path);
         String realPath = path + "";
         System.out.println(path);
         File file = new File(realPath, fileName);
         System.out.println(file);
+        if (!file.exists()) {
+            return Result.error(CodeMsg.FILE_NOT_EXIST);
+        }
         if (file.exists()) {
             byte[] buffer = new byte[1024];
             FileInputStream fis = null;
@@ -169,7 +179,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                     i = bis.read(buffer);
                 }
                 ProjectFile projectFile = projectFileMapper.selectByProjectName(fileName);
-                projectFileMapper.updateFileDownloadTime(fileName);
+                projectFileMapper.updateFileDownloadTime(projectFile);
                 return Result.success(fileName);
             } catch (IOException e) {
                 e.printStackTrace();

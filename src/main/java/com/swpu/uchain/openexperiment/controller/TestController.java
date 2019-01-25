@@ -39,7 +39,7 @@ public class TestController {
         return projectFileService.uploadFile(file);
     }
 
-    @PostMapping(value = "/downloadtest", name = "测试文件下载")
+    @GetMapping(value = "/downloadtest", name = "测试文件下载")
     public Object downloadTest(String fileName, HttpServletResponse response) {
         response.setContentType("application/force-download");
         response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);
