@@ -35,7 +35,8 @@ public enum CodeMsg {
     REACH_NUM_MAX(518,"已经达到人数限制,无法进行申请" ),
     PROJECT_GROUP_HAD_EXIST(519,"该项目已存在,请修改项目名" ),
     USER_HAD_JOINED(520,"用户已经加入该项目,不需要重复添加" ),
-    USER_NOT_APPLYING(521,"用户未申请,无法同意添加" );
+    USER_NOT_APPLYING(521,"用户未申请,无法同意添加" ),
+    ANNOUNCEMENT_NOT_EXIST(522,"公告信息不存在" );
 
     private Integer code;
     private String msg;

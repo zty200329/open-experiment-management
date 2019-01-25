@@ -7,6 +7,7 @@ import com.swpu.uchain.openexperiment.form.project.JoinProjectApplyForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 @CrossOrigin
 @RestController
 @RequestMapping("/project")
+@Api(tags = "项目模块接口")
 public class ProjectController {
     @Autowired
     private ProjectService projectService;
