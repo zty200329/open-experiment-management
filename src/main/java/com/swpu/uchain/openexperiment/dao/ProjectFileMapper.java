@@ -21,5 +21,5 @@ public interface ProjectFileMapper {
 
     ProjectFile selectByFileNameAndUploadId(String fileName,Long uploadUserId);
 
-    List<String> selectFileNameByProjectGroupId(Long projectGroupId);
+    List <Long>  selectFileIdByProjectGroupId(Long projectGroupId);
 }
