@@ -49,8 +49,5 @@ public class TestController {
         response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);
         return projectFileService.downloadFile(fileName, response);
     }
-    @GetMapping(value = "/getnamelist",name = "测试获取文件名列表")
-    public Object getFileNameList(SelectFileListForm selectFileListForm) {
-        return projectFileService.getFileNameListByGroupId(selectFileListForm.getGroupId());
-    }
+
 }
