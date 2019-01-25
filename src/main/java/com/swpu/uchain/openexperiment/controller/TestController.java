@@ -1,7 +1,9 @@
 package com.swpu.uchain.openexperiment.controller;
 
+import com.swpu.uchain.openexperiment.form.file.UploadFileForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.ProjectFileService;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,8 +37,8 @@ public class TestController {
     }
 
     @PostMapping(value = "/uploadtest", name = "测试文件上传")
-    public Object uploadTest(MultipartFile file) {
-        return projectFileService.uploadFile(file);
+    public Object uploadTest(MultipartFile file,Long projectGroupId) {
+         return projectFileService.uploadFile(file,projectGroupId);
     }
 
     @GetMapping(value = "/downloadtest", name = "测试文件下载")
