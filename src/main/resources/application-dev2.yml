@@ -1,0 +1,14 @@
+server:
+  port: 8083
+spring:
+  datasource:
+    username: root
+    password: 13458264160
+
+  servlet:
+    multipart:
+      enabled: true
+      # 设置文件大小限制  10MB
+      max-file-size: 102400000
+      # 设置总上传数据总大小 30MB
+      max-request-size: 307200000
