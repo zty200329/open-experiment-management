@@ -20,4 +20,6 @@ public interface ProjectFileMapper {
     int updateFileDownloadTime(ProjectFile file);
 
     ProjectFile selectByFileNameAndUploadId(String fileName,Long uploadUserId);
+
+    List<String> selectFileNameByProjectGroupId(Long projectGroupId);
 }

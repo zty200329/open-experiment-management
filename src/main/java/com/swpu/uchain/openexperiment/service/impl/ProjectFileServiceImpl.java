@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Description
@@ -39,7 +40,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     private String path;
 
     @Value("${upload.file-name}")
-    private String fileName ;
+    private String fileName;
 
 
     @Autowired
@@ -50,7 +51,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Autowired
     private UserService userService;
-
 
 
     @Override
@@ -101,7 +101,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         ProjectFile projectFile1 = projectFileMapper.selectByFileNameAndUploadId(originalFilename, user.getId());
         projectFile1.setFileName(projectFile1.getId() + "." + fileName);
         projectFileMapper.updateByPrimaryKey(projectFile1);
-        File dest = new File(path + "/"+projectFile1.getFileName()+suffix);
+        File dest = new File(path + "/" + projectFile1.getFileName() + suffix);
         //判断父目录是否存在
         if (!dest.getParentFile().exists()) {
             return Result.error(CodeMsg.DIR_NOT_EXIST);
@@ -160,5 +160,17 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
         }
         return Result.error(CodeMsg.DOWNLOAD_ERROR);
+    }
+
+    @Override
+    public Result getFileNameListByGroupId(Long projectGroupId) {
+        List<String> files = redisService.get(ProjectFileKey.projectFileListKey, projectGroupId + "", List.class);
+        if (files == null) {
+            List<String> fileNamelist = projectFileMapper.selectFileNameByProjectGroupId(projectGroupId);
+            if (fileNamelist != null) {
+                redisService.set(ProjectFileKey.projectFileListKey, projectGroupId + "", fileNamelist);
+            }
+        }
+        return Result.success(files);
     }
 }

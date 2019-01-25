@@ -40,8 +40,6 @@ public interface ProjectFileService {
      */
     boolean delete(Long id);
 
-
-
     /**
      * 上传文件
      *
@@ -57,4 +55,11 @@ public interface ProjectFileService {
     * @return:
     */
     Result downloadFile(String fileName,  HttpServletResponse response);
+
+    /**
+    * 查找具有groupId的文件名列表
+    * @param projectGroupId
+    * @return:
+    */
+    Result getFileNameListByGroupId(Long projectGroupId);
 }
