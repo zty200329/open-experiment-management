@@ -58,4 +58,9 @@
     select * from project_file
     where file_name=#{fileName} and upload_user_id=#{uploadUserId}
   </select>
+  <select id="selectFileNameByProjectGroupId" resultMap="BaseResultMap">
+    select file_name
+    from project_file
+    where project_group_id=#{projectGroupId}
+  </select>
 </mapper>
