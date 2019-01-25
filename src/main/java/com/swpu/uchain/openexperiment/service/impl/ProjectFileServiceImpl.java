@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -68,9 +69,11 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         return (projectFileMapper.deleteByPrimaryKey(id) == 1);
     }
 
+    //TODO 改良是否要覆盖文件的判定方法
     @Override
     public boolean isFileExist(Long projectGroupId) {
-        List list = getFileIdListByGroupId(projectGroupId);
+        List<Long> list = getFileIdListByGroupId(projectGroupId);
+        List<String> stringList = new ArrayList<>();
         return (list.size() > 0);
     }
 
@@ -106,6 +109,15 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         ProjectFile projectFile1 = projectFileMapper.selectByFileNameAndUploadId(originalFilename, user.getId());
         projectFile1.setFileName(projectFile1.getId() + "." + fileName);
         projectFileMapper.updateByPrimaryKey(projectFile1);
+        System.out.println(projectFile1.getId());
+        if (isFileExist(projectGroupId)) {
+            File file1 = new File(path + "/" + projectFile1.getId() + fileName + suffix);
+            file1.delete();
+            if (delete(projectFile1.getId())) {
+                log.info("文件" + projectFile1.getFileName() + "被替换");
+                return Result.success(file1);
+            }
+        }
         File dest = new File(path + "/" + projectFile1.getFileName() + suffix);
         //判断父目录是否存在
         if (!dest.getParentFile().exists()) {
@@ -169,13 +181,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public List<Long> getFileIdListByGroupId(Long projectGroupId) {
-        List<Long> fileIdList = redisService.get(ProjectFileKey.projectFileListKey, projectGroupId + "", List.class);
-        if (fileIdList == null) {
-            List<Long> list = projectFileMapper.selectFileNameByProjectGroupId(projectGroupId);
-            if (list != null) {
-                redisService.set(ProjectFileKey.projectFileListKey, projectGroupId + "", list);
-            }
-        }
-        return fileIdList;
+        return projectFileMapper.selectFileIdByProjectGroupId(projectGroupId);
     }
 }
