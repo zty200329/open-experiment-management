@@ -35,8 +35,12 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     //文件上传路径
 //    private final Path path = Paths.get("upload_dir");
 
-    //    @Value("${upload.uploadDir}")
-    private String path = "/home/hobo/upload_dir";
+    @Value("${upload.upload-dir}")
+    private String path;
+
+    @Value("$(upload.file-name)")
+    private String fileName;
+
 
     @Autowired
     private ProjectFileMapper projectFileMapper;
@@ -138,18 +142,18 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile.setUploadUserId(user.getId());
         projectFile.setDownloadTimes(0);
         projectFile.setProjectGroupId(projectGroupId);
-        File dest = new File(path + "/" + fileName);
+        File dest = new File(path + fileName);
         //判断父目录是否存在
         if (!dest.getParentFile().exists()) {
             return Result.error(CodeMsg.DIR_NOT_EXIST);
         }
         try {
-            log.info(user.getRealName() + "上传文件：" + projectFile.getFileName());
             file.transferTo(dest);
             insert(projectFile);
             ProjectFile projectFile1 = projectFileMapper.selectByFileNameAndUploadId(fileName, user.getId());
             projectFile1.setFileName(projectFile1.getId() + "." + fileName);
             projectFileMapper.updateByPrimaryKey(projectFile1);
+            log.info(user.getRealName() + "上传文件：" + projectFile.getFileName());
             return Result.success(projectFile);
         } catch (IOException | IllegalStateException e) {
             e.printStackTrace();

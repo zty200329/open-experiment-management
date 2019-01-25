@@ -14,4 +14,5 @@ spring:
       max-request-size: 307200000
 
 upload:
-  uploadDir: "/home/upload_dir"
+  upload-dir: "/home/hobo/upload_dir"
+  file-name:  "立项申请表"
