@@ -68,6 +68,12 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         return (projectFileMapper.deleteByPrimaryKey(id) == 1);
     }
 
+    @Override
+    public boolean isFileExist(Long projectGroupId) {
+        List list = getFileIdListByGroupId(projectGroupId);
+        return (list.size() > 0);
+    }
+
 
     @Override
     public Result uploadFile(MultipartFile file, Long projectGroupId) {
@@ -89,7 +95,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         }
         String size = "" + file.getSize();
         User user = userService.getCurrentUser();
-
         projectFile.setFileType(type);
         projectFile.setFileName(originalFilename);
         projectFile.setSize(size);
@@ -163,7 +168,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public List<Long> getFileNameListByGroupId(Long projectGroupId) {
+    public List<Long> getFileIdListByGroupId(Long projectGroupId) {
         List<Long> fileIdList = redisService.get(ProjectFileKey.projectFileListKey, projectGroupId + "", List.class);
         if (fileIdList == null) {
             List<Long> list = projectFileMapper.selectFileNameByProjectGroupId(projectGroupId);

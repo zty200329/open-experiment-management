@@ -42,6 +42,14 @@ public interface ProjectFileService {
     boolean delete(Long id);
 
     /**
+    * 判断文件是否存在
+    * @param projectGroupId
+    * @return:
+    */
+
+    boolean isFileExist(Long projectGroupId);
+
+    /**
      * 上传文件
      *
      * @param file
@@ -62,5 +70,6 @@ public interface ProjectFileService {
     * @param projectGroupId
     * @return:
     */
-    List<Long> getFileNameListByGroupId(Long projectGroupId);
+    List<Long> getFileIdListByGroupId(Long projectGroupId);
+
 }
