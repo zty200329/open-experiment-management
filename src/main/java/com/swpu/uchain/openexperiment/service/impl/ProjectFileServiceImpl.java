@@ -163,14 +163,14 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public Result getFileNameListByGroupId(Long projectGroupId) {
-        List<String> files = redisService.get(ProjectFileKey.projectFileListKey, projectGroupId + "", List.class);
-        if (files == null) {
-            List<String> fileNamelist = projectFileMapper.selectFileNameByProjectGroupId(projectGroupId);
-            if (fileNamelist != null) {
-                redisService.set(ProjectFileKey.projectFileListKey, projectGroupId + "", fileNamelist);
+    public List<Long> getFileNameListByGroupId(Long projectGroupId) {
+        List<Long> fileIdList = redisService.get(ProjectFileKey.projectFileListKey, projectGroupId + "", List.class);
+        if (fileIdList == null) {
+            List<Long> list = projectFileMapper.selectFileNameByProjectGroupId(projectGroupId);
+            if (list != null) {
+                redisService.set(ProjectFileKey.projectFileListKey, projectGroupId + "", list);
             }
         }
-        return Result.success(files);
+        return fileIdList;
     }
 }

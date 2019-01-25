@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @Description
@@ -61,5 +62,5 @@ public interface ProjectFileService {
     * @param projectGroupId
     * @return:
     */
-    Result getFileNameListByGroupId(Long projectGroupId);
+    List<Long> getFileNameListByGroupId(Long projectGroupId);
 }
