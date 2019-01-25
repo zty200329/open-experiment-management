@@ -9,8 +9,10 @@ import com.swpu.uchain.openexperiment.redis.key.ProjectFileKey;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.ProjectFileService;
+import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserService;
 import com.swpu.uchain.openexperiment.util.FileTypeUtil;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,14 +34,12 @@ import java.util.Date;
 @Component
 public class ProjectFileServiceImpl implements ProjectFileService {
 
-    //文件上传路径
-//    private final Path path = Paths.get("upload_dir");
 
     @Value("${upload.upload-dir}")
     private String path;
 
-    @Value("$(upload.file-name)")
-    private String fileName;
+    @Value("${upload.file-name}")
+    private String fileName ;
 
 
     @Autowired
@@ -50,6 +50,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Autowired
     private UserService userService;
+
+
 
     @Override
     public boolean insert(ProjectFile projectFile) {
@@ -117,44 +119,42 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (file.isEmpty()) {
             return Result.error(CodeMsg.NOT_BE_EMPTY);
         }
-        String fileName = file.getOriginalFilename();
-        ProjectFile projectFile = new ProjectFile();
-        String size = "" + file.getSize();
-        if (file.getSize() > (1024 * 10000)) {
-            return Result.error(CodeMsg.FILE_OVERSIZE);
-        }
-        User user = userService.getCurrentUser();
-        if (projectFileMapper.selectByFileNameAndUploadId(fileName, user.getId()) != null) {
-            return Result.error(CodeMsg.FILE_ALREADY_UPLOAD);
-        }
-        assert fileName != null;
-        //获得文件后缀名
-        String suffix = fileName.substring(fileName.lastIndexOf("."));
+        String originalFilename = file.getOriginalFilename();
+        //判断文件类型是否合法
+        String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
         FileTypeUtil fileTypeUtil = new FileTypeUtil();
         int type = fileTypeUtil.getType(suffix);
         if (type == 0) {
             return Result.error(CodeMsg.FORMAT_UNSUPPORTED);
         }
+        //判断文件大小是否合法
+        ProjectFile projectFile = new ProjectFile();
+        if (file.getSize() > (1024 * 10000)) {
+            return Result.error(CodeMsg.FILE_OVERSIZE);
+        }
+        String size = "" + file.getSize();
+        User user = userService.getCurrentUser();
+
         projectFile.setFileType(type);
-        projectFile.setFileName(fileName);
+        projectFile.setFileName(originalFilename);
         projectFile.setSize(size);
         projectFile.setUploadTime(new Date());
         projectFile.setUploadUserId(user.getId());
         projectFile.setDownloadTimes(0);
         projectFile.setProjectGroupId(projectGroupId);
-        File dest = new File(path + fileName);
+        insert(projectFile);
+        ProjectFile projectFile1 = projectFileMapper.selectByFileNameAndUploadId(originalFilename, user.getId());
+        projectFile1.setFileName(projectFile1.getId() + "." + fileName);
+        projectFileMapper.updateByPrimaryKey(projectFile1);
+        File dest = new File(path + "/"+projectFile1.getFileName()+suffix);
         //判断父目录是否存在
         if (!dest.getParentFile().exists()) {
             return Result.error(CodeMsg.DIR_NOT_EXIST);
         }
         try {
             file.transferTo(dest);
-            insert(projectFile);
-            ProjectFile projectFile1 = projectFileMapper.selectByFileNameAndUploadId(fileName, user.getId());
-            projectFile1.setFileName(projectFile1.getId() + "." + fileName);
-            projectFileMapper.updateByPrimaryKey(projectFile1);
-            log.info(user.getRealName() + "上传文件：" + projectFile.getFileName());
-            return Result.success(projectFile);
+            log.info(user.getRealName() + "上传文件：" + projectFile1.getFileName());
+            return Result.success(projectFile1);
         } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
             return Result.error(CodeMsg.SERVER_ERROR);
