@@ -40,43 +40,13 @@ public interface ProjectFileService {
      */
     boolean delete(Long id);
 
-    /**
-     * 查找文件
-     *
-     * @param projectName
-     * @return:
-     */
-    Result selectByProjectName(String projectName);
 
-    /**
-     * 添加
-     *
-     * @param projectFile
-     * @return:
-     */
-    Result insertFile(ProjectFile projectFile);
-
-    /**
-     * 更新
-     *
-     * @param projectFile
-     * @return:
-     */
-    Result updateFile(ProjectFile projectFile);
-
-    /**
-     * 删除
-     *
-     * @param id
-     * @return:
-     */
-    Result deleteFile(Long id);
 
     /**
      * 上传文件
      *
      * @param file
-//     * @param projectGroupId
+     * @param projectGroupId
      * @return:
      */
     Result uploadFile(MultipartFile file,Long projectGroupId);

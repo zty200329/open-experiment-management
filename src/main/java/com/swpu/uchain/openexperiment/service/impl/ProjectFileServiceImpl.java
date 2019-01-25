@@ -68,51 +68,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         return (projectFileMapper.deleteByPrimaryKey(id) == 1);
     }
 
-    @Override
-    public Result selectByProjectName(String projectName) {
-        ProjectFile projectFile = redisService.get(ProjectFileKey.projectFileKey, projectName, ProjectFile.class);
-        if (projectFile != null) {
-            return Result.success(projectFile);
-        }
-        projectFile = projectFileMapper.selectByProjectName(projectName);
-        if (projectFile != null) {
-            redisService.set(ProjectFileKey.projectFileKey, projectName, projectFile);
-        }
-        return Result.success(projectFile);
-    }
-
-    @Override
-    public Result insertFile(ProjectFile projectFile) {
-        if (projectFileMapper.selectByProjectName(projectFile.getFileName()) != null) {
-            return Result.error(CodeMsg.FILE_EXIST);
-        }
-        if (insert(projectFile)) {
-            return Result.success(projectFile);
-        }
-        return Result.error(CodeMsg.SERVER_ERROR);
-    }
-
-    @Override
-    public Result updateFile(ProjectFile projectFile) {
-        if (projectFileMapper.selectByProjectName(projectFile.getFileName()) == null) {
-            return Result.error(CodeMsg.FILE_NOT_EXIST);
-        }
-        if (update(projectFile)) {
-            return Result.success(projectFile);
-        }
-        return Result.error(CodeMsg.SERVER_ERROR);
-    }
-
-    @Override
-    public Result deleteFile(Long id) {
-        if (projectFileMapper.selectByPrimaryKey(id) == null) {
-            return Result.error(CodeMsg.FILE_NOT_EXIST);
-        }
-        if (delete(id)) {
-            return Result.success();
-        }
-        return Result.error(CodeMsg.SERVER_ERROR);
-    }
 
     @Override
     public Result uploadFile(MultipartFile file, Long projectGroupId) {
