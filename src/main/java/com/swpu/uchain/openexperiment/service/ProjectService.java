@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
+import com.swpu.uchain.openexperiment.form.project.JoinForm;
 import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
@@ -32,11 +33,18 @@ public interface ProjectService {
     void delete(Long projectGroupId);
 
     /**
-     * 根据项目组id进行查找
-     * @param id
+     * 添加项目组
+     * @param projectGroup
      * @return
      */
-    ProjectGroup selectByProjectGroupId(Long id);
+    Result addProjectGroup(ProjectGroup projectGroup);
+
+    /**
+     * 根据项目组id进行查找
+     * @param projectGroupId
+     * @return
+     */
+    ProjectGroup selectByProjectGroupId(Long projectGroupId);
 
     /**
      * 立项申请接口
@@ -45,4 +53,30 @@ public interface ProjectService {
      */
     Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm);
 
+    /**
+     * 获取当前用户的所有参与的项目
+     * @return
+     */
+    Result getCurrentUserProjects();
+
+    /**
+     * 同意用户加入项目
+     * @param joinForm
+     * @return
+     */
+    Result agreeJoin(JoinForm joinForm);
+
+    /**
+     * 同意立项
+     * @param projectGroupId
+     * @return
+     */
+    Result agreeEstablish(Long projectGroupId);
+
+    /**
+     * 获取项目的立项申请信息
+     * @param projectGroupId
+     * @return
+     */
+    Result getApplyForm(Long projectGroupId);
 }

@@ -72,6 +72,29 @@ public class UserProjectServiceImpl implements UserProjectService {
     }
 
     @Override
+    public void deleteByProjectGroupId(Long projectGroupId) {
+        List<UserProjectGroup> userProjectGroups = selectByProjectGroupId(projectGroupId);
+        for (UserProjectGroup userProjectGroup : userProjectGroups) {
+            redisService.delete(UserProjectGroupKey.getByProjectGroupIdAndUserId,
+                    userProjectGroup.getProjectGroupId() + "_" + userProjectGroup.getUserId());
+        }
+        userProjectGroupMapper.deleteByProjectGroupId(projectGroupId);
+    }
+
+    @Override
+    public Result addUserProject(UserProjectGroup userProjectGroup) {
+        if (insert(userProjectGroup)){
+            return Result.success();
+        }
+        return Result.error(CodeMsg.ADD_ERROR);
+    }
+
+    @Override
+    public List<UserProjectGroup> selectByProjectGroupId(Long projectGroupId) {
+        return userProjectGroupMapper.selectByProjectGroupId(projectGroupId);
+    }
+
+    @Override
     public UserProjectGroup selectByProjectGroupIdAndUserId(Long projectGroupId, Long userId) {
         UserProjectGroup userProjectGroup = redisService.get(UserProjectGroupKey.getByProjectGroupIdAndUserId,
                 projectGroupId + "_" + userId,
@@ -124,10 +147,11 @@ public class UserProjectServiceImpl implements UserProjectService {
      * @param projectGroup
      * @return
      */
-    private Result checkUserMatch(User user, ProjectGroup projectGroup){
+    @Override
+    public Result checkUserMatch(User user, ProjectGroup projectGroup){
         List<User> users = userService.selectProjectJoinedUsers(projectGroup.getId());
         if (users.size() < projectGroup.getFitPeopleNum()
-                && userProjectGroupMapper.selectByProjectGroupId(projectGroup.getId()).size()
+                && selectByProjectGroupId(projectGroup.getId()).size()
                 < CountUtil.getMaxApplyNum(projectGroup.getFitPeopleNum())){
             if (projectGroup.getLimitGrade() != null
                     && projectGroup.getLimitGrade().intValue() != user.getGrade().intValue()){
