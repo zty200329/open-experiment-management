@@ -1,27 +1,23 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.swpu.uchain.openexperiment.VO.ApplyGeneralFormInfoVO;
-import com.swpu.uchain.openexperiment.VO.ApplyKeyFormInfoVO;
-import com.swpu.uchain.openexperiment.VO.MyProjectVO;
+import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.swpu.uchain.openexperiment.VO.*;
 import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
-import com.swpu.uchain.openexperiment.domain.ProjectGroup;
-import com.swpu.uchain.openexperiment.domain.User;
-import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
+import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.form.project.JoinForm;
 import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
-import com.swpu.uchain.openexperiment.service.FundsService;
-import com.swpu.uchain.openexperiment.service.ProjectService;
-import com.swpu.uchain.openexperiment.service.UserProjectService;
-import com.swpu.uchain.openexperiment.service.UserService;
+import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,6 +39,8 @@ public class ProjectServiceImpl implements ProjectService {
     //TODO,注入文件的Service,答辩小组Service,资金模块的Service,
     @Autowired
     private FundsService fundsService;
+    @Autowired
+    private ProjectFundsService projectFundsService;
     @Override
     public boolean insert(ProjectGroup projectGroup) {
         if (projectGroupMapper.insert(projectGroup) == 1){
@@ -91,6 +89,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm) {
         ProjectGroup projectGroup = projectGroupMapper.selectByName(createProjectApplyForm.getProjectName());
         if (projectGroup != null){
@@ -98,6 +97,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         projectGroup = new ProjectGroup();
         BeanUtils.copyProperties(createProjectApplyForm, projectGroup);
+        projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
         Result result = addProjectGroup(projectGroup);
         if (result.getCode() != 0){
             return result;
@@ -122,8 +122,79 @@ public class ProjectServiceImpl implements ProjectService {
         if (userService == null){
             return Result.error(CodeMsg.AUTHENTICATION_ERROR);
         }
-        //TODO,封装项目展示的VO
-        return null;
+        //获取当前用户参与的所有项目
+        List<ProjectGroup> projectGroups = redisService.getArraylist(
+                ProjectGroupKey.getByUserId,
+                currentUser.getId() + "",
+                ProjectGroup.class);
+        if (projectGroups == null || projectGroups.size() == 0){
+            projectGroups = projectGroupMapper.selectByUserId(currentUser.getId());
+            if (projectGroups != null && projectGroups.size() != 0){
+                redisService.set(ProjectGroupKey.getByUserId, currentUser.getId() + "", projectGroups);
+            }
+        }
+        //设置当前用户的所有项目VO
+        List<MyProjectVO> myProjectVOS = new ArrayList<>();
+        for (ProjectGroup projectGroup : projectGroups) {
+            MyProjectVO myProjectVO = new MyProjectVO();
+            BeanUtils.copyProperties(projectGroup, myProjectVO);
+            myProjectVO.setProjectGroupId(projectGroup.getId());
+            myProjectVO.setProjectDetails(getProjectDetails(projectGroup));
+            myProjectVOS.add(myProjectVO);
+        }
+        return Result.success(myProjectVOS);
+    }
+
+    public ProjectDetails getProjectDetails(ProjectGroup projectGroup){
+        ProjectDetails projectDetails = new ProjectDetails();
+        projectDetails.setLabName(projectGroup.getLabName());
+        projectDetails.setAddress(projectGroup.getAddress());
+        //设置创建人,即项目负责人
+        User user = userService.selectByUserId(projectGroup.getCreatorId());
+        UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(
+                projectGroup.getId(),
+                user.getId());
+        projectDetails.setCreator(new UserVO(
+                user.getId(),
+                user.getRealName(),
+                userProjectGroup.getMemberRole()));
+        //设置项目的成员信息
+        List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(projectGroup.getId());
+        List<UserVO> members = new ArrayList<>();
+        for (UserProjectGroup userProject : userProjectGroups) {
+            User member = userService.selectByUserId(userProject.getUserId());
+            //设置项目组组长
+            if (userProject.getMemberRole().intValue() == MemberRole.PROJECT_GROUP_LEADER.getValue()){
+                projectDetails.setLeader(new UserVO(
+                        member.getId(),
+                        member.getRealName(),
+                        userProject.getMemberRole()));
+            }
+            UserVO userVO = new UserVO();
+            userVO.setUserId(member.getId());
+            userVO.setUserName(member.getRealName());
+            userVO.setMemberRole(userProject.getMemberRole());
+            members.add(userVO);
+        }
+        projectDetails.setMembers(members);
+        //设置项目资金详情
+        List<Funds> fundsDetails = fundsService.getFundsDetails(projectGroup.getId());
+        int applyAmount = 0, agreeAmount = 0;
+        for (Funds fundsDetail : fundsDetails) {
+            applyAmount += fundsDetail.getAmount();
+            ProjectGroupFunds projectFunds = projectFundsService.selectProjectIdAndFundsId(
+                    projectGroup.getId(),
+                    fundsDetail.getId());
+            if (projectFunds.getStatus().intValue() == FundsStatus.AGREED.getValue()){
+                agreeAmount += fundsDetail.getAmount();
+            }
+        }
+        projectDetails.setTotalApplyFundsAmount(applyAmount);
+        projectDetails.setTotalAgreeFundsAmount(agreeAmount);
+        projectDetails.setFundsDetails(fundsDetails);
+        //TODO,设置文件信息
+//        projectDetails.setProjectFiles();
+        return projectDetails;
     }
 
     @Override

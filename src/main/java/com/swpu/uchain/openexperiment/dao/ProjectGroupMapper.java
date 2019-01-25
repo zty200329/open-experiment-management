@@ -15,4 +15,6 @@ public interface ProjectGroupMapper {
     int updateByPrimaryKey(ProjectGroup record);
 
     ProjectGroup selectByName(String projectName);
+
+    List<ProjectGroup> selectByUserId(Long userId);
 }

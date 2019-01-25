@@ -1,6 +1,8 @@
 package com.swpu.uchain.openexperiment.VO;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Author: clf
@@ -8,6 +10,8 @@ import lombok.Data;
  * @Description:
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserVO {
     /**
      * 用户id
@@ -17,4 +21,8 @@ public class UserVO {
      * 用户名
      */
     private String userName;
+    /**
+     * 成员角色
+     */
+    private Integer memberRole;
 }

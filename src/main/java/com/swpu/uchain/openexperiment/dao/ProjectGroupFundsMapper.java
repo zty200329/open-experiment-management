@@ -13,4 +13,6 @@ public interface ProjectGroupFundsMapper {
     List<ProjectGroupFunds> selectAll();
 
     int updateByPrimaryKey(ProjectGroupFunds record);
+
+    ProjectGroupFunds selectByProjectIdAndFundsId(Long projectGroupId, Long fundsId);
 }

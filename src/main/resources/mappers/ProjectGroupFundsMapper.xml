@@ -41,4 +41,9 @@
     select id, project_group_id, funds_id, applicant_id, `status`, create_time, update_time
     from project_group_funds
   </select>
+  <select id="selectByProjectIdAndFundsId" resultMap="BaseResultMap">
+    select * from project_group_funds
+    where project_group_id = #{param1}
+    and funds_id = #{param2}
+  </select>
 </mapper>

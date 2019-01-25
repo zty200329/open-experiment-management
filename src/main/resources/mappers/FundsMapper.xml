@@ -33,4 +33,11 @@
     select id, amount, `use`, `type`
     from funds
   </select>
+  <select id="selectByProjectGroupId" resultMap="BaseResultMap">
+    select funds.id, funds.amount, funds.`use`, funds.`type`
+    from funds
+    inner join project_group_funds
+    on funds.id = project_group_funds.funds_id
+    where project_group_funds.project_group_id = #{projectGroupId}
+  </select>
 </mapper>

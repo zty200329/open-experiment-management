@@ -82,4 +82,16 @@
     <select id="selectByName" resultMap="BaseResultMap">
       select * from where name = #{projectName}
     </select>
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    select project_group.id, project_group.address, project_group.create_time, project_group.creator_id,
+    project_group.end_time, project_group.experiment_condition, project_group.suggest_group_type,
+    project_group.experiment_type, project_group.achievement_check, project_group.limit_college,
+    project_group.limit_major, project_group.limit_grade, project_group.fit_people_num,
+    project_group.total_hours, project_group.lab_name, project_group.project_name, project_group.project_type,
+    project_group.start_time, project_group.`status`, project_group.update_time
+    from project_group
+    inner join user_project_group
+    on project_group.id = user_project_group.project_id
+    where user_project_group.user_id = #{userId}
+  </select>
 </mapper>

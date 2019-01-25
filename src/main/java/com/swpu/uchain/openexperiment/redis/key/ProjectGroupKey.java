@@ -14,5 +14,7 @@ public class ProjectGroupKey extends BasePrefix{
         super(expireSeconds, prefix);
     }
 
+
     public static ProjectGroupKey getByProjectGroupId = new ProjectGroupKey(120,"projectGroupId");
+    public static ProjectGroupKey getByUserId = new ProjectGroupKey(300, "userId");
 }
