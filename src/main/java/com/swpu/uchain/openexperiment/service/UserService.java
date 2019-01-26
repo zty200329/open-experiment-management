@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.User;
+import com.swpu.uchain.openexperiment.enums.UserType;
 import com.swpu.uchain.openexperiment.form.LoginForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
@@ -72,9 +73,38 @@ public interface UserService {
     User selectByUserCode(String userCode);
 
     /**
+     * 根据id进行查询
+     * @param userId
+     * @return
+     */
+    User selectByUserId(Long userId);
+
+    /**
      * 查询某项目参与的人员
      * @param projectId
      * @return
      */
     List<User> selectProjectJoinedUsers(Long projectId);
+
+    /**
+     * 按关键字进行查找用户信息
+     * @param keyWord
+     * @return
+     */
+    List<User> selectByKeyWord(String keyWord);
+
+    /**
+     * 创建老师参与项目关系
+     * @param userCodes
+     * @param projectGroupId
+     * @return
+     */
+    Result createUserJoin(String[] userCodes, Long projectGroupId, UserType userType);
+
+    /**
+     * 查询项目组组长
+     * @param projectGroupId
+     * @return
+     */
+    User selectGroupLeader(Long projectGroupId);
 }

@@ -10,7 +10,7 @@
     delete from role_acl
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.RoleAcl">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.RoleAcl">
     insert into role_acl (id, role_id, acl_id
       )
     values (#{id,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{aclId,jdbcType=BIGINT}

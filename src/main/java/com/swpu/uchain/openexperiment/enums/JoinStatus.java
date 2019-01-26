@@ -17,7 +17,12 @@ public enum JoinStatus {
     /**
      * 已加入
      */
-    JOINED(2);
+    JOINED(2),
+    /**
+     * 未通过
+     */
+    UN_PASS(3),
+    ;
     private Integer value;
 
     JoinStatus(Integer value) {

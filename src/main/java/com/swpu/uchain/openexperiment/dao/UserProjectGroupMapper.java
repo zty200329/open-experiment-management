@@ -19,4 +19,6 @@ public interface UserProjectGroupMapper {
     List<UserProjectGroup> selectByProjectGroupId(Long projectGroupId);
 
     UserProjectGroup selectByProjectGroupIdAndUserId(Long projectGroupId, Long userId);
+
+    void deleteByProjectGroupId(Long projectGroupId);
 }

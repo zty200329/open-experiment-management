@@ -3,14 +3,20 @@ package com.swpu.uchain.openexperiment.service.impl;
 import com.swpu.uchain.openexperiment.DTO.VerifyCode;
 import com.swpu.uchain.openexperiment.dao.UserMapper;
 import com.swpu.uchain.openexperiment.domain.User;
+import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.enums.JoinStatus;
+import com.swpu.uchain.openexperiment.enums.MemberRole;
+import com.swpu.uchain.openexperiment.enums.UserType;
 import com.swpu.uchain.openexperiment.form.LoginForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.UserKey;
 import com.swpu.uchain.openexperiment.redis.key.VerifyCodeKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.security.JwtTokenUtil;
+import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.service.UserService;
+import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +32,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,9 +54,13 @@ public class UserServiceImpl implements UserService {
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
+    private UserProjectService userProjectService;
     @Override
     public boolean insert(User user) {
         if (userMapper.insert(user) == 1){
+            redisService.set(UserKey.getByUserId, user.getId() + "", user);
+            redisService.set(UserKey.getUserByUserCode, user.getCode(), user);
             return true;
         }
         return false;
@@ -58,6 +69,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean update(User user) {
         if (userMapper.updateByPrimaryKey(user) == 1){
+            redisService.set(UserKey.getByUserId, user.getId() + "", user);
+            redisService.set(UserKey.getUserByUserCode, user.getCode(), user);
             return true;
         }
         return false;
@@ -65,6 +78,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id) {
+        User user = userMapper.selectByPrimaryKey(id);
+        if (user == null) {
+            return;
+        }
+        redisService.delete(UserKey.getByUserId, id + "");
+        redisService.delete(UserKey.getUserByUserCode, user.getCode());
         userMapper.deleteByPrimaryKey(id);
     }
 
@@ -143,7 +162,70 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User selectByUserId(Long userId) {
+        User user = redisService.get(UserKey.getByUserId, userId + "", User.class);
+        if (user == null){
+            user = userMapper.selectByPrimaryKey(userId);
+            if (user != null){
+                redisService.set(UserKey.getByUserId, user.getId() + "", user);
+            }
+        }
+        return user;
+    }
+
+    @Override
     public List<User> selectProjectJoinedUsers(Long projectId) {
         return userMapper.selectProjectJoinedUsers(projectId);
+    }
+
+    @Override
+    public Result createUserJoin(String[] teacherCodes, Long projectGroupId, UserType userType) {
+        for (String teacherCode : teacherCodes) {
+            User user = selectByUserCode(teacherCode);
+            if (user == null){
+                return Result.error(CodeMsg.USER_NO_EXIST);
+            }
+            UserProjectGroup userProjectGroup = new UserProjectGroup();
+            userProjectGroup.setUserId(user.getId());
+            if (userType != UserType.STUDENT){
+                userProjectGroup.setTechnicalRole(ConvertUtil.getTechnicalRole(user.getUserType()));
+                userProjectGroup.setMemberRole(MemberRole.GUIDANCE_TEACHER.getValue());
+            }else {
+                userProjectGroup.setMemberRole(MemberRole.NORMAL_MEMBER.getValue());
+            }
+            userProjectGroup.setStatus(JoinStatus.APPLYING.getValue());
+            userProjectGroup.setUpdateTime(new Date());
+            userProjectGroup.setJoinTime(new Date());
+            userProjectGroup.setProjectGroupId(projectGroupId);
+            Result result = userProjectService.addUserProject(userProjectGroup);
+            if (result.getCode() != 0){
+                return result;
+            }
+        }
+        return Result.success();
+    }
+
+    @Override
+    public User selectGroupLeader(Long projectGroupId) {
+        User user = redisService.get(UserKey.getLeaderByGroupId, projectGroupId + "", User.class);
+        if (user == null){
+            user = userMapper.selectGroupLeader(projectGroupId);
+            if (user != null){
+                redisService.set(UserKey.getLeaderByGroupId, projectGroupId + "", user);
+            }
+        }
+        return user;
+    }
+
+    @Override
+    public List<User> selectByKeyWord(String keyWord) {
+        List<User> users = redisService.getArraylist(UserKey.getByKeyWord, keyWord, User.class);
+        if (users == null || users.size() == 0){
+            users = userMapper.selectByRandom(keyWord);
+            if (users != null && users.size() != 0){
+                redisService.set(UserKey.getByKeyWord, keyWord, users);
+            }
+        }
+        return users;
     }
 }
