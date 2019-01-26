@@ -24,17 +24,45 @@ public class FundsServiceImpl implements FundsService {
     private RedisService redisService;
     @Override
     public boolean insert(Funds funds) {
+        if (fundsMapper.insert(funds) == 1){
+            redisService.delete(FundsKey.getByProjectGroupId, funds.getProjectGroupId() + "");
+            redisService.set(FundsKey.getById, funds.getId() + "", funds);
+            return true;
+        }
         return false;
     }
 
     @Override
     public boolean update(Funds funds) {
+        if (fundsMapper.updateByPrimaryKey(funds) == 1){
+            redisService.set(FundsKey.getById, funds.getId() + "", funds);
+            redisService.delete(FundsKey.getByProjectGroupId, funds.getProjectGroupId() + "");
+            return true;
+        }
         return false;
     }
 
     @Override
     public void delete(Long id) {
+        Funds funds = selectById(id);
+        if (funds == null){
+            return;
+        }
+        redisService.delete(FundsKey.getByProjectGroupId, funds.getProjectGroupId() + "");
+        redisService.delete(FundsKey.getById, id + "");
+        fundsMapper.deleteByPrimaryKey(id);
+    }
 
+    @Override
+    public Funds selectById(Long id) {
+        Funds funds = redisService.get(FundsKey.getById, id + "", Funds.class);
+        if (funds == null){
+            funds = fundsMapper.selectByPrimaryKey(id);
+            if (funds != null){
+                redisService.set(FundsKey.getById, id + "", funds);
+            }
+        }
+        return funds;
     }
 
     @Override

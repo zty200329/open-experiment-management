@@ -1,9 +1,7 @@
 package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
-import com.swpu.uchain.openexperiment.form.project.JoinForm;
-import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
-import com.swpu.uchain.openexperiment.form.project.JoinProjectApplyForm;
+import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
@@ -30,7 +28,7 @@ public class ProjectController {
     private UserProjectService userProjectService;
 
     @PostMapping(value = "/createApply", name = "申请立项接口")
-    private Object createApply(@Valid CreateProjectApplyForm createProjectApplyForm){
+    public Object createApply(@Valid CreateProjectApplyForm createProjectApplyForm){
         return projectService.applyCreateProject(createProjectApplyForm);
     }
 
@@ -54,6 +52,14 @@ public class ProjectController {
         return projectService.agreeJoin(joinForm);
     }
 
+    @GetMapping(value = "/checkApplyInfo", name = "审批项目展示接口")
+    public Object getCheckApplyInfo(Integer pageNum){
+        if (pageNum == null || pageNum <= 0){
+            return Result.error(CodeMsg.PAGE_NUM_ERROR);
+        }
+        return projectService.checkApplyInfo(pageNum);
+    }
+
     @PostMapping(value = "/agreeEstablish", name = "同意立项")
     public Object agreeEstablish(Long projectGroupId){
         if (projectGroupId == null){
@@ -62,4 +68,13 @@ public class ProjectController {
         return projectService.agreeEstablish(projectGroupId);
     }
 
+    @PostMapping(value = "/aimMemberLeader", name = "修改项目组成员身份")
+    public Object aimMemberLeader(@Valid AimForm aimForm){
+        return userProjectService.aimUserMemberRole(aimForm);
+    }
+
+    @PostMapping(value = "/appendCreateApply", name = "追加立项申请内容")
+    public Object appendCreateApply(@Valid AppendApplyForm appendApplyForm){
+        return projectService.appendCreateApply(appendApplyForm);
+    }
 }

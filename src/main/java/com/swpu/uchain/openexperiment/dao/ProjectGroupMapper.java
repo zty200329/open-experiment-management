@@ -17,4 +17,6 @@ public interface ProjectGroupMapper {
     ProjectGroup selectByName(String projectName);
 
     List<ProjectGroup> selectByUserId(Long userId);
+
+    List<ProjectGroup> selectApplyByPageOrderByTime(Integer startNum, Integer count);
 }

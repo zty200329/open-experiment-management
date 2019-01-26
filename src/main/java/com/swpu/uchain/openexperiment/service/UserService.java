@@ -101,4 +101,10 @@ public interface UserService {
      */
     Result createUserJoin(String[] userCodes, Long projectGroupId, UserType userType);
 
+    /**
+     * 查询项目组组长
+     * @param projectGroupId
+     * @return
+     */
+    User selectGroupLeader(Long projectGroupId);
 }

@@ -15,7 +15,7 @@
     delete from project_file
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile">
     insert into project_file (id, project_group_id, download_times, 
       file_name, file_type, `size`, 
       upload_time, upload_user_id)

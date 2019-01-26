@@ -11,7 +11,7 @@
     delete from acl
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.Acl">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.Acl">
     insert into acl (id, description, `name`, 
       url)
     values (#{id,jdbcType=BIGINT}, #{description,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 

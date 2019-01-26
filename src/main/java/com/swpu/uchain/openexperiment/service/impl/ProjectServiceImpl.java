@@ -1,12 +1,14 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.swpu.uchain.openexperiment.VO.*;
+import com.swpu.uchain.openexperiment.config.CountConfig;
 import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
-import com.swpu.uchain.openexperiment.form.project.JoinForm;
+import com.swpu.uchain.openexperiment.form.funds.FundsForm;
+import com.swpu.uchain.openexperiment.form.project.AppendApplyForm;
 import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
+import com.swpu.uchain.openexperiment.form.project.JoinForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,7 +43,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private FundsService fundsService;
     @Autowired
-    private ProjectFundsService projectFundsService;
+    private CountConfig countConfig;
     @Override
     public boolean insert(ProjectGroup projectGroup) {
         if (projectGroupMapper.insert(projectGroup) == 1){
@@ -182,10 +185,7 @@ public class ProjectServiceImpl implements ProjectService {
         int applyAmount = 0, agreeAmount = 0;
         for (Funds fundsDetail : fundsDetails) {
             applyAmount += fundsDetail.getAmount();
-            ProjectGroupFunds projectFunds = projectFundsService.selectProjectIdAndFundsId(
-                    projectGroup.getId(),
-                    fundsDetail.getId());
-            if (projectFunds.getStatus().intValue() == FundsStatus.AGREED.getValue()){
+            if (fundsDetail.getStatus().intValue() == FundsStatus.AGREED.getValue()){
                 agreeAmount += fundsDetail.getAmount();
             }
         }
@@ -259,6 +259,65 @@ public class ProjectServiceImpl implements ProjectService {
             //TODO,添加立项表文件id
             return Result.success(applyGeneralFormInfoVO);
         }
+    }
+
+    @Override
+    public Result appendCreateApply(AppendApplyForm appendApplyForm) {
+        User currentUser = userService.getCurrentUser();
+        UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(
+                appendApplyForm.getProjectGroupId(),
+                currentUser.getId());
+        if (userProjectGroup == null){
+            return Result.error(CodeMsg.USER_NOT_IN_GROUP);
+        }
+        if (userProjectGroup.getMemberRole().intValue() == MemberRole.NORMAL_MEMBER.getValue()){
+            Result.error(CodeMsg.PERMISSION_DENNY);
+        }
+        FundsForm[] fundsForms = appendApplyForm.getFundsForms();
+        for (FundsForm fundsForm : fundsForms) {
+            //资金id不为空进行更新操作
+            if (fundsForm.getFundsId() != null){
+                Funds funds = fundsService.selectById(fundsForm.getFundsId());
+                if (funds == null){
+                    return Result.error(CodeMsg.FUNDS_NOT_EXIST);
+                }
+                //申请通过的资金无进行更新操作
+                if (funds.getStatus().intValue() == FundsStatus.AGREED.getValue()){
+                    return Result.error(CodeMsg.FUNDS_AGREE_CANT_CHANGE);
+                }
+                BeanUtils.copyProperties(fundsForm, funds);
+                funds.setUpdateTime(new Date());
+                if (!fundsService.update(funds)) {
+                    return Result.error(CodeMsg.UPDATE_ERROR);
+                }
+            }else {
+                //添加资金信息
+                Funds funds = new Funds();
+                BeanUtils.copyProperties(fundsForm, funds);
+                funds.setProjectGroupId(appendApplyForm.getProjectGroupId());
+                funds.setApplicantId(currentUser.getId());
+                funds.setStatus(FundsStatus.APPLYING.getValue());
+                funds.setCreateTime(new Date());
+                funds.setUpdateTime(new Date());
+                if (!fundsService.insert(funds)) {
+                    return Result.error(CodeMsg.ADD_ERROR);
+                }
+            }
+        }
+        return Result.success();
+    }
+
+    @Override
+    public Result checkApplyInfo(Integer pageNum) {
+        Integer startNum = (pageNum - 1 ) * countConfig.getCheckProject();
+        List<ProjectGroup> projectGroups = projectGroupMapper.selectApplyByPageOrderByTime(
+                startNum,
+                countConfig.getCheckProject());
+        for (ProjectGroup projectGroup : projectGroups) {
+
+        }
+        //TODO
+        return null;
     }
 
 }

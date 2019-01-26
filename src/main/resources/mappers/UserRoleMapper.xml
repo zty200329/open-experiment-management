@@ -10,7 +10,7 @@
     delete from user_role
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.UserRole">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.UserRole">
     insert into user_role (id, user_id, role_id
       )
     values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}
@@ -31,10 +31,10 @@
     select id, user_id, role_id
     from user_role
   </select>
-    <select id="selectByUserIdAndRoleId" resultMap="BaseResultMap">
-      select * from user_role where user_id = #{param1} and role_id = #{param2}
-    </select>
-    <select id="selectByRoleId" resultMap="BaseResultMap">
-      select * from user_role where role_id = #{roleId}
-    </select>
+  <select id="selectByUserIdAndRoleId" resultMap="BaseResultMap">
+    select * from user_role where user_id = #{param1} and role_id = #{param2}
+  </select>
+  <select id="selectByRoleId" resultMap="BaseResultMap">
+    select * from user_role where role_id = #{roleId}
+  </select>
 </mapper>

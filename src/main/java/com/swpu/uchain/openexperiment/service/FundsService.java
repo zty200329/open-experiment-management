@@ -31,6 +31,14 @@ public interface FundsService {
     void delete(Long id);
 
     /**
+     * 按照id进行查找
+     * @param id
+     * @return
+     */
+    Funds selectById(Long id);
+
+
+    /**
      * 获取某项目的所有经费详情
      * @param projectGroupId
      * @return

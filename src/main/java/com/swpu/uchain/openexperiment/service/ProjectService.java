@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
+import com.swpu.uchain.openexperiment.form.project.AppendApplyForm;
 import com.swpu.uchain.openexperiment.form.project.JoinForm;
 import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -79,4 +80,18 @@ public interface ProjectService {
      * @return
      */
     Result getApplyForm(Long projectGroupId);
+
+    /**
+     * 项目组组长追加重点项目申请信息
+     * @param appendApplyForm
+     * @return
+     */
+    Result appendCreateApply(AppendApplyForm appendApplyForm);
+
+    /**
+     * 获取所有待审核立项项目信息
+     * @param pageNum
+     * @return
+     */
+    Result checkApplyInfo(Integer pageNum);
 }

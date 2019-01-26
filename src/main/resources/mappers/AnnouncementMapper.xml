@@ -18,7 +18,7 @@
     delete from announcement
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.Announcement">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.Announcement">
     insert into announcement (id, publisher_id, title, 
       content, publish_time, update_time
       )
