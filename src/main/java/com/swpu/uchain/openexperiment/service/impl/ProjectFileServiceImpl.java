@@ -88,7 +88,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             File dest = new File(path + "/" + mark.getFileName());
             dest.delete();
             delete(mark.getId());
-            log.info(mark.getFileName() + "文件被覆盖:");
+            log.info(mark.getFileName() + " 文件被覆盖:");
         }
 
         if (file.isEmpty()) {
