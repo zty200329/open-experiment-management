@@ -47,7 +47,7 @@ public interface ProjectFileService {
     * @return:
     */
 
-    boolean isFileExist(Long projectGroupId);
+    List<String> getFileName(Long projectGroupId);
 
     /**
      * 上传文件

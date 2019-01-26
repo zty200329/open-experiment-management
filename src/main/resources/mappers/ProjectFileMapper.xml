@@ -15,7 +15,7 @@
     delete from project_file
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile">
     insert into project_file (id, project_group_id, download_times, 
       file_name, file_type, `size`, 
       upload_time, upload_user_id)
@@ -35,7 +35,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select id, project_group_id, download_times, file_name, file_type, `size`, upload_time, 
+    select id, project_group_id, download_times, file_name, file_type, `size`, upload_time,
     upload_user_id
     from project_file
     where id = #{id,jdbcType=BIGINT}
@@ -63,4 +63,17 @@
     from project_file
     where project_group_id=#{projectGroupId}
   </select>
+  <select id="getFileNameById" resultMap="BaseResultMap">
+    select file_name
+    from project_file
+    where project_group_id=#{projectGroupId}
+  </select>
+  <select id="selectByGroupIdAndKeyWord" resultMap="BaseResultMap">
+    select id, project_group_id, download_times, file_name, file_type, `size`, upload_time,
+    upload_user_id
+    from project_file
+    where project_group_id = #{param1}
+    and file_name like '%${keyWord}%'
+  </select>
+
 </mapper>

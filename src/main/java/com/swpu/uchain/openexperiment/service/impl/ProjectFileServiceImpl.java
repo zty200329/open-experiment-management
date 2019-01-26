@@ -69,17 +69,28 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         return (projectFileMapper.deleteByPrimaryKey(id) == 1);
     }
 
-    //TODO 改良是否要覆盖文件的判定方法
+
     @Override
-    public boolean isFileExist(Long projectGroupId) {
-        List<Long> list = getFileIdListByGroupId(projectGroupId);
-        List<String> stringList = new ArrayList<>();
-        return (list.size() > 0);
+    public List<String> getFileName(Long projectGroupId) {
+        List<ProjectFile> projectFiles = projectFileMapper.getFileNameById(projectGroupId);
+        List<String> fileNames = new ArrayList<>();
+        for (ProjectFile projectFile : projectFiles) {
+            fileNames.add(projectFile.getFileName());
+        }
+        return fileNames;
     }
 
 
     @Override
     public Result uploadFile(MultipartFile file, Long projectGroupId) {
+        ProjectFile mark = projectFileMapper.selectByGroupIdAndKeyWord(projectGroupId, fileName);
+        if (mark != null) {
+            File dest = new File(path + "/" + mark.getFileName());
+            dest.delete();
+            delete(mark.getId());
+            log.info(mark.getFileName() + "文件被覆盖:");
+        }
+
         if (file.isEmpty()) {
             return Result.error(CodeMsg.NOT_BE_EMPTY);
         }
@@ -107,18 +118,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile.setProjectGroupId(projectGroupId);
         insert(projectFile);
         ProjectFile projectFile1 = projectFileMapper.selectByFileNameAndUploadId(originalFilename, user.getId());
-        projectFile1.setFileName(projectFile1.getId() + "." + fileName);
+        projectFile1.setFileName(projectFile1.getId() + "." + fileName + suffix);
         projectFileMapper.updateByPrimaryKey(projectFile1);
-        System.out.println(projectFile1.getId());
-        if (isFileExist(projectGroupId)) {
-            File file1 = new File(path + "/" + projectFile1.getId() + fileName + suffix);
-            file1.delete();
-            if (delete(projectFile1.getId())) {
-                log.info("文件" + projectFile1.getFileName() + "被替换");
-                return Result.success(file1);
-            }
-        }
-        File dest = new File(path + "/" + projectFile1.getFileName() + suffix);
+
+        File dest = new File(path + "/" + projectFile1.getFileName());
         //判断父目录是否存在
         if (!dest.getParentFile().exists()) {
             return Result.error(CodeMsg.DIR_NOT_EXIST);
@@ -131,6 +134,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             e.printStackTrace();
             return Result.error(CodeMsg.SERVER_ERROR);
         }
+
     }
 
     @Override
