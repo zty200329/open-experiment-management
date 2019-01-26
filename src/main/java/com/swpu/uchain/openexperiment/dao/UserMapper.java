@@ -21,4 +21,6 @@ public interface UserMapper {
     List<User> selectProjectJoinedUsers(Long projectId);
 
     List<User> selectByRandom(@Param("keyWord") String keyWord);
+
+    User selectGroupLeader(Long projectGroupId);
 }
