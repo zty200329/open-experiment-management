@@ -11,4 +11,5 @@ public class ProjectFileKey extends BasePrefix {
     }
 
     public static ProjectFileKey projectFileKey = new ProjectFileKey(300, "file");
+    public static ProjectFileKey projectFileListKey = new ProjectFileKey(280,"fileList");
 }

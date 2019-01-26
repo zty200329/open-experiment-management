@@ -8,6 +8,8 @@ package com.swpu.uchain.openexperiment.util;
  **/
 public class FileTypeUtil {
 
+
+
     public int getType(String suffix) {
         if (suffix.equals(".xls")) {
             return 1;

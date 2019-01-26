@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.service;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
+import com.swpu.uchain.openexperiment.form.project.AimForm;
 import com.swpu.uchain.openexperiment.form.project.JoinProjectApplyForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
@@ -77,4 +78,11 @@ public interface UserProjectService {
      * @return
      */
     Result checkUserMatch(User user, ProjectGroup projectGroup);
+
+    /**
+     * 指定用户为项目组组长
+     * @param aimForm
+     * @return
+     */
+    Result aimUserMemberRole(AimForm aimForm);
 }

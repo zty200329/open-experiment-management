@@ -1,8 +1,13 @@
 package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
+import com.swpu.uchain.openexperiment.form.file.UploadFileForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @Description
@@ -37,49 +42,34 @@ public interface ProjectFileService {
     boolean delete(Long id);
 
     /**
-     * 查找文件
-     *
-     * @param projectName
-     * @return:
-     */
-    Result selectByProjectName(String projectName);
+    * 判断文件是否存在
+    * @param projectGroupId
+    * @return:
+    */
 
-    /**
-     * 添加
-     *
-     * @param projectFile
-     * @return:
-     */
-    Result insertFile(ProjectFile projectFile);
-
-    /**
-     * 更新
-     *
-     * @param projectFile
-     * @return:
-     */
-    Result updateFile(ProjectFile projectFile);
-
-    /**
-     * 删除
-     *
-     * @param id
-     * @return:
-     */
-    Result deleteFile(Long id);
+    List<String> getFileName(Long projectGroupId);
 
     /**
      * 上传文件
      *
      * @param file
+     * @param projectGroupId
      * @return:
      */
-    Result uploadFile(MultipartFile file);
+    Result uploadFile(MultipartFile file,Long projectGroupId);
 
     /**
     * 下载文件
     * @param
     * @return:
     */
-    Result downloadFile(String fileName);
+    Result downloadFile(String fileName,  HttpServletResponse response);
+
+    /**
+    * 查找具有groupId的文件名列表
+    * @param projectGroupId
+    * @return:
+    */
+    List<Long> getFileIdListByGroupId(Long projectGroupId);
+
 }

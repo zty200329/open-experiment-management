@@ -5,12 +5,10 @@ import com.swpu.uchain.openexperiment.form.LoginForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.UserService;
 import com.swpu.uchain.openexperiment.util.ClientUtil;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -22,9 +20,11 @@ import java.io.IOException;
  * @Description:
  * 匿名访问接口
  */
-@RequestMapping("/anon")
-@RestController
 @Slf4j
+@CrossOrigin
+@RestController
+@RequestMapping("/anon")
+@Api(tags = "匿名访问接口")
 public class AnonController {
     @Autowired
     private UserService userService;

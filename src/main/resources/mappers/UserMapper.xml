@@ -1,42 +1,43 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.swpu.uchain.openexperiment.dao.UserMapper" >
-  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.User" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="code" property="code" jdbcType="VARCHAR" />
-    <result column="email" property="email" jdbcType="VARCHAR" />
-    <result column="fix_phone" property="fixPhone" jdbcType="VARCHAR" />
-    <result column="id_card" property="idCard" jdbcType="VARCHAR" />
-    <result column="mobile_phone" property="mobilePhone" jdbcType="VARCHAR" />
-    <result column="password" property="password" jdbcType="VARCHAR" />
-    <result column="qq_num" property="qqNum" jdbcType="VARCHAR" />
-    <result column="real_name" property="realName" jdbcType="VARCHAR" />
-    <result column="sex" property="sex" jdbcType="VARCHAR" />
-    <result column="user_type" property="userType" jdbcType="INTEGER" />
-    <result column="institute" property="institute" jdbcType="VARCHAR" />
-    <result column="major" property="major" jdbcType="VARCHAR" />
-    <result column="grade" property="grade" jdbcType="INTEGER" />
-    <result column="class_num" property="classNum" jdbcType="INTEGER" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swpu.uchain.openexperiment.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.User">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="fix_phone" jdbcType="VARCHAR" property="fixPhone" />
+    <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="qq_num" jdbcType="VARCHAR" property="qqNum" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="user_type" jdbcType="INTEGER" property="userType" />
+    <result column="institute" jdbcType="VARCHAR" property="institute" />
+    <result column="major" jdbcType="VARCHAR" property="major" />
+    <result column="grade" jdbcType="INTEGER" property="grade" />
+    <result column="work_unit" jdbcType="VARCHAR" property="workUnit" />
+    <result column="class_num" jdbcType="INTEGER" property="classNum" />
   </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from user
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.User" >
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.User">
     insert into user (id, code, email, 
       fix_phone, id_card, mobile_phone, 
       `password`, qq_num, real_name, 
       sex, user_type, institute, 
-      major, grade, class_num
-      )
+      major, grade, work_unit, 
+      class_num)
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
       #{fixPhone,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, 
       #{password,jdbcType=VARCHAR}, #{qqNum,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, 
       #{sex,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER}, #{institute,jdbcType=VARCHAR}, 
-      #{major,jdbcType=VARCHAR}, #{grade,jdbcType=INTEGER}, #{classNum,jdbcType=INTEGER}
-      )
+      #{major,jdbcType=VARCHAR}, #{grade,jdbcType=INTEGER}, #{workUnit,jdbcType=VARCHAR}, 
+      #{classNum,jdbcType=INTEGER})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.User" >
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.User">
     update user
     set code = #{code,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
@@ -51,6 +52,7 @@
       institute = #{institute,jdbcType=VARCHAR},
       major = #{major,jdbcType=VARCHAR},
       grade = #{grade,jdbcType=INTEGER},
+      work_unit = #{workUnit,jdbcType=VARCHAR},
       class_num = #{classNum,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>

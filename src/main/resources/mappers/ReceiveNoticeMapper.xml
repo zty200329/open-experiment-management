@@ -11,7 +11,7 @@
     delete from receive_notice
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ReceiveNotice">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.ReceiveNotice">
     insert into receive_notice (id, notice_id, receiver_id, 
       `status`)
     values (#{id,jdbcType=BIGINT}, #{noticeId,jdbcType=BIGINT}, #{receiverId,jdbcType=BIGINT}, 

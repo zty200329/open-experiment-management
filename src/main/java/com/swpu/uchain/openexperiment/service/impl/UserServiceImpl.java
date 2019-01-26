@@ -206,6 +206,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User selectGroupLeader(Long projectGroupId) {
+        User user = redisService.get(UserKey.getLeaderByGroupId, projectGroupId + "", User.class);
+        if (user == null){
+            user = userMapper.selectGroupLeader(projectGroupId);
+            if (user != null){
+                redisService.set(UserKey.getLeaderByGroupId, projectGroupId + "", user);
+            }
+        }
+        return user;
+    }
+
+    @Override
     public List<User> selectByKeyWord(String keyWord) {
         List<User> users = redisService.getArraylist(UserKey.getByKeyWord, keyWord, User.class);
         if (users == null || users.size() == 0){

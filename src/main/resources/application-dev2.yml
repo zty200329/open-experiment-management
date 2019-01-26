@@ -12,3 +12,7 @@ spring:
       max-file-size: 102400000
       # 设置总上传数据总大小 30MB
       max-request-size: 307200000
+
+upload:
+  upload-dir: "/home/hobo/upload_dir"
+  file-name:  "立项申请表"

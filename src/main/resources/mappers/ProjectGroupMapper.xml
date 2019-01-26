@@ -27,7 +27,7 @@
     delete from project_group
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
     insert into project_group (id, address, create_time, 
       creator_id, end_time, experiment_condition, 
       suggest_group_type, experiment_type, achievement_check, 
@@ -93,5 +93,11 @@
     inner join user_project_group
     on project_group.id = user_project_group.project_id
     where user_project_group.user_id = #{userId}
+  </select>
+  <select id="selectApplyByPageOrderByTime" resultMap="BaseResultMap">
+    select * from project_group
+    where status = 0
+    order by create_time desc
+    limit #{param1}, #{param2}
   </select>
 </mapper>

@@ -7,6 +7,7 @@ import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.JoinStatus;
 import com.swpu.uchain.openexperiment.enums.MemberRole;
+import com.swpu.uchain.openexperiment.form.project.AimForm;
 import com.swpu.uchain.openexperiment.form.project.JoinProjectApplyForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.UserProjectGroupKey;
@@ -141,12 +142,6 @@ public class UserProjectServiceImpl implements UserProjectService {
         return result;
     }
 
-    /**
-     * 检查用户是否符合选则该项目的条件
-     * @param user
-     * @param projectGroup
-     * @return
-     */
     @Override
     public Result checkUserMatch(User user, ProjectGroup projectGroup){
         List<User> users = userService.selectProjectJoinedUsers(projectGroup.getId());
@@ -168,5 +163,42 @@ public class UserProjectServiceImpl implements UserProjectService {
             return Result.success();
         }
         return Result.error(CodeMsg.REACH_NUM_MAX);
+    }
+
+    @Override
+    public Result aimUserMemberRole(AimForm aimForm) {
+        //判断当前操作用户是否存在项目组
+        User currentUser = userService.getCurrentUser();
+        UserProjectGroup group = selectByProjectGroupIdAndUserId(aimForm.getProjectGroupId(), currentUser.getId());
+        if (group == null){
+            Result.error(CodeMsg.USER_NOT_IN_GROUP);
+        }
+        //判断指定用户是否存在与项目组
+        UserProjectGroup userProjectGroup = selectByProjectGroupIdAndUserId(
+                aimForm.getProjectGroupId(),
+                aimForm.getUserId());
+        if (userProjectGroup == null){
+            return Result.error(CodeMsg.USER_GROUP_NOT_EXIST);
+        }
+        //判断指定用户是否是指导老师
+        if (userProjectGroup.getMemberRole().intValue() == MemberRole.GUIDANCE_TEACHER.getValue()){
+            return Result.error(CodeMsg.CANT_AIM_TEACHER);
+        }
+        if (aimForm.getMemberRole().intValue() == MemberRole.PROJECT_GROUP_LEADER.getValue()){
+            //判断项目组是已否存在组长
+            User user = userService.selectGroupLeader(aimForm.getProjectGroupId());
+            if (user != null){
+                return Result.error(CodeMsg.GROUP_LEADER_EXIST);
+            }
+            userProjectGroup.setMemberRole(MemberRole.PROJECT_GROUP_LEADER.getValue());
+        }else if (aimForm.getMemberRole().intValue() == MemberRole.NORMAL_MEMBER.getValue()){
+            userProjectGroup.setMemberRole(MemberRole.NORMAL_MEMBER.getValue());
+        }else {
+            return Result.error(CodeMsg.ILLEGAL_MEMBER_ROLE);
+        }
+        if (update(userProjectGroup)) {
+            return Result.success();
+        }
+        return Result.error(CodeMsg.UPDATE_ERROR);
     }
 }

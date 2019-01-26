@@ -6,7 +6,7 @@ import lombok.Getter;
  * @Author: clf
  * @Date: 19-1-25
  * @Description:
- * 1.材料费,2.资料,印刷费,3.出版费,4.教师酬金
+ * 1.材料费,2.资料,印刷费,3.出版费,4.教师酬金,5.其他合理费用
  */
 @Getter
 public enum FundsType {
@@ -26,6 +26,10 @@ public enum FundsType {
      * 教师酬金
      */
     TEACHER_REWARD(4),
+    /**
+     * 其他合理费用
+     */
+    OTHER_REASONABLE(5),
     ;
 
     private Integer value;

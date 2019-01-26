@@ -13,5 +13,7 @@ public class FundsKey extends BasePrefix{
     public FundsKey(int expireSeconds, String prefix) {
         super(expireSeconds, prefix);
     }
+
+    public static FundsKey getById = new FundsKey(120, "fundsId");
     public static FundsKey getByProjectGroupId = new FundsKey(300, "projectGroupId");
 }
