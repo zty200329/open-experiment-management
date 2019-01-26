@@ -2,12 +2,19 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.dao.RoleAclMapper;
 import com.swpu.uchain.openexperiment.domain.RoleAcl;
+import com.swpu.uchain.openexperiment.domain.UserRole;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.permission.RoleAclForm;
+import com.swpu.uchain.openexperiment.redis.RedisService;
+import com.swpu.uchain.openexperiment.redis.key.AclKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.RoleAclService;
+import com.swpu.uchain.openexperiment.service.UserRoleService;
+import com.swpu.uchain.openexperiment.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @Author: clf
@@ -19,10 +26,23 @@ import org.springframework.stereotype.Service;
 public class RoleAclServiceImpl implements RoleAclService {
     @Autowired
     private RoleAclMapper roleAclMapper;
+    @Autowired
+    private RedisService redisService;
+    @Autowired
+    private UserRoleService userRoleService;
     
     @Override
     public boolean insertRoleAcl(RoleAcl roleAcl) {
-        return roleAclMapper.insert(roleAcl) == 1;
+        if (roleAclMapper.insert(roleAcl) == 1){
+            //获取拥有当前角色的所有用户id
+            List<UserRole> userRoles = userRoleService.selectUsersByRoleId(roleAcl.getRoleId());
+            for (UserRole userRole : userRoles) {
+                //删除对应的变更后用户的权限缓存
+                redisService.delete(AclKey.getUrlsByUserId, userRole.getUserId() + "");
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override

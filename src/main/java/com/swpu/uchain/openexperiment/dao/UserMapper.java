@@ -1,6 +1,8 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.domain.User;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface UserMapper {
@@ -17,4 +19,6 @@ public interface UserMapper {
     User selectByUserCode(String userCode);
 
     List<User> selectProjectJoinedUsers(Long projectId);
+
+    List<User> selectByRandom(@Param("keyWord") String keyWord);
 }

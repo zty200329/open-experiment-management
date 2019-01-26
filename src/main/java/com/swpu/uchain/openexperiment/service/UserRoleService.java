@@ -4,6 +4,8 @@ import com.swpu.uchain.openexperiment.domain.UserRole;
 import com.swpu.uchain.openexperiment.form.permission.UserRoleForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
+import java.util.List;
+
 /**
  * @Author: clf
  * @Date: 19-1-22
@@ -30,4 +32,11 @@ public interface UserRoleService {
      * @return
      */
     Result addUserRole(UserRoleForm userRoleForm);
+
+    /**
+     * 查找拥有某一角色的所有用户
+     * @param roleId
+     * @return
+     */
+    List<UserRole> selectUsersByRoleId(Long roleId);
 }

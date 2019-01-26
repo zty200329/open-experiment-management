@@ -13,5 +13,5 @@ public class AclKey extends BasePrefix{
     public AclKey(int expireSeconds, String prefix) {
         super(expireSeconds, prefix);
     }
-    public static AclKey getByUserId = new AclKey(120 , "userId");
+    public static AclKey getUrlsByUserId = new AclKey(120 , "userId");
 }

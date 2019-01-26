@@ -1,36 +1,58 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.swpu.uchain.openexperiment.dao.FundsMapper" >
-  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.Funds" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="amount" property="amount" jdbcType="INTEGER" />
-    <result column="use" property="use" jdbcType="VARCHAR" />
-    <result column="type" property="type" jdbcType="INTEGER" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swpu.uchain.openexperiment.dao.FundsMapper">
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.Funds">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="use" jdbcType="VARCHAR" property="use" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="applicant_id" jdbcType="BIGINT" property="applicantId" />
+    <result column="project_group_id" jdbcType="BIGINT" property="projectGroupId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from funds
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.Funds" >
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.Funds">
     insert into funds (id, amount, `use`, 
-      `type`)
+      `type`, applicant_id, project_group_id, 
+      `status`, create_time, update_time
+      )
     values (#{id,jdbcType=BIGINT}, #{amount,jdbcType=INTEGER}, #{use,jdbcType=VARCHAR}, 
-      #{type,jdbcType=INTEGER})
+      #{type,jdbcType=INTEGER}, #{applicantId,jdbcType=BIGINT}, #{projectGroupId,jdbcType=BIGINT}, 
+      #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.Funds" >
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.Funds">
     update funds
     set amount = #{amount,jdbcType=INTEGER},
       `use` = #{use,jdbcType=VARCHAR},
-      `type` = #{type,jdbcType=INTEGER}
+      `type` = #{type,jdbcType=INTEGER},
+      applicant_id = #{applicantId,jdbcType=BIGINT},
+      project_group_id = #{projectGroupId,jdbcType=BIGINT},
+      `status` = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select id, amount, `use`, `type`
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, amount, `use`, `type`, applicant_id, project_group_id, `status`, create_time, 
+    update_time
     from funds
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap" >
-    select id, amount, `use`, `type`
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, amount, `use`, `type`, applicant_id, project_group_id, `status`, create_time, 
+    update_time
     from funds
+  </select>
+  <select id="selectByProjectGroupId" resultMap="BaseResultMap">
+    select id, amount, `use`, `type`, applicant_id,
+    project_group_id, `status`, create_time, update_time
+    from funds
+    where project_group_id = #{projectGroupId}
   </select>
 </mapper>

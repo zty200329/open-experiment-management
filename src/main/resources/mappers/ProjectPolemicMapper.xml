@@ -16,7 +16,7 @@
     values (#{id,jdbcType=BIGINT}, #{projectGroupId,jdbcType=BIGINT}, #{polemicGroupId,jdbcType=BIGINT}
       )
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectPolemic">
+  <update id="updateByPrimaryKey" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.ProjectPolemic">
     update project_polemic
     set project_group_id = #{projectGroupId,jdbcType=BIGINT},
       polemic_group_id = #{polemicGroupId,jdbcType=BIGINT}

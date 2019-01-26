@@ -4,28 +4,28 @@ import lombok.Getter;
 
 /**
  * @Author: clf
- * @Date: 19-1-23
+ * @Date: 19-1-25
  * @Description:
- * 加入项目组状态
+ * 资金申请状态:1.申请中,2.已批准,3.拒绝申请
  */
 @Getter
-public enum JoinStatus {
+public enum FundsStatus {
     /**
      * 申请中
      */
     APPLYING(1),
     /**
-     * 已加入
+     * 已批准
      */
-    JOINED(2),
+    AGREED(2),
     /**
-     * 未通过
+     * 拒绝申请
      */
-    UN_PASS(3),
+    REFUSE(3),
     ;
     private Integer value;
 
-    JoinStatus(Integer value) {
+    FundsStatus(Integer value) {
         this.value = value;
     }
 }

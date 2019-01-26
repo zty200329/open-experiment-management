@@ -1,53 +1,30 @@
 package com.swpu.uchain.openexperiment.controller;
 
-import com.swpu.uchain.openexperiment.form.file.SelectFileListForm;
-import com.swpu.uchain.openexperiment.form.file.UploadFileForm;
 import com.swpu.uchain.openexperiment.result.Result;
-import com.swpu.uchain.openexperiment.service.ProjectFileService;
-import io.swagger.annotations.ApiModelProperty;
-import jdk.nashorn.internal.objects.annotations.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
+import io.swagger.annotations.Api;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Author: clf
  * @Date: 19-1-18
  * @Description:
  */
-@RequestMapping("/test")
+@CrossOrigin
 @RestController
+@RequestMapping("/test")
+@Api(tags = "测试接口")
 public class TestController {
 
-    @Autowired
-    private ProjectFileService projectFileService;
-
     @GetMapping(value = "/url", name = "测试接口")
-    public Object url() {
+    public Object url(){
         return Result.success("测试成功");
     }
 
     @GetMapping(value = "/permission", name = "测试permission")
-    public Object test() {
+    public Object test(){
         return Result.success();
     }
-
-    @PostMapping(value = "/uploadtest", name = "测试文件上传")
-    public Object uploadTest(MultipartFile file, Long projectGroupId) {
-        return projectFileService.uploadFile(file, projectGroupId);
-    }
-
-    @GetMapping(value = "/downloadtest", name = "测试文件下载")
-    public Object downloadTest(String fileName, HttpServletResponse response) {
-        response.setContentType("application/force-download");
-        response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);
-        return projectFileService.downloadFile(fileName, response);
-    }
-
 }

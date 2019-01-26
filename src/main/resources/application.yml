@@ -34,3 +34,14 @@ redis:
   poolMaxTotal: 1000
   poolMaxIdle: 500
   poolMaxWait: 500
+##page##
+page:
+  count:
+    announcement: 10
+    project: 5
+    check-user: 10
+    check-project: 7
+    manage-user: 7
+    manage-role: 7
+
+

@@ -31,9 +31,20 @@ public enum CodeMsg {
     ROLE_NOT_EXIST(514, "当前角色不存在" ),
     ROLE_ACL_HAD_EXIST(515, "当前角色已拥有该权限,不能重复添加" ),
     PROJECT_GROUP_NOT_EXIST(516, "项目组不存在" ),
-    NOT_MATCH_LIMIT(517, "不符合选择限制" ),
+    NOT_MATCH_LIMIT(517, "不符合条件,无法参与项目" ),
     REACH_NUM_MAX(518,"已经达到人数限制,无法进行申请" ),
     PROJECT_GROUP_HAD_EXIST(519,"该项目已存在,请修改项目名" ),
+    USER_HAD_JOINED(520,"用户已经加入该项目,不需要重复添加" ),
+    USER_NOT_APPLYING(521,"用户未申请,无法同意添加" ),
+    ANNOUNCEMENT_NOT_EXIST(522,"公告信息不存在" ),
+    USER_GROUP_NOT_EXIST(523,"用户并未加入项目组" ),
+    CANT_AIM_TEACHER(524, "不能指定指导老师担任任何角色"),
+    GROUP_LEADER_EXIST(525, "项目组组长已经存在"),
+    USER_NOT_IN_GROUP(526, "非法操作,不能操作非自己的项目组"),
+    ILLEGAL_MEMBER_ROLE(527, "非法角色,系统不存在当前角色值"),
+    FUNDS_NOT_EXIST(528, "资金不存在"),
+    FUNDS_AGREE_CANT_CHANGE(529, "资金已经同意无法进行修改"),
+    PAGE_NUM_ERROR(530, "分页数目异常"),
     FILE_EXIST(601,"文件已存在" ),
     FILE_NOT_EXIST(602,"文件不存在"),
     NOT_BE_EMPTY(603,"上传文件不能为空"),
@@ -44,6 +55,7 @@ public enum CodeMsg {
     FILE_ALREADY_UPLOAD(608,"同一文件不能上传多次" ),
     FILENAME_BE_NULL(609,"文件名为空" ),
     DOWNLOAD_ERROR(610,"下载失败" );
+
     private Integer code;
     private String msg;
 

@@ -12,7 +12,7 @@
     delete from score
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.Score">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.Score">
     insert into score (id, user_id, semester, 
       average_score, achoevement_point)
     values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{semester,jdbcType=INTEGER}, 

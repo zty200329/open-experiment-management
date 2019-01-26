@@ -11,14 +11,12 @@ import com.swpu.uchain.openexperiment.service.AclService;
 import com.swpu.uchain.openexperiment.service.RoleAclService;
 import com.swpu.uchain.openexperiment.service.RoleService;
 import com.swpu.uchain.openexperiment.service.UserRoleService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -33,9 +31,11 @@ import java.util.Map;
  * @Description:
  * 权限管理模块接口
  */
+@Slf4j
+@CrossOrigin
 @RestController
 @RequestMapping("/permission")
-@Slf4j
+@Api(tags = "权限控制接口")
 public class PermissionController implements InitializingBean {
     @Autowired
     private AclService aclService;

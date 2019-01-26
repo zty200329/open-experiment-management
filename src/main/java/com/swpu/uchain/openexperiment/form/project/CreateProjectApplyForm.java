@@ -61,5 +61,7 @@ public class CreateProjectApplyForm {
     private String endTime;
     @ApiModelProperty("指导老师编号")
     @NotNull(message = "指导老师不能为空")
-    private Long[] teacherCodes;
+    private String[] teacherCodes;
+    @ApiModelProperty("学生成员编号")
+    private String[] stuCodes;
 }
