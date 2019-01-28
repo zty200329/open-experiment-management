@@ -39,7 +39,9 @@ public class ProjectServiceImpl implements ProjectService {
     private RedisService redisService;
     @Autowired
     private UserProjectService userProjectService;
-    //TODO,注入文件的Service,答辩小组Service,资金模块的Service,
+    //TODO,答辩小组Service
+    @Autowired
+    private ProjectFileService projectFileService;
     @Autowired
     private FundsService fundsService;
     @Autowired
@@ -69,6 +71,7 @@ public class ProjectServiceImpl implements ProjectService {
         //删除项目相关的成员信息
         userProjectService.deleteByProjectGroupId(projectGroupId);
         //TODO,删除所有的关系模块,文件,答辩小组,资金
+
     }
 
     @Override
@@ -112,7 +115,11 @@ public class ProjectServiceImpl implements ProjectService {
         if (result.getCode() != 0){
             return result;
         }
-        //TODO,对文件上传的处理,1.获取文件名,2.保存文件,3.维护数据库
+        //对文件上传的处理,1.获取文件名,2.保存文件,3.维护数据库
+        result = projectFileService.uploadApplyDoc(createProjectApplyForm.getFile(), projectGroup.getId());
+        if (result.getCode() != 0){
+            return result;
+        }
         return userService.createUserJoin(
                 createProjectApplyForm.getStuCodes(),
                 projectGroup.getId(),
@@ -192,8 +199,8 @@ public class ProjectServiceImpl implements ProjectService {
         projectDetails.setTotalApplyFundsAmount(applyAmount);
         projectDetails.setTotalAgreeFundsAmount(agreeAmount);
         projectDetails.setFundsDetails(fundsDetails);
-        //TODO,设置文件信息
-//        projectDetails.setProjectFiles();
+        List<ProjectFile> projectFiles = projectFileService.getProjectAllFiles(projectGroup.getId());
+        projectDetails.setProjectFiles(projectFiles);
         return projectDetails;
     }
 
@@ -250,13 +257,11 @@ public class ProjectServiceImpl implements ProjectService {
             applyKeyFormInfoVO.setFundsDetails(fundsService.getFundsDetails(projectGroupId));
             BeanUtils.copyProperties(projectGroup, applyKeyFormInfoVO);
             applyKeyFormInfoVO.setProjectGroupId(projectGroup.getId());
-            //TODO,添加立项表文件id
             return Result.success(applyKeyFormInfoVO);
         }else {
             ApplyGeneralFormInfoVO applyGeneralFormInfoVO = ConvertUtil.addUserDetailVO(users, ApplyGeneralFormInfoVO.class);
             BeanUtils.copyProperties(projectGroup, applyGeneralFormInfoVO);
             applyGeneralFormInfoVO.setProjectGroupId(projectGroup.getId());
-            //TODO,添加立项表文件id
             return Result.success(applyGeneralFormInfoVO);
         }
     }

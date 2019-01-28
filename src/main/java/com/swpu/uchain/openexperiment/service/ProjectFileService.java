@@ -14,10 +14,8 @@ import java.util.List;
  **/
 public interface ProjectFileService {
 
-
     /**
      * 添加文件
-     *
      * @param projectFile
      * @return:
      */
@@ -25,7 +23,6 @@ public interface ProjectFileService {
 
     /**
      * 修改文件
-     *
      * @param projectFile
      * @return:
      */
@@ -33,41 +30,44 @@ public interface ProjectFileService {
 
     /**
      * 删除文件
-     *
      * @param id
      * @return:
      */
     boolean delete(Long id);
 
     /**
-    * 判断文件是否存在
-    * @param projectGroupId
-    * @return:
-    */
-
-    List<String> getFileName(Long projectGroupId);
+     * 按文件id进行查询
+     * @param id
+     * @return
+     */
+    ProjectFile selectById(Long id);
 
     /**
-     * 上传文件
-     *
+     * 上传立项申请正文
      * @param file
      * @param projectGroupId
      * @return:
      */
-    Result uploadFile(MultipartFile file,Long projectGroupId);
+    Result uploadApplyDoc(MultipartFile file, Long projectGroupId);
 
     /**
-    * 下载文件
-    * @param
-    * @return:
-    */
-    Result downloadFile(String fileName,  HttpServletResponse response);
+     * 下载立项申请正文文件
+     * @param fileId
+     * @param response
+     */
+    void downloadApplyFile(Long fileId, HttpServletResponse response);
 
     /**
-    * 查找具有groupId的文件名列表
-    * @param projectGroupId
-    * @return:
-    */
-    List<Long> getFileIdListByGroupId(Long projectGroupId);
+     * 获取立项申请的正文pdf文件
+     * @param fileId
+     * @param response
+     */
+    void downloadApplyPdf(Long fileId, HttpServletResponse response);
 
+    /**
+     * 获取项目相关的所有文件
+     * @param projectGroupId
+     * @return
+     */
+    List<ProjectFile> getProjectAllFiles(Long projectGroupId);
 }

@@ -45,35 +45,26 @@
     upload_user_id
     from project_file
   </select>
-  <select id="selectByProjectName" resultMap="BaseResultMap">
-    select * from project_file
-    where file_name = #{fileName}
-  </select>
   <update id="updateFileDownloadTime" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile">
     update project_file
     set download_times = download_times+1
     where file_name=#{fileName}
   </update>
-  <select id="selectByFileNameAndUploadId" resultMap="BaseResultMap">
-    select * from project_file
-    where file_name=#{fileName} and upload_user_id=#{uploadUserId}
-  </select>
-  <select id="selectFileIdByProjectGroupId" resultMap="BaseResultMap">
-    select id
-    from project_file
-    where project_group_id=#{projectGroupId}
-  </select>
   <select id="getFileNameById" resultMap="BaseResultMap">
     select file_name
     from project_file
     where project_group_id=#{projectGroupId}
   </select>
-  <select id="selectByGroupIdAndKeyWord" resultMap="BaseResultMap">
+  <select id="selectByGroupIdFileName" resultMap="BaseResultMap">
     select id, project_group_id, download_times, file_name, file_type, `size`, upload_time,
     upload_user_id
     from project_file
     where project_group_id = #{param1}
-    and file_name like '%${keyWord}%'
+    and file_name = #{param2}
+  </select>
+  <select id="selectByProjectGroupId" resultMap="BaseResultMap">
+    select * from project_file
+    where project_group_id = #{projectGroupId}
   </select>
 
 </mapper>

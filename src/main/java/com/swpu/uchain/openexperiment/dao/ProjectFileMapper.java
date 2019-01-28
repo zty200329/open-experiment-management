@@ -16,15 +16,11 @@ public interface ProjectFileMapper {
 
     int updateByPrimaryKey(ProjectFile record);
 
-    ProjectFile selectByProjectName(String fileName);
-
     int updateFileDownloadTime(ProjectFile file);
-
-    ProjectFile selectByFileNameAndUploadId(String fileName,Long uploadUserId);
-
-    List <Long>  selectFileIdByProjectGroupId(Long projectGroupId);
 
     List<ProjectFile> getFileNameById(Long projectGroupId);
 
-    ProjectFile selectByGroupIdAndKeyWord(Long projectGroupId, @Param("keyWord") String keyWord);
+    ProjectFile selectByGroupIdFileName(Long projectGroupId, String fileName);
+
+    List<ProjectFile> selectByProjectGroupId(Long projectGroupId);
 }
