@@ -16,3 +16,4 @@ spring:
 upload:
   upload-dir: "/home/hk/testFile"
   apply-file-name: "立项申请主要内容"
+  concluding-file-name: "结题报告"

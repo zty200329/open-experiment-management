@@ -11,6 +11,16 @@
     <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
     <result column="upload_user_id" jdbcType="BIGINT" property="uploadUserId" />
   </resultMap>
+  <resultMap id="AttachmentFileDTOMap" type="com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO">
+    <id column="id" jdbcType="BIGINT" property="fileId" />
+    <result column="download_times" jdbcType="INTEGER" property="downloadTimes" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_type" jdbcType="INTEGER" property="fileType" />
+    <result column="size" jdbcType="VARCHAR" property="size" />
+    <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
+    <result column="upload_user_id" jdbcType="BIGINT" property="uploadUserId" />
+    <result column="real_name" jdbcType="VARCHAR" property="userName"/>
+  </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from project_file
     where id = #{id,jdbcType=BIGINT}
@@ -50,11 +60,6 @@
     set download_times = download_times+1
     where file_name=#{fileName}
   </update>
-  <select id="getFileNameById" resultMap="BaseResultMap">
-    select file_name
-    from project_file
-    where project_group_id=#{projectGroupId}
-  </select>
   <select id="selectByGroupIdFileName" resultMap="BaseResultMap">
     select id, project_group_id, download_times, file_name, file_type, `size`, upload_time,
     upload_user_id
@@ -66,5 +71,11 @@
     select * from project_file
     where project_group_id = #{projectGroupId}
   </select>
-
+  <select id="selectAttachmentFiles" resultMap="AttachmentFileDTOMap">
+    select project_file.id, project_file.project_group_id, project_file.download_times, project_file.file_name,
+    project_file.file_type, project_file.`size`, project_file.upload_time, project_file.upload_user_id, user.real_name
+    from project_file
+    inner join user where user.id = project_file.upload_user_id
+    where project_group_id is null
+  </select>
 </mapper>

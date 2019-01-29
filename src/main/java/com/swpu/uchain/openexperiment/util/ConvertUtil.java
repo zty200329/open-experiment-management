@@ -1,9 +1,13 @@
 package com.swpu.uchain.openexperiment.util;
 
-import com.swpu.uchain.openexperiment.VO.ApplyGeneralFormInfoVO;
-import com.swpu.uchain.openexperiment.VO.ApplyKeyFormInfoVO;
-import com.swpu.uchain.openexperiment.VO.UserDetailVO;
+import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
+import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
+import com.swpu.uchain.openexperiment.VO.project.ApplyGeneralFormInfoVO;
+import com.swpu.uchain.openexperiment.VO.project.ApplyKeyFormInfoVO;
+import com.swpu.uchain.openexperiment.VO.user.UserDetailVO;
+import com.swpu.uchain.openexperiment.VO.user.UserVO;
 import com.swpu.uchain.openexperiment.domain.Acl;
+import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.UserType;
 import org.springframework.beans.BeanUtils;
@@ -63,5 +67,16 @@ public class ConvertUtil {
             applyGeneralFormInfoVO.setGuideTeachers(guideTeachers);
             return (T) applyGeneralFormInfoVO;
         }
+    }
+
+    public static List<AttachmentFileVO> getAttachmentFileVOS(List<AttachmentFileDTO> attachmentFileDTOS) {
+        List<AttachmentFileVO> attachmentFileVOS = new ArrayList<>();
+        for (AttachmentFileDTO attachmentFileDTO : attachmentFileDTOS) {
+            AttachmentFileVO attachmentFileVO = new AttachmentFileVO();
+            attachmentFileVO.setFileId(attachmentFileDTO.getFileId());
+            BeanUtils.copyProperties(attachmentFileDTO, attachmentFileVO);
+            attachmentFileVO.setUploadUser(new UserVO(attachmentFileDTO.getUploadUserId(), attachmentFileDTO.getUserName()));
+        }
+        return attachmentFileVOS;
     }
 }

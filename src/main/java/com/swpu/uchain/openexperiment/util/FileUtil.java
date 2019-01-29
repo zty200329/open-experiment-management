@@ -60,13 +60,13 @@ public class FileUtil {
     /**
      * 上传文件
      * @param multipartFile
-     * @param uploadPath
+     * @param realPath
      * @return
      */
-    public static boolean uploadFile(MultipartFile multipartFile,String uploadPath){
+    public static boolean uploadFile(MultipartFile multipartFile,String realPath){
         try {
             byte[] bytes = multipartFile.getBytes();
-            Path path = Paths.get(uploadPath);
+            Path path = Paths.get(realPath);
             Files.write(path,bytes);
         } catch (IOException e) {
             return false;
@@ -117,12 +117,12 @@ public class FileUtil {
     /**
      * 获取文件真正的路径
      * @param fileId
-     * @param path
+     * @param uploadDir
      * @param fileName
      * @return
      */
-    public static String getFileRealPath(Long fileId, String path, String fileName){
-        return path + "/" + fileId + "_" + fileName;
+    public static String getFileRealPath(Long fileId, String uploadDir, String fileName){
+        return uploadDir + "/" + fileId + "_" + fileName;
     }
 
     /**
@@ -154,5 +154,30 @@ public class FileUtil {
         return fileName.substring(0, fileName.lastIndexOf("."));
     }
 
+    /**
+     * 获取上传文件的后缀
+     * @param multipartFile
+     * @return
+     */
+    public static String getMultipartFileSuffix(MultipartFile multipartFile){
+        String originalFilename = multipartFile.getOriginalFilename();
+        return originalFilename.substring(originalFilename.lastIndexOf("."));
+    }
 
+
+    /**
+     * 删除指定文件
+     * @param realPath
+     * @return
+     */
+    public static boolean deleteFile(String realPath) {
+        File file = new File(realPath);
+        if (!file.exists()){
+            return true;
+        }
+        if (file.delete()) {
+            return true;
+        }
+        return false;
+    }
 }

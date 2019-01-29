@@ -1,5 +1,6 @@
-package com.swpu.uchain.openexperiment.VO;
+package com.swpu.uchain.openexperiment.VO.project;
 
+import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.domain.Funds;
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import lombok.Data;
@@ -16,11 +17,11 @@ public class ProjectDetails {
     /**
      * 项目组组长
      */
-    private UserVO leader;
+    private UserMemberVO leader;
     /**
      * 创建人
      */
-    private UserVO creator;
+    private UserMemberVO creator;
     /**
      * 实验室名称
      */
@@ -32,7 +33,7 @@ public class ProjectDetails {
     /**
      * 参与成员
      */
-    private List<UserVO> members;
+    private List<UserMemberVO> members;
     /**
      * 申报经费总额
      */

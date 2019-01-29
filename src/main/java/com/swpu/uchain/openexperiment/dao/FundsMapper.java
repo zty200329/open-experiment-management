@@ -1,6 +1,8 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.domain.Funds;
+import com.swpu.uchain.openexperiment.result.Result;
+
 import java.util.List;
 
 public interface FundsMapper {
@@ -15,4 +17,6 @@ public interface FundsMapper {
     int updateByPrimaryKey(Funds record);
 
     List<Funds> selectByProjectGroupId(Long projectGroupId);
+
+    int updateProjectFundsStatus(Long projectGroupId, Integer fundsStatus);
 }

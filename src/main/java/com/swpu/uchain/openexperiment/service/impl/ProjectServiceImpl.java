@@ -1,7 +1,11 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.swpu.uchain.openexperiment.VO.*;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.swpu.uchain.openexperiment.VO.project.*;
+import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.config.CountConfig;
+import com.swpu.uchain.openexperiment.config.UploadConfig;
 import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
@@ -14,6 +18,7 @@ import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
+import com.swpu.uchain.openexperiment.util.CountUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +51,8 @@ public class ProjectServiceImpl implements ProjectService {
     private FundsService fundsService;
     @Autowired
     private CountConfig countConfig;
+    @Autowired
+    private UploadConfig uploadConfig;
     @Override
     public boolean insert(ProjectGroup projectGroup) {
         if (projectGroupMapper.insert(projectGroup) == 1){
@@ -127,20 +134,20 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result getCurrentUserProjects() {
+    public Result getCurrentUserProjects(Integer projectStatus) {
         User currentUser = userService.getCurrentUser();
         if (userService == null){
             return Result.error(CodeMsg.AUTHENTICATION_ERROR);
         }
         //获取当前用户参与的所有项目
         List<ProjectGroup> projectGroups = redisService.getArraylist(
-                ProjectGroupKey.getByUserId,
-                currentUser.getId() + "",
+                ProjectGroupKey.getByUserIdAndStatus,
+                currentUser.getId() + "_" + projectStatus,
                 ProjectGroup.class);
         if (projectGroups == null || projectGroups.size() == 0){
-            projectGroups = projectGroupMapper.selectByUserId(currentUser.getId());
+            projectGroups = projectGroupMapper.selectByUserIdAndStatus(currentUser.getId(), projectStatus);
             if (projectGroups != null && projectGroups.size() != 0){
-                redisService.set(ProjectGroupKey.getByUserId, currentUser.getId() + "", projectGroups);
+                redisService.set(ProjectGroupKey.getByUserIdAndStatus, currentUser.getId() + "_" + projectStatus, projectGroups);
             }
         }
         //设置当前用户的所有项目VO
@@ -164,27 +171,27 @@ public class ProjectServiceImpl implements ProjectService {
         UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(
                 projectGroup.getId(),
                 user.getId());
-        projectDetails.setCreator(new UserVO(
+        projectDetails.setCreator(new UserMemberVO(
                 user.getId(),
                 user.getRealName(),
                 userProjectGroup.getMemberRole()));
         //设置项目的成员信息
         List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(projectGroup.getId());
-        List<UserVO> members = new ArrayList<>();
+        List<UserMemberVO> members = new ArrayList<>();
         for (UserProjectGroup userProject : userProjectGroups) {
             User member = userService.selectByUserId(userProject.getUserId());
             //设置项目组组长
             if (userProject.getMemberRole().intValue() == MemberRole.PROJECT_GROUP_LEADER.getValue()){
-                projectDetails.setLeader(new UserVO(
+                projectDetails.setLeader(new UserMemberVO(
                         member.getId(),
                         member.getRealName(),
                         userProject.getMemberRole()));
             }
-            UserVO userVO = new UserVO();
-            userVO.setUserId(member.getId());
-            userVO.setUserName(member.getRealName());
-            userVO.setMemberRole(userProject.getMemberRole());
-            members.add(userVO);
+            UserMemberVO userMemberVO = new UserMemberVO();
+            userMemberVO.setUserId(member.getId());
+            userMemberVO.setUserName(member.getRealName());
+            userMemberVO.setMemberRole(userProject.getMemberRole());
+            members.add(userMemberVO);
         }
         projectDetails.setMembers(members);
         //设置项目资金详情
@@ -232,15 +239,28 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.error(CodeMsg.UPDATE_ERROR);
     }
 
-    @Override
-    public Result agreeEstablish(Long projectGroupId) {
+    public Result updateProjectStatus(Long projectGroupId, Integer projectStatus){
         ProjectGroup projectGroup = selectByProjectGroupId(projectGroupId);
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
-        projectGroup.setStatus(ProjectStatus.ESTABLISH.getValue());
+        projectGroup.setStatus(projectStatus);
         if (update(projectGroup)) {
             return Result.success();
+        }
+        return Result.error(CodeMsg.UPDATE_ERROR);
+    }
+
+    @Override
+    @Transactional
+    public Result agreeEstablish(Long projectGroupId) {
+        Result result = updateProjectStatus(projectGroupId, ProjectStatus.ESTABLISH.getValue());
+        if (result.getCode() != 0){
+            return result;
+        }
+        result = fundsService.agreeFunds(projectGroupId);
+        if (result.getCode() != 0){
+            return result;
         }
         return Result.error(CodeMsg.UPDATE_ERROR);
     }
@@ -313,16 +333,69 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result checkApplyInfo(Integer pageNum) {
-        Integer startNum = (pageNum - 1 ) * countConfig.getCheckProject();
-        List<ProjectGroup> projectGroups = projectGroupMapper.selectApplyByPageOrderByTime(
-                startNum,
-                countConfig.getCheckProject());
-        for (ProjectGroup projectGroup : projectGroups) {
-
+    public Result getCheckApplyInfo(Integer pageNum) {
+        PageHelper.startPage(pageNum, countConfig.getCheckProject());
+        List<CheckProjectVO> checkProjectVOS = projectGroupMapper.selectApplyOrderByTime();
+        for (CheckProjectVO checkProjectVO : checkProjectVOS) {
+            List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getProjectGroupId());
+            List<UserMemberVO> guidanceTeachers = new ArrayList<>();
+            List<UserMemberVO> memberStudents = new ArrayList<>();
+            for (UserProjectGroup userProjectGroup : userProjectGroups) {
+                UserMemberVO userMemberVO = new UserMemberVO();
+                User user = userService.selectByUserId(userProjectGroup.getUserId());
+                userMemberVO.setUserId(user.getId());
+                userMemberVO.setUserName(user.getRealName());
+                userMemberVO.setMemberRole(userProjectGroup.getMemberRole());
+                //设置负责人(项目组长)电话
+                switch (userProjectGroup.getMemberRole()){
+                    case 1:
+                        guidanceTeachers.add(userMemberVO);
+                        break;
+                    case 2:
+                        checkProjectVO.setGroupLeaderPhone(user.getMobilePhone());
+                        memberStudents.add(userMemberVO);
+                        break;
+                    case 3:
+                        memberStudents.add(userMemberVO);
+                        break;
+                    default:
+                        break;
+                }
+                //设置立项申请文件的id
+                ProjectFile applyProjectFile = projectFileService.getAimNameProjectFile(
+                        userProjectGroup.getProjectGroupId(),
+                        uploadConfig.getApplyFileName());
+                if (applyProjectFile != null){
+                    checkProjectVO.setApplyFileId(applyProjectFile.getId());
+                }
+                List<Funds> fundsDetails = fundsService.getFundsDetails(userProjectGroup.getProjectGroupId());
+                checkProjectVO.setFundsApplyAmount(CountUtil.countFundsTotalAmount(fundsDetails));
+            }
         }
-        //TODO
-        return null;
+        PageInfo<CheckProjectVO> pageInfo = new PageInfo<>(checkProjectVOS);
+        return Result.success(pageInfo);
+    }
+
+    @Override
+    public Result rejectModifyApply(Long projectGroupId) {
+        //TODO,可能会补充站内消息模块功能
+        return updateProjectStatus(projectGroupId, ProjectStatus.REJECT_MODIFY.getValue());
+    }
+
+    @Override
+    public Result reportToCollegeLeader(Long projectGroupId) {
+        //TODO,可能会补充站内消息模块功能
+        return updateProjectStatus(projectGroupId, ProjectStatus.REPORT_COLLEGE_LEADER.getValue());
+    }
+
+    @Override
+    public void generateEstablishExcel() {
+        //TODO,使用workbook生成总览表
+    }
+
+    @Override
+    public void generateConclusionExcel() {
+        //TODO,使用workbook生成总览表
     }
 
 }

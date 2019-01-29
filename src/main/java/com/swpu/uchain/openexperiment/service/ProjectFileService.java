@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
+import com.swpu.uchain.openexperiment.form.file.ConcludingReportForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,9 +32,8 @@ public interface ProjectFileService {
     /**
      * 删除文件
      * @param id
-     * @return:
      */
-    boolean delete(Long id);
+    void delete(Long id);
 
     /**
      * 按文件id进行查询
@@ -41,6 +41,14 @@ public interface ProjectFileService {
      * @return
      */
     ProjectFile selectById(Long id);
+
+    /**
+     * 获取立项申请正文文件的ProjectFile对象
+     * @param projectFileId
+     * @param aimFileName
+     * @return
+     */
+    ProjectFile getAimNameProjectFile(Long projectFileId, String aimFileName);
 
     /**
      * 上传立项申请正文
@@ -70,4 +78,31 @@ public interface ProjectFileService {
      * @return
      */
     List<ProjectFile> getProjectAllFiles(Long projectGroupId);
+
+    /**
+     * 上传附件
+     * @param multipartFile
+     * @return
+     */
+    Result uploadAttachmentFile(MultipartFile multipartFile);
+
+    /**
+     * 下载附件
+     * @param fileId
+     * @param response
+     */
+    void downloadAttachmentFile(long fileId, HttpServletResponse response);
+
+    /**
+     * 获取所有附件信息
+     * @return
+     */
+    Result listAttachmentFiles();
+
+    /**
+     * 上传结题报告文件
+     * @param concludingReportForm
+     * @return
+     */
+    Result uploadConcludingReport(ConcludingReportForm concludingReportForm);
 }

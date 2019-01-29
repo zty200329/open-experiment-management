@@ -2,8 +2,8 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.swpu.uchain.openexperiment.VO.AnnouncementListVO;
-import com.swpu.uchain.openexperiment.VO.AnnouncementVO;
+import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementListVO;
+import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementVO;
 import com.swpu.uchain.openexperiment.config.CountConfig;
 import com.swpu.uchain.openexperiment.dao.AnnouncementMapper;
 import com.swpu.uchain.openexperiment.domain.Announcement;

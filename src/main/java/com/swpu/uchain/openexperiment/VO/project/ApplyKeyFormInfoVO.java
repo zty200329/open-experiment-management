@@ -1,4 +1,4 @@
-package com.swpu.uchain.openexperiment.VO;
+package com.swpu.uchain.openexperiment.VO.project;
 
 import com.swpu.uchain.openexperiment.domain.Funds;
 import lombok.AllArgsConstructor;

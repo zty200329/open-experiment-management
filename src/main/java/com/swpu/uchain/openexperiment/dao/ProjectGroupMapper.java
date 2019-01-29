@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.dao;
 
+import com.swpu.uchain.openexperiment.VO.project.CheckProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface ProjectGroupMapper {
 
     ProjectGroup selectByName(String projectName);
 
-    List<ProjectGroup> selectByUserId(Long userId);
+    List<ProjectGroup> selectByUserIdAndStatus(Long userId, Integer projectStatus);
 
-    List<ProjectGroup> selectApplyByPageOrderByTime(Integer startNum, Integer count);
+    List<CheckProjectVO> selectApplyOrderByTime();
 }

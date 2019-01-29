@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.Funds;
+import com.swpu.uchain.openexperiment.result.Result;
 
 import java.util.List;
 
@@ -44,4 +45,11 @@ public interface FundsService {
      * @return
      */
     List<Funds> getFundsDetails(Long projectGroupId);
+
+    /**
+     * 批准某项目立项资金
+     * @param projectGroupId
+     * @return
+     */
+    Result agreeFunds(Long projectGroupId);
 }

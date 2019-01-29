@@ -56,9 +56,10 @@ public interface ProjectService {
 
     /**
      * 获取当前用户的所有参与的项目
+     * @param projectStatus
      * @return
      */
-    Result getCurrentUserProjects();
+    Result getCurrentUserProjects(Integer projectStatus);
 
     /**
      * 同意用户加入项目
@@ -93,5 +94,30 @@ public interface ProjectService {
      * @param pageNum
      * @return
      */
-    Result checkApplyInfo(Integer pageNum);
+    Result getCheckApplyInfo(Integer pageNum);
+
+    /**
+     * 驳回修改立项申请项目信息
+     * @param projectGroupId
+     * @return
+     */
+    Result rejectModifyApply(Long projectGroupId);
+
+    /**
+     * 上报学院领导
+     * @param projectGroupId
+     * @return
+     */
+    Result reportToCollegeLeader(Long projectGroupId);
+
+    /**
+     * 生成立项总览表
+     */
+    void generateEstablishExcel();
+
+    /**
+     * 生成结题总览表
+     */
+    void generateConclusionExcel();
+
 }

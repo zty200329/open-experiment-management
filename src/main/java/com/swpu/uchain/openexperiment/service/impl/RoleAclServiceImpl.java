@@ -10,7 +10,6 @@ import com.swpu.uchain.openexperiment.redis.key.AclKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.RoleAclService;
 import com.swpu.uchain.openexperiment.service.UserRoleService;
-import com.swpu.uchain.openexperiment.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

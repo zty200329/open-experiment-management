@@ -2,7 +2,8 @@ package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.UserType;
-import com.swpu.uchain.openexperiment.form.LoginForm;
+import com.swpu.uchain.openexperiment.form.user.LoginForm;
+import com.swpu.uchain.openexperiment.form.user.UserUpdateForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
 import java.io.IOException;
@@ -107,4 +108,17 @@ public interface UserService {
      * @return
      */
     User selectGroupLeader(Long projectGroupId);
+
+    /**
+     * 更新用户基本信息
+     * @param userUpdateForm
+     * @return
+     */
+    Result updateUserInfo(UserUpdateForm userUpdateForm);
+
+    /**
+     * 获取当前用户的个人基本信息
+     * @return
+     */
+    Result getMyInfo();
 }

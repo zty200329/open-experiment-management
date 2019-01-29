@@ -1,4 +1,4 @@
-package com.swpu.uchain.openexperiment.VO;
+package com.swpu.uchain.openexperiment.VO.announcement;
 
 import com.swpu.uchain.openexperiment.domain.Announcement;
 import lombok.Data;

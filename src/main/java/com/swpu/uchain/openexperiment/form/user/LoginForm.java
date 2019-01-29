@@ -1,4 +1,4 @@
-package com.swpu.uchain.openexperiment.form;
+package com.swpu.uchain.openexperiment.form.user;
 
 import lombok.Data;
 

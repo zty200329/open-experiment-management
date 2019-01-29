@@ -1,6 +1,6 @@
 package com.swpu.uchain.openexperiment.dao;
 
-import com.swpu.uchain.openexperiment.VO.AnnouncementListVO;
+import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementListVO;
 import com.swpu.uchain.openexperiment.domain.Announcement;
 import java.util.List;
 

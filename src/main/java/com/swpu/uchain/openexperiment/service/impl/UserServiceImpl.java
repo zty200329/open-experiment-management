@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.DTO.VerifyCode;
+import com.swpu.uchain.openexperiment.VO.user.UserInfoVO;
 import com.swpu.uchain.openexperiment.dao.UserMapper;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
@@ -8,7 +9,8 @@ import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.JoinStatus;
 import com.swpu.uchain.openexperiment.enums.MemberRole;
 import com.swpu.uchain.openexperiment.enums.UserType;
-import com.swpu.uchain.openexperiment.form.LoginForm;
+import com.swpu.uchain.openexperiment.form.user.LoginForm;
+import com.swpu.uchain.openexperiment.form.user.UserUpdateForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.UserKey;
 import com.swpu.uchain.openexperiment.redis.key.VerifyCodeKey;
@@ -18,6 +20,7 @@ import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.service.UserService;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -215,6 +218,31 @@ public class UserServiceImpl implements UserService {
             }
         }
         return user;
+    }
+
+    @Override
+    public Result updateUserInfo(UserUpdateForm userUpdateForm) {
+        User user = selectByUserId(userUpdateForm.getUserId());
+        if (user == null){
+            return Result.error(CodeMsg.USER_NO_EXIST);
+        }
+        User currentUser = getCurrentUser();
+        if (user.getId().intValue() != currentUser.getId()){
+            return Result.error(CodeMsg.PERMISSION_DENNY);
+        }
+        BeanUtils.copyProperties(userUpdateForm, user);
+        if (update(user)) {
+            return Result.success();
+        }
+        return Result.error(CodeMsg.UPDATE_ERROR);
+    }
+
+    @Override
+    public Result getMyInfo() {
+        User currentUser = getCurrentUser();
+        UserInfoVO userInfoVO = new UserInfoVO();
+        BeanUtils.copyProperties(currentUser, userInfoVO);
+        return Result.success(userInfoVO);
     }
 
     @Override

@@ -1,5 +1,6 @@
-package com.swpu.uchain.openexperiment.VO;
+package com.swpu.uchain.openexperiment.VO.project;
 
+import com.swpu.uchain.openexperiment.VO.user.UserDetailVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

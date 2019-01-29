@@ -19,25 +19,21 @@ public enum ProjectStatus {
      */
     ESTABLISH(1),
     /**
-     * 项目开展中
+     * 驳回修改
      */
-    PROCESSING(2),
+    REJECT_MODIFY(2),
     /**
-     * 审核阶段
+     * 已上报学院领导
      */
-    CHECK(3),
+    REPORT_COLLEGE_LEADER(3),
     /**
-     * 结项失败
+     * 中期检查
      */
-    FAIL(4),
+    MID_TERM_INSPECTION(4),
     /**
-     * 结项通过
+     * 结题项目
      */
-    PASS(5),
-    /**
-     * 项目已完结
-     */
-    OVER(6),
+    CONCLUDED(5),
     ;
 
     private Integer value;

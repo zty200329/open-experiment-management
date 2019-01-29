@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.dao;
 
+import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,9 +19,9 @@ public interface ProjectFileMapper {
 
     int updateFileDownloadTime(ProjectFile file);
 
-    List<ProjectFile> getFileNameById(Long projectGroupId);
-
     ProjectFile selectByGroupIdFileName(Long projectGroupId, String fileName);
 
     List<ProjectFile> selectByProjectGroupId(Long projectGroupId);
+
+    List<AttachmentFileDTO> selectAttachmentFiles();
 }

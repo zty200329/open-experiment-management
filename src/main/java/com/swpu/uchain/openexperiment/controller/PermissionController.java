@@ -12,6 +12,7 @@ import com.swpu.uchain.openexperiment.service.RoleAclService;
 import com.swpu.uchain.openexperiment.service.RoleService;
 import com.swpu.uchain.openexperiment.service.UserRoleService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -48,11 +49,13 @@ public class PermissionController implements InitializingBean {
     @Autowired
     private WebApplicationContext context;
 
+    @ApiOperation("获取所有Acl")
     @GetMapping(value = "/allAcl", name = "获取所有Acl")
     public Object allAcl(){
         return aclService.selectAll();
     }
 
+    @ApiOperation("按关键字查找")
     @PostMapping(value = "/selectAclByRandom", name = "按关键字查找")
     public Object selectAclByRandom(String info){
         if (StringUtils.isEmpty(info)){
@@ -61,22 +64,26 @@ public class PermissionController implements InitializingBean {
         return aclService.selectByRandom(info);
     }
 
+    @ApiOperation("更新接口描述")
     @PostMapping(value = "/updateAclDescription", name = "更新接口描述")
     public Object updateAclDescription(@Valid AclUpdateForm aclUpdateForm){
         return aclService.updateAcl(aclUpdateForm);
     }
 
-    @PostMapping(value = "/addRoleAcl",name = "批量添加角色的权限")
+    @ApiOperation("添加角色的权限")
+    @PostMapping(value = "/addRoleAcl",name = "添加角色的权限")
     public Object addRoleAcl(@Valid RoleAclForm roleAclForm){
         return roleAclService.addRoleAcl(roleAclForm);
     }
 
+    @ApiOperation("移除角色的权限")
     @PostMapping(value = "/deleteRoleAcl", name = "移除角色的权限")
     public Object deleteRoleAcl(Long id){
         roleAclService.delete(id);
         return Result.success();
     }
 
+    @ApiOperation("添加角色")
     @PostMapping(value = "/addRole", name = "添加角色")
     public Object addRole(String roleName){
         if (StringUtils.isEmpty(roleName)){
@@ -85,6 +92,7 @@ public class PermissionController implements InitializingBean {
         return roleService.addRole(roleName);
     }
 
+    @ApiOperation("删除角色")
     @PostMapping(value = "/deleteRole", name = "删除角色")
     public Object deleteRole(Long roleId){
         if (roleId == null){
@@ -94,21 +102,25 @@ public class PermissionController implements InitializingBean {
         return Result.success();
     }
 
+    @ApiOperation("更新角色名")
     @PostMapping(value = "/updateRoleName", name = "更新角色名")
     public Object updateRoleName(@Valid RoleForm roleForm){
         return roleService.updateRoleName(roleForm);
     }
 
+    @ApiOperation("获取所有角色")
     @GetMapping(value = "/allRole", name = "获取所有角色")
     public Object allRole(){
         return roleService.selectAllRole();
     }
 
+    @ApiOperation("添加用户的角色")
     @PostMapping(value = "/addUserRole", name = "添加用户的角色")
     public Object addUserRole(@Valid UserRoleForm userRoleForm){
         return userRoleService.addUserRole(userRoleForm);
     }
 
+    @ApiOperation("移除用户的角色")
     @PostMapping(value = "/deleteUserRole", name = "移除用户的角色")
     public Object deleteUserRole(Long userRoleId){
         if (userRoleId == null){

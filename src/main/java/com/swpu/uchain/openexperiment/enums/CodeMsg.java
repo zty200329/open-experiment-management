@@ -47,14 +47,13 @@ public enum CodeMsg {
     PAGE_NUM_ERROR(530, "分页数目异常"),
     FILE_EXIST(601,"文件已存在" ),
     FILE_NOT_EXIST(602,"文件不存在"),
-    NOT_BE_EMPTY(603,"上传文件不能为空"),
+    UPLOAD_CANT_BE_EMPTY(603,"上传文件不能为空"),
     FORMAT_UNSUPPORTED(604,"文件格式不支持" ),
     UPLOAD_ERROR(605,"文件上传失败"),
     DIR_NOT_EXIST(606,"文件夹不存在" ),
     FILE_OVERSIZE(607,"文件过大"),
-    FILE_ALREADY_UPLOAD(608,"同一文件不能上传多次" ),
-    FILENAME_BE_NULL(609,"文件名为空" ),
-    DOWNLOAD_ERROR(610,"下载失败" );
+    DOWNLOAD_ERROR(608,"下载失败" ),
+    DELETE_FILE_ERROR(609, "删除文件异常");
 
     private Integer code;
     private String msg;

@@ -2,11 +2,15 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.dao.FundsMapper;
 import com.swpu.uchain.openexperiment.domain.Funds;
+import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.enums.FundsStatus;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.FundsKey;
+import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.FundsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -75,6 +79,15 @@ public class FundsServiceImpl implements FundsService {
             }
         }
         return fundsList;
+    }
+
+    @Override
+    @Transactional
+    public Result agreeFunds(Long projectGroupId) {
+        if (fundsMapper.updateProjectFundsStatus(projectGroupId, FundsStatus.AGREED.getValue()) != 0){
+            return Result.success();
+        }
+        return Result.error(CodeMsg.UPDATE_ERROR);
     }
 
 }
