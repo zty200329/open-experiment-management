@@ -1,5 +1,7 @@
 package com.swpu.uchain.openexperiment.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -15,6 +17,7 @@ public class User implements Serializable {
 
     private String mobilePhone;
 
+    @JsonIgnore
     private String password;
 
     private String qqNum;

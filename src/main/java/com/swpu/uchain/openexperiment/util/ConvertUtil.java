@@ -5,9 +5,11 @@ import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
 import com.swpu.uchain.openexperiment.VO.project.ApplyGeneralFormInfoVO;
 import com.swpu.uchain.openexperiment.VO.project.ApplyKeyFormInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserDetailVO;
+import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
 import com.swpu.uchain.openexperiment.VO.user.UserVO;
+import com.swpu.uchain.openexperiment.dao.RoleMapper;
+import com.swpu.uchain.openexperiment.dao.UserMapper;
 import com.swpu.uchain.openexperiment.domain.Acl;
-import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.UserType;
 import org.springframework.beans.BeanUtils;
@@ -78,5 +80,17 @@ public class ConvertUtil {
             attachmentFileVO.setUploadUser(new UserVO(attachmentFileDTO.getUploadUserId(), attachmentFileDTO.getUserName()));
         }
         return attachmentFileVOS;
+    }
+
+    public static List<UserManageInfo> convertUsers(List<User> users, RoleMapper roleMapper){
+        List<UserManageInfo> userList = new ArrayList<>();
+        users.forEach(user -> {
+            UserManageInfo userManageInfo = new UserManageInfo();
+            BeanUtils.copyProperties(user, userManageInfo);
+            List<String> roles = roleMapper.getRoles(user.getId());
+            userManageInfo.setRoles(roles);
+            userList.add(userManageInfo);
+        });
+        return userList;
     }
 }

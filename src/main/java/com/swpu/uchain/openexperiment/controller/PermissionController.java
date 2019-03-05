@@ -6,6 +6,7 @@ import com.swpu.uchain.openexperiment.form.permission.AclUpdateForm;
 import com.swpu.uchain.openexperiment.form.permission.RoleAclForm;
 import com.swpu.uchain.openexperiment.form.permission.RoleForm;
 import com.swpu.uchain.openexperiment.form.permission.UserRoleForm;
+import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AclService;
 import com.swpu.uchain.openexperiment.service.RoleAclService;
@@ -48,6 +49,8 @@ public class PermissionController implements InitializingBean {
     private RoleAclService roleAclService;
     @Autowired
     private WebApplicationContext context;
+    @Autowired
+    private RedisService redisService;
 
     @ApiOperation("获取所有Acl")
     @GetMapping(value = "/allAcl", name = "获取所有Acl")

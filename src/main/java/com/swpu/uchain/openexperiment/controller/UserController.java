@@ -41,4 +41,10 @@ public class UserController {
     public Object getMyInfo(){
         return userService.getMyInfo();
     }
+
+    @ApiOperation("管理员根据关键字获取用户信息")
+    @GetMapping(value = "manageUsers", name = "管理员获取用户信息")
+    public Object manageUsers(String keyWord){
+        return userService.getManageUsersByKeyWord(keyWord);
+    }
 }

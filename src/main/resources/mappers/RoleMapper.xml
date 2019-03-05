@@ -36,4 +36,10 @@
   <select id="selectByRoleName" resultMap="BaseResultMap">
     select * from role where `name` = #{roleName}
   </select>
+  <select id="getRoles" resultType="java.lang.String">
+    select role.name from role
+    inner join user_role
+    on user_role.role_id = role.id
+    where user_role.user_id = #{userId}
+  </select>
 </mapper>

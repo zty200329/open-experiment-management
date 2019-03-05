@@ -2,6 +2,8 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.DTO.VerifyCode;
 import com.swpu.uchain.openexperiment.VO.user.UserInfoVO;
+import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
+import com.swpu.uchain.openexperiment.dao.RoleMapper;
 import com.swpu.uchain.openexperiment.dao.UserMapper;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
@@ -20,6 +22,7 @@ import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.service.UserService;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -51,6 +54,8 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private RoleMapper roleMapper;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -243,6 +248,16 @@ public class UserServiceImpl implements UserService {
         UserInfoVO userInfoVO = new UserInfoVO();
         BeanUtils.copyProperties(currentUser, userInfoVO);
         return Result.success(userInfoVO);
+    }
+
+    @Override
+    public Result getManageUsersByKeyWord(String keyWord) {
+        if (StringUtils.isEmpty(keyWord)){
+            return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
+        }
+        List<User> users = selectByKeyWord(keyWord);
+        List<UserManageInfo> userList = ConvertUtil.convertUsers(users, roleMapper);
+        return Result.success(userList);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.dao;
 
+import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
 import com.swpu.uchain.openexperiment.domain.User;
 import org.apache.ibatis.annotations.Param;
 

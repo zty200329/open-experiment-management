@@ -121,4 +121,11 @@ public interface UserService {
      * @return
      */
     Result getMyInfo();
+
+    /**
+     * 管理员根据关键字获取用户信息
+     * @param keyWord
+     * @return
+     */
+    Result getManageUsersByKeyWord(String keyWord);
 }
