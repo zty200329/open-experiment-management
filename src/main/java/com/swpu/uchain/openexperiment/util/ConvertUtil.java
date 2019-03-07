@@ -2,14 +2,18 @@ package com.swpu.uchain.openexperiment.util;
 
 import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
 import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
+import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
 import com.swpu.uchain.openexperiment.VO.project.ApplyGeneralFormInfoVO;
 import com.swpu.uchain.openexperiment.VO.project.ApplyKeyFormInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserDetailVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
 import com.swpu.uchain.openexperiment.VO.user.UserVO;
+import com.swpu.uchain.openexperiment.dao.AclMapper;
+import com.swpu.uchain.openexperiment.dao.RoleAclMapper;
 import com.swpu.uchain.openexperiment.dao.RoleMapper;
 import com.swpu.uchain.openexperiment.dao.UserMapper;
 import com.swpu.uchain.openexperiment.domain.Acl;
+import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.UserType;
 import org.springframework.beans.BeanUtils;
@@ -92,5 +96,17 @@ public class ConvertUtil {
             userList.add(userManageInfo);
         });
         return userList;
+    }
+
+    public static List<RoleInfoVO> convertRoles(List<Role> roles, AclMapper aclMapper){
+        List<RoleInfoVO> roleList = new ArrayList<>();
+        roles.forEach(role -> {
+            RoleInfoVO roleInfoVO = new RoleInfoVO();
+            BeanUtils.copyProperties(role, roleInfoVO);
+            List<Acl> acls = aclMapper.selectByRoleId(role.getId());
+            roleInfoVO.setAcls(acls);
+            roleList.add(roleInfoVO);
+        });
+        return roleList;
     }
 }

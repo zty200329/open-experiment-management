@@ -61,7 +61,7 @@ public interface RoleService {
     Result updateRoleName(RoleForm roleForm);
 
     /**
-     * 查询所有角色信息
+     * 查询所有角色信息,包括当前角所拥有的权限
      * @return
      */
     Result selectAllRole();

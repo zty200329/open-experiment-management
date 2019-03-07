@@ -46,4 +46,10 @@
     <select id="selectByUrl" resultMap="BaseResultMap">
       select * from acl where acl.url = #{url}
     </select>
+    <select id="selectByRoleId" resultMap="BaseResultMap">
+      select * from acl
+      inner join role_acl
+      on role_acl.acl_id = acl.id
+      where role_acl.role_id = #{id}
+    </select>
 </mapper>

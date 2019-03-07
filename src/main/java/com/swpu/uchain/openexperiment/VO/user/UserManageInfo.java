@@ -13,7 +13,7 @@ import java.util.List;
 public class UserManageInfo {
     private Long id;
     private String realName;
-    private String userCode;
+    private String code;
     private String mobilePhone;
     private String email;
     private List<String> roles;

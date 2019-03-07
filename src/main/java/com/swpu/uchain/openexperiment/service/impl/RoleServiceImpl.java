@@ -1,15 +1,18 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.swpu.uchain.openexperiment.dao.AclMapper;
 import com.swpu.uchain.openexperiment.dao.RoleMapper;
 import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.permission.RoleForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.RoleService;
+import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: clf
@@ -21,6 +24,8 @@ import java.util.Date;
 public class RoleServiceImpl implements RoleService {
     @Autowired
     private RoleMapper roleMapper;
+    @Autowired
+    private AclMapper aclMapper;
     @Override
     public boolean insert(Role role) {
         return roleMapper.insert(role) == 1;
@@ -69,7 +74,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Result selectAllRole() {
-        return Result.success(roleMapper.selectAll());
+        List<Role> roles = roleMapper.selectAll();
+        return Result.success(ConvertUtil.convertRoles(roles, aclMapper));
     }
 
     @Override

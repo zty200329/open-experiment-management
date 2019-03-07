@@ -21,4 +21,6 @@ public interface AclMapper {
     List<Acl> selectByRandom(@Param("info") String info);
 
     Acl selectByUrl(String url);
+
+    List<Acl> selectByRoleId(Long id);
 }
