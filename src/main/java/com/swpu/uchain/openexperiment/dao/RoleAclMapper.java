@@ -4,7 +4,7 @@ import com.swpu.uchain.openexperiment.domain.RoleAcl;
 import java.util.List;
 
 public interface RoleAclMapper {
-    int deleteByPrimaryKey(Long id);
+    int deleteRoleIdAndAclId(Long roleId, Long aclId);
 
     int insert(RoleAcl record);
 

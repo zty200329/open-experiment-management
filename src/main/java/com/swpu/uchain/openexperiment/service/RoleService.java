@@ -4,6 +4,8 @@ import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.form.permission.RoleForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
+import java.util.List;
+
 /**
  * @Author: clf
  * @Date: 19-1-17
@@ -65,4 +67,18 @@ public interface RoleService {
      * @return
      */
     Result selectAllRole();
+
+    /**
+     * 根据角色id获取当前角色和权限的所有信息
+     * @param roleId
+     * @return
+     */
+    Result selectRoleInfo(Long roleId);
+
+    /**
+     * 根据用户id获取角色内容
+     * @param userId
+     * @return
+     */
+    List<Role> getUserRoles(Long userId);
 }

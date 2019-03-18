@@ -1,6 +1,8 @@
 package com.swpu.uchain.openexperiment.form.permission;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
@@ -10,6 +12,8 @@ import javax.validation.constraints.NotNull;
  * @Description:
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RoleAclForm {
     @NotNull(message = "角色id不能为空")
     private Long roleId;

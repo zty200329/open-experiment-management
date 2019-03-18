@@ -58,6 +58,11 @@ public class ProjectController {
         return projectService.agreeJoin(joinForm);
     }
 
+    @PostMapping(value = "/rejectJoin", name = "拒绝某用户加入项目组")
+    public Object rejectJoin(@Valid JoinForm joinForm){
+        return projectService.rejectJoin(joinForm);
+    }
+
     @ApiOperation("审批项目展示接口")
     @GetMapping(value = "/checkApplyInfo", name = "审批项目展示接口")
     public Object getCheckApplyInfo(Integer pageNum){
@@ -116,5 +121,10 @@ public class ProjectController {
     @PostMapping(value = "/appendCreateApply", name = "追加立项申请内容")
     public Object appendCreateApply(@Valid AppendApplyForm appendApplyForm){
         return projectService.appendCreateApply(appendApplyForm);
+    }
+
+    @GetMapping(value = "/getApplyingJoinInfo", name = "获取当前用户（限老师身份）指导项目的申请参加列表")
+    public Object getApplyingJoinInfo(){
+        return Result.success(projectService.getJoinInfo());
     }
 }

@@ -6,9 +6,10 @@
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
   </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <delete id="deleteByUserIdAndRoleId" parameterType="java.lang.Long">
     delete from user_role
-    where id = #{id,jdbcType=BIGINT}
+    where user_id = #{param1}
+    and role_id = #{param2}
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.UserRole">
     insert into user_role (id, user_id, role_id

@@ -22,9 +22,10 @@ public interface UserRoleService {
 
     /**
      * 删除用户的某个角色
-     * @param userRoleId
+     * @param userId
+     * @param roleId
      */
-    void delete(Long userRoleId);
+    void deleteByUserIdRoleId(Long userId, Long roleId);
 
     /**
      * 为用户配置角色

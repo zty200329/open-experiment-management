@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.dao;
 
+import com.swpu.uchain.openexperiment.VO.permission.RoleVO;
 import com.swpu.uchain.openexperiment.domain.Role;
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface RoleMapper {
 
     Role selectByRoleName(String roleName);
 
-    List<String> getRoles(Long userId);
+    List<RoleVO> getRoles(Long userId);
+
+    List<Role> selectByUserId(Long userId);
 }

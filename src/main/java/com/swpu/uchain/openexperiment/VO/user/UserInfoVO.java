@@ -1,6 +1,9 @@
 package com.swpu.uchain.openexperiment.VO.user;
 
+import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @Author: clf
@@ -39,4 +42,5 @@ public class UserInfoVO {
 
     private Integer classNum;
 
+    private List<RoleInfoVO> roleInfoVOS;
 }

@@ -21,4 +21,6 @@ public interface UserProjectGroupMapper {
     UserProjectGroup selectByProjectGroupIdAndUserId(Long projectGroupId, Long userId);
 
     void deleteByProjectGroupId(Long projectGroupId);
+
+    List<UserProjectGroup> selectByProjectGroupIdAndJoinStatus(Long projectGroupId, Integer joinStatus);
 }

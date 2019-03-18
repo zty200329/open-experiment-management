@@ -6,9 +6,10 @@
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="acl_id" jdbcType="BIGINT" property="aclId" />
   </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <delete id="deleteRoleIdAndAclId" parameterType="java.lang.Long">
     delete from role_acl
-    where id = #{id,jdbcType=BIGINT}
+    where role_id = #{param1}
+    and acl_id = #{param2}
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.RoleAcl">
     insert into role_acl (id, role_id, acl_id

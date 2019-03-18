@@ -201,4 +201,9 @@ public class UserProjectServiceImpl implements UserProjectService {
         }
         return Result.error(CodeMsg.UPDATE_ERROR);
     }
+
+    @Override
+    public List<UserProjectGroup> selectByProjectAndStatus(Long projectGroupId, Integer joinStatus) {
+        return userProjectGroupMapper.selectByProjectGroupIdAndJoinStatus(projectGroupId, joinStatus);
+    }
 }

@@ -11,6 +11,7 @@ import lombok.Data;
 public class UserDetailVO {
     private Long id;
     private String sex;
+    private String realName;
     private String major;
     private Integer grade;
     private String code;

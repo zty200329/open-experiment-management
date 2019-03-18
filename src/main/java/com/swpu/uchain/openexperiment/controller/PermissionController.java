@@ -1,6 +1,8 @@
 package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.domain.Acl;
+import com.swpu.uchain.openexperiment.domain.Role;
+import com.swpu.uchain.openexperiment.domain.RoleAcl;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.permission.AclUpdateForm;
 import com.swpu.uchain.openexperiment.form.permission.RoleAclForm;
@@ -67,6 +69,12 @@ public class PermissionController implements InitializingBean {
         return aclService.selectByRandom(info);
     }
 
+    @ApiOperation("根据id获取角色信息")
+    @GetMapping(value = "/selectRole", name = "根据id获取角色信息")
+    public Object selectRole(Long id){
+        return Result.success(roleService.selectRoleInfo(id));
+    }
+
     @ApiOperation("更新接口描述")
     @PostMapping(value = "/updateAclDescription", name = "更新接口描述")
     public Object updateAclDescription(@Valid AclUpdateForm aclUpdateForm){
@@ -81,8 +89,11 @@ public class PermissionController implements InitializingBean {
 
     @ApiOperation("移除角色的权限")
     @PostMapping(value = "/deleteRoleAcl", name = "移除角色的权限")
-    public Object deleteRoleAcl(Long id){
-        roleAclService.delete(id);
+    public Object deleteRoleAcl(Long roleId, Long aclId){
+        if (roleId == 0 || aclId == 0){
+            return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
+        }
+        roleAclService.deleteByRoleIdAclId(roleId, aclId);
         return Result.success();
     }
 
@@ -125,11 +136,11 @@ public class PermissionController implements InitializingBean {
 
     @ApiOperation("移除用户的角色")
     @PostMapping(value = "/deleteUserRole", name = "移除用户的角色")
-    public Object deleteUserRole(Long userRoleId){
-        if (userRoleId == null){
+    public Object deleteUserRole(Long userId, Long roleId){
+        if (userId == 0 || roleId == 0){
             return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
         }
-        userRoleService.delete(userRoleId);
+        userRoleService.deleteByUserIdRoleId(userId, roleId);
         return Result.success();
     }
 
@@ -140,22 +151,39 @@ public class PermissionController implements InitializingBean {
         RequestMappingHandlerMapping mapping = (RequestMappingHandlerMapping) context.getBean("requestMappingHandlerMapping");
         Map<RequestMappingInfo, HandlerMethod> map = mapping.getHandlerMethods();
         log.info("===============================更新数据库Acl数据=========================");
+        Role admin = roleService.selectRoleName("ADMIN");
+        if (admin == null){
+            roleService.addRole("ADMIN");
+        }
         for (RequestMappingInfo info : map.keySet()) {
             String url = info.getPatternsCondition().getPatterns().iterator().next();
             log.info("url:" + url);
             String name = info.getName();
             log.info("name:" + name);
+            //跳过name为null的接口
+            if (StringUtils.isEmpty(name)) {
+                continue;
+            }
             Acl acl = aclService.selectByUrl(url);
-            //当数据库存在或name为空(非自定义的接口)就直接跳过添加操作
-            if (acl != null || StringUtils.isEmpty(name)){
+            //当数据库存在当前接口则进行检查是否为管理员添加过权限
+            if (acl != null){
+                RoleAcl roleAcl = roleAclService.selectByRoleIdAndAclId(admin.getId(), acl.getId());
+                if (roleAcl == null){
+                    log.info("添加ADMIN权限： {}", acl);
+                    roleAclService.addRoleAcl(new RoleAclForm(admin.getId(), acl.getId()));
+                }
                 continue;
             }
             acl = new Acl();
             acl.setUrl(url);
             acl.setName(name);
-            aclService.insert(acl);
-            log.info("添加: {}", acl);
+            if (aclService.insert(acl)) {
+                log.info("添加acl: {}", acl);
+                roleAclService.addRoleAcl(new RoleAclForm(admin.getId(), acl.getId()));
+                log.info("同时添加ADMIN权限： {}", acl);
+            }
         }
         log.info("=============================更新Acl完成================================");
+
     }
 }

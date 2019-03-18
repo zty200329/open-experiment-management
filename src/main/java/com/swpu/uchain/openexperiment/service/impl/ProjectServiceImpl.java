@@ -9,6 +9,7 @@ import com.swpu.uchain.openexperiment.config.UploadConfig;
 import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
+import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.funds.FundsForm;
 import com.swpu.uchain.openexperiment.form.project.AppendApplyForm;
 import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
@@ -47,6 +48,8 @@ public class ProjectServiceImpl implements ProjectService {
     //TODO,答辩小组Service
     @Autowired
     private ProjectFileService projectFileService;
+    @Autowired
+    private ProjectService projectService;
     @Autowired
     private FundsService fundsService;
     @Autowired
@@ -102,6 +105,22 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public List<ProjectGroup> selectByUserIdAndProjectStatus(Long userId, Integer projectStatus){
+        //获取当前用户参与的所有项目
+        List<ProjectGroup> projectGroups = redisService.getArraylist(
+                ProjectGroupKey.getByUserIdAndStatus,
+                userId + "_" + projectStatus,
+                ProjectGroup.class);
+        if (projectGroups == null || projectGroups.size() == 0){
+            projectGroups = projectGroupMapper.selectByUserIdAndStatus(userId, projectStatus);
+            if (projectGroups != null && projectGroups.size() != 0){
+                redisService.set(ProjectGroupKey.getByUserIdAndStatus, userId + "_" + projectStatus, projectGroups);
+            }
+        }
+        return projectGroups;
+    }
+
+    @Override
     @Transactional
     public Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm) {
         ProjectGroup projectGroup = projectGroupMapper.selectByName(createProjectApplyForm.getProjectName());
@@ -137,19 +156,9 @@ public class ProjectServiceImpl implements ProjectService {
     public Result getCurrentUserProjects(Integer projectStatus) {
         User currentUser = userService.getCurrentUser();
         if (userService == null){
-            return Result.error(CodeMsg.AUTHENTICATION_ERROR);
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
-        //获取当前用户参与的所有项目
-        List<ProjectGroup> projectGroups = redisService.getArraylist(
-                ProjectGroupKey.getByUserIdAndStatus,
-                currentUser.getId() + "_" + projectStatus,
-                ProjectGroup.class);
-        if (projectGroups == null || projectGroups.size() == 0){
-            projectGroups = projectGroupMapper.selectByUserIdAndStatus(currentUser.getId(), projectStatus);
-            if (projectGroups != null && projectGroups.size() != 0){
-                redisService.set(ProjectGroupKey.getByUserIdAndStatus, currentUser.getId() + "_" + projectStatus, projectGroups);
-            }
-        }
+        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(currentUser.getId(), projectStatus);
         //设置当前用户的所有项目VO
         List<MyProjectVO> myProjectVOS = new ArrayList<>();
         for (ProjectGroup projectGroup : projectGroups) {
@@ -396,6 +405,48 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void generateConclusionExcel() {
         //TODO,使用workbook生成总览表
+    }
+
+    @Override
+    public List getJoinInfo() {
+        User currentUser = userService.getCurrentUser();
+        //检测学生无法拥有检查看审批列表的功能
+        if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()){
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
+        List<JoinUnCheckVO> joinUnCheckVOS = new ArrayList<>();
+        //获取当前教师参与申报的项目组
+        List<ProjectGroup> projectGroups = projectService.selectByUserIdAndProjectStatus(currentUser.getId(), ProjectStatus.DECLARE.getValue());
+        projectGroups.forEach(projectGroup -> {
+            List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(), JoinStatus.APPLYING.getValue());
+            for (UserProjectGroup userProjectGroup : userProjectGroups) {
+                JoinUnCheckVO joinUnCheckVO = new JoinUnCheckVO();
+                User user = userService.selectByUserId(userProjectGroup.getUserId());
+                joinUnCheckVO.setProjectGroupId(projectGroup.getId());
+                joinUnCheckVO.setProjectName(projectGroup.getProjectName());
+                joinUnCheckVO.setPersonJudge(userProjectGroup.getPersonalJudge());
+                joinUnCheckVO.setTechnicalRole(userProjectGroup.getTechnicalRole());
+                joinUnCheckVO.setUserDetailVO(ConvertUtil.convertUserDetailVO(user));
+                joinUnCheckVOS.add(joinUnCheckVO);
+            }
+        });
+        return joinUnCheckVOS;
+    }
+
+    @Override
+    public Result rejectJoin(JoinForm joinForm) {
+        UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(), joinForm.getUserId());
+        if (userProjectGroup == null){
+            return Result.error(CodeMsg.USER_NOT_APPLYING);
+        }
+        if (userProjectGroup.getStatus() == JoinStatus.JOINED.getValue().intValue()){
+            return Result.error(CodeMsg.USER_HAD_JOINED_CANT_REJECT);
+        }
+        userProjectGroup.setStatus(JoinStatus.UN_PASS.getValue());
+        if (userProjectService.update(userProjectGroup)) {
+            return Result.success();
+        }
+        return Result.error(CodeMsg.UPDATE_ERROR);
     }
 
 }

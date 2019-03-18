@@ -4,6 +4,7 @@ import com.swpu.uchain.openexperiment.dao.AclMapper;
 import com.swpu.uchain.openexperiment.dao.RoleMapper;
 import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.permission.RoleForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.RoleService;
@@ -38,7 +39,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void delete(Long id) {
-        roleMapper.deleteByPrimaryKey(id);
+        Role role = selectByRoleId(id);
+        if (role != null){
+            if ("ADMIN".equals(role.getName())) {
+                throw new GlobalException(CodeMsg.ADMIN_CANT_DELETE);
+            }
+            roleMapper.deleteByPrimaryKey(id);
+        }
     }
 
     @Override
@@ -64,6 +71,9 @@ public class RoleServiceImpl implements RoleService {
         if (role == null){
             return Result.error(CodeMsg.ROLE_NOT_EXIST);
         }
+        if ("ADMIN".equals(role.getName())){
+            return Result.error(CodeMsg.ADMIN_CANT_CHANGE);
+        }
         role.setName(roleForm.getRoleName());
         role.setUpdateTime(new Date());
         if (update(role)){
@@ -76,6 +86,17 @@ public class RoleServiceImpl implements RoleService {
     public Result selectAllRole() {
         List<Role> roles = roleMapper.selectAll();
         return Result.success(ConvertUtil.convertRoles(roles, aclMapper));
+    }
+
+    @Override
+    public Result selectRoleInfo(Long roleId) {
+        Role role = selectByRoleId(roleId);
+        return Result.success(ConvertUtil.convertOneRoleInfo(role, aclMapper));
+    }
+
+    @Override
+    public List<Role> getUserRoles(Long userId) {
+        return roleMapper.selectByUserId(userId);
     }
 
     @Override

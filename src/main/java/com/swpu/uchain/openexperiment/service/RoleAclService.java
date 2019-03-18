@@ -21,9 +21,10 @@ public interface RoleAclService {
 
     /**
      * 删除某个角色的权限
-     * @param id
+     * @param roleId
+     * @param aclId
      */
-    void delete(Long id);
+    void deleteByRoleIdAclId(Long roleId, Long aclId);
 
     /**
      * 按角色id和权限id进行查找

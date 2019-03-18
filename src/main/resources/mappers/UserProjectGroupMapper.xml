@@ -61,4 +61,7 @@
   <select id="selectByProjectGroupId" resultMap="BaseResultMap">
     select * from user_project_group where project_group_id = #{projectGroupId}
   </select>
+  <select id="selectByProjectGroupIdAndJoinStatus" resultMap="BaseResultMap">
+    select * from user_project_group where project_group_id = #{param1} and status = #{param2}
+  </select>
 </mapper>

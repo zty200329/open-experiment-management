@@ -45,8 +45,8 @@ public class RoleAclServiceImpl implements RoleAclService {
     }
 
     @Override
-    public void delete(Long id) {
-        roleAclMapper.deleteByPrimaryKey(id);
+    public void deleteByRoleIdAclId(Long roleId, Long aclId) {
+        roleAclMapper.deleteRoleIdAndAclId(roleId, aclId);
     }
 
     @Override

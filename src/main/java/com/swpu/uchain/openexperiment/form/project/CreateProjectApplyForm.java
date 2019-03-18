@@ -33,7 +33,7 @@ public class CreateProjectApplyForm {
     @ApiModelProperty("项目类型: 1.普通,2.重点")
     @NotNull(message = "项目类型必选")
     private Integer projectType;
-    @ApiModelProperty("1.A组石工地堪,2.B组化工材料3.C组机械力学4.E组软件与数学,5.F组经管法律艺体人文")
+    @ApiModelProperty("1.A组石工地堪,2.B组化工材料3.C组机械力学4.D电气及制作,5.E组软件与数学,6.F组经管法律艺体人文")
     @NotNull(message = "建议评审分组必选")
     private Integer suggestGroupType;
     @ApiModelProperty("立项正文文件")

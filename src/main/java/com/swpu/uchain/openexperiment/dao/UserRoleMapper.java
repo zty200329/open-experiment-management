@@ -4,7 +4,7 @@ import com.swpu.uchain.openexperiment.domain.UserRole;
 import java.util.List;
 
 public interface UserRoleMapper {
-    int deleteByPrimaryKey(Long id);
+    int deleteByUserIdAndRoleId(Long userId, Long roleId);
 
     int insert(UserRole record);
 

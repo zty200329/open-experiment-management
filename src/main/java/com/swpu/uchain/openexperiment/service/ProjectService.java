@@ -6,6 +6,8 @@ import com.swpu.uchain.openexperiment.form.project.JoinForm;
 import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
+import java.util.List;
+
 /**
  * @Author: clf
  * @Date: 19-1-21
@@ -46,6 +48,14 @@ public interface ProjectService {
      * @return
      */
     ProjectGroup selectByProjectGroupId(Long projectGroupId);
+
+    /**
+     * 获取某用户的某状态的项目组的信息
+     * @param userId
+     * @param projectStatus
+     * @return
+     */
+    List<ProjectGroup> selectByUserIdAndProjectStatus(Long userId, Integer projectStatus);
 
     /**
      * 立项申请接口
@@ -120,4 +130,16 @@ public interface ProjectService {
      */
     void generateConclusionExcel();
 
+    /**
+     * 获取当前指导老师的项目成员审批列表
+     * @return
+     */
+    List getJoinInfo();
+
+    /**
+     * 拒绝某用户申请加入项目组
+     * @param joinForm
+     * @return
+     */
+    Result rejectJoin(JoinForm joinForm);
 }

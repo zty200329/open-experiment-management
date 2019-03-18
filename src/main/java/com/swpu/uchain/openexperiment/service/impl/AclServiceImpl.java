@@ -48,7 +48,7 @@ public class AclServiceImpl implements AclService {
         if (aclUrls == null){
             List<Acl> acls = aclMapper.selectByUserId(userId);
             if (acls != null){
-                aclUrls = ConvertUtil.fromAclsTogetUrls(acls);
+                aclUrls = ConvertUtil.fromAclsToUrls(acls);
                 redisService.set(AclKey.getUrlsByUserId, userId + "", aclUrls);
             }
         }

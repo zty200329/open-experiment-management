@@ -1,10 +1,13 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.DTO.VerifyCode;
+import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
+import com.swpu.uchain.openexperiment.dao.AclMapper;
 import com.swpu.uchain.openexperiment.dao.RoleMapper;
 import com.swpu.uchain.openexperiment.dao.UserMapper;
+import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
@@ -18,6 +21,7 @@ import com.swpu.uchain.openexperiment.redis.key.UserKey;
 import com.swpu.uchain.openexperiment.redis.key.VerifyCodeKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.security.JwtTokenUtil;
+import com.swpu.uchain.openexperiment.service.RoleService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.service.UserService;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
@@ -57,6 +61,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RoleMapper roleMapper;
     @Autowired
+    private RoleService roleService;
+    @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -64,6 +70,8 @@ public class UserServiceImpl implements UserService {
     private UserDetailsService userDetailsService;
     @Autowired
     private UserProjectService userProjectService;
+    @Autowired
+    private AclMapper aclMapper;
     @Override
     public boolean insert(User user) {
         if (userMapper.insert(user) == 1){
@@ -247,6 +255,9 @@ public class UserServiceImpl implements UserService {
         User currentUser = getCurrentUser();
         UserInfoVO userInfoVO = new UserInfoVO();
         BeanUtils.copyProperties(currentUser, userInfoVO);
+        List<Role> roles = roleService.getUserRoles(currentUser.getId());
+        List<RoleInfoVO> roleInfoVOS = ConvertUtil.convertRoles(roles, aclMapper);
+        userInfoVO.setRoleInfoVOS(roleInfoVOS);
         return Result.success(userInfoVO);
     }
 

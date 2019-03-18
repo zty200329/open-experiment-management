@@ -3,15 +3,14 @@ package com.swpu.uchain.openexperiment.util;
 import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
 import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
 import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
+import com.swpu.uchain.openexperiment.VO.permission.RoleVO;
 import com.swpu.uchain.openexperiment.VO.project.ApplyGeneralFormInfoVO;
 import com.swpu.uchain.openexperiment.VO.project.ApplyKeyFormInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserDetailVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
 import com.swpu.uchain.openexperiment.VO.user.UserVO;
 import com.swpu.uchain.openexperiment.dao.AclMapper;
-import com.swpu.uchain.openexperiment.dao.RoleAclMapper;
 import com.swpu.uchain.openexperiment.dao.RoleMapper;
-import com.swpu.uchain.openexperiment.dao.UserMapper;
 import com.swpu.uchain.openexperiment.domain.Acl;
 import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.domain.User;
@@ -25,9 +24,10 @@ import java.util.List;
  * @Author: clf
  * @Date: 19-1-23
  * @Description:
+ * VO转换工具类
  */
 public class ConvertUtil {
-    public static List<String> fromAclsTogetUrls(List<Acl> acls){
+    public static List<String> fromAclsToUrls(List<Acl> acls){
         List<String> urls = new ArrayList<>();
         for (Acl acl : acls) {
             urls.add(acl.getUrl());
@@ -54,8 +54,7 @@ public class ConvertUtil {
         List<UserDetailVO> guideTeachers = new ArrayList<>();
         List<UserDetailVO> stuMembers = new ArrayList<>();
         for (User user : users) {
-            UserDetailVO userDetailVO = new UserDetailVO();
-            BeanUtils.copyProperties(user, userDetailVO);
+            UserDetailVO userDetailVO = convertUserDetailVO(user);
             if (user.getUserType().intValue() == UserType.STUDENT.getValue()){
                 stuMembers.add(userDetailVO);
             }else {
@@ -91,7 +90,7 @@ public class ConvertUtil {
         users.forEach(user -> {
             UserManageInfo userManageInfo = new UserManageInfo();
             BeanUtils.copyProperties(user, userManageInfo);
-            List<String> roles = roleMapper.getRoles(user.getId());
+            List<RoleVO> roles = roleMapper.getRoles(user.getId());
             userManageInfo.setRoles(roles);
             userList.add(userManageInfo);
         });
@@ -101,12 +100,23 @@ public class ConvertUtil {
     public static List<RoleInfoVO> convertRoles(List<Role> roles, AclMapper aclMapper){
         List<RoleInfoVO> roleList = new ArrayList<>();
         roles.forEach(role -> {
-            RoleInfoVO roleInfoVO = new RoleInfoVO();
-            BeanUtils.copyProperties(role, roleInfoVO);
-            List<Acl> acls = aclMapper.selectByRoleId(role.getId());
-            roleInfoVO.setAcls(acls);
+            RoleInfoVO roleInfoVO = convertOneRoleInfo(role, aclMapper);
             roleList.add(roleInfoVO);
         });
         return roleList;
+    }
+
+    public static RoleInfoVO convertOneRoleInfo(Role role, AclMapper aclMapper) {
+        RoleInfoVO roleInfoVO = new RoleInfoVO();
+        BeanUtils.copyProperties(role, roleInfoVO);
+        List<Acl> acls = aclMapper.selectByRoleId(role.getId());
+        roleInfoVO.setAcls(acls);
+        return roleInfoVO;
+    }
+
+    public static UserDetailVO convertUserDetailVO(User user) {
+        UserDetailVO userDetailVO = new UserDetailVO();
+        BeanUtils.copyProperties(user, userDetailVO);
+        return userDetailVO;
     }
 }

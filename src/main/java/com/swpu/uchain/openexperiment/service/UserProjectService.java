@@ -85,4 +85,13 @@ public interface UserProjectService {
      * @return
      */
     Result aimUserMemberRole(AimForm aimForm);
+
+    /**
+     * 查询指定项目参与状态的关系信息
+     * @param joinStatus
+     * @param projectGroupId
+     * @return
+     */
+    List<UserProjectGroup> selectByProjectAndStatus(Long projectGroupId, Integer joinStatus);
+
 }

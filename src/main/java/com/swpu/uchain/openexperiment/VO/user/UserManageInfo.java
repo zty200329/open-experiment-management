@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.VO.user;
 
+import com.swpu.uchain.openexperiment.VO.permission.RoleVO;
 import lombok.Data;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public class UserManageInfo {
     private String code;
     private String mobilePhone;
     private String email;
-    private List<String> roles;
+    private List<RoleVO> roles;
 }
