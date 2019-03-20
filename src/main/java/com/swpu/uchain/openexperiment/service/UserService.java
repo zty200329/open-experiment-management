@@ -90,14 +90,16 @@ public interface UserService {
     /**
      * 按关键字进行查找用户信息
      * @param keyWord
+     * @param isTeacher
      * @return
      */
-    List<User> selectByKeyWord(String keyWord);
+    List<User> selectByKeyWord(String keyWord, boolean isTeacher);
 
     /**
      * 创建老师参与项目关系
      * @param userCodes
      * @param projectGroupId
+     * @param userType
      * @return
      */
     Result createUserJoin(String[] userCodes, Long projectGroupId, UserType userType);

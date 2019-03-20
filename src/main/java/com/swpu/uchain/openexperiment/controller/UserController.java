@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.controller;
 
+import com.swpu.uchain.openexperiment.enums.UserType;
 import com.swpu.uchain.openexperiment.form.user.UserUpdateForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.UserService;
@@ -26,8 +27,8 @@ public class UserController {
 
     @ApiOperation("按关键字查找用户")
     @PostMapping(value = "/keyWord", name = "按关键字查找用户")
-    public Object keyWord(String keyWord){
-        return Result.success(userService.selectByKeyWord(keyWord));
+    public Object keyWord(String keyWord, boolean isTeacher){
+        return Result.success(userService.selectByKeyWord(keyWord, isTeacher));
     }
 
     @ApiOperation("完善个人信息")

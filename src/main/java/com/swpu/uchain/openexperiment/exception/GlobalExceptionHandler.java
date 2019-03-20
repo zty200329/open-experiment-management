@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: clf
@@ -38,6 +39,13 @@ public class GlobalExceptionHandler {
             return Result.error(globalException.getCodeMsg());
         }
         if (e instanceof BindException){
+            //TODO,print parameters
+            Map<String, String[]> parameterMap = request.getParameterMap();
+            log.info("========================输出信息参数信息====================");
+            parameterMap.forEach((s, strings) -> {
+                log.info("param: " + s + ", value: " + strings);
+            });
+            log.info("========================参数打印完毕====================");
             BindException bindException = (BindException) e;
             List<ObjectError> errors = bindException.getAllErrors();
             String msg = null;

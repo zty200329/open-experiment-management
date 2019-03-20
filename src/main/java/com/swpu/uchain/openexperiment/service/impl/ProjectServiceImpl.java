@@ -14,6 +14,7 @@ import com.swpu.uchain.openexperiment.form.funds.FundsForm;
 import com.swpu.uchain.openexperiment.form.project.AppendApplyForm;
 import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
 import com.swpu.uchain.openexperiment.form.project.JoinForm;
+import com.swpu.uchain.openexperiment.form.project.UpdateProjectApplyForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -67,6 +68,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public boolean update(ProjectGroup projectGroup) {
+        projectGroup.setUpdateTime(new Date());
         if (projectGroupMapper.updateByPrimaryKey(projectGroup) == 1){
             redisService.set(ProjectGroupKey.getByProjectGroupId, projectGroup.getId() + "", projectGroup);
             return true;
@@ -86,6 +88,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result addProjectGroup(ProjectGroup projectGroup) {
+        projectGroup.setCreateTime(new Date());
+        projectGroup.setUpdateTime(new Date());
         if (insert(projectGroup)){
             return Result.success();
         }
@@ -132,24 +136,56 @@ public class ProjectServiceImpl implements ProjectService {
         projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
         Result result = addProjectGroup(projectGroup);
         if (result.getCode() != 0){
-            return result;
-        }
-        result = userService.createUserJoin(
-                createProjectApplyForm.getTeacherCodes(),
-                projectGroup.getId(),
-                UserType.LECTURER);
-        if (result.getCode() != 0){
-            return result;
+            throw new GlobalException(CodeMsg.ADD_PROJECT_GROUP_ERROR);
         }
         //对文件上传的处理,1.获取文件名,2.保存文件,3.维护数据库
         result = projectFileService.uploadApplyDoc(createProjectApplyForm.getFile(), projectGroup.getId());
         if (result.getCode() != 0){
-            return result;
+            throw new GlobalException(CodeMsg.UPLOAD_ERROR);
         }
-        return userService.createUserJoin(
-                createProjectApplyForm.getStuCodes(),
-                projectGroup.getId(),
+        addStuAndTeacherJoin(createProjectApplyForm.getStuCodes(), createProjectApplyForm.getTeacherCodes(), projectGroup.getId());
+        return Result.success();
+    }
+
+    @Override
+    @Transactional
+    public Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm) {
+        ProjectGroup projectGroup = selectByProjectGroupId(updateProjectApplyForm.getProjectGroupId());
+        if (projectGroup == null){
+            return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+        }
+        if (projectGroup.getStatus() != ProjectStatus.DECLARE.getValue().intValue()
+                || projectGroup.getStatus() != ProjectStatus.REJECT_MODIFY.getValue().intValue()){
+            return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+        }
+        //更新项目组基本信息
+        BeanUtils.copyProperties(updateProjectApplyForm, projectGroup);
+        update(projectGroup);
+        //对文件上传的处理,1.获取文件名,2.保存文件,3.维护数据库
+        Result result = projectFileService.uploadApplyDoc(updateProjectApplyForm.getFile(), projectGroup.getId());
+        if (result.getCode() != 0){
+            throw new GlobalException(CodeMsg.UPLOAD_ERROR);
+        }
+        userProjectService.deleteByProjectGroupId(projectGroup.getId());
+        addStuAndTeacherJoin(updateProjectApplyForm.getStuCodes(), updateProjectApplyForm.getTeacherCodes(), projectGroup.getId());
+        return Result.success();
+    }
+
+    public void addStuAndTeacherJoin(String[] stuCodes, String[] teacherCodes, Long projectGroupId){
+        Result result = userService.createUserJoin(
+                teacherCodes,
+                projectGroupId,
+                UserType.LECTURER);
+        if (result.getCode() != 0){
+            throw new GlobalException(CodeMsg.ADD_USER_JOIN_ERROR);
+        }
+        result = userService.createUserJoin(
+                stuCodes,
+                projectGroupId,
                 UserType.STUDENT);
+        if (result.getCode() != 0){
+            throw new GlobalException(CodeMsg.ADD_USER_JOIN_ERROR);
+        }
     }
 
     @Override

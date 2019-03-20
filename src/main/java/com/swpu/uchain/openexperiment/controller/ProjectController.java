@@ -34,6 +34,11 @@ public class ProjectController {
         return projectService.applyCreateProject(createProjectApplyForm);
     }
 
+    @PostMapping(value = "/updateApply", name = "修改立项申请")
+    public Object updateApply(@Valid UpdateProjectApplyForm updateProjectApplyForm){
+        return projectService.applyUpdateProject(updateProjectApplyForm);
+    }
+
     @ApiOperation("申请参与项目接口")
     @PostMapping(value = "/joinApply", name = "申请参与项目接口")
     public Object joinApply(@Valid JoinProjectApplyForm joinProjectApplyForm){

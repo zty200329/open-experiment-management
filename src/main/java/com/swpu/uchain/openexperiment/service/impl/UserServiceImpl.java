@@ -266,18 +266,18 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isEmpty(keyWord)){
             return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
         }
-        List<User> users = selectByKeyWord(keyWord);
+        List<User> users = selectByKeyWord(keyWord, true);
         List<UserManageInfo> userList = ConvertUtil.convertUsers(users, roleMapper);
         return Result.success(userList);
     }
 
     @Override
-    public List<User> selectByKeyWord(String keyWord) {
-        List<User> users = redisService.getArraylist(UserKey.getByKeyWord, keyWord, User.class);
+    public List<User> selectByKeyWord(String keyWord, boolean isTeacher) {
+        List<User> users = redisService.getArraylist(UserKey.getByKeyWord, keyWord + isTeacher, User.class);
         if (users == null || users.size() == 0){
-            users = userMapper.selectByRandom(keyWord);
+            users = userMapper.selectByRandom(keyWord, isTeacher);
             if (users != null && users.size() != 0){
-                redisService.set(UserKey.getByKeyWord, keyWord, users);
+                redisService.set(UserKey.getByKeyWord, keyWord + isTeacher, users);
             }
         }
         return users;

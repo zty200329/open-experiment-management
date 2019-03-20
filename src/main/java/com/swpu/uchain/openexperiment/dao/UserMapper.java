@@ -1,6 +1,5 @@
 package com.swpu.uchain.openexperiment.dao;
 
-import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
 import com.swpu.uchain.openexperiment.domain.User;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,7 +20,7 @@ public interface UserMapper {
 
     List<User> selectProjectJoinedUsers(Long projectId);
 
-    List<User> selectByRandom(@Param("keyWord") String keyWord);
+    List<User> selectByRandom(@Param("keyWord") String keyWord, boolean isTeacher);
 
     User selectGroupLeader(Long projectGroupId);
 }

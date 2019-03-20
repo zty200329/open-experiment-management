@@ -4,6 +4,7 @@ import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.form.project.AppendApplyForm;
 import com.swpu.uchain.openexperiment.form.project.JoinForm;
 import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
+import com.swpu.uchain.openexperiment.form.project.UpdateProjectApplyForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
 import java.util.List;
@@ -63,6 +64,13 @@ public interface ProjectService {
      * @return
      */
     Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm);
+
+    /**
+     * 更新项目组信息
+     * @param updateProjectApplyForm
+     * @return
+     */
+    Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm);
 
     /**
      * 获取当前用户的所有参与的项目
@@ -142,4 +150,5 @@ public interface ProjectService {
      * @return
      */
     Result rejectJoin(JoinForm joinForm);
+
 }
