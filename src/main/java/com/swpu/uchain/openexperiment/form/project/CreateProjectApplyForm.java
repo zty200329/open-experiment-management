@@ -3,7 +3,6 @@ package com.swpu.uchain.openexperiment.form.project;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 
@@ -36,9 +35,6 @@ public class CreateProjectApplyForm {
     @ApiModelProperty("1.A组石工地堪,2.B组化工材料3.C组机械力学4.D电气及制作,5.E组软件与数学,6.F组经管法律艺体人文")
     @NotNull(message = "建议评审分组必选")
     private Integer suggestGroupType;
-    @ApiModelProperty("立项正文文件")
-    @NotNull(message = "立项文件必传")
-    private MultipartFile file;
     @ApiModelProperty("限选年级")
     private Integer limitGrade;
     @ApiModelProperty("限选专业")
@@ -61,7 +57,7 @@ public class CreateProjectApplyForm {
     private String endTime;
     @ApiModelProperty("指导老师编号")
     @NotNull(message = "指导老师不能为空")
-    private String[] teacherCodes;
+    private String teacherCodes;
     @ApiModelProperty("学生成员编号")
-    private String[] stuCodes;
+    private String stuCodes;
 }

@@ -43,5 +43,8 @@ page:
     check-project: 7
     manage-user: 7
     manage-role: 7
+#server:
+#  tomcat:
+#    max-http-header-size: 10240
 
 

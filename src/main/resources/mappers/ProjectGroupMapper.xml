@@ -91,9 +91,9 @@
     total_hours, lab_name, project_name, project_type, start_time, `status`, update_time
     from project_group
   </select>
-    <select id="selectByName" resultMap="BaseResultMap">
-      select * from where name = #{projectName}
-    </select>
+  <select id="selectByName" resultMap="BaseResultMap">
+    select * from project_group where project_name = #{projectName}
+  </select>
   <select id="selectByUserIdAndStatus" resultMap="BaseResultMap">
     select project_group.id, project_group.address, project_group.create_time, project_group.creator_id,
     project_group.end_time, project_group.experiment_condition, project_group.suggest_group_type,

@@ -139,7 +139,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 FileUtil.getFileRealPath(
                     projectFile.getId(),
                     uploadConfig.getUploadDir(),
-                    uploadConfig.getApplyFileName()))) {
+                    uploadConfig.getApplyFileName() + FileUtil.getMultipartFileSuffix(file)))) {
             return Result.success();
         }
         return Result.error(CodeMsg.UPLOAD_ERROR);

@@ -6,6 +6,7 @@ import com.swpu.uchain.openexperiment.form.project.JoinForm;
 import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
 import com.swpu.uchain.openexperiment.form.project.UpdateProjectApplyForm;
 import com.swpu.uchain.openexperiment.result.Result;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -61,16 +62,18 @@ public interface ProjectService {
     /**
      * 立项申请接口
      * @param createProjectApplyForm
+     * @param file
      * @return
      */
-    Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm);
+    Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm, MultipartFile file);
 
     /**
      * 更新项目组信息
      * @param updateProjectApplyForm
+     * @param file
      * @return
      */
-    Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm);
+    Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm, MultipartFile file);
 
     /**
      * 获取当前用户的所有参与的项目

@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -30,13 +31,16 @@ public class ProjectController {
 
     @ApiOperation("申请立项接口")
     @PostMapping(value = "/createApply", name = "申请立项接口")
-    public Object createApply(@Valid CreateProjectApplyForm createProjectApplyForm){
-        return projectService.applyCreateProject(createProjectApplyForm);
+    public Object createApply(@Valid CreateProjectApplyForm createProjectApplyForm, MultipartFile file){
+        if (file == null){
+            return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
+        }
+        return projectService.applyCreateProject(createProjectApplyForm, file);
     }
 
     @PostMapping(value = "/updateApply", name = "修改立项申请")
-    public Object updateApply(@Valid UpdateProjectApplyForm updateProjectApplyForm){
-        return projectService.applyUpdateProject(updateProjectApplyForm);
+    public Object updateApply(@Valid UpdateProjectApplyForm updateProjectApplyForm, MultipartFile file){
+        return projectService.applyUpdateProject(updateProjectApplyForm, file);
     }
 
     @ApiOperation("申请参与项目接口")

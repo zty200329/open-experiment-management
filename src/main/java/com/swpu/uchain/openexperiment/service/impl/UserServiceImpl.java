@@ -195,9 +195,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result createUserJoin(String[] teacherCodes, Long projectGroupId, UserType userType) {
-        for (String teacherCode : teacherCodes) {
-            User user = selectByUserCode(teacherCode);
+    public Result createUserJoin(String[] userCodes, Long projectGroupId, UserType userType) {
+        for (String userCode : userCodes) {
+            User user = selectByUserCode(userCode);
             if (user == null){
                 return Result.error(CodeMsg.USER_NO_EXIST);
             }
