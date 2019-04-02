@@ -48,4 +48,36 @@ public class MyProjectVO {
      * 项目详情
      */
     private ProjectDetails projectDetails;
+    /**
+     * 实验条件
+     */
+    private String experimentCondition;
+    /**
+     * 建议分组类型
+     */
+    private Integer suggestGroupType;
+    /**
+     * 实验类型
+     */
+    private Integer experimentType;
+    /**
+     * 限制学院
+     */
+    private String limitCollege;
+    /**
+     * 限制专业
+     */
+    private String limitMajor;
+    /**
+     * 限制年级
+     */
+    private Integer limitGrade;
+    /**
+     * 适合人数
+     */
+    private Integer fitPeopleNum;
+    /**
+     * 中期检查
+     */
+    private String achievementCheck;
 }

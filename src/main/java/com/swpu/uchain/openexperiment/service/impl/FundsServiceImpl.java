@@ -71,11 +71,11 @@ public class FundsServiceImpl implements FundsService {
 
     @Override
     public List<Funds> getFundsDetails(Long projectGroupId) {
-        List<Funds> fundsList = redisService.getArraylist(FundsKey.getByProjectGroupId, projectGroupId + "", Funds.class);
+        List<Funds> fundsList = (List<Funds>) redisService.getList(FundsKey.getByProjectGroupId, projectGroupId + "");
         if (fundsList == null || fundsList.size() == 0){
             fundsList = fundsMapper.selectByProjectGroupId(projectGroupId);
             if (fundsList != null && fundsList.size() != 0){
-                redisService.set(FundsKey.getByProjectGroupId, projectGroupId + "", fundsList);
+                redisService.setList(FundsKey.getByProjectGroupId, projectGroupId + "", fundsList);
             }
         }
         return fundsList;

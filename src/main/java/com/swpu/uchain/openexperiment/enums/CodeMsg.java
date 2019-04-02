@@ -51,6 +51,7 @@ public enum CodeMsg {
     PROJECT_GROUP_INFO_CANT_CHANGE(532, "项目非驳回或申请状态，无法进行信息修改"),
     ADD_PROJECT_GROUP_ERROR(533, "创建项目组异常"),
     ADD_USER_JOIN_ERROR(534, "用户加入项目异常"),
+    STUDENT_CANT_APPLY(535, "学生无法申请立项"),
     FILE_EXIST(601,"文件已存在" ),
     FILE_NOT_EXIST(602,"文件不存在"),
     UPLOAD_CANT_BE_EMPTY(603,"上传文件不能为空"),

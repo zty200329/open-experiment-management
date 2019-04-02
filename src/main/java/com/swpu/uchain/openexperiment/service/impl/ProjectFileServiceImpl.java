@@ -9,6 +9,7 @@ import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.FileType;
+import com.swpu.uchain.openexperiment.enums.UserType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.file.ConcludingReportForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;

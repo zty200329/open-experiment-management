@@ -33,6 +33,7 @@
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="total_hours" jdbcType="INTEGER" property="totalHours" />
     <result column="lab_name" jdbcType="VARCHAR" property="labName" />
+    <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
     <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -103,7 +104,7 @@
     project_group.start_time, project_group.`status`, project_group.update_time
     from project_group
     inner join user_project_group
-    on project_group.id = user_project_group.project_id
+    on project_group.id = user_project_group.project_group_id
     where user_project_group.user_id = #{param1}
     <choose>
       <when test="param2 >= 0">

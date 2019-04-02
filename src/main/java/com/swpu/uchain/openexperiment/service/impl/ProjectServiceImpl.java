@@ -88,16 +88,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result addProjectGroup(ProjectGroup projectGroup) {
-        projectGroup.setCreateTime(new Date());
-        projectGroup.setUpdateTime(new Date());
-        if (insert(projectGroup)){
-            return Result.success();
-        }
-        return Result.error(CodeMsg.ADD_ERROR);
-    }
-
-    @Override
     public ProjectGroup selectByProjectGroupId(Long projectGroupId) {
         ProjectGroup projectGroup = redisService.get(ProjectGroupKey.getByProjectGroupId, projectGroupId + "", ProjectGroup.class);
         if (projectGroup == null){
@@ -110,16 +100,25 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public Result addProjectGroup(ProjectGroup projectGroup) {
+        projectGroup.setCreateTime(new Date());
+        projectGroup.setUpdateTime(new Date());
+        if (insert(projectGroup)){
+            return Result.success();
+        }
+        return Result.error(CodeMsg.ADD_ERROR);
+    }
+
+    @Override
     public List<ProjectGroup> selectByUserIdAndProjectStatus(Long userId, Integer projectStatus){
         //获取当前用户参与的所有项目
-        List<ProjectGroup> projectGroups = redisService.getArraylist(
+        List<ProjectGroup> projectGroups = (List<ProjectGroup>) redisService.getList(
                 ProjectGroupKey.getByUserIdAndStatus,
-                userId + "_" + projectStatus,
-                ProjectGroup.class);
+                userId + "_" + projectStatus);
         if (projectGroups == null || projectGroups.size() == 0){
             projectGroups = projectGroupMapper.selectByUserIdAndStatus(userId, projectStatus);
             if (projectGroups != null && projectGroups.size() != 0){
-                redisService.set(ProjectGroupKey.getByUserIdAndStatus, userId + "_" + projectStatus, projectGroups);
+                redisService.setList(ProjectGroupKey.getByUserIdAndStatus, userId + "_" + projectStatus, projectGroups);
             }
         }
         return projectGroups;
@@ -128,6 +127,10 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm, MultipartFile file) {
+        User currentUser = userService.getCurrentUser();
+        if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()){
+            Result.error(CodeMsg.STUDENT_CANT_APPLY);
+        }
         ProjectGroup projectGroup = projectGroupMapper.selectByName(createProjectApplyForm.getProjectName());
         if (projectGroup != null){
             return Result.error(CodeMsg.PROJECT_GROUP_HAD_EXIST);
@@ -135,6 +138,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectGroup = new ProjectGroup();
         BeanUtils.copyProperties(createProjectApplyForm, projectGroup);
         projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
+        projectGroup.setCreatorId(currentUser.getId());
         Result result = addProjectGroup(projectGroup);
         if (result.getCode() != 0){
             throw new GlobalException(CodeMsg.ADD_PROJECT_GROUP_ERROR);
@@ -159,6 +163,11 @@ public class ProjectServiceImpl implements ProjectService {
         ProjectGroup projectGroup = selectByProjectGroupId(updateProjectApplyForm.getProjectGroupId());
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+        }
+        User currentUser = userService.getCurrentUser();
+        UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(updateProjectApplyForm.getProjectGroupId(), currentUser.getId());
+        if (userProjectGroup == null){
+            return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
         if (projectGroup.getStatus() != ProjectStatus.DECLARE.getValue().intValue()
                 || projectGroup.getStatus() != ProjectStatus.REJECT_MODIFY.getValue().intValue()){
@@ -426,6 +435,8 @@ public class ProjectServiceImpl implements ProjectService {
                 }
                 List<Funds> fundsDetails = fundsService.getFundsDetails(userProjectGroup.getProjectGroupId());
                 checkProjectVO.setFundsApplyAmount(CountUtil.countFundsTotalAmount(fundsDetails));
+                checkProjectVO.setMemberStudents(memberStudents);
+                checkProjectVO.setGuidanceTeachers(guidanceTeachers);
             }
         }
         PageInfo<CheckProjectVO> pageInfo = new PageInfo<>(checkProjectVOS);

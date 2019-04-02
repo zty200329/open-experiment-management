@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.swpu.uchain.openexperiment.redis.key.KeyPrefix;
+import com.swpu.uchain.openexperiment.util.SerializeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
@@ -61,21 +62,42 @@ public class RedisService {
     }
 
     /**
-     * 获取对象数组的缓存
-     * @param prefix
+     * 设置List集合
      * @param key
-     * @param clazz
-     * @return
+     * @param list
      */
-    public <T> List<T> getArraylist(KeyPrefix prefix, String key,Class<T> clazz) {
+    public void setList(KeyPrefix prefix, String key, List<?> list){
         Jedis jedis = null;
         try {
             jedis = jedisPool.getResource();
-            //生成真正的key
             String realKey = prefix.getPrefix() + key;
-            String str = jedis.get(realKey);
-            List<T> list = JSONObject.parseArray(str, clazz);
-            return list;
+            if(list != null && list.size() != 0){
+                jedis.set(realKey.getBytes(), SerializeUtil.serializeList(list));
+            }else{//如果list为空,则设置一个空
+                jedis.set(realKey.getBytes(), "".getBytes());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
+    /**
+     * 获取List集合
+     * @param key
+     * @return
+     */
+    public List<?> getList(KeyPrefix prefix,String key){
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            String realKey = prefix.getPrefix() + key;
+            if(!jedis.exists(realKey)){
+                return null;
+            }
+            byte[] data = jedis.get(realKey.getBytes());
+            return SerializeUtil.unserializeList(data);
         }finally {
             returnToPool(jedis);
         }
