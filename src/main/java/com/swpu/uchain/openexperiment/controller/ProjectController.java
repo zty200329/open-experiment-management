@@ -7,6 +7,7 @@ import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +29,15 @@ public class ProjectController {
     private ProjectService projectService;
     @Autowired
     private UserProjectService userProjectService;
+
+    @ApiOperation("根据项目名模糊查询项目")
+    @GetMapping(value = "/selectProject", name = "根据项目名模糊查询项目")
+    public Object selectProject(String name){
+        if (StringUtils.isEmpty(name)){
+            return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
+        }
+        return Result.success(projectService.selectByProjectName(name));
+    }
 
     @ApiOperation("申请立项接口")
     @PostMapping(value = "/createApply", name = "申请立项接口")
@@ -74,11 +84,11 @@ public class ProjectController {
 
     @ApiOperation("审批项目展示接口")
     @GetMapping(value = "/checkApplyInfo", name = "审批项目展示接口")
-    public Object getCheckApplyInfo(Integer pageNum){
+    public Object getCheckApplyInfo(Integer pageNum, Integer projectStatus){
         if (pageNum == null || pageNum <= 0){
             return Result.error(CodeMsg.PAGE_NUM_ERROR);
         }
-        return projectService.getCheckApplyInfo(pageNum);
+        return projectService.getCheckInfo(pageNum, projectStatus);
     }
 
     @ApiOperation("同意立项")

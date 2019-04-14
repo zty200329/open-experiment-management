@@ -1,7 +1,10 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.VO.project.CheckProjectVO;
+import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface ProjectGroupMapper {
@@ -19,5 +22,7 @@ public interface ProjectGroupMapper {
 
     List<ProjectGroup> selectByUserIdAndStatus(Long userId, Integer projectStatus);
 
-    List<CheckProjectVO> selectApplyOrderByTime();
+    List<CheckProjectVO> selectApplyOrderByTime(int projectStatus);
+
+    List<SelectProjectVO> selectByFuzzyName(@Param("name") String name);
 }

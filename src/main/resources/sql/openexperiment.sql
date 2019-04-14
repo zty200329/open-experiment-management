@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 127.0.0.1
-Source Server Version : 50724
+Source Server         : 118.24.9.53
+Source Server Version : 50725
 Source Host           : localhost:3306
 Source Database       : openexperiment
 
 Target Server Type    : MYSQL
-Target Server Version : 50724
+Target Server Version : 50725
 File Encoding         : 65001
 
-Date: 2019-01-21 15:54:50
+Date: 2019-04-07 09:32:53
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,7 +25,7 @@ CREATE TABLE `acl` (
   `name` varchar(255) DEFAULT NULL COMMENT '权限名称',
   `url` varchar(255) DEFAULT NULL COMMENT '具体接口的url',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for announcement
@@ -37,6 +37,23 @@ CREATE TABLE `announcement` (
   `title` varchar(255) DEFAULT NULL COMMENT '公告标题',
   `content` varchar(2000) DEFAULT NULL COMMENT '公告主要内容',
   `publish_time` datetime DEFAULT NULL COMMENT '发布时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for funds
+-- ----------------------------
+DROP TABLE IF EXISTS `funds`;
+CREATE TABLE `funds` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `amount` int(11) DEFAULT NULL COMMENT '资金数额',
+  `use` varchar(800) DEFAULT NULL COMMENT '具体用途',
+  `type` int(11) DEFAULT NULL COMMENT '资金类型:1.材料费,2.资料,印刷费,3.出版费,4.教师酬金,5.其他',
+  `applicant_id` bigint(20) DEFAULT NULL COMMENT '申请人id',
+  `project_group_id` bigint(20) DEFAULT NULL COMMENT '项目组id',
+  `status` int(11) DEFAULT NULL COMMENT '申请状态(1.申请中,2.批准,3.拒绝申请)',
+  `create_time` datetime DEFAULT NULL COMMENT '申请时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -81,7 +98,7 @@ CREATE TABLE `project_file` (
   `upload_time` datetime DEFAULT NULL COMMENT '上传时间',
   `upload_user_id` bigint(20) DEFAULT NULL COMMENT '上传者id',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for project_group
@@ -93,9 +110,15 @@ CREATE TABLE `project_group` (
   `create_time` datetime DEFAULT NULL COMMENT '小组申报时间',
   `creator_id` bigint(20) DEFAULT NULL COMMENT '申报者id',
   `end_time` datetime DEFAULT NULL COMMENT '实验截止时间',
-  `examination` varchar(255) DEFAULT NULL COMMENT '成果考核方式',
+  `experiment_condition` varchar(800) DEFAULT NULL COMMENT '实验条件(描述)',
+  `suggest_group_type` int(11) DEFAULT NULL COMMENT '建议评分分组:1.A组石工地堪,2.B组化工材料3.C组机械力学4.D电气及制作,5.E组软件与数学,6.F组经管法律艺体人文',
   `experiment_type` int(11) DEFAULT NULL COMMENT '实验类型：1.科研，2.科技活动，3.自选课题，4.计算机应用，5.人文素质',
+  `achievement_check` varchar(800) DEFAULT NULL COMMENT '成果考核方式',
+  `limit_college` varchar(255) DEFAULT NULL COMMENT '限选学院',
+  `limit_major` varchar(255) DEFAULT NULL COMMENT '限选专业',
+  `limit_grade` int(11) DEFAULT NULL COMMENT '限选年级',
   `fit_people_num` int(11) DEFAULT NULL COMMENT '适宜人数',
+  `total_hours` int(11) DEFAULT NULL COMMENT '总计划实验小时',
   `lab_name` varchar(255) DEFAULT NULL COMMENT '实验室名称',
   `project_name` varchar(255) DEFAULT NULL COMMENT '项目名称',
   `project_type` int(11) DEFAULT NULL COMMENT '项目类型：1.普通，2.重点',
@@ -149,7 +172,20 @@ CREATE TABLE `role_acl` (
   `role_id` bigint(20) DEFAULT NULL,
   `acl_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for score
+-- ----------------------------
+DROP TABLE IF EXISTS `score`;
+CREATE TABLE `score` (
+  `id` bigint(20) NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `semester` int(11) DEFAULT NULL COMMENT '学期数',
+  `average_score` float DEFAULT NULL COMMENT '平均成绩',
+  `achoevement_point` float DEFAULT NULL COMMENT '绩点',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for user
@@ -166,13 +202,15 @@ CREATE TABLE `user` (
   `qq_num` varchar(255) DEFAULT NULL COMMENT 'qq号',
   `real_name` varchar(255) DEFAULT NULL COMMENT '真实姓名',
   `sex` varchar(10) DEFAULT NULL COMMENT '性别',
-  `user_type` int(11) DEFAULT NULL COMMENT '用户类型：1.学生，2.教师',
+  `user_type` int(11) DEFAULT NULL COMMENT '用户类型：1.学生,2.教师,3教授,4.副教授',
   `institute` varchar(255) DEFAULT NULL COMMENT '学院',
   `major` varchar(255) DEFAULT NULL COMMENT '专业',
   `grade` int(11) DEFAULT NULL COMMENT '年级',
+  `work_unit` varchar(255) DEFAULT NULL COMMENT '工作单位',
   `class_num` int(11) DEFAULT NULL COMMENT '班级',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_code` (`code`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for user_project_group
@@ -183,9 +221,11 @@ CREATE TABLE `user_project_group` (
   `project_group_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) DEFAULT NULL,
   `technical_role` varchar(255) DEFAULT NULL COMMENT '技术职称',
+  `work_division` varchar(800) DEFAULT NULL COMMENT '主要分工',
   `status` int(11) DEFAULT NULL COMMENT '参与状态:1.申请,已加入',
   `member_role` int(4) DEFAULT NULL COMMENT '成员身份：1.指导教师2.项目组长3.普通成员',
   `personal_judge` varchar(2000) DEFAULT NULL COMMENT '自我评价',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `join_time` datetime DEFAULT NULL COMMENT '加入时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -199,4 +239,4 @@ CREATE TABLE `user_role` (
   `user_id` bigint(20) DEFAULT NULL,
   `role_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;

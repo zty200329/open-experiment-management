@@ -15,6 +15,8 @@ public class ProjectGroupKey extends BasePrefix{
     }
 
 
+
     public static ProjectGroupKey getByProjectGroupId = new ProjectGroupKey(120,"projectGroupId");
     public static ProjectGroupKey getByUserIdAndStatus = new ProjectGroupKey(120, "userIdAndProjectStatus");
+    public static ProjectGroupKey getByFuzzyName = new ProjectGroupKey(120, "fuzzyName");
 }

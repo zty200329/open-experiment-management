@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service;
 
+import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.form.project.AppendApplyForm;
 import com.swpu.uchain.openexperiment.form.project.JoinForm;
@@ -113,9 +114,10 @@ public interface ProjectService {
     /**
      * 获取所有待审核立项项目信息
      * @param pageNum
+     * @param projectStatus
      * @return
      */
-    Result getCheckApplyInfo(Integer pageNum);
+    Result getCheckInfo(Integer pageNum, Integer projectStatus);
 
     /**
      * 驳回修改立项申请项目信息
@@ -154,4 +156,10 @@ public interface ProjectService {
      */
     Result rejectJoin(JoinForm joinForm);
 
+    /**
+     * 根据项目名搜索项目基本信息
+     * @param name
+     * @return
+     */
+    List<SelectProjectVO> selectByProjectName(String name);
 }

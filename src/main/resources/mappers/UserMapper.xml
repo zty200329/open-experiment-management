@@ -76,7 +76,7 @@
   from user
   inner join user_project_group
   on user.id = user_project_group.user_id
-  where user_project_group.project_id = #{projectId}
+  where user_project_group.project_group_id = #{projectId}
   and user_project_group.status = 2
   </select>
   <select id="selectByRandom" resultMap="BaseResultMap">

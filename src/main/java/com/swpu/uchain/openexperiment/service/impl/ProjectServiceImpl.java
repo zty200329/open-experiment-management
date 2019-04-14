@@ -398,9 +398,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result getCheckApplyInfo(Integer pageNum) {
+    public Result getCheckInfo(Integer pageNum, Integer projectStatus) {
         PageHelper.startPage(pageNum, countConfig.getCheckProject());
-        List<CheckProjectVO> checkProjectVOS = projectGroupMapper.selectApplyOrderByTime();
+        List<CheckProjectVO> checkProjectVOS = projectGroupMapper.selectApplyOrderByTime(projectStatus);
         for (CheckProjectVO checkProjectVO : checkProjectVOS) {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getProjectGroupId());
             List<UserMemberVO> guidanceTeachers = new ArrayList<>();
@@ -505,6 +505,18 @@ public class ProjectServiceImpl implements ProjectService {
             return Result.success();
         }
         return Result.error(CodeMsg.UPDATE_ERROR);
+    }
+
+    @Override
+    public List<SelectProjectVO> selectByProjectName(String name) {
+        List<SelectProjectVO> list = (List<SelectProjectVO>) redisService.getList(ProjectGroupKey.getByFuzzyName, name);
+        if (list == null || list.size() == 0){
+            list = projectGroupMapper.selectByFuzzyName(name);
+            if (list != null){
+                redisService.setList(ProjectGroupKey.getByFuzzyName, name, list);
+            }
+        }
+        return list;
     }
 
 }

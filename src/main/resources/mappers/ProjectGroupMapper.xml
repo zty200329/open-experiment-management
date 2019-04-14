@@ -36,6 +36,11 @@
     <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
     <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
   </resultMap>
+  <resultMap id="SelectProjectMap" type="com.swpu.uchain.openexperiment.VO.project.SelectProjectVO">
+    <id column="id" jdbcType="BIGINT" property="projectGroupId" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="creator_name" jdbcType="VARCHAR" property="creatorName"/>
+  </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from project_group
     where id = #{id,jdbcType=BIGINT}
@@ -117,7 +122,13 @@
     project_group.total_hours, project_group.start_time, project_group.end_time, project_group.lab_name,
     project_group.address, project_group.suggest_group_type, project_group.project_type
     from project_group
-    where status = 0
+    where status = #{projectStatus}
     order by create_time desc
+  </select>
+  <select id="selectByFuzzyName" resultMap="SelectProjectMap">
+    select project_group.id, project_group.project_name, user.real_name
+    from  project_group
+    inner join user on project_group.creator_id = user.id
+    where project_group.project_name like '%${name}%'
   </select>
 </mapper>
