@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.VO.file;
 import com.swpu.uchain.openexperiment.VO.user.UserVO;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Date;
  * @Description:
  */
 @Data
-public class AttachmentFileVO {
+public class AttachmentFileVO implements Serializable {
     private Long fileId;
     private Integer downloadTimes;
     private String fileName;

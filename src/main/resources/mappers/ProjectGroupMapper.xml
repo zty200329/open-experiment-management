@@ -39,7 +39,7 @@
   <resultMap id="SelectProjectMap" type="com.swpu.uchain.openexperiment.VO.project.SelectProjectVO">
     <id column="id" jdbcType="BIGINT" property="projectGroupId" />
     <result column="project_name" jdbcType="VARCHAR" property="projectName" />
-    <result column="creator_name" jdbcType="VARCHAR" property="creatorName"/>
+    <result column="real_name" jdbcType="VARCHAR" property="creatorName"/>
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from project_group

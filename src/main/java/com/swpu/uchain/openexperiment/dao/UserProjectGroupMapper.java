@@ -23,4 +23,6 @@ public interface UserProjectGroupMapper {
     void deleteByProjectGroupId(Long projectGroupId);
 
     List<UserProjectGroup> selectByProjectGroupIdAndJoinStatus(Long projectGroupId, Integer joinStatus);
+
+    List<String> selectUserCodesByProjectGroupId(Long projectGroupId);
 }

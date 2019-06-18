@@ -88,14 +88,14 @@ public interface ProjectService {
      * @param joinForm
      * @return
      */
-    Result agreeJoin(JoinForm joinForm);
+    Result agreeJoin(JoinForm[] joinForm);
 
     /**
      * 同意立项
-     * @param projectGroupId
+     * @param projectGroupIds
      * @return
      */
-    Result agreeEstablish(Long projectGroupId);
+    Result agreeEstablish(Long[] projectGroupIds);
 
     /**
      * 获取项目的立项申请信息
@@ -154,7 +154,7 @@ public interface ProjectService {
      * @param joinForm
      * @return
      */
-    Result rejectJoin(JoinForm joinForm);
+    Result rejectJoin(JoinForm[] joinForm);
 
     /**
      * 根据项目名搜索项目基本信息

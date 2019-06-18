@@ -5,6 +5,7 @@ import com.swpu.uchain.openexperiment.domain.Funds;
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  * @Description:
  */
 @Data
-public class ProjectDetails {
+public class ProjectDetails implements Serializable {
     /**
      * 项目组组长
      */

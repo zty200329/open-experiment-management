@@ -44,6 +44,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @Author: clf
@@ -203,13 +204,14 @@ public class UserServiceImpl implements UserService {
             }
             UserProjectGroup userProjectGroup = new UserProjectGroup();
             userProjectGroup.setUserId(user.getId());
-            if (userType != UserType.STUDENT){
+            if (userType.getValue() != UserType.STUDENT.getValue().intValue()){
                 userProjectGroup.setTechnicalRole(ConvertUtil.getTechnicalRole(user.getUserType()));
                 userProjectGroup.setMemberRole(MemberRole.GUIDANCE_TEACHER.getValue());
+                userProjectGroup.setStatus(JoinStatus.APPLYING.getValue());
             }else {
                 userProjectGroup.setMemberRole(MemberRole.NORMAL_MEMBER.getValue());
+                userProjectGroup.setStatus(JoinStatus.JOINED.getValue());
             }
-            userProjectGroup.setStatus(JoinStatus.APPLYING.getValue());
             userProjectGroup.setUpdateTime(new Date());
             userProjectGroup.setJoinTime(new Date());
             userProjectGroup.setProjectGroupId(projectGroupId);

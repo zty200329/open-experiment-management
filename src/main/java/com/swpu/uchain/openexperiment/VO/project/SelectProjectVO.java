@@ -2,6 +2,8 @@ package com.swpu.uchain.openexperiment.VO.project;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @Author: clf
  * @Date: 19-4-13
@@ -9,7 +11,7 @@ import lombok.Data;
  * 搜索项目信息展示VO
  */
 @Data
-public class SelectProjectVO {
+public class SelectProjectVO implements Serializable {
     /**
      * 项目组id
      */

@@ -119,4 +119,14 @@ public class ConvertUtil {
         BeanUtils.copyProperties(user, userDetailVO);
         return userDetailVO;
     }
+
+    public static Long[] parseIds(String str){
+        String[] split = str.split(",");
+        Long[] ids = new Long[split.length];
+        for (int i = 0; i < split.length; i++) {
+            long l = Long.parseLong(split[i]);
+            ids[i] = l;
+        }
+        return ids;
+    }
 }

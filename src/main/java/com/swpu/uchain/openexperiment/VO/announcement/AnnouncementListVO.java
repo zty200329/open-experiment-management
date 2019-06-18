@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.VO.announcement;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Date;
  * 公告列表元素
  */
 @Data
-public class AnnouncementListVO {
+public class AnnouncementListVO implements Serializable {
     /**
      * 公告id
      */

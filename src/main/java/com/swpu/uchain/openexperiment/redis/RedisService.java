@@ -2,7 +2,6 @@ package com.swpu.uchain.openexperiment.redis;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.swpu.uchain.openexperiment.redis.key.KeyPrefix;
 import com.swpu.uchain.openexperiment.util.SerializeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Author: clf
@@ -62,28 +62,6 @@ public class RedisService {
     }
 
     /**
-     * 设置List集合
-     * @param key
-     * @param list
-     */
-    public void setList(KeyPrefix prefix, String key, List<?> list){
-        Jedis jedis = null;
-        try {
-            jedis = jedisPool.getResource();
-            String realKey = prefix.getPrefix() + key;
-            if(list != null && list.size() != 0){
-                jedis.set(realKey.getBytes(), SerializeUtil.serializeList(list));
-            }else{//如果list为空,则设置一个空
-                jedis.set(realKey.getBytes(), "".getBytes());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            returnToPool(jedis);
-        }
-    }
-
-    /**
      * 获取List集合
      * @param key
      * @return
@@ -97,7 +75,32 @@ public class RedisService {
                 return null;
             }
             byte[] data = jedis.get(realKey.getBytes());
-            return SerializeUtil.unserializeList(data);
+            return SerializeUtil.unSerializeList(data);
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
+    /**
+     * 设置List集合
+     * @param key
+     * @param list
+     */
+    public void setList(KeyPrefix prefix, String key, List<?> list){
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            String realKey = prefix.getPrefix() + key;
+            int seconds = prefix.expireSeconds();
+            if(list != null && list.size() != 0){
+                if (seconds <= 0){
+                    jedis.set(realKey.getBytes(), SerializeUtil.serializeList(list));
+                }else {
+                    jedis.setex(realKey.getBytes(), seconds, SerializeUtil.serializeList(list));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }finally {
             returnToPool(jedis);
         }
@@ -123,7 +126,7 @@ public class RedisService {
             String realKey = prefix.getPrefix() + key;
             int seconds = prefix.expireSeconds();
             //判断是否是永不过期的从而调用不同的jedis方法
-            if (seconds<=0){
+            if (seconds <= 0){
                 jedis.set(realKey,str);
             }else {
                 jedis.setex(realKey,seconds,str);
@@ -168,6 +171,34 @@ public class RedisService {
             String realKey = prefix.getPrefix() + key;
             long ret = jedis.del(realKey);
             return ret > 0;
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
+
+    /**
+     * 模糊删除
+     * @param prefix
+     */
+    public void  deleteFuzzy(KeyPrefix prefix){
+        deleteFuzzyKey(prefix, "");
+    }
+
+    /**
+     * 删除前缀指定前缀的模糊key
+     * @param prefix
+     * @param fuzzyPrefix
+     */
+    public void deleteFuzzyKey(KeyPrefix prefix, String fuzzyPrefix){
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            String fuzzyKey = prefix.getPrefix() + fuzzyPrefix + "*";
+            Set<String> keys = jedis.keys(fuzzyKey);
+            for (String key : keys) {
+                jedis.del(key);
+            }
         }finally {
             returnToPool(jedis);
         }

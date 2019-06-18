@@ -100,7 +100,7 @@ public class SerializeUtil {
      * @param bytes
      * @return
      */
-    public static List<?> unserializeList(byte[] bytes) {
+    public static List<?> unSerializeList(byte[] bytes) {
         if (bytes == null) {
             return null;
         }
