@@ -4,12 +4,12 @@ server:
 #启动shutdown模块
 management:
   endpoint:
-    auditevents:
+    shutdown:
       enabled: true
   endpoints:
     web:
       exposure:
-        include: *
+        include: shutdown
       base-path: /uchain
   server:
     port: ${server.port}
