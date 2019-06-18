@@ -1,20 +1,20 @@
 server:
-  port: 8080
+  port: 8085
 #应用维护
 #启动shutdown模块
 management:
   endpoint:
-    auditevents:
+    shutdown:
       enabled: true
   endpoints:
     web:
       exposure:
-        include: *
+        include: shutdown
       base-path: /uchain
   server:
     port: ${server.port}
     address: 127.0.0.1
 spring:
   datasource:
-    username: username
-    password: password
+    username: root
+    password: 13458264160
