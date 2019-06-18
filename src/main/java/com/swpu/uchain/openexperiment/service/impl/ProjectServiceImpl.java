@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -153,7 +154,8 @@ public class ProjectServiceImpl implements ProjectService {
             stuCodes = createProjectApplyForm.getStuCodes().split(",");
         }
         String[] teacherCodes = createProjectApplyForm.getTeacherCodes().split(",");
-        addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
+        userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
+        redisService.deleteFuzzyKey(ProjectGroupKey.getByUserIdAndStatus, currentUser.getId() + "");
         return Result.success();
     }
 
@@ -187,25 +189,8 @@ public class ProjectServiceImpl implements ProjectService {
             stuCodes = updateProjectApplyForm.getStuCodes().split(",");
         }
         String[] teacherCodes = updateProjectApplyForm.getTeacherCodes().split(",");
-        addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
+        userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
         return Result.success();
-    }
-
-    public void addStuAndTeacherJoin(String[] stuCodes, String[] teacherCodes, Long projectGroupId){
-        Result result = userService.createUserJoin(
-                teacherCodes,
-                projectGroupId,
-                UserType.LECTURER);
-        if (result.getCode() != 0){
-            throw new GlobalException(CodeMsg.ADD_USER_JOIN_ERROR);
-        }
-        result = userService.createUserJoin(
-                stuCodes,
-                projectGroupId,
-                UserType.STUDENT);
-        if (result.getCode() != 0){
-            throw new GlobalException(CodeMsg.ADD_USER_JOIN_ERROR);
-        }
     }
 
     @Override
@@ -277,31 +262,34 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result agreeJoin(JoinForm joinForm) {
-        User user = userService.selectByUserId(joinForm.getUserId());
-        if (user == null){
-            return Result.error(CodeMsg.USER_NO_EXIST);
+    public Result agreeJoin(JoinForm[] joinForm) {
+        for (JoinForm form : joinForm) {
+
+            User user = userService.selectByUserId(form.getUserId());
+            if (user == null){
+                return Result.error(CodeMsg.USER_NO_EXIST);
+            }
+            ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectGroupId());
+            if (projectGroup == null){
+                return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+            }
+            UserProjectGroup userProjectGroup = userProjectService
+                    .selectByProjectGroupIdAndUserId(
+                            form.getProjectGroupId(),
+                            form.getUserId());
+            if (userProjectGroup == null){
+                return Result.error(CodeMsg.USER_NOT_APPLYING);
+            }
+            if (userProjectGroup.getStatus().intValue()
+                    == JoinStatus.JOINED.getValue()){
+                return Result.error(CodeMsg.USER_HAD_JOINED);
+            }
+            userProjectGroup.setStatus(JoinStatus.JOINED.getValue());
+            if (!userProjectService.update(userProjectGroup)) {
+                return Result.error(CodeMsg.UPDATE_ERROR);
+            }
         }
-        ProjectGroup projectGroup = selectByProjectGroupId(joinForm.getProjectGroupId());
-        if (projectGroup == null){
-            return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
-        }
-        UserProjectGroup userProjectGroup = userProjectService
-                .selectByProjectGroupIdAndUserId(
-                joinForm.getProjectGroupId(),
-                joinForm.getUserId());
-        if (userProjectGroup == null){
-            return Result.error(CodeMsg.USER_NOT_APPLYING);
-        }
-        if (userProjectGroup.getStatus().intValue()
-                == JoinStatus.JOINED.getValue()){
-            return Result.error(CodeMsg.USER_HAD_JOINED);
-        }
-        userProjectGroup.setStatus(JoinStatus.JOINED.getValue());
-        if (userProjectService.update(userProjectGroup)) {
-            return Result.success();
-        }
-        return Result.error(CodeMsg.UPDATE_ERROR);
+        return Result.success();
     }
 
     public Result updateProjectStatus(Long projectGroupId, Integer projectStatus){
@@ -318,16 +306,19 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public Result agreeEstablish(Long projectGroupId) {
-        Result result = updateProjectStatus(projectGroupId, ProjectStatus.ESTABLISH.getValue());
-        if (result.getCode() != 0){
-            return result;
+    public Result agreeEstablish(Long[] projectGroupIds) {
+        for (Long projectGroupId : projectGroupIds) {
+            Result result = updateProjectStatus(projectGroupId, ProjectStatus.ESTABLISH.getValue());
+            if (result.getCode() != 0){
+                throw new GlobalException(CodeMsg.UPDATE_ERROR);
+            }
+            //TODO,资金同意操作
+//            result = fundsService.agreeFunds(projectGroupId);
+//            if (result.getCode() != 0){
+//                throw new GlobalException(CodeMsg.UPDATE_ERROR);
+//            }
         }
-        result = fundsService.agreeFunds(projectGroupId);
-        if (result.getCode() != 0){
-            return result;
-        }
-        return Result.error(CodeMsg.UPDATE_ERROR);
+        return Result.success();
     }
 
     @Override
@@ -492,19 +483,21 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result rejectJoin(JoinForm joinForm) {
-        UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(), joinForm.getUserId());
-        if (userProjectGroup == null){
-            return Result.error(CodeMsg.USER_NOT_APPLYING);
+    public Result rejectJoin(JoinForm[] joinForm) {
+        for (JoinForm form : joinForm) {
+            UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(form.getProjectGroupId(), form.getUserId());
+            if (userProjectGroup == null){
+                return Result.error(CodeMsg.USER_NOT_APPLYING);
+            }
+            if (userProjectGroup.getStatus() == JoinStatus.JOINED.getValue().intValue()){
+                return Result.error(CodeMsg.USER_HAD_JOINED_CANT_REJECT);
+            }
+            userProjectGroup.setStatus(JoinStatus.UN_PASS.getValue());
+            if (!userProjectService.update(userProjectGroup)) {
+                return Result.error(CodeMsg.UPDATE_ERROR);
+            }
         }
-        if (userProjectGroup.getStatus() == JoinStatus.JOINED.getValue().intValue()){
-            return Result.error(CodeMsg.USER_HAD_JOINED_CANT_REJECT);
-        }
-        userProjectGroup.setStatus(JoinStatus.UN_PASS.getValue());
-        if (userProjectService.update(userProjectGroup)) {
-            return Result.success();
-        }
-        return Result.error(CodeMsg.UPDATE_ERROR);
+        return Result.success();
     }
 
     @Override

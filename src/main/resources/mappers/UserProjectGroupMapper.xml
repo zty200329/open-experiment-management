@@ -64,4 +64,7 @@
   <select id="selectByProjectGroupIdAndJoinStatus" resultMap="BaseResultMap">
     select * from user_project_group where project_group_id = #{param1} and status = #{param2}
   </select>
+  <select id="selectUserCodesByProjectGroupId" resultType="java.lang.String">
+    select user.code from user_project_group inner join user on user.id = user_project_group.user_id where user_project_group.project_group_id = #{projectGroupId}
+  </select>
 </mapper>

@@ -5,6 +5,7 @@ import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
+import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -73,12 +74,12 @@ public class ProjectController {
 
     @ApiOperation("同意加入项目")
     @PostMapping(value = "/agreeJoin", name = "同意加入项目")
-    public Object agreeJoin(@Valid JoinForm joinForm){
+    public Object agreeJoin(@Valid @RequestBody JoinForm[] joinForm){
         return projectService.agreeJoin(joinForm);
     }
 
     @PostMapping(value = "/rejectJoin", name = "拒绝某用户加入项目组")
-    public Object rejectJoin(@Valid JoinForm joinForm){
+    public Object rejectJoin(@Valid @RequestBody JoinForm[] joinForm){
         return projectService.rejectJoin(joinForm);
     }
 
@@ -93,11 +94,11 @@ public class ProjectController {
 
     @ApiOperation("同意立项")
     @PostMapping(value = "/agreeEstablish", name = "同意立项")
-    public Object agreeEstablish(Long projectGroupId){
-        if (projectGroupId == null){
+    public Object agreeEstablish(String projectGroupIds){
+        if (StringUtils.isEmpty(projectGroupIds)){
             return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
         }
-        return projectService.agreeEstablish(projectGroupId);
+        return projectService.agreeEstablish(ConvertUtil.parseIds(projectGroupIds));
     }
 
     @ApiOperation("驳回修改")
@@ -143,6 +144,7 @@ public class ProjectController {
     }
 
     @GetMapping(value = "/getApplyingJoinInfo", name = "获取当前用户（限老师身份）指导项目的申请参加列表")
+    @ApiOperation("获取当前用户（限老师身份）指导项目的申请参加列表")
     public Object getApplyingJoinInfo(){
         return Result.success(projectService.getJoinInfo());
     }

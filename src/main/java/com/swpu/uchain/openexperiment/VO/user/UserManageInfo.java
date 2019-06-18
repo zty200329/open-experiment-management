@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.VO.user;
 import com.swpu.uchain.openexperiment.VO.permission.RoleVO;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
  * @Description:
  */
 @Data
-public class UserManageInfo {
+public class UserManageInfo implements Serializable {
     private Long id;
     private String realName;
     private String code;

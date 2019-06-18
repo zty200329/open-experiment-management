@@ -3,6 +3,8 @@ package com.swpu.uchain.openexperiment.VO.project;
 import com.swpu.uchain.openexperiment.VO.user.UserDetailVO;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @Author: clf
  * @Date: 19-3-18
@@ -10,7 +12,7 @@ import lombok.Data;
  * 审批学生申请参与项目未审核列表
  */
 @Data
-public class JoinUnCheckVO {
+public class JoinUnCheckVO implements Serializable {
     /**
      * 用户参与项目关系id
      */

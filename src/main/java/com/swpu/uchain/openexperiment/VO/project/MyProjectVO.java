@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.VO.project;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Date;
  * 我的项目管理
  */
 @Data
-public class MyProjectVO {
+public class MyProjectVO implements Serializable {
     /**
      * 项目id
      */

@@ -7,6 +7,8 @@ import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.JoinStatus;
 import com.swpu.uchain.openexperiment.enums.MemberRole;
+import com.swpu.uchain.openexperiment.enums.UserType;
+import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.project.AimForm;
 import com.swpu.uchain.openexperiment.form.project.JoinProjectApplyForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
@@ -96,6 +98,11 @@ public class UserProjectServiceImpl implements UserProjectService {
     }
 
     @Override
+    public List<String> getUserCodesByProjectGroupId(Long projectGroupId) {
+        return userProjectGroupMapper.selectUserCodesByProjectGroupId(projectGroupId);
+    }
+
+    @Override
     public UserProjectGroup selectByProjectGroupIdAndUserId(Long projectGroupId, Long userId) {
         UserProjectGroup userProjectGroup = redisService.get(UserProjectGroupKey.getByProjectGroupIdAndUserId,
                 projectGroupId + "_" + userId,
@@ -120,6 +127,9 @@ public class UserProjectServiceImpl implements UserProjectService {
         ProjectGroup projectGroup = projectService.selectByProjectGroupId(joinProjectApplyForm.getProjectGroupId());
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+        }
+        if (selectByProjectGroupIdAndUserId(projectGroup.getId(), user.getId()) != null){
+            return Result.error(CodeMsg.ALREADY_APPLY);
         }
         //检验申请条件
         Result result = checkUserMatch(user, projectGroup);
@@ -148,18 +158,18 @@ public class UserProjectServiceImpl implements UserProjectService {
         if (users.size() < projectGroup.getFitPeopleNum()
                 && selectByProjectGroupId(projectGroup.getId()).size()
                 < CountUtil.getMaxApplyNum(projectGroup.getFitPeopleNum())){
-            if (projectGroup.getLimitGrade() != null
-                    && projectGroup.getLimitGrade().intValue() != user.getGrade().intValue()){
-                return Result.error(CodeMsg.NOT_MATCH_LIMIT);
-            }
-            if (projectGroup.getLimitCollege() != null
-                    && !projectGroup.getLimitCollege().equals(user.getInstitute())){
-                return Result.error(CodeMsg.NOT_MATCH_LIMIT);
-            }
-            if (projectGroup.getLimitMajor() != null
-                    && !projectGroup.getLimitMajor().equals(user.getMajor())){
-                return Result.error(CodeMsg.NOT_MATCH_LIMIT);
-            }
+//            if (projectGroup.getLimitGrade() != null
+//                    && projectGroup.getLimitGrade().intValue() != user.getGrade().intValue()){
+//                return Result.error(CodeMsg.NOT_MATCH_LIMIT);
+//            }
+//            if (projectGroup.getLimitCollege() != null
+//                    && !projectGroup.getLimitCollege().equals(user.getInstitute())){
+//                return Result.error(CodeMsg.NOT_MATCH_LIMIT);
+//            }
+//            if (projectGroup.getLimitMajor() != null
+//                    && !projectGroup.getLimitMajor().equals(user.getMajor())){
+//                return Result.error(CodeMsg.NOT_MATCH_LIMIT);
+//            }
             return Result.success();
         }
         return Result.error(CodeMsg.REACH_NUM_MAX);
@@ -205,5 +215,25 @@ public class UserProjectServiceImpl implements UserProjectService {
     @Override
     public List<UserProjectGroup> selectByProjectAndStatus(Long projectGroupId, Integer joinStatus) {
         return userProjectGroupMapper.selectByProjectGroupIdAndJoinStatus(projectGroupId, joinStatus);
+    }
+
+    @Override
+    public void addStuAndTeacherJoin(String[] stuCodes, String[] teacherCodes, Long projectGroupId) {
+        Result result = null;
+        if (teacherCodes != null){
+            result = userService.createUserJoin(
+                    teacherCodes,
+                    projectGroupId,
+                    UserType.LECTURER);
+        }
+        if (stuCodes != null){
+            result = userService.createUserJoin(
+                    stuCodes,
+                    projectGroupId,
+                    UserType.STUDENT);
+        }
+        if (result.getCode() != 0){
+            throw new GlobalException(CodeMsg.ADD_USER_JOIN_ERROR);
+        }
     }
 }

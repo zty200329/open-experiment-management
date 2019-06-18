@@ -2,7 +2,6 @@ package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 
-import java.beans.beancontext.BeanContextMembershipEvent;
 import java.util.List;
 
 public interface UserProjectGroupMapper {
@@ -23,4 +22,6 @@ public interface UserProjectGroupMapper {
     void deleteByProjectGroupId(Long projectGroupId);
 
     List<UserProjectGroup> selectByProjectGroupIdAndJoinStatus(Long projectGroupId, Integer joinStatus);
+
+    List<String> selectUserCodesByProjectGroupId(Long projectGroupId);
 }

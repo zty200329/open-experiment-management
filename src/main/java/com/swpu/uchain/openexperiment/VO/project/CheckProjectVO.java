@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.VO.project;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * 审批立项报告VO
  */
 @Data
-public class CheckProjectVO {
+public class CheckProjectVO implements Serializable {
     private String limitCollege;
     private Long projectGroupId;
     private String projectName;

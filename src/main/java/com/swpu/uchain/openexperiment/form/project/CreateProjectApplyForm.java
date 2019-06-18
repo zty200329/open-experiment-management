@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * @Author: clf
@@ -51,10 +52,10 @@ public class CreateProjectApplyForm {
     private Integer totalHours;
     @ApiModelProperty("实验开始时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private String startTime;
+    private Date startTime;
     @ApiModelProperty("实验结束时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private String endTime;
+    private Date endTime;
     @ApiModelProperty("指导老师编号")
     @NotNull(message = "指导老师不能为空")
     private String teacherCodes;

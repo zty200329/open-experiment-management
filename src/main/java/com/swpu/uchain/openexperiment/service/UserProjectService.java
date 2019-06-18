@@ -57,6 +57,13 @@ public interface UserProjectService {
     List<UserProjectGroup> selectByProjectGroupId(Long projectGroupId);
 
     /**
+     * 获取当前项目的所有用户编号
+     * @param projectGroupId
+     * @return
+     */
+    List<String> getUserCodesByProjectGroupId(Long projectGroupId);
+
+    /**
      * 按项目组id和用户id进行查找
      * @param projectGroupId
      * @param userId
@@ -94,4 +101,11 @@ public interface UserProjectService {
      */
     List<UserProjectGroup> selectByProjectAndStatus(Long projectGroupId, Integer joinStatus);
 
+    /**
+     * 添加用户学生和老师参与项目
+     * @param stuCodes
+     * @param teacherCodes
+     * @param projectGroupId
+     */
+    void addStuAndTeacherJoin(String[] stuCodes, String[] teacherCodes, Long projectGroupId);
 }
