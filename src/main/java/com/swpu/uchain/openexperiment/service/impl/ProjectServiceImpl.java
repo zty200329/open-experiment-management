@@ -61,6 +61,8 @@ public class ProjectServiceImpl implements ProjectService {
     private UploadConfig uploadConfig;
     @Autowired
     private ConvertUtil convertUtil;
+    @Autowired
+    private GetUserService getUserService;
 
     @Override
     public boolean insert(ProjectGroup projectGroup) {
@@ -131,7 +133,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm, MultipartFile file) {
-        User currentUser = userService.getCurrentUser();
+        User currentUser = getUserService.getCurrentUser();
         if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()){
             Result.error(CodeMsg.STUDENT_CANT_APPLY);
         }
@@ -169,7 +171,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
-        User currentUser = userService.getCurrentUser();
+        User currentUser = getUserService.getCurrentUser();
         UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(updateProjectApplyForm.getProjectGroupId(), currentUser.getId());
         if (userProjectGroup == null){
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
@@ -198,7 +200,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getCurrentUserProjects(Integer projectStatus) {
-        User currentUser = userService.getCurrentUser();
+        User currentUser = getUserService.getCurrentUser();
         if (userService == null){
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
@@ -295,12 +297,14 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success();
     }
 
-    public Result updateProjectStatus(Long projectGroupId, Integer projectStatus){
+    private Result updateProjectStatus(Long projectGroupId, Integer projectStatus){
         ProjectGroup projectGroup = selectByProjectGroupId(projectGroupId);
         if (projectGroup == null){
-            return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+             throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
         projectGroup.setStatus(projectStatus);
+
+        //更新状态
         if (update(projectGroup)) {
             return Result.success();
         }
@@ -347,7 +351,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result appendCreateApply(AppendApplyForm appendApplyForm) {
-        User currentUser = userService.getCurrentUser();
+        User currentUser = getUserService.getCurrentUser();
         UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(
                 appendApplyForm.getProjectGroupId(),
                 currentUser.getId());
@@ -461,7 +465,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List getJoinInfo() {
-        User currentUser = userService.getCurrentUser();
+        User currentUser = getUserService.getCurrentUser();
         //检测学生无法拥有检查看审批列表的功能
         if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()){
             throw new GlobalException(CodeMsg.PERMISSION_DENNY);

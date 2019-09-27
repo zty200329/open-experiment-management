@@ -1,8 +1,11 @@
 package com.swpu.uchain.openexperiment.domain;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
 public class ProjectGroup implements Serializable {
     private Long id;
 
@@ -46,165 +49,6 @@ public class ProjectGroup implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address == null ? null : address.trim();
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Long getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(Long creatorId) {
-        this.creatorId = creatorId;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public String getExperimentCondition() {
-        return experimentCondition;
-    }
-
-    public void setExperimentCondition(String experimentCondition) {
-        this.experimentCondition = experimentCondition == null ? null : experimentCondition.trim();
-    }
-
-    public Integer getSuggestGroupType() {
-        return suggestGroupType;
-    }
-
-    public void setSuggestGroupType(Integer suggestGroupType) {
-        this.suggestGroupType = suggestGroupType;
-    }
-
-    public Integer getExperimentType() {
-        return experimentType;
-    }
-
-    public void setExperimentType(Integer experimentType) {
-        this.experimentType = experimentType;
-    }
-
-    public String getAchievementCheck() {
-        return achievementCheck;
-    }
-
-    public void setAchievementCheck(String achievementCheck) {
-        this.achievementCheck = achievementCheck == null ? null : achievementCheck.trim();
-    }
-
-    public String getLimitCollege() {
-        return limitCollege;
-    }
-
-    public void setLimitCollege(String limitCollege) {
-        this.limitCollege = limitCollege == null ? null : limitCollege.trim();
-    }
-
-    public String getLimitMajor() {
-        return limitMajor;
-    }
-
-    public void setLimitMajor(String limitMajor) {
-        this.limitMajor = limitMajor == null ? null : limitMajor.trim();
-    }
-
-    public Integer getLimitGrade() {
-        return limitGrade;
-    }
-
-    public void setLimitGrade(Integer limitGrade) {
-        this.limitGrade = limitGrade;
-    }
-
-    public Integer getFitPeopleNum() {
-        return fitPeopleNum;
-    }
-
-    public void setFitPeopleNum(Integer fitPeopleNum) {
-        this.fitPeopleNum = fitPeopleNum;
-    }
-
-    public Integer getTotalHours() {
-        return totalHours;
-    }
-
-    public void setTotalHours(Integer totalHours) {
-        this.totalHours = totalHours;
-    }
-
-    public String getLabName() {
-        return labName;
-    }
-
-    public void setLabName(String labName) {
-        this.labName = labName == null ? null : labName.trim();
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName == null ? null : projectName.trim();
-    }
-
-    public Integer getProjectType() {
-        return projectType;
-    }
-
-    public void setProjectType(Integer projectType) {
-        this.projectType = projectType;
-    }
-
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
 
     @Override
     public String toString() {

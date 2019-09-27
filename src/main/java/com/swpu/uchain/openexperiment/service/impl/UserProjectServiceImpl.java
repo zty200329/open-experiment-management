@@ -14,6 +14,7 @@ import com.swpu.uchain.openexperiment.form.project.JoinProjectApplyForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.UserProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
+import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.service.UserService;
@@ -39,6 +40,8 @@ public class UserProjectServiceImpl implements UserProjectService {
     private RedisService redisService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private GetUserService getUserService;
     @Override
     public boolean insert(UserProjectGroup userProjectGroup) {
         int result = userProjectGroupMapper.insert(userProjectGroup);
@@ -120,7 +123,7 @@ public class UserProjectServiceImpl implements UserProjectService {
 
     @Override
     public Result applyJoinProject(JoinProjectApplyForm joinProjectApplyForm) {
-        User user = userService.getCurrentUser();
+        User user = getUserService.getCurrentUser();
         if (user == null){
             return Result.error(CodeMsg.AUTHENTICATION_ERROR);
         }
@@ -178,7 +181,7 @@ public class UserProjectServiceImpl implements UserProjectService {
     @Override
     public Result aimUserMemberRole(AimForm aimForm) {
         //判断当前操作用户是否存在项目组
-        User currentUser = userService.getCurrentUser();
+        User currentUser = getUserService.getCurrentUser();
         UserProjectGroup group = selectByProjectGroupIdAndUserId(aimForm.getProjectGroupId(), currentUser.getId());
         if (group == null){
             Result.error(CodeMsg.USER_NOT_IN_GROUP);

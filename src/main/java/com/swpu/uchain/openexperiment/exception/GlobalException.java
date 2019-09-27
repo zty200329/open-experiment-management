@@ -12,9 +12,23 @@ import lombok.Data;
 public class GlobalException extends RuntimeException{
     private CodeMsg codeMsg;
 
+    private String message;
+    private Integer code;
+
     public GlobalException(CodeMsg codeMsg) {
         super();
-        this.codeMsg = codeMsg;
+        this.message = codeMsg.getMsg();
+        this.code = codeMsg.getCode();
     }
+
+    public GlobalException(String message,Integer code) {
+        super();
+        this.message = message;
+        this.code = code;
+    }
+
+
+
+
 
 }

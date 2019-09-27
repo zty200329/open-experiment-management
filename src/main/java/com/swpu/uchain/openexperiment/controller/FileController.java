@@ -5,6 +5,7 @@ import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.file.ConcludingReportForm;
 import com.swpu.uchain.openexperiment.form.file.ReloadApplyForm;
 import com.swpu.uchain.openexperiment.result.Result;
+import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.ProjectFileService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.service.UserService;
@@ -31,9 +32,9 @@ public class FileController {
     @Autowired
     private ProjectFileService projectFileService;
     @Autowired
-    private UserService userService;
-    @Autowired
     private UserProjectService userProjectService;
+    @Autowired
+    private GetUserService getUserService;
 
     @ApiOperation("下载立项申请正文doc")
     @GetMapping(value = "/getApplyDoc", name = "下载立项申请正文doc")
@@ -50,7 +51,7 @@ public class FileController {
     @ApiOperation("重新上传立项申请正文")
     @PostMapping(value = "/reloadApplyDoc", name = "重新上传立项申请正文")
     public Object reloadApplyDoc(@Valid ReloadApplyForm reloadApplyForm){
-        User currentUser = userService.getCurrentUser();
+        User currentUser = getUserService.getCurrentUser();
         if (userProjectService.selectByProjectGroupIdAndUserId(currentUser.getId(), reloadApplyForm.getProjectGroupId()) == null) {
             return Result.error(CodeMsg.PERMISSION_DENNY);
         }

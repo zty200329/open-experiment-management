@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.result;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.exception.GlobalException;
 import lombok.Data;
 
 /**
@@ -21,6 +22,11 @@ public class Result<T> {
         this.data = data;
     }
 
+    public Result(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
     private Result(CodeMsg codeMsg) {
         if (codeMsg==null) {
             return;
@@ -38,6 +44,14 @@ public class Result<T> {
     }
 
     public static <T> Result<T> error(CodeMsg codeMsg){
-        return new Result<T>(codeMsg);
+        return new Result<>(codeMsg);
+    }
+
+    public static <T> Result<T> error(GlobalException e){
+        return new Result<>(e.getCode(),e.getMessage());
+    }
+
+    public static <T> Result<T> error(Integer code,String message){
+        return new Result<>(code, message);
     }
 }

@@ -73,4 +73,5 @@ public enum CodeMsg {
         this.code = code;
         this.msg = msg;
     }
+
 }

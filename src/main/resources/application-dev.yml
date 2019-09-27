@@ -17,3 +17,8 @@ upload:
   upload-dir: "/home/panghu/IdeaProjects/OpenExperiment/src/main/resources/testFile/"
   apply-file-name: "立项申请主要内容"
   concluding-file-name: "结题报告"
+
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

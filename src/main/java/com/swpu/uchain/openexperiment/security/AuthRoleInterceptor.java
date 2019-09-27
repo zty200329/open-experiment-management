@@ -6,6 +6,7 @@ import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AclService;
+import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +30,14 @@ import java.util.Collection;
 public class AuthRoleInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
-    private UserService userService;
-    @Autowired
-    private AclService aclService;
+    private GetUserService getUserService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
         String json = JSON.toJSONString(Result.error(CodeMsg.AUTHENTICATION_ERROR));
-        User user = userService.getCurrentUser();
+        User user = getUserService.getCurrentUser();
         //若当前用户为未认证用户则跳过权限验证,交给security做身份认证
         if (user == null) {
             return true;

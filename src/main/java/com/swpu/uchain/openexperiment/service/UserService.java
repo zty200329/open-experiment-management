@@ -60,18 +60,7 @@ public interface UserService {
      */
     boolean checkVerifyCode(String clientIp,String code);
 
-    /**
-     * 获取当前用户
-     * @return
-     */
-    User getCurrentUser();
 
-    /**
-     * 根据编号查询用户
-     * @param userCode
-     * @return
-     */
-    User selectByUserCode(String userCode);
 
     /**
      * 根据id进行查询

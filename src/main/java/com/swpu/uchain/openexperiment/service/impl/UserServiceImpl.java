@@ -21,10 +21,7 @@ import com.swpu.uchain.openexperiment.redis.key.VerifyCodeKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.security.JwtTokenUtil;
 import com.swpu.uchain.openexperiment.security.JwtUser;
-import com.swpu.uchain.openexperiment.service.AclService;
-import com.swpu.uchain.openexperiment.service.RoleService;
-import com.swpu.uchain.openexperiment.service.UserProjectService;
-import com.swpu.uchain.openexperiment.service.UserService;
+import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -67,10 +64,11 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
     private UserProjectGroupMapper userProjectGroupMapper;
     private ConvertUtil convertUtil;
+    private GetUserService getUserService;
 
     @Autowired
     public UserServiceImpl(UserMapper userMapper, RedisService redisService,
-                           RoleService roleService,
+                           RoleService roleService,GetUserService getUserService,
                            AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil,
                            AclService aclService,UserProjectGroupMapper userProjectGroupMapper,
                            PasswordEncoder passwordEncoder,ConvertUtil convertUtil) {
@@ -83,6 +81,7 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.convertUtil = convertUtil;
+        this.getUserService = getUserService;
     }
 
     @Override
@@ -122,7 +121,7 @@ public class UserServiceImpl implements UserService {
         if (!checkVerifyCode(clientIp, loginForm.getVerifyCode())){
             return Result.error(CodeMsg.VERIFY_CODE_ERROR);
         }
-        User user = selectByUserCode(loginForm.getUserCode());
+        User user = getUserService.selectByUserCode(loginForm.getUserCode());
         if (user == null){
             return Result.error(CodeMsg.USER_NO_EXIST);
         }
@@ -132,7 +131,7 @@ public class UserServiceImpl implements UserService {
         //认证通过放入容器中
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final UserDetails userDetails;
-        User user1 = selectByUserCode(loginForm.getUserCode());
+        User user1 = getUserService.selectByUserCode(loginForm.getUserCode());
         if (user==null) {
             log.info("认证邮箱信息不存在");
             throw new UsernameNotFoundException(String.format(" user not exist with stuId ='%s'.", loginForm.getUserCode()));
@@ -176,28 +175,6 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-    @Override
-    public User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String name = authentication.getName();
-        if (authentication != null && !"anonymousUser".equals(name)){
-            return selectByUserCode(name);
-        }
-        return null;
-    }
-
-    @Override
-    public User selectByUserCode(String userCode) {
-        User user = redisService.get(UserKey.getUserByUserCode, userCode, User.class);
-        if (user != null){
-            return user;
-        }
-        user = userMapper.selectByUserCode(userCode);
-        if (user != null){
-            redisService.set(UserKey.getUserByUserCode, userCode, user);
-        }
-        return user;
-    }
 
     @Override
     public User selectByUserId(Long userId) {
@@ -219,7 +196,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result createUserJoin(String[] userCodes, Long projectGroupId, UserType userType) {
         for (String userCode : userCodes) {
-            User user = selectByUserCode(userCode);
+            User user = getUserService.selectByUserCode(userCode);
             if (user == null){
                 return Result.error(CodeMsg.USER_NO_EXIST);
             }
@@ -280,7 +257,7 @@ public class UserServiceImpl implements UserService {
         if (user == null){
             return Result.error(CodeMsg.USER_NO_EXIST);
         }
-        User currentUser = getCurrentUser();
+        User currentUser = getUserService.getCurrentUser();
         if (user.getId().intValue() != currentUser.getId()){
             return Result.error(CodeMsg.PERMISSION_DENNY);
         }
@@ -293,7 +270,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result getMyInfo() {
-        User currentUser = getCurrentUser();
+        User currentUser = getUserService.getCurrentUser();
         UserInfoVO userInfoVO = new UserInfoVO();
         BeanUtils.copyProperties(currentUser, userInfoVO);
         List<Role> roles = roleService.getUserRoles(currentUser.getId());

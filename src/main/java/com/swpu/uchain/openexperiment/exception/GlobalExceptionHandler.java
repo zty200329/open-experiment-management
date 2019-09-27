@@ -27,6 +27,15 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    private final static String EXCEPTION_MSG_KEY = "Exception message : ";
+
+    @ResponseBody
+    @ExceptionHandler(GlobalException.class)
+    public Result handleSelfException(GlobalException exception){
+        log.error(EXCEPTION_MSG_KEY+exception.getMessage());
+        return Result.error(exception);
+    }
+
     @ExceptionHandler(value = Exception.class)
     public Result exceptionHandler(HttpServletRequest request
             , HttpServletResponse response

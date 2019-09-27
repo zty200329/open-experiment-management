@@ -6,6 +6,7 @@ import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementListVO;
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementVO;
 import com.swpu.uchain.openexperiment.config.CountConfig;
 import com.swpu.uchain.openexperiment.dao.AnnouncementMapper;
+import com.swpu.uchain.openexperiment.dao.UserMapper;
 import com.swpu.uchain.openexperiment.domain.Announcement;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
@@ -18,6 +19,8 @@ import com.swpu.uchain.openexperiment.service.AnnouncementService;
 import com.swpu.uchain.openexperiment.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -36,9 +39,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Autowired
     private RedisService redisService;
     @Autowired
-    private UserService userService;
-    @Autowired
     private CountConfig countConfig;
+    @Autowired
+    private UserMapper userMapper;
     @Override
     public boolean insert(Announcement announcement) {
         if (announcementMapper.insert(announcement) == 1){
@@ -79,7 +82,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     @Override
     public Result publishAnnouncement(AnnouncementPublishForm publishForm) {
-        User user = userService.getCurrentUser();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long id  = Long.valueOf(authentication.getName());
+        User user = userMapper.selectByPrimaryKey(id);
         Announcement announcement = new Announcement();
         announcement.setTitle(publishForm.getTitle());
         announcement.setContent(publishForm.getContent());

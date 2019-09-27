@@ -15,6 +15,7 @@ import com.swpu.uchain.openexperiment.form.file.ConcludingReportForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.FileKey;
 import com.swpu.uchain.openexperiment.result.Result;
+import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.ProjectFileService;
 import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserService;
@@ -49,13 +50,14 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Autowired
     private ProjectService projectService;
     @Autowired
-    private UserService userService;
+    private GetUserService getUserService;
     @Autowired
     private RedisService redisService;
     @Autowired
     private XDocService xDocService;
     @Autowired
     private ConvertUtil convertUtil;
+
 
     @Override
     public boolean insert(ProjectFile projectFile) {
@@ -124,7 +126,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (!checkFileFormat(file, FileType.WORD.getValue())) {
             return Result.error(CodeMsg.FORMAT_UNSUPPORTED);
         }
-        User user = userService.getCurrentUser();
+        User user = getUserService.getCurrentUser();
         //TODO,校验当前用户是否有权进行上传
         ProjectFile projectFile = new ProjectFile();
         projectFile.setUploadUserId(user.getId());
@@ -203,7 +205,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (multipartFile == null || multipartFile.isEmpty()){
             return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
-        User currentUser = userService.getCurrentUser();
+        User currentUser = getUserService.getCurrentUser();
         ProjectFile projectFile = new ProjectFile();
         projectFile.setFileName(multipartFile.getOriginalFilename());
         projectFile.setDownloadTimes(0);
@@ -261,7 +263,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                             uploadConfig.getUploadDir(),
                             uploadConfig.getConcludingFileName()));
         }
-        User currentUser = userService.getCurrentUser();
+        User currentUser = getUserService.getCurrentUser();
         //TODO,校验当前用户是否有权进行上传
         projectFile = new ProjectFile();
         projectFile.setUploadUserId(currentUser.getId());

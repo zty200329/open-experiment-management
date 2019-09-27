@@ -94,7 +94,7 @@ public class ProjectController {
         return projectService.getCheckInfo(pageNum, projectStatus);
     }
 
-    @ApiOperation("同意立项")
+    @ApiOperation("同意立项--待完成")
     @PostMapping(value = "/agreeEstablish", name = "同意立项")
     public Object agreeEstablish(String projectGroupIds){
         if (StringUtils.isEmpty(projectGroupIds)){
@@ -103,7 +103,7 @@ public class ProjectController {
         return projectService.agreeEstablish(convertUtil.parseIds(projectGroupIds));
     }
 
-    @ApiOperation("驳回修改")
+    @ApiOperation("驳回修改--待完成")
     @PostMapping(value = "/rejectModifyApply", name = "驳回修改")
     public Object rejectModifyApply(Long projectGroupId){
         if (projectGroupId == null){
@@ -112,7 +112,7 @@ public class ProjectController {
         return projectService.rejectModifyApply(projectGroupId);
     }
 
-    @ApiOperation("上报学院领导")
+    @ApiOperation("上报学院领导--待完成")
     @PostMapping(value = "/reportToCollegeLeader", name = "上报学院领导")
     public Object reportToCollegeLeader(Long projectGroupId){
         if (projectGroupId == null){
@@ -127,13 +127,13 @@ public class ProjectController {
         return userProjectService.aimUserMemberRole(aimForm);
     }
 
-    @ApiOperation("生成立项总览表")
+    @ApiOperation("生成立项总览表--待完成")
     @GetMapping(value = "generateEstablishExcel", name = "生成立项总览表")
     public void generateEstablishExcel(){
         projectService.generateEstablishExcel();
     }
 
-    @ApiOperation("生成结题总览表")
+    @ApiOperation("生成结题总览表--待完成")
     @GetMapping(value = "generateConclusionExcel", name = "生成结题总览表")
     public void generateConclusionExcel(){
         projectService.generateConclusionExcel();
