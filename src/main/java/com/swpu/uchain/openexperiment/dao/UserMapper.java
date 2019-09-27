@@ -2,9 +2,11 @@ package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.domain.User;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface UserMapper {
     int deleteByPrimaryKey(Long id);
 

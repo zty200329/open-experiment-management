@@ -30,6 +30,8 @@ public class ProjectController {
     private ProjectService projectService;
     @Autowired
     private UserProjectService userProjectService;
+    @Autowired
+    private ConvertUtil convertUtil;
 
     @ApiOperation("根据项目名模糊查询项目")
     @GetMapping(value = "/selectProject", name = "根据项目名模糊查询项目")
@@ -98,7 +100,7 @@ public class ProjectController {
         if (StringUtils.isEmpty(projectGroupIds)){
             return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
         }
-        return projectService.agreeEstablish(ConvertUtil.parseIds(projectGroupIds));
+        return projectService.agreeEstablish(convertUtil.parseIds(projectGroupIds));
     }
 
     @ApiOperation("驳回修改")

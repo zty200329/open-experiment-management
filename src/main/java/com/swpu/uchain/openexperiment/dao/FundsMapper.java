@@ -2,9 +2,12 @@ package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.domain.Funds;
 import com.swpu.uchain.openexperiment.result.Result;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
+@Repository
 public interface FundsMapper {
     int deleteByPrimaryKey(Long id);
 

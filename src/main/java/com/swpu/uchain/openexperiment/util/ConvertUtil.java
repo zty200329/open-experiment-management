@@ -16,6 +16,9 @@ import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.UserType;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +29,20 @@ import java.util.List;
  * @Description:
  * VO转换工具类
  */
+@Service
 public class ConvertUtil {
-    public static List<String> fromAclsToUrls(List<Acl> acls){
+
+    private AclMapper aclMapper;
+
+    private RoleMapper roleMapper;
+
+    @Autowired
+    public ConvertUtil(AclMapper aclMapper, RoleMapper roleMapper) {
+        this.aclMapper = aclMapper;
+        this.roleMapper = roleMapper;
+    }
+
+    public  List<String> fromAclsToUrls(List<Acl> acls){
         List<String> urls = new ArrayList<>();
         for (Acl acl : acls) {
             urls.add(acl.getUrl());
@@ -35,7 +50,7 @@ public class ConvertUtil {
         return urls;
     }
 
-    public static String getTechnicalRole(int type){
+    public  String getTechnicalRole(int type){
         switch (type){
             case 1:
                 return UserType.STUDENT.getMessage();
@@ -50,7 +65,7 @@ public class ConvertUtil {
         }
     }
 
-    public static <T> T addUserDetailVO(List<User> users,Class<T> clazz){
+    public  <T> T addUserDetailVO(List<User> users,Class<T> clazz){
         List<UserDetailVO> guideTeachers = new ArrayList<>();
         List<UserDetailVO> stuMembers = new ArrayList<>();
         for (User user : users) {
@@ -74,7 +89,7 @@ public class ConvertUtil {
         }
     }
 
-    public static List<AttachmentFileVO> getAttachmentFileVOS(List<AttachmentFileDTO> attachmentFileDTOS) {
+    public  List<AttachmentFileVO> getAttachmentFileVOS(List<AttachmentFileDTO> attachmentFileDTOS) {
         List<AttachmentFileVO> attachmentFileVOS = new ArrayList<>();
         for (AttachmentFileDTO attachmentFileDTO : attachmentFileDTOS) {
             AttachmentFileVO attachmentFileVO = new AttachmentFileVO();
@@ -85,7 +100,7 @@ public class ConvertUtil {
         return attachmentFileVOS;
     }
 
-    public static List<UserManageInfo> convertUsers(List<User> users, RoleMapper roleMapper){
+    public  List<UserManageInfo> convertUsers(List<User> users){
         List<UserManageInfo> userList = new ArrayList<>();
         users.forEach(user -> {
             UserManageInfo userManageInfo = new UserManageInfo();
@@ -97,16 +112,16 @@ public class ConvertUtil {
         return userList;
     }
 
-    public static List<RoleInfoVO> convertRoles(List<Role> roles, AclMapper aclMapper){
+    public  List<RoleInfoVO> convertRoles(List<Role> roles){
         List<RoleInfoVO> roleList = new ArrayList<>();
         roles.forEach(role -> {
-            RoleInfoVO roleInfoVO = convertOneRoleInfo(role, aclMapper);
+            RoleInfoVO roleInfoVO = convertOneRoleInfo(role);
             roleList.add(roleInfoVO);
         });
         return roleList;
     }
 
-    public static RoleInfoVO convertOneRoleInfo(Role role, AclMapper aclMapper) {
+    public  RoleInfoVO convertOneRoleInfo(Role role) {
         RoleInfoVO roleInfoVO = new RoleInfoVO();
         BeanUtils.copyProperties(role, roleInfoVO);
         List<Acl> acls = aclMapper.selectByRoleId(role.getId());
@@ -114,13 +129,13 @@ public class ConvertUtil {
         return roleInfoVO;
     }
 
-    public static UserDetailVO convertUserDetailVO(User user) {
+    public  UserDetailVO convertUserDetailVO(User user) {
         UserDetailVO userDetailVO = new UserDetailVO();
         BeanUtils.copyProperties(user, userDetailVO);
         return userDetailVO;
     }
 
-    public static Long[] parseIds(String str){
+    public  Long[] parseIds(String str){
         String[] split = str.split(",");
         Long[] ids = new Long[split.length];
         for (int i = 0; i < split.length; i++) {

@@ -4,6 +4,7 @@ import com.swpu.uchain.openexperiment.domain.Acl;
 import com.swpu.uchain.openexperiment.form.permission.AclUpdateForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

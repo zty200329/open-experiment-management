@@ -1,6 +1,5 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.swpu.uchain.openexperiment.dao.AclMapper;
 import com.swpu.uchain.openexperiment.dao.RoleMapper;
 import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
@@ -23,10 +22,16 @@ import java.util.List;
  */
 @Service
 public class RoleServiceImpl implements RoleService {
-    @Autowired
+
     private RoleMapper roleMapper;
+    private ConvertUtil convertUtil;
+
     @Autowired
-    private AclMapper aclMapper;
+    public RoleServiceImpl(RoleMapper roleMapper, ConvertUtil convertUtil) {
+        this.roleMapper = roleMapper;
+        this.convertUtil = convertUtil;
+    }
+
     @Override
     public boolean insert(Role role) {
         return roleMapper.insert(role) == 1;
@@ -85,13 +90,13 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Result selectAllRole() {
         List<Role> roles = roleMapper.selectAll();
-        return Result.success(ConvertUtil.convertRoles(roles, aclMapper));
+        return Result.success(convertUtil.convertRoles(roles));
     }
 
     @Override
     public Result selectRoleInfo(Long roleId) {
         Role role = selectByRoleId(roleId);
-        return Result.success(ConvertUtil.convertOneRoleInfo(role, aclMapper));
+        return Result.success(convertUtil.convertOneRoleInfo(role));
     }
 
     @Override

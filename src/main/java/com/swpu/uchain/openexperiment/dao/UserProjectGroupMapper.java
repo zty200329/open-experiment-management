@@ -1,9 +1,11 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface UserProjectGroupMapper {
     int deleteByPrimaryKey(Long id);
 

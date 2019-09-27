@@ -44,6 +44,7 @@ public class AuthRoleInterceptor extends HandlerInterceptorAdapter {
         }
         log.info("...........执行权限验证........");
         String uri = request.getRequestURI();
+        //通过遍历URL实现权限管理
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         log.info("当前用户的权限是: {}; 需要访问的权限是: {}", authorities.toString(), uri);
         for (GrantedAuthority authority : authorities) {

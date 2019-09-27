@@ -54,6 +54,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     private RedisService redisService;
     @Autowired
     private XDocService xDocService;
+    @Autowired
+    private ConvertUtil convertUtil;
 
     @Override
     public boolean insert(ProjectFile projectFile) {
@@ -237,7 +239,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Override
     public Result listAttachmentFiles() {
         List<AttachmentFileDTO> attachmentFileDTOS = projectFileMapper.selectAttachmentFiles();
-        List<AttachmentFileVO> attachmentFileVOS = ConvertUtil.getAttachmentFileVOS(attachmentFileDTOS);
+        List<AttachmentFileVO> attachmentFileVOS = convertUtil.getAttachmentFileVOS(attachmentFileDTOS);
         return Result.success(attachmentFileVOS);
     }
 

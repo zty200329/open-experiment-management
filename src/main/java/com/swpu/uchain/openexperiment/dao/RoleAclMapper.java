@@ -1,8 +1,11 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.domain.RoleAcl;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
+@Repository
 public interface RoleAclMapper {
     int deleteRoleIdAndAclId(Long roleId, Long aclId);
 

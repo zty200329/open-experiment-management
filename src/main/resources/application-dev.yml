@@ -14,6 +14,6 @@ spring:
       max-request-size: 307200000
 
 upload:
-  upload-dir: "/home/hk/testFile"
+  upload-dir: "/home/panghu/IdeaProjects/OpenExperiment/src/main/resources/testFile/"
   apply-file-name: "立项申请主要内容"
   concluding-file-name: "结题报告"

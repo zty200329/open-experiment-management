@@ -2,8 +2,11 @@ package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.VO.permission.RoleVO;
 import com.swpu.uchain.openexperiment.domain.Role;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
+@Repository
 public interface RoleMapper {
     int deleteByPrimaryKey(Long id);
 

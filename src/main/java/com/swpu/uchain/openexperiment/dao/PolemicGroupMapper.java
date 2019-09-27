@@ -1,8 +1,12 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.domain.PolemicGroup;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
+
+@Repository
 public interface PolemicGroupMapper {
     int deleteByPrimaryKey(Long id);
 

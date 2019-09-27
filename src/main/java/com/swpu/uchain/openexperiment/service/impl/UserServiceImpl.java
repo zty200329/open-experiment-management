@@ -60,30 +60,29 @@ import java.util.concurrent.locks.ReentrantLock;
 public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     private RedisService redisService;
-    private RoleMapper roleMapper;
     private RoleService roleService;
     private AuthenticationManager authenticationManager;
     private JwtTokenUtil jwtTokenUtil;
-    private AclMapper aclMapper;
     private AclService aclService;
     private PasswordEncoder passwordEncoder;
     private UserProjectGroupMapper userProjectGroupMapper;
+    private ConvertUtil convertUtil;
 
     @Autowired
     public UserServiceImpl(UserMapper userMapper, RedisService redisService,
-                           RoleMapper roleMapper, RoleService roleService,
+                           RoleService roleService,
                            AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil,
                            AclService aclService,UserProjectGroupMapper userProjectGroupMapper,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,ConvertUtil convertUtil) {
         this.userMapper = userMapper;
         this.redisService = redisService;
-        this.roleMapper = roleMapper;
         this.roleService = roleService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.aclService = aclService;
         this.passwordEncoder = passwordEncoder;
         this.userProjectGroupMapper = userProjectGroupMapper;
+        this.convertUtil = convertUtil;
     }
 
     @Override
@@ -227,7 +226,7 @@ public class UserServiceImpl implements UserService {
             UserProjectGroup userProjectGroup = new UserProjectGroup();
             userProjectGroup.setUserId(user.getId());
             if (userType.getValue() != UserType.STUDENT.getValue().intValue()){
-                userProjectGroup.setTechnicalRole(ConvertUtil.getTechnicalRole(user.getUserType()));
+                userProjectGroup.setTechnicalRole(convertUtil.getTechnicalRole(user.getUserType()));
                 userProjectGroup.setMemberRole(MemberRole.GUIDANCE_TEACHER.getValue());
                 userProjectGroup.setStatus(JoinStatus.APPLYING.getValue());
             }else {
@@ -298,7 +297,7 @@ public class UserServiceImpl implements UserService {
         UserInfoVO userInfoVO = new UserInfoVO();
         BeanUtils.copyProperties(currentUser, userInfoVO);
         List<Role> roles = roleService.getUserRoles(currentUser.getId());
-        List<RoleInfoVO> roleInfoVOS = ConvertUtil.convertRoles(roles, aclMapper);
+        List<RoleInfoVO> roleInfoVOS = convertUtil.convertRoles(roles);
         userInfoVO.setRoleInfoVOS(roleInfoVOS);
         return Result.success(userInfoVO);
     }
@@ -309,7 +308,7 @@ public class UserServiceImpl implements UserService {
             return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
         }
         List<User> users = selectByKeyWord(keyWord, true);
-        List<UserManageInfo> userList = ConvertUtil.convertUsers(users, roleMapper);
+        List<UserManageInfo> userList = convertUtil.convertUsers(users);
         return Result.success(userList);
     }
 

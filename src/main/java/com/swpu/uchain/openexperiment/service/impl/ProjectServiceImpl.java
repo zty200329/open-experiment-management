@@ -59,6 +59,9 @@ public class ProjectServiceImpl implements ProjectService {
     private CountConfig countConfig;
     @Autowired
     private UploadConfig uploadConfig;
+    @Autowired
+    private ConvertUtil convertUtil;
+
     @Override
     public boolean insert(ProjectGroup projectGroup) {
         if (projectGroupMapper.insert(projectGroup) == 1){
@@ -329,13 +332,13 @@ public class ProjectServiceImpl implements ProjectService {
         }
         List<User> users = userService.selectProjectJoinedUsers(projectGroupId);
         if (projectGroup.getProjectType().intValue() == ProjectType.KEY.getValue()){
-            ApplyKeyFormInfoVO applyKeyFormInfoVO = ConvertUtil.addUserDetailVO(users, ApplyKeyFormInfoVO.class);
+            ApplyKeyFormInfoVO applyKeyFormInfoVO = convertUtil.addUserDetailVO(users, ApplyKeyFormInfoVO.class);
             applyKeyFormInfoVO.setFundsDetails(fundsService.getFundsDetails(projectGroupId));
             BeanUtils.copyProperties(projectGroup, applyKeyFormInfoVO);
             applyKeyFormInfoVO.setProjectGroupId(projectGroup.getId());
             return Result.success(applyKeyFormInfoVO);
         }else {
-            ApplyGeneralFormInfoVO applyGeneralFormInfoVO = ConvertUtil.addUserDetailVO(users, ApplyGeneralFormInfoVO.class);
+            ApplyGeneralFormInfoVO applyGeneralFormInfoVO = convertUtil.addUserDetailVO(users, ApplyGeneralFormInfoVO.class);
             BeanUtils.copyProperties(projectGroup, applyGeneralFormInfoVO);
             applyGeneralFormInfoVO.setProjectGroupId(projectGroup.getId());
             return Result.success(applyGeneralFormInfoVO);
@@ -475,7 +478,7 @@ public class ProjectServiceImpl implements ProjectService {
                 joinUnCheckVO.setProjectName(projectGroup.getProjectName());
                 joinUnCheckVO.setPersonJudge(userProjectGroup.getPersonalJudge());
                 joinUnCheckVO.setTechnicalRole(userProjectGroup.getTechnicalRole());
-                joinUnCheckVO.setUserDetailVO(ConvertUtil.convertUserDetailVO(user));
+                joinUnCheckVO.setUserDetailVO(convertUtil.convertUserDetailVO(user));
                 joinUnCheckVOS.add(joinUnCheckVO);
             }
         });

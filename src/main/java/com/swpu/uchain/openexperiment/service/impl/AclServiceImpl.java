@@ -28,9 +28,9 @@ public class AclServiceImpl implements AclService {
     @Autowired
     private AclMapper aclMapper;
     @Autowired
-    private RoleAclMapper roleAclMapper;
-    @Autowired
     private RedisService redisService;
+    @Autowired
+    private ConvertUtil convertUtil;
 
     @Override
     public boolean insert(Acl acl) {
@@ -48,7 +48,7 @@ public class AclServiceImpl implements AclService {
         if (aclUrls == null){
             List<Acl> acls = aclMapper.selectByUserId(userId);
             if (acls != null){
-                aclUrls = ConvertUtil.fromAclsToUrls(acls);
+                aclUrls = convertUtil.fromAclsToUrls(acls);
                 redisService.set(AclKey.getUrlsByUserId, userId + "", aclUrls);
             }
         }
