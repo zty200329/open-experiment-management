@@ -87,6 +87,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         announcement.setPublishTime(new Date());
         announcement.setUpdateTime(new Date());
         if (insert(announcement)){
+            //设置阅读次数
             redisService.set(AnnouncementKey.getClickTimesById, announcement.getId() + "", 0);
             return Result.success();
         }

@@ -10,6 +10,9 @@ import lombok.Getter;
  */
 @Getter
 public enum CodeMsg {
+    /**
+     *
+     */
     AUTHENTICATION_ERROR(401,"用户认证失败,请重新登录" ),
     PASSWORD_ERROR(402, "密码错误"),
     PERMISSION_DENNY(403,"权限不足" ),

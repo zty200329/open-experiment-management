@@ -1,8 +1,14 @@
 package com.swpu.uchain.openexperiment.domain;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author panghu
+ */
+@Data
 public class Announcement implements Serializable {
     private Long id;
 
@@ -18,53 +24,6 @@ public class Announcement implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getPublisherId() {
-        return publisherId;
-    }
-
-    public void setPublisherId(Long publisherId) {
-        this.publisherId = publisherId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
-    }
-
-    public Date getPublishTime() {
-        return publishTime;
-    }
-
-    public void setPublishTime(Date publishTime) {
-        this.publishTime = publishTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
 
     @Override
     public String toString() {

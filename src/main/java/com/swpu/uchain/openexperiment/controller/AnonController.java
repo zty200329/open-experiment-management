@@ -41,7 +41,7 @@ public class AnonController {
     @GetMapping(value = "/sendVerifyCode", name = "发送验证码接口")
     public Object sendVerifyCode(HttpServletRequest request){
         String ip = ClientUtil.getClientIpAddress(request);
-        String verifyCode = null;
+        String verifyCode;
         try {
             verifyCode = userService.sendVerifyCode(ip);
         } catch (IOException e) {

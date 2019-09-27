@@ -33,15 +33,16 @@
 </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectGroup">
     update user_project_group
-    set project_group_id = #{projectGroupId,jdbcType=BIGINT},
-      user_id = #{userId,jdbcType=BIGINT},
-      technical_role = #{technicalRole,jdbcType=VARCHAR},
-      work_division = #{workDivision,jdbcType=VARCHAR},
-      `status` = #{status,jdbcType=INTEGER},
-      member_role = #{memberRole,jdbcType=INTEGER},
-      personal_judge = #{personalJudge,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      join_time = #{joinTime,jdbcType=TIMESTAMP}
+    set 
+        project_group_id = #{projectGroupId,jdbcType=BIGINT},
+        user_id = #{userId,jdbcType=BIGINT},
+        technical_role = #{technicalRole,jdbcType=VARCHAR},
+        work_division = #{workDivision,jdbcType=VARCHAR},
+        `status` = #{status,jdbcType=INTEGER},
+        member_role = #{memberRole,jdbcType=INTEGER},
+        personal_judge = #{personalJudge,jdbcType=VARCHAR},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        join_time = #{joinTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

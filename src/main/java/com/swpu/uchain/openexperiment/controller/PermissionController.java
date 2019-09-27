@@ -32,8 +32,8 @@ import java.util.Map;
 /**
  * @Author: clf
  * @Date: 19-1-22
- * @Description:
- * 权限管理模块接口
+ * @Description:  权限管理模块接口
+ *
  */
 @Slf4j
 @CrossOrigin
@@ -122,7 +122,7 @@ public class PermissionController implements InitializingBean {
         return roleService.updateRoleName(roleForm);
     }
 
-    @ApiOperation("获取所有角色")
+    @ApiOperation("获取所有角色以及权限访问路径")
     @GetMapping(value = "/allRole", name = "获取所有角色")
     public Object allRole(){
         return roleService.selectAllRole();

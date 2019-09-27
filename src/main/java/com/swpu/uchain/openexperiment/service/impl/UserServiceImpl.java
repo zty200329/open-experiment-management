@@ -4,9 +4,7 @@ import com.swpu.uchain.openexperiment.DTO.VerifyCode;
 import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
-import com.swpu.uchain.openexperiment.dao.AclMapper;
-import com.swpu.uchain.openexperiment.dao.RoleMapper;
-import com.swpu.uchain.openexperiment.dao.UserMapper;
+import com.swpu.uchain.openexperiment.dao.*;
 import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
@@ -18,9 +16,12 @@ import com.swpu.uchain.openexperiment.form.user.LoginForm;
 import com.swpu.uchain.openexperiment.form.user.UserUpdateForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.UserKey;
+import com.swpu.uchain.openexperiment.redis.key.UserProjectGroupKey;
 import com.swpu.uchain.openexperiment.redis.key.VerifyCodeKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.security.JwtTokenUtil;
+import com.swpu.uchain.openexperiment.security.JwtUser;
+import com.swpu.uchain.openexperiment.service.AclService;
 import com.swpu.uchain.openexperiment.service.RoleService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.service.UserService;
@@ -35,6 +36,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sun.misc.BASE64Encoder;
 
@@ -55,24 +58,34 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
-    @Autowired
     private UserMapper userMapper;
-    @Autowired
     private RedisService redisService;
-    @Autowired
     private RoleMapper roleMapper;
-    @Autowired
     private RoleService roleService;
-    @Autowired
     private AuthenticationManager authenticationManager;
-    @Autowired
     private JwtTokenUtil jwtTokenUtil;
-    @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    private UserProjectService userProjectService;
-    @Autowired
     private AclMapper aclMapper;
+    private AclService aclService;
+    private PasswordEncoder passwordEncoder;
+    private UserProjectGroupMapper userProjectGroupMapper;
+
+    @Autowired
+    public UserServiceImpl(UserMapper userMapper, RedisService redisService,
+                           RoleMapper roleMapper, RoleService roleService,
+                           AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil,
+                           AclService aclService,UserProjectGroupMapper userProjectGroupMapper,
+                           PasswordEncoder passwordEncoder) {
+        this.userMapper = userMapper;
+        this.redisService = redisService;
+        this.roleMapper = roleMapper;
+        this.roleService = roleService;
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.aclService = aclService;
+        this.passwordEncoder = passwordEncoder;
+        this.userProjectGroupMapper = userProjectGroupMapper;
+    }
+
     @Override
     public boolean insert(User user) {
         if (userMapper.insert(user) == 1){
@@ -119,7 +132,16 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = authenticationManager.authenticate(token);
         //认证通过放入容器中
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginForm.getUserCode());
+        final UserDetails userDetails;
+        User user1 = selectByUserCode(loginForm.getUserCode());
+        if (user==null) {
+            log.info("认证邮箱信息不存在");
+            throw new UsernameNotFoundException(String.format(" user not exist with stuId ='%s'.", loginForm.getUserCode()));
+        } else {
+            //若存在则返回userDetails对象
+            List<String> aclUrl = aclService.getUserAclUrl(user.getId());
+            userDetails =new JwtUser(loginForm.getUserCode(), passwordEncoder.encode(user.getPassword()), aclUrl);
+        }
         log.info("加载数据库中的userDetails: {}", userDetails);
         //生成真正的token
         final String realToken = jwtTokenUtil.generateToken(userDetails);
@@ -215,12 +237,30 @@ public class UserServiceImpl implements UserService {
             userProjectGroup.setUpdateTime(new Date());
             userProjectGroup.setJoinTime(new Date());
             userProjectGroup.setProjectGroupId(projectGroupId);
-            Result result = userProjectService.addUserProject(userProjectGroup);
+            Result result = addUserProject(userProjectGroup);
             if (result.getCode() != 0){
                 return result;
             }
         }
         return Result.success();
+    }
+
+    public Result addUserProject(UserProjectGroup userProjectGroup) {
+        if (insert(userProjectGroup)){
+            return Result.success();
+        }
+        return Result.error(CodeMsg.ADD_ERROR);
+    }
+
+    public boolean insert(UserProjectGroup userProjectGroup) {
+        int result = userProjectGroupMapper.insert(userProjectGroup);
+        if (result == 1){
+            redisService.set(UserProjectGroupKey.getByProjectGroupIdAndUserId,
+                    userProjectGroup.getId() + "_" + userProjectGroup.getUserId(),
+                    userProjectGroup);
+            return true;
+        }
+        return false;
     }
 
     @Override

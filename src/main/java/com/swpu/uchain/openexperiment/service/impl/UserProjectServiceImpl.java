@@ -32,7 +32,7 @@ import java.util.List;
 @Service
 public class UserProjectServiceImpl implements UserProjectService {
     @Autowired
-    private UserProjectGroupMapper userProjectGroupMapper;
+        private UserProjectGroupMapper userProjectGroupMapper;
     @Autowired
     private ProjectService projectService;
     @Autowired

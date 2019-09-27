@@ -15,5 +15,5 @@ public class AnnouncementKey extends BasePrefix{
     }
 
     public static AnnouncementKey getById = new AnnouncementKey("announcementId");
-    public static AnnouncementKey getClickTimesById = new AnnouncementKey("announcementId");
+    public static AnnouncementKey getClickTimesById = new AnnouncementKey("announcementClickTimes");
 }

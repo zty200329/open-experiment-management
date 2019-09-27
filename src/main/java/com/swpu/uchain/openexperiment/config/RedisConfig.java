@@ -20,5 +20,6 @@ public class RedisConfig {
     private int poolMaxTotal;
     private int poolMaxIdle;
     private int poolMaxWait;
+    private String password;
 
 }
