@@ -9,7 +9,7 @@ import java.util.Date;
  * @author panghu
  */
 @Data
-public class Announcement implements Serializable {
+public class Announcement{
     private Long id;
 
     private Long publisherId;
@@ -22,7 +22,6 @@ public class Announcement implements Serializable {
 
     private Date updateTime;
 
-    private static final long serialVersionUID = 1L;
 
 
     @Override
@@ -37,7 +36,6 @@ public class Announcement implements Serializable {
         sb.append(", content=").append(content);
         sb.append(", publishTime=").append(publishTime);
         sb.append(", updateTime=").append(updateTime);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }
