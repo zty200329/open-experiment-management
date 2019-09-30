@@ -1,6 +1,8 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.swpu.uchain.openexperiment.dao.AclMapper;
 import com.swpu.uchain.openexperiment.dao.RoleAclMapper;
+import com.swpu.uchain.openexperiment.domain.Acl;
 import com.swpu.uchain.openexperiment.domain.RoleAcl;
 import com.swpu.uchain.openexperiment.domain.UserRole;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
@@ -29,6 +31,8 @@ public class RoleAclServiceImpl implements RoleAclService {
     private RedisService redisService;
     @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    private AclMapper aclMapper;
     
     @Override
     public boolean insertRoleAcl(RoleAcl roleAcl) {
@@ -56,6 +60,10 @@ public class RoleAclServiceImpl implements RoleAclService {
 
     @Override
     public Result addRoleAcl(RoleAclForm roleAclForm) {
+        Acl acl = aclMapper.selectByPrimaryKey(roleAclForm.getAclId());
+        if (acl == null){
+            return Result.error(CodeMsg.ACL_NOT_EXIST);
+        }
         RoleAcl roleAcl = selectByRoleIdAndAclId(roleAclForm.getRoleId(), roleAclForm.getAclId());
         if (roleAcl != null){
             return Result.error(CodeMsg.ROLE_ACL_HAD_EXIST);

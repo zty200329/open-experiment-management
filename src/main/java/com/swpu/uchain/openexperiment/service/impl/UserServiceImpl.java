@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException(String.format(" user not exist with stuId ='%s'.", loginForm.getUserCode()));
         } else {
             //若存在则返回userDetails对象
-            List<String> aclUrl = aclService.getUserAclUrl(user.getId());
+            List<String> aclUrl = aclService.getUserAclUrl(Long.valueOf(user.getCode()));
             userDetails =new JwtUser(loginForm.getUserCode(), passwordEncoder.encode(user.getPassword()), aclUrl);
         }
         log.info("加载数据库中的userDetails: {}", userDetails);

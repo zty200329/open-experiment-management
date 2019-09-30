@@ -24,8 +24,6 @@ import java.util.List;
 public class JwtUserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private UserService userService;
-    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AclService aclService;
@@ -41,7 +39,7 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(String.format(" user not exist with stuId ='%s'.", userCode));
         } else {
             //若存在则返回userDetails对象
-            List<String> aclUrl = aclService.getUserAclUrl(user.getId());
+            List<String> aclUrl = aclService.getUserAclUrl(Long.valueOf(user.getCode()));
             return new JwtUser(userCode, passwordEncoder.encode(user.getPassword()), aclUrl);
         }
     }
