@@ -51,6 +51,7 @@ public class ProjectController {
         return projectService.applyCreateProject(createProjectApplyForm, file);
     }
 
+    @ApiOperation("修改立项申请")
     @PostMapping(value = "/updateApply", name = "修改立项申请")
     public Object updateApply(@Valid UpdateProjectApplyForm updateProjectApplyForm, MultipartFile file){
         return projectService.applyUpdateProject(updateProjectApplyForm, file);
@@ -80,6 +81,7 @@ public class ProjectController {
         return projectService.agreeJoin(joinForm);
     }
 
+    @ApiOperation("拒绝某用户加入项目组")
     @PostMapping(value = "/rejectJoin", name = "拒绝某用户加入项目组")
     public Object rejectJoin(@Valid @RequestBody JoinForm[] joinForm){
         return projectService.rejectJoin(joinForm);

@@ -34,10 +34,13 @@
     from acl
   </select>
     <select id="selectByUserId" resultMap="BaseResultMap">
-    select acl.id,acl.description,acl.`name`,acl.url from acl
-    inner join user_role inner join role inner join role_acl on acl.id = role_acl.acl_id
-    and role.id = role_acl.role_id and role.id = user_role.role_id
-    where user_role.user_id=1 group by acl.id
+      select acl.id, acl.description, acl.`name`, acl.url
+      from acl
+             inner join user_role
+             inner join role
+             inner join role_acl on acl.id = role_acl.acl_id and role.id = role_acl.role_id and role.id = user_role.role_id
+      where user_role.user_id = #{userId}
+      group by acl.id
     </select>
   <select id="selectByRandom" resultMap="BaseResultMap">
     select * from acl where acl.`name` like '%${info}%'
@@ -48,8 +51,8 @@
     </select>
     <select id="selectByRoleId" resultMap="BaseResultMap">
       select * from acl
-      inner join role_acl
-      on role_acl.acl_id = acl.id
+                      inner join role_acl
+                                 on role_acl.acl_id = acl.id
       where role_acl.role_id = #{id}
     </select>
 </mapper>

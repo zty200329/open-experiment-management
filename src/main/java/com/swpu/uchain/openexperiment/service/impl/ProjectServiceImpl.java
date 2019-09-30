@@ -320,10 +320,10 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new GlobalException(CodeMsg.UPDATE_ERROR);
             }
             //TODO,资金同意操作
-//            result = fundsService.agreeFunds(projectGroupId);
-//            if (result.getCode() != 0){
-//                throw new GlobalException(CodeMsg.UPDATE_ERROR);
-//            }
+            result = fundsService.agreeFunds(projectGroupId);
+            if (result.getCode() != 0){
+                throw new GlobalException(CodeMsg.UPDATE_ERROR);
+            }
         }
         return Result.success();
     }

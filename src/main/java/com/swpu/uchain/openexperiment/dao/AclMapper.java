@@ -18,7 +18,7 @@ public interface AclMapper {
 
     int updateByPrimaryKey(Acl record);
 
-    List<Acl> selectByUserId(Long userId);
+    List<Acl> selectByUserId(@Param("userId") Long userId);
 
     List<Acl> selectByRandom(@Param("info") String info);
 
