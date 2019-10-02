@@ -65,10 +65,9 @@ public interface ProjectService {
     /**
      * 更新项目组信息
      * @param updateProjectApplyForm
-     * @param file
      * @return
      */
-    Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm, MultipartFile file);
+    Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm);
 
     /**
      * 获取当前用户的所有参与的项目

@@ -44,18 +44,18 @@ public class ProjectController {
 
     @ApiOperation("申请立项接口--可使用")
     @PostMapping(value = "/createApply", name = "申请立项接口")
-    public Object createApply(@Valid CreateProjectApplyForm createProjectApplyForm){
+    public Object createApply(@Valid @RequestBody CreateProjectApplyForm createProjectApplyForm){
         return projectService.applyCreateProject(createProjectApplyForm);
     }
 
-    @ApiOperation("修改立项申请")
+    @ApiOperation("修改立项申请--可使用")
     @PostMapping(value = "/updateApply", name = "修改立项申请")
-    public Object updateApply(@Valid UpdateProjectApplyForm updateProjectApplyForm, MultipartFile file){
-        return projectService.applyUpdateProject(updateProjectApplyForm, file);
+    public Object updateApply(@Valid @RequestBody UpdateProjectApplyForm updateProjectApplyForm){
+        return projectService.applyUpdateProject(updateProjectApplyForm);
     }
 
 
-    @ApiOperation("申请参与项目接口")
+    @ApiOperation("申请参与项目接口--可使用")
     @PostMapping(value = "/joinApply", name = "申请参与项目接口")
     public Object joinApply(@Valid JoinProjectApplyForm joinProjectApplyForm){
         return userProjectService.applyJoinProject(joinProjectApplyForm);
@@ -67,14 +67,14 @@ public class ProjectController {
         return projectService.getCurrentUserProjects(projectStatus);
     }
 
-    @ApiOperation("获取项目的立项信息")
+    @ApiOperation("获取项目的立项信息--可使用")
     @PostMapping(value = "/getApplyInfo", name = "获取项目的立项信息")
     public Object getApplyInfo(Long projectGroupId){
         return projectService.getApplyForm(projectGroupId);
     }
 
     @ApiOperation("同意加入项目")
-    @PostMapping(value = "/agreeJoin", name = "同意加入项目")
+    @PostMapping(value = "/agreeJoin--可使用", name = "同意加入项目")
     public Object agreeJoin(@Valid @RequestBody JoinForm[] joinForm){
         return projectService.agreeJoin(joinForm);
     }

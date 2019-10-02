@@ -1,6 +1,7 @@
 server:
   port: 8085
 #应用维护
+
 #启动shutdown模块
 management:
   endpoint:

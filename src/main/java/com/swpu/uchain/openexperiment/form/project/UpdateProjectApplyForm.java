@@ -80,12 +80,15 @@ public class UpdateProjectApplyForm{
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endTime;
 
-    @ApiModelProperty("指导老师编号")
-    @NotNull(message = "指导老师不能为空")
-    private String teacherCodes;
+    @ApiModelProperty("所需经费支持")
+    private Float applyFunds;
 
-    @ApiModelProperty("学生编号")
-    @NotNull(message = "学生编号不能为空")
-    private String stuCodes;
+    @ApiModelProperty("指导老师编号--选填")
+    private String[] teacherCodes;
+
+    @ApiModelProperty("学生编号--选填")
+    private String[] stuCodes;
+
+
 
 }

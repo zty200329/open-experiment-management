@@ -4,10 +4,7 @@ import com.swpu.uchain.openexperiment.dao.UserProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
-import com.swpu.uchain.openexperiment.enums.CodeMsg;
-import com.swpu.uchain.openexperiment.enums.JoinStatus;
-import com.swpu.uchain.openexperiment.enums.MemberRole;
-import com.swpu.uchain.openexperiment.enums.UserType;
+import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.project.AimForm;
 import com.swpu.uchain.openexperiment.form.project.JoinProjectApplyForm;
@@ -108,6 +105,10 @@ public class UserProjectServiceImpl implements UserProjectService {
         ProjectGroup projectGroup = projectService.selectByProjectGroupId(joinProjectApplyForm.getProjectGroupId());
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+        }
+        //项目还未审核的话
+        if (projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue())){
+            return Result.error(CodeMsg.PROJECT_IS_DECLARE);
         }
         //判断已经申请和申请被拒绝
         if (selectByProjectGroupIdAndUserId(projectGroup.getId(), user.getId()) != null){

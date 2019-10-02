@@ -57,6 +57,7 @@ public enum CodeMsg {
     ADD_USER_JOIN_ERROR(534, "用户加入项目异常"),
     STUDENT_CANT_APPLY(535, "学生无法申请立项"),
     ALREADY_APPLY(536, "已经进行申请操作,无法再次操作,请勿重复操作"),
+    PROJECT_IS_DECLARE(537,"项目还未审核，无法申请加入"),
     FILE_EXIST(601,"文件已存在" ),
     FILE_NOT_EXIST(602,"文件不存在"),
     UPLOAD_CANT_BE_EMPTY(603,"上传文件不能为空"),

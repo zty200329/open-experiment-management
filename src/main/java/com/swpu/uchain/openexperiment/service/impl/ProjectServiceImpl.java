@@ -190,7 +190,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm, MultipartFile file) {
+    public Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm) {
         ProjectGroup projectGroup = selectByProjectGroupId(updateProjectApplyForm.getProjectGroupId());
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
@@ -208,16 +208,13 @@ public class ProjectServiceImpl implements ProjectService {
         BeanUtils.copyProperties(updateProjectApplyForm, projectGroup);
         update(projectGroup);
         //对文件上传的处理,1.获取文件名,2.保存文件,3.维护数据库
-        Result result = projectFileService.uploadApplyDoc(file, projectGroup.getId());
-        if (result.getCode() != 0){
-            throw new GlobalException(CodeMsg.UPLOAD_ERROR);
-        }
+//        Result result = projectFileService.uploadApplyDoc(file, projectGroup.getId());
+//        if (result.getCode() != 0){
+//            throw new GlobalException(CodeMsg.UPLOAD_ERROR);
+//        }
         userProjectService.deleteByProjectGroupId(projectGroup.getId());
-        String[] stuCodes = null;
-        if (updateProjectApplyForm.getStuCodes() != null) {
-            stuCodes = updateProjectApplyForm.getStuCodes().split(",");
-        }
-        String[] teacherCodes = updateProjectApplyForm.getTeacherCodes().split(",");
+        String[] stuCodes =updateProjectApplyForm.getStuCodes();
+        String[] teacherCodes = updateProjectApplyForm.getTeacherCodes();
         userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
         return Result.success();
     }

@@ -82,4 +82,6 @@ public class CreateProjectApplyForm {
     @ApiModelProperty("所需经费支持")
     private Float applyFunds;
 
+
+
 }
