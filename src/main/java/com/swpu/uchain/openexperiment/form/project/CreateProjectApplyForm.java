@@ -42,8 +42,8 @@ public class CreateProjectApplyForm {
     private String limitMajor;
     @ApiModelProperty("限选学院")
     private String limitCollege;
-    @ApiModelProperty("适应学生数")
-    @NotNull(message = "适应学生数不能为空")
+    @ApiModelProperty("适宜学生数")
+    @NotNull(message = "适宜学生数不能为空")
     private Integer fitPeopleNum;
     @ApiModelProperty("成果考核方式")
     private String achievementCheck;

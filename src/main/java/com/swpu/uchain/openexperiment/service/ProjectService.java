@@ -62,9 +62,9 @@ public interface ProjectService {
 
     /**
      * 立项申请接口
-     * @param createProjectApplyForm
-     * @param file
-     * @return
+     * @param createProjectApplyForm 申请立项表单
+     * @param file 文件
+     * @return 接口调用返回结果
      */
     Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm, MultipartFile file);
 
