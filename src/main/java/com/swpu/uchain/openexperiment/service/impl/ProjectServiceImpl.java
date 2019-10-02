@@ -525,10 +525,10 @@ public class ProjectServiceImpl implements ProjectService {
             if (userProjectGroup == null){
                 return Result.error(CodeMsg.USER_NOT_APPLYING);
             }
-            if (userProjectGroup.getStatus() == JoinStatus.JOINED.getValue().intValue()){
+            if (userProjectGroup.getStatus() != JoinStatus.APPLYING.getValue().intValue()){
                 return Result.error(CodeMsg.USER_HAD_JOINED_CANT_REJECT);
             }
-            userProjectGroup.setStatus(JoinStatus.UN_PASS.getValue());
+                userProjectGroup.setStatus(JoinStatus.UN_PASS.getValue());
             if (!userProjectService.update(userProjectGroup)) {
                 return Result.error(CodeMsg.UPDATE_ERROR);
             }

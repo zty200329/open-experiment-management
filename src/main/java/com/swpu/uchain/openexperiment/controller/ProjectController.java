@@ -32,8 +32,6 @@ public class ProjectController {
     private ProjectService projectService;
     @Autowired
     private UserProjectService userProjectService;
-    @Autowired
-    private ConvertUtil convertUtil;
 
     @ApiOperation("根据项目名模糊查询项目")
     @GetMapping(value = "/selectProject", name = "根据项目名模糊查询项目")
@@ -122,7 +120,7 @@ public class ProjectController {
 
     @ApiOperation("修改项目组成员身份")
     @PostMapping(value = "/aimMemberLeader", name = "修改项目组成员身份")
-    public Object aimMemberLeader(@Valid AimForm aimForm){
+    public Object aimMemberLeader(@Valid @RequestBody AimForm aimForm){
         return userProjectService.aimUserMemberRole(aimForm);
     }
 
@@ -138,14 +136,14 @@ public class ProjectController {
         projectService.generateConclusionExcel();
     }
 
-    @ApiOperation("追加立项申请内容")
+    @ApiOperation("追加立项申请内容(资金申请)")
     @PostMapping(value = "/appendCreateApply", name = "追加立项申请内容")
-    public Object appendCreateApply(@Valid AppendApplyForm appendApplyForm){
+    public Object appendCreateApply(@Valid @RequestBody AppendApplyForm appendApplyForm){
         return projectService.appendCreateApply(appendApplyForm);
     }
 
     @GetMapping(value = "/getApplyingJoinInfo", name = "获取当前用户（限老师身份）指导项目的申请参加列表")
-    @ApiOperation("获取当前用户（限老师身份）指导项目的申请参加列表")
+    @ApiOperation("获取当前用户（限老师身份）指导项目的申请参加列表--可使用")
     public Object getApplyingJoinInfo(){
         return Result.success(projectService.getJoinInfo());
     }

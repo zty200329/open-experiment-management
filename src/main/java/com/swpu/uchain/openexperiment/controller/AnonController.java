@@ -32,7 +32,7 @@ public class AnonController {
 
     @ApiOperation("登录接口")
     @PostMapping(value = "/login", name = "登录接口")
-    public Object login(@Valid LoginForm loginForm, HttpServletRequest request){
+    public Object login(@Valid @RequestBody LoginForm loginForm, HttpServletRequest request){
         String ip = ClientUtil.getClientIpAddress(request);
         return userService.login(ip, loginForm);
     }

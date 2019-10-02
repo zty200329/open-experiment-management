@@ -44,13 +44,13 @@ public class FileController {
 
     @ApiOperation("下载立项申请正文的pdf")
     @GetMapping(value = "getApplyPdf", name = "下载立项申请正文的pdf")
-    public void getApplyPdf(long fileId, HttpServletResponse response){
+    public void getApplyPdf(Long fileId, HttpServletResponse response){
         projectFileService.downloadApplyPdf(fileId, response);
     }
 
     @ApiOperation("重新上传立项申请正文")
     @PostMapping(value = "/reloadApplyDoc", name = "重新上传立项申请正文")
-    public Object reloadApplyDoc(@Valid ReloadApplyForm reloadApplyForm){
+    public Object reloadApplyDoc(@Valid @RequestBody ReloadApplyForm reloadApplyForm){
         User currentUser = getUserService.getCurrentUser();
         if (userProjectService.selectByProjectGroupIdAndUserId(currentUser.getId(), reloadApplyForm.getProjectGroupId()) == null) {
             return Result.error(CodeMsg.PERMISSION_DENNY);
@@ -66,7 +66,7 @@ public class FileController {
 
     @ApiOperation("上传结题报告")
     @PostMapping(value = "/uploadConcludingReport", name = "上传结题报告")
-    public Object uploadConcludingReport(@Valid ConcludingReportForm concludingReportForm){
+    public Object uploadConcludingReport(@Valid @RequestBody ConcludingReportForm concludingReportForm){
         return projectFileService.uploadConcludingReport(concludingReportForm);
     }
 

@@ -78,8 +78,8 @@ public class CreateProjectApplyForm {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endTime;
 
-    @ApiModelProperty("指导老师编号--可不填")
-//    @NotNull(message = "指导老师不能为空")
-    private String[] teacherCodes;
+
+    @ApiModelProperty("所需经费支持")
+    private Float applyFunds;
 
 }

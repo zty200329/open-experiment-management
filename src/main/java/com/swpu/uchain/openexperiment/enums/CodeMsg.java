@@ -51,7 +51,7 @@ public enum CodeMsg {
     FUNDS_NOT_EXIST(528, "资金不存在"),
     FUNDS_AGREE_CANT_CHANGE(529, "资金已经同意无法进行修改"),
     PAGE_NUM_ERROR(530, "分页数目异常"),
-    USER_HAD_JOINED_CANT_REJECT(531, "用户已经加入项目组，无法拒绝"),
+    USER_HAD_JOINED_CANT_REJECT(531, "用户已经加入项目组或已被拒绝，无法进行拒绝操作"),
     PROJECT_GROUP_INFO_CANT_CHANGE(532, "项目非驳回或申请状态，无法进行信息修改"),
     ADD_PROJECT_GROUP_ERROR(533, "创建项目组异常"),
     ADD_USER_JOIN_ERROR(534, "用户加入项目异常"),

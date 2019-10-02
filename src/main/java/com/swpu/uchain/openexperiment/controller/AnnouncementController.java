@@ -28,7 +28,7 @@ public class AnnouncementController {
 
     @ApiOperation("发布公告")
     @PostMapping(value = "/publish", name = "发布公告")
-    public Object publish(@Valid AnnouncementPublishForm publishForm){
+    public Object publish(@RequestBody @Valid AnnouncementPublishForm publishForm){
         return announcementService.publishAnnouncement(publishForm);
     }
 
@@ -59,7 +59,7 @@ public class AnnouncementController {
 
     @ApiOperation("修改公告")
     @PostMapping(value = "/update", name = "修改公告")
-    public Object update(@Valid AnnouncementUpdateForm updateForm){
+    public Object update(@Valid @RequestBody AnnouncementUpdateForm updateForm){
         return announcementService.changeInfo(updateForm);
     }
 

@@ -77,13 +77,13 @@ public class PermissionController implements InitializingBean {
 
     @ApiOperation("更新接口描述")
     @PostMapping(value = "/updateAclDescription", name = "更新接口描述")
-    public Object updateAclDescription(@Valid AclUpdateForm aclUpdateForm){
+    public Object updateAclDescription(@Valid @RequestBody AclUpdateForm aclUpdateForm){
         return aclService.updateAcl(aclUpdateForm);
     }
 
     @ApiOperation("添加角色的权限")
     @PostMapping(value = "/addRoleAcl",name = "添加角色的权限")
-    public Object addRoleAcl(@Valid RoleAclForm roleAclForm){
+    public Object addRoleAcl(@Valid @RequestBody RoleAclForm roleAclForm){
         return roleAclService.addRoleAcl(roleAclForm);
     }
 
@@ -118,7 +118,7 @@ public class PermissionController implements InitializingBean {
 
     @ApiOperation("更新角色名")
     @PostMapping(value = "/updateRoleName", name = "更新角色名")
-    public Object updateRoleName(@Valid RoleForm roleForm){
+    public Object updateRoleName(@Valid @RequestBody RoleForm roleForm){
         return roleService.updateRoleName(roleForm);
     }
 
@@ -130,7 +130,7 @@ public class PermissionController implements InitializingBean {
 
     @ApiOperation("添加用户的角色")
     @PostMapping(value = "/addUserRole", name = "添加用户的角色")
-    public Object addUserRole(@Valid UserRoleForm userRoleForm){
+    public Object addUserRole(@Valid @RequestBody UserRoleForm userRoleForm){
         return userRoleService.addUserRole(userRoleForm);
     }
 
