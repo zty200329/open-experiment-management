@@ -74,7 +74,7 @@ public class ProjectController {
     }
 
     @ApiOperation("同意加入项目")
-    @PostMapping(value = "/agreeJoin--可使用", name = "同意加入项目")
+    @PostMapping(value = "/agreeJoin--可使用，如果在此处添加就无须再项目更新表单中添加学生", name = "同意加入项目")
     public Object agreeJoin(@Valid @RequestBody JoinForm[] joinForm){
         return projectService.agreeJoin(joinForm);
     }
