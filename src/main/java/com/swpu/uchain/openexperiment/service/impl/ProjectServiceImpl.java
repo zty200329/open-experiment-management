@@ -7,6 +7,7 @@ import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.config.CountConfig;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
 import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
+import com.swpu.uchain.openexperiment.dao.UserProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
@@ -45,6 +46,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private ProjectGroupMapper projectGroupMapper;
     @Autowired
+    private UserProjectGroupMapper userProjectGroupMapper;
+    @Autowired
     private RedisService redisService;
     @Autowired
     private UserProjectService userProjectService;
@@ -66,21 +69,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public boolean insert(ProjectGroup projectGroup) {
-        if (projectGroupMapper.insert(projectGroup) == 1){
-            redisService.set(ProjectGroupKey.getByProjectGroupId, projectGroup.getId() + "", projectGroup);
-            return true;
-        }
-        return false;
+        return projectGroupMapper.insert(projectGroup) == 1;
     }
 
     @Override
     public boolean update(ProjectGroup projectGroup) {
         projectGroup.setUpdateTime(new Date());
-        if (projectGroupMapper.updateByPrimaryKey(projectGroup) == 1){
-            redisService.set(ProjectGroupKey.getByProjectGroupId, projectGroup.getId() + "", projectGroup);
-            return true;
-        }
-        return false;
+        return projectGroupMapper.updateByPrimaryKey(projectGroup) == 1;
     }
 
     @Override
@@ -105,8 +100,12 @@ public class ProjectServiceImpl implements ProjectService {
         return projectGroup;
     }
 
-    @Override
-    public Result addProjectGroup(ProjectGroup projectGroup) {
+    /**
+     * 添加项目组
+     * @param projectGroup
+     * @return
+     */
+    private Result addProjectGroup(ProjectGroup projectGroup) {
         projectGroup.setCreateTime(new Date());
         projectGroup.setUpdateTime(new Date());
         if (insert(projectGroup)){
@@ -130,10 +129,17 @@ public class ProjectServiceImpl implements ProjectService {
         return projectGroups;
     }
 
+    /**
+     * 指导教师填写申请立项书
+     * @param createProjectApplyForm 申请立项表单
+     * @return 申请立项操作结果
+     */
     @Override
-    @Transactional
-    public Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm, MultipartFile file) {
+    @Transactional(rollbackFor = Exception.class)
+    public Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm) {
         User currentUser = getUserService.getCurrentUser();
+
+        //判断用户类型
         if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()){
             Result.error(CodeMsg.STUDENT_CANT_APPLY);
         }
@@ -141,31 +147,49 @@ public class ProjectServiceImpl implements ProjectService {
         if (projectGroup != null){
             return Result.error(CodeMsg.PROJECT_GROUP_HAD_EXIST);
         }
+
+        //时间设置出错
+        if (createProjectApplyForm.getStartTime().getTime() >= createProjectApplyForm.getEndTime().getTime()){
+            throw new GlobalException(CodeMsg.TIME_DEFINE_ERROR);
+        }
+
         projectGroup = new ProjectGroup();
         BeanUtils.copyProperties(createProjectApplyForm, projectGroup);
         projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
+        //设置申请人
         projectGroup.setCreatorId(currentUser.getId());
         Result result = addProjectGroup(projectGroup);
         if (result.getCode() != 0){
             throw new GlobalException(CodeMsg.ADD_PROJECT_GROUP_ERROR);
         }
+        //将创建者放入用户项目关联表中
+
+        //获取项目ID
+        Long projectGroupId = projectGroupMapper.selectByName(createProjectApplyForm.getProjectName()).getId();
+        UserProjectGroup userProjectGroup = new UserProjectGroup();
+        userProjectGroup.setUserId(currentUser.getId());
+        userProjectGroup.setStatus(JoinStatus.JOINED.getValue());
+        userProjectGroup.setProjectGroupId(projectGroupId);
+        userProjectGroup.setMemberRole(MemberRole.GUIDANCE_TEACHER.getValue());
+        userProjectGroup.setTechnicalRole("指导学生");
+        userProjectGroup.setWorkDivision("指导学生");
+        userProjectGroup.setPersonalJudge("无评价");
+        userProjectGroup.setJoinTime(new Date());
+        userProjectGroup.setUpdateTime(new Date());
+        int res = userProjectGroupMapper.insert(userProjectGroup);
+        if (res != 1){
+            throw new GlobalException(CodeMsg.ADD_USER_JOIN_ERROR);
+        }
         //对文件上传的处理,1.获取文件名,2.保存文件,3.维护数据库
-        result = projectFileService.uploadApplyDoc(file, projectGroup.getId());
-        if (result.getCode() != 0){
-            throw new GlobalException(CodeMsg.UPLOAD_ERROR);
-        }
-        String[] stuCodes = null;
-        if (createProjectApplyForm.getStuCodes() != null){
-            stuCodes = createProjectApplyForm.getStuCodes().split(",");
-        }
-        String[] teacherCodes = createProjectApplyForm.getTeacherCodes().split(",");
-        userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
+//        String[] teacherCodes = createProjectApplyForm.getTeacherCodes();
+//        userProjectService.addTeacherJoin(teacherCodes, projectGroup.getId());
+
         redisService.deleteFuzzyKey(ProjectGroupKey.getByUserIdAndStatus, currentUser.getId() + "");
         return Result.success();
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm, MultipartFile file) {
         ProjectGroup projectGroup = selectByProjectGroupId(updateProjectApplyForm.getProjectGroupId());
         if (projectGroup == null){
@@ -281,13 +305,18 @@ public class ProjectServiceImpl implements ProjectService {
             UserProjectGroup userProjectGroup = userProjectService
                     .selectByProjectGroupIdAndUserId(
                             form.getProjectGroupId(),
-                            form.getUserId());
+                            Long.valueOf(user.getCode()));
+            //未申请用户不得加入
             if (userProjectGroup == null){
                 return Result.error(CodeMsg.USER_NOT_APPLYING);
             }
-            if (userProjectGroup.getStatus().intValue()
-                    == JoinStatus.JOINED.getValue()){
+            //已加入用户不能再次加入
+            if (userProjectGroup.getStatus().intValue() == JoinStatus.JOINED.getValue()){
                 return Result.error(CodeMsg.USER_HAD_JOINED);
+            }
+            //一倍拒绝的用户无法再次加入该项目
+            if (userProjectGroup.getStatus().intValue() == JoinStatus.UN_PASS.getValue()){
+                return Result.error(CodeMsg.USER_HAD_BEEN_REJECTED);
             }
             userProjectGroup.setStatus(JoinStatus.JOINED.getValue());
             if (!userProjectService.update(userProjectGroup)) {
@@ -312,9 +341,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Transactional
-    public Result agreeEstablish(Long[] projectGroupIds) {
-        for (Long projectGroupId : projectGroupIds) {
+    @Transactional(rollbackFor = Exception.class)
+    public Result agreeEstablish(List<Long> projectGroupIdList) {
+        for (Long projectGroupId : projectGroupIdList) {
             Result result = updateProjectStatus(projectGroupId, ProjectStatus.ESTABLISH.getValue());
             if (result.getCode() != 0){
                 throw new GlobalException(CodeMsg.UPDATE_ERROR);

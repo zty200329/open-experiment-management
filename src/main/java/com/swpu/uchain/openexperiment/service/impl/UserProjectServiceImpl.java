@@ -45,25 +45,13 @@ public class UserProjectServiceImpl implements UserProjectService {
     @Override
     public boolean insert(UserProjectGroup userProjectGroup) {
         int result = userProjectGroupMapper.insert(userProjectGroup);
-        if (result == 1){
-            redisService.set(UserProjectGroupKey.getByProjectGroupIdAndUserId,
-                    userProjectGroup.getId() + "_" + userProjectGroup.getUserId(),
-                    userProjectGroup);
-            return true;
-        }
-        return false;
+        return result == 1;
     }
 
     @Override
     public boolean update(UserProjectGroup userProjectGroup) {
         int result = userProjectGroupMapper.updateByPrimaryKey(userProjectGroup);
-        if (result == 1){
-            redisService.set(UserProjectGroupKey.getByProjectGroupIdAndUserId,
-                    userProjectGroup.getId() + "_" +  userProjectGroup.getUserId(),
-                    userProjectGroup);
-            return true;
-        }
-        return false;
+        return result == 1;
     }
 
     @Override
@@ -79,11 +67,6 @@ public class UserProjectServiceImpl implements UserProjectService {
 
     @Override
     public void deleteByProjectGroupId(Long projectGroupId) {
-        List<UserProjectGroup> userProjectGroups = selectByProjectGroupId(projectGroupId);
-        for (UserProjectGroup userProjectGroup : userProjectGroups) {
-            redisService.delete(UserProjectGroupKey.getByProjectGroupIdAndUserId,
-                    userProjectGroup.getProjectGroupId() + "_" + userProjectGroup.getUserId());
-        }
         userProjectGroupMapper.deleteByProjectGroupId(projectGroupId);
     }
 
@@ -107,17 +90,12 @@ public class UserProjectServiceImpl implements UserProjectService {
 
     @Override
     public UserProjectGroup selectByProjectGroupIdAndUserId(Long projectGroupId, Long userId) {
-        UserProjectGroup userProjectGroup = redisService.get(UserProjectGroupKey.getByProjectGroupIdAndUserId,
-                projectGroupId + "_" + userId,
-                UserProjectGroup.class);
-        if (userProjectGroup == null){
-            userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, userId);
+        UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, userId);
             if (userProjectGroup != null){
                 redisService.set(UserProjectGroupKey.getByProjectGroupIdAndUserId,
                         projectGroupId + "_" + userId,
                         userProjectGroup);
             }
-        }
         return userProjectGroup;
     }
 
@@ -131,6 +109,7 @@ public class UserProjectServiceImpl implements UserProjectService {
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
+        //判断已经申请和申请被拒绝
         if (selectByProjectGroupIdAndUserId(projectGroup.getId(), user.getId()) != null){
             return Result.error(CodeMsg.ALREADY_APPLY);
         }
@@ -146,7 +125,7 @@ public class UserProjectServiceImpl implements UserProjectService {
             userProjectGroup.setStatus(JoinStatus.APPLYING.getValue());
             userProjectGroup.setJoinTime(new Date());
             userProjectGroup.setUpdateTime(new Date());
-            userProjectGroup.setUserId(user.getId());
+            userProjectGroup.setUserId(Long.valueOf(user.getCode()));
             userProjectGroup.setTechnicalRole(userProjectGroup.getTechnicalRole());
             if (insert(userProjectGroup)) {
                 return Result.success("已申请");
@@ -235,6 +214,21 @@ public class UserProjectServiceImpl implements UserProjectService {
                     projectGroupId,
                     UserType.STUDENT);
         }
+        if (result.getCode() != 0){
+            throw new GlobalException(CodeMsg.ADD_USER_JOIN_ERROR);
+        }
+    }
+
+    @Override
+    public void addTeacherJoin(String[] teacherCodes, Long projectGroupId) {
+        Result result = null;
+        if (teacherCodes != null){
+            result = userService.createUserJoin(
+                    teacherCodes,
+                    projectGroupId,
+                    UserType.LECTURER);
+        }
+
         if (result.getCode() != 0){
             throw new GlobalException(CodeMsg.ADD_USER_JOIN_ERROR);
         }

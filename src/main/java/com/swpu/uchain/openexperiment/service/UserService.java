@@ -86,10 +86,10 @@ public interface UserService {
 
     /**
      * 创建老师参与项目关系
-     * @param userCodes
-     * @param projectGroupId
-     * @param userType
-     * @return
+     * @param userCodes  用户学工号
+     * @param projectGroupId 项目组ID
+     * @param userType 用户类型
+     * @return 方法调用返回结果
      */
     Result createUserJoin(String[] userCodes, Long projectGroupId, UserType userType);
 

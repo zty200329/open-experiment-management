@@ -7,6 +7,7 @@ import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @Author: clf
@@ -42,13 +44,10 @@ public class ProjectController {
         return Result.success(projectService.selectByProjectName(name));
     }
 
-    @ApiOperation("申请立项接口")
+    @ApiOperation("申请立项接口--可使用")
     @PostMapping(value = "/createApply", name = "申请立项接口")
-    public Object createApply(@Valid CreateProjectApplyForm createProjectApplyForm, MultipartFile file){
-        if (file == null){
-            return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
-        }
-        return projectService.applyCreateProject(createProjectApplyForm, file);
+    public Object createApply(@Valid CreateProjectApplyForm createProjectApplyForm){
+        return projectService.applyCreateProject(createProjectApplyForm);
     }
 
     @ApiOperation("修改立项申请")
@@ -56,6 +55,7 @@ public class ProjectController {
     public Object updateApply(@Valid UpdateProjectApplyForm updateProjectApplyForm, MultipartFile file){
         return projectService.applyUpdateProject(updateProjectApplyForm, file);
     }
+
 
     @ApiOperation("申请参与项目接口")
     @PostMapping(value = "/joinApply", name = "申请参与项目接口")
@@ -87,7 +87,7 @@ public class ProjectController {
         return projectService.rejectJoin(joinForm);
     }
 
-    @ApiOperation("审批项目展示接口")
+    @ApiOperation("审批项目展示接口--可使用")
     @GetMapping(value = "/checkApplyInfo", name = "审批项目展示接口")
     public Object getCheckApplyInfo(Integer pageNum, Integer projectStatus){
         if (pageNum == null || pageNum <= 0){
@@ -98,11 +98,8 @@ public class ProjectController {
 
     @ApiOperation("同意立项--待完成")
     @PostMapping(value = "/agreeEstablish", name = "同意立项")
-    public Object agreeEstablish(String projectGroupIds){
-        if (StringUtils.isEmpty(projectGroupIds)){
-            return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
-        }
-        return projectService.agreeEstablish(convertUtil.parseIds(projectGroupIds));
+    public Object agreeEstablish(List<Long> projectGroupIdList){
+        return projectService.agreeEstablish(projectGroupIdList);
     }
 
     @ApiOperation("驳回修改--待完成")

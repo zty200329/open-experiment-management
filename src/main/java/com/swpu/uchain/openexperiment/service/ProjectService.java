@@ -38,12 +38,7 @@ public interface ProjectService {
      */
     void delete(Long projectGroupId);
 
-    /**
-     * 添加项目组
-     * @param projectGroup
-     * @return
-     */
-    Result addProjectGroup(ProjectGroup projectGroup);
+
 
     /**
      * 根据项目组id进行查找
@@ -63,10 +58,9 @@ public interface ProjectService {
     /**
      * 立项申请接口
      * @param createProjectApplyForm 申请立项表单
-     * @param file 文件
      * @return 接口调用返回结果
      */
-    Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm, MultipartFile file);
+    Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm);
 
     /**
      * 更新项目组信息
@@ -92,10 +86,10 @@ public interface ProjectService {
 
     /**
      * 同意立项
-     * @param projectGroupIds
+     * @param projectGroupIdList 同意项目ID列表
      * @return
      */
-    Result agreeEstablish(Long[] projectGroupIds);
+    Result agreeEstablish(List<Long> projectGroupIdList);
 
     /**
      * 获取项目的立项申请信息

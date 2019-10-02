@@ -180,7 +180,7 @@ public class UserServiceImpl implements UserService {
     public User selectByUserId(Long userId) {
         User user = redisService.get(UserKey.getByUserId, userId + "", User.class);
         if (user == null){
-            user = userMapper.selectByPrimaryKey(userId);
+            user = userMapper.selectByUserCode(String.valueOf(userId));
             if (user != null){
                 redisService.set(UserKey.getByUserId, user.getId() + "", user);
             }
@@ -193,6 +193,13 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectProjectJoinedUsers(projectId);
     }
 
+    /**
+     *
+     * @param userCodes  用户学工号
+     * @param projectGroupId 项目组ID
+     * @param userType 用户类型
+     * @return 方法调用结果
+     */
     @Override
     public Result createUserJoin(String[] userCodes, Long projectGroupId, UserType userType) {
         for (String userCode : userCodes) {

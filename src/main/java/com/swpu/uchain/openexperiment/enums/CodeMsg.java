@@ -40,6 +40,7 @@ public enum CodeMsg {
     REACH_NUM_MAX(518,"已经达到人数限制,无法进行申请" ),
     PROJECT_GROUP_HAD_EXIST(519,"该项目已存在,请修改项目名" ),
     USER_HAD_JOINED(520,"用户已经加入该项目,不需要重复添加" ),
+    USER_HAD_BEEN_REJECTED(520,"用户曾已经被拒绝,无法再次加入"),
     USER_NOT_APPLYING(521,"用户未申请,无法进行操作" ),
     ANNOUNCEMENT_NOT_EXIST(522,"公告信息不存在" ),
     USER_GROUP_NOT_EXIST(523,"用户并未加入项目组" ),
@@ -55,7 +56,7 @@ public enum CodeMsg {
     ADD_PROJECT_GROUP_ERROR(533, "创建项目组异常"),
     ADD_USER_JOIN_ERROR(534, "用户加入项目异常"),
     STUDENT_CANT_APPLY(535, "学生无法申请立项"),
-    ALREADY_APPLY(536, "已经申,请勿重复操作"),
+    ALREADY_APPLY(536, "已经进行申请操作,无法再次操作,请勿重复操作"),
     FILE_EXIST(601,"文件已存在" ),
     FILE_NOT_EXIST(602,"文件不存在"),
     UPLOAD_CANT_BE_EMPTY(603,"上传文件不能为空"),
@@ -64,7 +65,8 @@ public enum CodeMsg {
     DIR_NOT_EXIST(606,"文件夹不存在" ),
     FILE_OVERSIZE(607,"文件过大"),
     DOWNLOAD_ERROR(608,"下载失败" ),
-    DELETE_FILE_ERROR(609, "删除文件异常");
+    DELETE_FILE_ERROR(609, "删除文件异常"),
+    TIME_DEFINE_ERROR(610,"时间设置错误");
 
     private Integer code;
     private String msg;

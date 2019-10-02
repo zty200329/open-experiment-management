@@ -108,4 +108,11 @@ public interface UserProjectService {
      * @param projectGroupId
      */
     void addStuAndTeacherJoin(String[] stuCodes, String[] teacherCodes, Long projectGroupId);
+
+    /**
+     * 项目申请时添加指导老师
+     * @param teacherCodes 指导老师学工号
+     * @param projectGroupId  项目编号
+     */
+    void addTeacherJoin(String[] teacherCodes, Long projectGroupId);
 }

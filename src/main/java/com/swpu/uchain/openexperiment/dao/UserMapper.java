@@ -25,4 +25,5 @@ public interface UserMapper {
     List<User> selectByRandom(@Param("keyWord") String keyWord, boolean isTeacher);
 
     User selectGroupLeader(Long projectGroupId);
+
 }
