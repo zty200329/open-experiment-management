@@ -35,6 +35,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
@@ -159,6 +160,7 @@ public class UserServiceImpl implements UserService {
 //        return Result.success(map);
 //    }
     @Override
+    @Transactional(rollbackFor = Throwable.class)
     public Result login(String clientIp, LoginForm loginForm) {
         log.info("当前请求ip : {}",clientIp);
         if (!checkVerifyCode(clientIp, loginForm.getVerifyCode())){

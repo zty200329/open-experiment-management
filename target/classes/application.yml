@@ -36,7 +36,7 @@ jwt:
   secret: swpu-uchain
   expiration: 43000
 redis:
-  host: 192.168.74.129
+  host: 106.15.248.34
   port: 6379
   timeout: 10
   poolMaxTotal: 1000

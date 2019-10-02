@@ -186,5 +186,6 @@
                 and member_role = #{memberRole}
             </if>
         </where>
+        limit 1
     </select>
 </mapper>

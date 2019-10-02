@@ -19,14 +19,39 @@
         <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </expand>
-    <select />
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:master" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="82ec9892-b480-433b-9f2a-71559d579314" name="Default Changelist" comment="普通项目复核修改">
+    <list default="true" id="82ec9892-b480-433b-9f2a-71559d579314" name="Default Changelist" comment="重点项目1020改">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/controller/KeyProjectInvokeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/controller/KeyProjectInvokeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/KeyProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/KeyProjectService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/KeyProjectServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/KeyProjectServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/ProjectServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/ProjectServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev2.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-dev2.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/mappers/UserProjectGroupMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mappers/UserProjectGroupMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ExperimentOne.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ExperimentOne.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application-dev2.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application-dev2.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application-prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/controller/KeyProjectInvokeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/controller/KeyProjectInvokeController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/controller/ProjectInvokeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/controller/ProjectInvokeController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/KeyProjectService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/KeyProjectService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/ProjectService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/ProjectService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/impl/KeyProjectServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/impl/KeyProjectServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/impl/ProjectServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/impl/ProjectServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mappers/UserProjectGroupMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/mappers/UserProjectGroupMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/ExperimentOne.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/ExperimentOne.class" afterDir="false" />
+    </list>
+    <list id="5e1931cf-d658-4ee3-948b-de25b54beb91" name="添加评审分组" comment="添加评审分组&#10;&#10;(cherry picked from commit 92bc631d0655aea324425ff2517f297a3751aa59)">
+      <changelist_data name="panghu" email="792559738@qq.com" date="1569981204000" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/form/project/CreateProjectApplyForm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/form/project/CreateProjectApplyForm.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,13 +111,14 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../skrd/skrd" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../博客/ThePunchSystem-master" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -134,24 +160,16 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.OpenExperimentApplication (1)">
-    <configuration name="generated-requests#5" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" index="5" runType="Run single request">
-      <method v="2" />
-    </configuration>
-    <configuration name="AmountLimitMapperTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="open-experiment-management-system(1)" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.swpu.uchain.openexperiment.mapper.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.swpu.uchain.openexperiment.mapper" />
-      <option name="MAIN_CLASS_NAME" value="com.swpu.uchain.openexperiment.mapper.AmountLimitMapperTest" />
-      <option name="TEST_OBJECT" value="class" />
+  <component name="RunManager" selected="Application.ExperimentOne">
+    <configuration name="ExperimentOne" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ExperimentOne" />
+      <module name="open-experiment-management-system" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="generated-requests#5" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" index="5" runType="Run single request">
+      <method v="2" />
     </configuration>
     <configuration name="AmountLimitMapperTest.test (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage">
@@ -206,11 +224,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.ExperimentOne" />
         <item itemvalue="Spring Boot.OpenExperimentApplication (1)" />
         <item itemvalue="HTTP Request.generated-requests#5" />
         <item itemvalue="JUnit.AmountLimitMapperTest.test" />
         <item itemvalue="JUnit.AmountLimitMapperTest.test (1)" />
-        <item itemvalue="JUnit.AmountLimitMapperTest" />
       </list>
     </recent_temporary>
   </component>
@@ -380,14 +398,14 @@
       <workItem from="1602207166830" duration="1000000" />
       <workItem from="1602208289400" duration="9620000" />
       <workItem from="1602562012884" duration="7588000" />
-      <workItem from="1602651420308" duration="5885000" />
-    </task>
-    <task id="LOCAL-00076" summary="615  学院打回处理">
-      <created>1592138093179</created>
-      <option name="number" value="00076" />
-      <option name="presentableId" value="LOCAL-00076" />
-      <option name="project" value="LOCAL" />
-      <updated>1592138093179</updated>
+      <workItem from="1602651420308" duration="6075000" />
+      <workItem from="1602726621394" duration="5056000" />
+      <workItem from="1602810955459" duration="2082000" />
+      <workItem from="1603025873852" duration="202000" />
+      <workItem from="1603026307349" duration="2884000" />
+      <workItem from="1603072061006" duration="1851000" />
+      <workItem from="1603162011576" duration="2808000" />
+      <workItem from="1603184510946" duration="414000" />
     </task>
     <task id="LOCAL-00077" summary="615  学院打回复核通过">
       <created>1592146587769</created>
@@ -725,7 +743,14 @@
       <option name="project" value="LOCAL" />
       <updated>1602678967227</updated>
     </task>
-    <option name="localTasksCounter" value="125" />
+    <task id="LOCAL-00125" summary="重点项目1014改">
+      <created>1602681969056</created>
+      <option name="number" value="00125" />
+      <option name="presentableId" value="LOCAL-00125" />
+      <option name="project" value="LOCAL" />
+      <updated>1602681969056</updated>
+    </task>
+    <option name="localTasksCounter" value="126" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -761,7 +786,19 @@
         </entry>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -774,8 +811,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="714 重点项目职能部门复核" />
-    <MESSAGE value="716" />
     <MESSAGE value="717" />
     <MESSAGE value="908" />
     <MESSAGE value="测试改造职能部门获取待立项审核的项目 查询的东西太多了" />
@@ -799,7 +834,9 @@
     <MESSAGE value="重点项目修改" />
     <MESSAGE value="普通项目结题修改" />
     <MESSAGE value="普通项目复核修改" />
-    <option name="LAST_COMMIT_MESSAGE" value="普通项目复核修改" />
+    <MESSAGE value="重点项目1014改" />
+    <MESSAGE value="重点项目1020改" />
+    <option name="LAST_COMMIT_MESSAGE" value="重点项目1020改" />
   </component>
   <component name="WindowStateProjectService">
     <state x="347" y="14" key="#AmountLimitMapperTest.test_(1)" timestamp="1601780807791">
@@ -845,58 +882,62 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="230" y="129" key="DiffContextDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1601798712379" />
-    <state x="670" y="145" width="424" height="485" key="FileChooserDialogImpl" timestamp="1602651431507">
+    <state x="670" y="145" width="424" height="485" key="FileChooserDialogImpl" timestamp="1603072076579">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="670" y="145" key="FileChooserDialogImpl/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602651431507" />
+    <state x="670" y="145" key="FileChooserDialogImpl/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1603072076579" />
     <state x="2655" y="279" key="FileChooserDialogImpl/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601172162545" />
     <state x="588" y="221" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1600668267740" />
-    <state width="1492" height="33" key="GridCell.Tab.0.bottom" timestamp="1602599589320">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1876" height="290" key="GridCell.Tab.0.bottom" timestamp="1603181754970">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state width="1492" height="33" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602599589320" />
-    <state width="1876" height="308" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601389775663" />
+    <state width="1876" height="290" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040/1919.1080.1366.984@1920.0.1920.1040" timestamp="1603181754970" />
+    <state width="1492" height="646" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1603029785299" />
+    <state width="1876" height="290" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603163144623" />
     <state width="1492" height="231" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1600779742244" />
-    <state width="1492" height="33" key="GridCell.Tab.0.center" timestamp="1602599589319">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1876" height="290" key="GridCell.Tab.0.center" timestamp="1603181754970">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state width="1492" height="33" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602599589319" />
-    <state width="1876" height="308" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601389775663" />
+    <state width="1876" height="290" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040/1919.1080.1366.984@1920.0.1920.1040" timestamp="1603181754970" />
+    <state width="1492" height="646" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1603029785299" />
+    <state width="1876" height="290" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603163144623" />
     <state width="1492" height="231" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1600779742244" />
-    <state width="1492" height="33" key="GridCell.Tab.0.left" timestamp="1602599589317">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1876" height="290" key="GridCell.Tab.0.left" timestamp="1603181754970">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state width="1492" height="33" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602599589317" />
-    <state width="1876" height="308" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601389775663" />
+    <state width="1876" height="290" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040/1919.1080.1366.984@1920.0.1920.1040" timestamp="1603181754970" />
+    <state width="1492" height="646" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1603029785299" />
+    <state width="1876" height="290" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603163144622" />
     <state width="1492" height="231" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1600779742244" />
-    <state width="1492" height="33" key="GridCell.Tab.0.right" timestamp="1602599589319">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1876" height="290" key="GridCell.Tab.0.right" timestamp="1603181754970">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state width="1492" height="33" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602599589319" />
-    <state width="1876" height="308" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601389775663" />
+    <state width="1876" height="290" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040/1919.1080.1366.984@1920.0.1920.1040" timestamp="1603181754970" />
+    <state width="1492" height="646" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1603029785299" />
+    <state width="1876" height="290" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603163144623" />
     <state width="1492" height="231" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1600779742244" />
-    <state width="1492" height="33" key="GridCell.Tab.1.bottom" timestamp="1602599589322">
+    <state width="1492" height="646" key="GridCell.Tab.1.bottom" timestamp="1603029785300">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1492" height="33" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602599589322" />
+    <state width="1492" height="646" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1603029785300" />
     <state width="1876" height="308" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601389775663" />
     <state width="1492" height="231" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1600779742244" />
-    <state width="1492" height="33" key="GridCell.Tab.1.center" timestamp="1602599589321">
+    <state width="1492" height="646" key="GridCell.Tab.1.center" timestamp="1603029785299">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1492" height="33" key="GridCell.Tab.1.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602599589321" />
+    <state width="1492" height="646" key="GridCell.Tab.1.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1603029785299" />
     <state width="1876" height="308" key="GridCell.Tab.1.center/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601389775663" />
     <state width="1492" height="231" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1600779742244" />
-    <state width="1492" height="33" key="GridCell.Tab.1.left" timestamp="1602599589320">
+    <state width="1492" height="646" key="GridCell.Tab.1.left" timestamp="1603029785299">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1492" height="33" key="GridCell.Tab.1.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602599589320" />
+    <state width="1492" height="646" key="GridCell.Tab.1.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1603029785299" />
     <state width="1876" height="308" key="GridCell.Tab.1.left/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601389775663" />
     <state width="1492" height="231" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1600779742244" />
-    <state width="1492" height="33" key="GridCell.Tab.1.right" timestamp="1602599589321">
+    <state width="1492" height="646" key="GridCell.Tab.1.right" timestamp="1603029785299">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1492" height="33" key="GridCell.Tab.1.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602599589321" />
+    <state width="1492" height="646" key="GridCell.Tab.1.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1603029785299" />
     <state width="1876" height="308" key="GridCell.Tab.1.right/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601389775663" />
     <state width="1492" height="231" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1600779742244" />
     <state width="1492" height="573" key="GridCell.Tab.2.bottom" timestamp="1600779741333">
@@ -923,25 +964,34 @@
     <state width="1492" height="573" key="GridCell.Tab.2.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1600758928721" />
     <state width="1877" height="459" key="GridCell.Tab.2.right/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1599568720803" />
     <state width="1492" height="573" key="GridCell.Tab.2.right/0.0.1536.824@0.0.1536.824" timestamp="1600779741333" />
+    <state x="2515" y="280" key="MultipleFileMergeDialog" timestamp="1603163790623">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2515" y="280" key="MultipleFileMergeDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603163790623" />
     <state x="347" y="0" width="1393" height="955" key="SettingsEditor" timestamp="1601797157325">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="347" y="0" key="SettingsEditor/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1601797157325" />
     <state x="2281" y="77" width="1393" height="955" key="SettingsEditor/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601774934536" />
-    <state x="444" y="209" width="800" height="532" key="Vcs.Push.Dialog.v2" timestamp="1602679058812">
+    <state x="2468" y="199" key="VCS.ChangeListViewerDialog" timestamp="1603163706171">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2468" y="199" key="VCS.ChangeListViewerDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603163706171" />
+    <state x="444" y="209" width="800" height="532" key="Vcs.Push.Dialog.v2" timestamp="1602729015743">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="444" y="209" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602679058812" />
+    <state x="444" y="209" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602729015743" />
     <state x="2475" y="264" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601775139278" />
     <state width="775" height="419" key="XDebugger.FullValuePopup" timestamp="1600311632036">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="775" height="419" key="XDebugger.FullValuePopup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1600311632036" />
-    <state x="2290" y="118" width="1153" height="533" maximized="true" key="dock-window-1" timestamp="1602678203694">
-      <screen x="1920" y="0" width="1920" height="1040" />
+    <state x="14" y="0" width="1536" height="786" key="dock-window-1" timestamp="1603163294377">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="2290" y="118" width="1153" height="533" maximized="true" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602678203694" />
-    <state x="14" y="0" width="1536" height="786" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1600959095858" />
+    <state x="1996" y="207" width="1153" height="533" maximized="true" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1603072358344" />
+    <state x="14" y="0" width="1536" height="786" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603163294377" />
+    <state x="201" y="185" width="1153" height="533" key="dock-window-1/0.0.1536.824@0.0.1536.824" timestamp="1603027525544" />
     <state x="1920" y="0" width="1058" height="562" key="dock-window-2" timestamp="1599524934794">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
@@ -964,10 +1014,11 @@
     </state>
     <state x="145" y="111" width="920" height="550" key="new project wizard/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602244049675" />
     <state x="2101" y="239" key="new project wizard/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1599738429990" />
-    <state x="499" y="188" key="run.anything.popup" timestamp="1601982360592">
+    <state x="499" y="188" key="run.anything.popup" timestamp="1603027210406">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="499" y="188" key="run.anything.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1601982360592" />
+    <state x="499" y="188" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1603027210406" />
     <state x="867" y="170" width="672" height="559" key="search.everywhere.popup" timestamp="1602593594056">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

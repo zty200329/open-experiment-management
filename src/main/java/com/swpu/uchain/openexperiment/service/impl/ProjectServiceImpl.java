@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -1065,6 +1066,7 @@ public class ProjectServiceImpl implements ProjectService {
             List<UserVO> userVOS = userProjectService.selectGuideTeacherByGroupId(checkProjectVO.getId());
             checkProjectVO.setGuidanceTeachers(userVOS);
         }
+        log.info(String.valueOf(checkProjectVOS.size()));
         return Result.success(checkProjectVOS);
     }
     private Result getCheckInfo(ProjectStatus projectStatus) {
@@ -1449,7 +1451,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<ProjectCheckForm> list = new LinkedList<>();
         for (ProjectGrade projectGrade : projectGradeList) {
             ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectGrade.getProjectId());
-            if (!projectGroup.getStatus().equals(ProjectStatus.ESTABLISH.getValue())) {
+            if (!projectGroup.getStatus().equals(ProjectStatus.COLLEGE_RETURNS.getValue())) {
                 throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
             }
             ProjectCheckForm projectCheckForm = new ProjectCheckForm();
@@ -2132,7 +2134,12 @@ public class ProjectServiceImpl implements ProjectService {
 
             //发送消息
             HitBackMessage hitBackMessage = new HitBackMessage();
-            hitBackMessage.setReceiveUserId(userProjectGroupMapper.getProjectLeader(form.getProjectId(), MemberRole.PROJECT_GROUP_LEADER.getValue()).getUserId());
+            UserProjectGroup leader = userProjectGroupMapper.getProjectLeader(form.getProjectId(), MemberRole.PROJECT_GROUP_LEADER.getValue());
+            if(leader == null){
+                hitBackMessage.setReceiveUserId(userProjectGroupMapper.getProjectLeader(form.getProjectId(), MemberRole.GUIDANCE_TEACHER.getValue()).getUserId());
+            }else {
+                hitBackMessage.setReceiveUserId(userProjectGroupMapper.getProjectLeader(form.getProjectId(), MemberRole.PROJECT_GROUP_LEADER.getValue()).getUserId());
+            }
             hitBackMessage.setContent("项目名:" + projectGroup.getProjectName() + "  意见:" + form.getReason());
             hitBackMessage.setSender(user.getRealName());
             Date date = new Date();
