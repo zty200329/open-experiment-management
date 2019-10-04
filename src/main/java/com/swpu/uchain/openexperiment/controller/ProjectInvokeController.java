@@ -22,19 +22,23 @@ import java.util.List;
  * @Author: clf
  * @Date: 19-1-21
  * @Description:
- * 项目控制接口
+ * 项目操作接口
  */
 @CrossOrigin
 @RestController
 @RequestMapping("/project")
 @Api(tags = "项目模块接口")
-public class ProjectController {
-    @Autowired
+public class ProjectInvokeController {
+
     private ProjectService projectService;
-    @Autowired
+
     private UserProjectService userProjectService;
 
-
+    @Autowired
+    public ProjectInvokeController(ProjectService projectService, UserProjectService userProjectService) {
+        this.projectService = projectService;
+        this.userProjectService = userProjectService;
+    }
 
     @ApiOperation("申请立项接口--可使用")
     @PostMapping(value = "/createApply", name = "申请立项接口")
@@ -48,23 +52,10 @@ public class ProjectController {
         return projectService.applyUpdateProject(updateProjectApplyForm);
     }
 
-
     @ApiOperation("申请参与项目接口--可使用")
     @PostMapping(value = "/joinApply", name = "申请参与项目接口")
     public Result joinApply(@Valid JoinProjectApplyForm joinProjectApplyForm){
         return userProjectService.applyJoinProject(joinProjectApplyForm);
-    }
-
-    @ApiOperation("获取当前用户参与的某状态的项目信息, 项目状态: -1(所有), 0(申报), 1(立项), 2(驳回修改),3(已上报学院领导), 4(中期检查), 5(结项)")
-    @GetMapping(value = "/getOwnProjects", name = "获取自己相关的项目信息")
-    public Object getOwnProjects(int projectStatus){
-        return projectService.getCurrentUserProjects(projectStatus);
-    }
-
-    @ApiOperation("获取项目的立项信息--可使用")
-    @PostMapping(value = "/getApplyInfo", name = "获取项目的立项信息")
-    public Result getApplyInfo(Long projectGroupId){
-        return projectService.getApplyForm(projectGroupId);
     }
 
     @ApiOperation("同意加入项目")
@@ -79,45 +70,15 @@ public class ProjectController {
         return projectService.rejectJoin(joinForm);
     }
 
-    @ApiOperation("实验室获取待审核的项目（1）--可使用")
-    @GetMapping(value = "/getDeclareProjectList", name = "审批项目展示接口")
-    public Result getDeclareProjectList (Integer pageNum){
-        if (pageNum == null || pageNum <= 0){
-            return Result.error(CodeMsg.PAGE_NUM_ERROR);
-        }
-        return projectService.getCheckInfo(pageNum, ProjectStatus.DECLARE.getValue());
-    }
-
-    @ApiOperation("二级单位获取待审核的项目（2）--可使用")
-    @GetMapping(value = "/getLabAllowedProjectList", name = "审批项目展示接口")
-    public Result getLabAllowedProjectList (Integer pageNum){
-        if (pageNum == null || pageNum <= 0){
-            return Result.error(CodeMsg.PAGE_NUM_ERROR);
-        }
-        return projectService.getCheckInfo(pageNum, ProjectStatus.LAB_ALLOWED.getValue());
-    }
-
-    @ApiOperation("职能部门获取待立项审核的项目（3）--可使用")
-    @GetMapping(value = "/getSecondaryUnitAllowedProjectList", name = "审批项目展示接口")
-    public Result getSecondaryUnitAllowedProjectList (Integer pageNum){
-        if (pageNum == null || pageNum <= 0){
-            return Result.error(CodeMsg.PAGE_NUM_ERROR);
-        }
-        return projectService.getCheckInfo(pageNum, ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue());
-    }
-
-
-
-
     @ApiOperation("同意立项--待完成")
     @PostMapping(value = "/agreeEstablish", name = "同意立项")
-    public Object agreeEstablish(List<Long> projectGroupIdList){
+    public Result agreeEstablish(List<Long> projectGroupIdList){
         return projectService.agreeEstablish(projectGroupIdList);
     }
 
     @ApiOperation("驳回修改--待完成")
     @PostMapping(value = "/rejectModifyApply", name = "驳回修改")
-    public Object rejectModifyApply(Long projectGroupId){
+    public Result rejectModifyApply(Long projectGroupId){
         if (projectGroupId == null){
             return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
         }
@@ -126,21 +87,15 @@ public class ProjectController {
 
     @ApiOperation("修改项目组成员身份")
     @PostMapping(value = "/aimMemberLeader", name = "修改项目组成员身份")
-    public Object aimMemberLeader(@Valid @RequestBody AimForm aimForm){
+    public Result aimMemberLeader(@Valid @RequestBody AimForm aimForm){
         return userProjectService.aimUserMemberRole(aimForm);
     }
 
 
     @ApiOperation("追加立项申请内容(资金申请报账)--可使用")
     @PostMapping(value = "/appendCreateApply", name = "追加立项申请内容")
-    public Object appendCreateApply(@Valid @RequestBody AppendApplyForm appendApplyForm){
+    public Result appendCreateApply(@Valid @RequestBody AppendApplyForm appendApplyForm){
         return projectService.appendCreateApply(appendApplyForm);
-    }
-
-    @GetMapping(value = "/getApplyingJoinInfo", name = "获取当前用户（限老师身份）指导项目的申请参加列表")
-    @ApiOperation("获取当前用户（限老师身份）指导项目的申请参加列表--可使用")
-    public Object getApplyingJoinInfo(){
-        return Result.success(projectService.getJoinInfo());
     }
 
     @ApiOperation("生成结题总览表--待完成")
@@ -155,10 +110,9 @@ public class ProjectController {
         projectService.generateEstablishExcel();
     }
 
-
     @ApiOperation("上报学院领导--待完成")
     @PostMapping(value = "/reportToCollegeLeader", name = "上报学院领导")
-    public Object reportToCollegeLeader(Long projectGroupId){
+    public Result reportToCollegeLeader(Long projectGroupId){
         if (projectGroupId == null){
             return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
         }
@@ -167,7 +121,7 @@ public class ProjectController {
 
     @ApiOperation("根据项目名模糊查询项目")
     @GetMapping(value = "/selectProject", name = "根据项目名模糊查询项目")
-    public Object selectProject(String name){
+    public Result selectProject(String name){
         if (StringUtils.isEmpty(name)){
             return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
         }

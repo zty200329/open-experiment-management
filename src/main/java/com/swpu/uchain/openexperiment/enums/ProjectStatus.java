@@ -10,6 +10,11 @@ import lombok.Getter;
  */
 @Getter
 public enum ProjectStatus {
+
+    /**
+     * 立项申请被驳回
+     */
+    APPLY_REJECTED(-1),
     /**
      * 申报
      */
