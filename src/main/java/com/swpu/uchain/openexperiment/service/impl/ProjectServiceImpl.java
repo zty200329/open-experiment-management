@@ -378,9 +378,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result appendCreateApply(AppendApplyForm appendApplyForm) {
         User currentUser = getUserService.getCurrentUser();
+        //获取用户所在的用户项目组信息
         UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(
-                appendApplyForm.getProjectGroupId(),
-                currentUser.getId());
+                appendApplyForm.getProjectGroupId(),currentUser.getId());
         if (userProjectGroup == null){
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
