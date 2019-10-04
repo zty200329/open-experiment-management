@@ -14,9 +14,11 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class AppendApplyForm {
+
     @ApiModelProperty("项目组id")
     @NotNull(message = "项目组id不能为空")
     private Long projectGroupId;
+
     @NotNull(message = "资金申请表不能为空")
     @ApiModelProperty("资金申请数组")
     private FundsForm[] fundsForms;

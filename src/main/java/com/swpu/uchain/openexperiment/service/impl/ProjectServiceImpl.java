@@ -384,6 +384,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (userProjectGroup == null){
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
+        //拒绝普通用户进行该项操作
         if (userProjectGroup.getMemberRole().intValue() == MemberRole.NORMAL_MEMBER.getValue()){
             Result.error(CodeMsg.PERMISSION_DENNY);
         }
@@ -392,6 +393,7 @@ public class ProjectServiceImpl implements ProjectService {
             //资金id不为空进行更新操作
             if (fundsForm.getFundsId() != null){
                 Funds funds = fundsService.selectById(fundsForm.getFundsId());
+
                 if (funds == null){
                     return Result.error(CodeMsg.FUNDS_NOT_EXIST);
                 }
@@ -424,8 +426,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result getCheckInfo(Integer pageNum, Integer projectStatus) {
         PageHelper.startPage(pageNum, countConfig.getCheckProject());
-        List<CheckProjectVO> checkProjectVOS = projectGroupMapper.selectApplyOrderByTime(projectStatus);
-        for (CheckProjectVO checkProjectVO : checkProjectVOS) {
+        List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus);
+        for (CheckProjectVO checkProjectVO : checkProjectVOs) {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getProjectGroupId());
             List<UserMemberVO> guidanceTeachers = new ArrayList<>();
             List<UserMemberVO> memberStudents = new ArrayList<>();
@@ -463,7 +465,7 @@ public class ProjectServiceImpl implements ProjectService {
                 checkProjectVO.setGuidanceTeachers(guidanceTeachers);
             }
         }
-        PageInfo<CheckProjectVO> pageInfo = new PageInfo<>(checkProjectVOS);
+        PageInfo<CheckProjectVO> pageInfo = new PageInfo<>(checkProjectVOs);
         return Result.success(pageInfo);
     }
 
