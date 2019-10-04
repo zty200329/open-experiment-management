@@ -13,10 +13,13 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class AimForm {
+
     @NotNull(message = "用户id不能为空")
     private Long userId;
+
     @NotNull(message = "项目组id不能为空")
     private Long projectGroupId;
+
     @NotNull(message = "指定的成员角色不能为空")
     @ApiModelProperty("成员角色:1.指导教师2.项目组长3.普通成员")
     private Integer memberRole;

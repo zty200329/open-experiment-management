@@ -1,19 +1,15 @@
 package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
-import com.swpu.uchain.openexperiment.enums.ProjectStatus;
 import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
-import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -126,5 +122,11 @@ public class ProjectInvokeController {
             return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
         }
         return Result.success(projectService.selectByProjectName(name));
+    }
+
+    @ApiOperation(" 驳回项目立项申请（实验室，二级单位，职能部门通用接口）")
+    @GetMapping(value = "/rejectProjectApply")
+    public Result rejectProjectApply(@Valid @RequestBody List<ProjectCheckForm> formList){
+        return projectService.rejectProjectApply(formList);
     }
 }

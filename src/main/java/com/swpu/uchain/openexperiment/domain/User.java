@@ -10,6 +10,7 @@ import java.io.Serializable;
  */
 @Data
 public class User implements Serializable {
+
     private Long id;
 
     private String code;
@@ -31,6 +32,9 @@ public class User implements Serializable {
 
     private String sex;
 
+    /**
+     * 用户类型：1.学生,2.教师,3教授,4.副教授
+     */
     private Integer userType;
 
     private String institute;
@@ -44,31 +48,4 @@ public class User implements Serializable {
     private Integer classNum;
 
     private static final long serialVersionUID = 1L;
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", code=").append(code);
-        sb.append(", email=").append(email);
-        sb.append(", fixPhone=").append(fixPhone);
-        sb.append(", idCard=").append(idCard);
-        sb.append(", mobilePhone=").append(mobilePhone);
-        sb.append(", password=").append(password);
-        sb.append(", qqNum=").append(qqNum);
-        sb.append(", realName=").append(realName);
-        sb.append(", sex=").append(sex);
-        sb.append(", userType=").append(userType);
-        sb.append(", institute=").append(institute);
-        sb.append(", major=").append(major);
-        sb.append(", grade=").append(grade);
-        sb.append(", workUnit=").append(workUnit);
-        sb.append(", classNum=").append(classNum);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
-    }
 }

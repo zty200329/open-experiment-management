@@ -33,9 +33,12 @@
     from user_role
   </select>
   <select id="selectByUserIdAndRoleId" resultMap="BaseResultMap">
-    select * from user_role where user_id = #{param1} and role_id = #{param2}
+    select id, user_id, role_id from user_role where user_id = #{param1} and role_id = #{param2}
   </select>
   <select id="selectByRoleId" resultMap="BaseResultMap">
-    select * from user_role where role_id = #{roleId}
+    select id, user_id, role_id from user_role where role_id = #{roleId}
+  </select>
+  <select id="selectByUserId" resultType="com.swpu.uchain.openexperiment.domain.UserRole">
+    select id, user_id, role_id from user_role where role_id = #{userId}
   </select>
 </mapper>

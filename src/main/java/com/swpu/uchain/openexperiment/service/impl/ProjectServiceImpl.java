@@ -8,14 +8,12 @@ import com.swpu.uchain.openexperiment.config.CountConfig;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
 import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.dao.UserProjectGroupMapper;
+import com.swpu.uchain.openexperiment.dao.UserRoleMapper;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.funds.FundsForm;
-import com.swpu.uchain.openexperiment.form.project.AppendApplyForm;
-import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
-import com.swpu.uchain.openexperiment.form.project.JoinForm;
-import com.swpu.uchain.openexperiment.form.project.UpdateProjectApplyForm;
+import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -26,10 +24,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -66,6 +62,8 @@ public class ProjectServiceImpl implements ProjectService {
     private ConvertUtil convertUtil;
     @Autowired
     private GetUserService getUserService;
+    @Autowired
+    private UserRoleMapper userRoleMapper;
 
     @Override
     public boolean insert(ProjectGroup projectGroup) {
@@ -545,6 +543,18 @@ public class ProjectServiceImpl implements ProjectService {
             }
         }
         return list;
+    }
+
+    @Override
+    public Result rejectProjectApply(List<ProjectCheckForm> formList) {
+        User user = getUserService.getCurrentUser();
+        //获取工号,并通过工号获取角色,再通过角色判定操作类型(只针对于审核这一步)
+        Long userId = Long.valueOf(user.getCode());
+        int role = Math.toIntExact(userRoleMapper.selectByUserId(userId).getRoleId());
+        switch (role){
+            case RoleType.LAB_ADMINISTRATOR.getValue():
+            return//TODO
+        }
     }
 
 }

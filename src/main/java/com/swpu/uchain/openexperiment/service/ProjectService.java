@@ -2,10 +2,7 @@ package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
-import com.swpu.uchain.openexperiment.form.project.AppendApplyForm;
-import com.swpu.uchain.openexperiment.form.project.JoinForm;
-import com.swpu.uchain.openexperiment.form.project.CreateProjectApplyForm;
-import com.swpu.uchain.openexperiment.form.project.UpdateProjectApplyForm;
+import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.result.Result;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -155,4 +152,11 @@ public interface ProjectService {
      * @return
      */
     List<SelectProjectVO> selectByProjectName(String name);
+
+    /**
+     * 拒绝项目申请接口
+     * @param formList 项目拒绝信息集合
+     * @return
+     */
+    Result rejectProjectApply(List<ProjectCheckForm> formList);
 }

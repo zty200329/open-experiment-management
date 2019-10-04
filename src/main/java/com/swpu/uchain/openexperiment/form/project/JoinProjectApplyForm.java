@@ -17,10 +17,12 @@ public class JoinProjectApplyForm {
     @ApiModelProperty("选择申请参与项目组id")
     @NotNull(message = "项目组id不能为空")
     private Long projectGroupId;
+
     @NotNull(message = "技术角色不能为空")
     @Length(max = 50, message = "字数不能超过50字")
     @ApiModelProperty("担任角色")
     private String technicalRole;
+
     @ApiModelProperty("自我评价")
     private String personalJudge;
 }
