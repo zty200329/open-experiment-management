@@ -98,7 +98,7 @@ public class ProjectInvokeController {
         projectService.generateEstablishExcel();
     }
 
-    @ApiOperation("上报学院领导--待完成")
+    @ApiOperation("上报学院领导(二级单位)--待完成")
     @PostMapping(value = "/reportToCollegeLeader", name = "上报学院领导")
     public Result reportToCollegeLeader(Long projectGroupId){
         if (projectGroupId == null){

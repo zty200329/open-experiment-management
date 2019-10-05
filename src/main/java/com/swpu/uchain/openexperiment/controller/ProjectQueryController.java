@@ -57,7 +57,7 @@ public class ProjectQueryController {
         if (pageNum == null || pageNum <= 0){
             return Result.error(CodeMsg.PAGE_NUM_ERROR);
         }
-        return projectService.getCheckInfo(pageNum, ProjectStatus.LAB_ALLOWED.getValue());
+        return projectService.getCheckInfo(pageNum, ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
     }
 
     @ApiOperation("获取当前用户参与的某状态的项目信息, 项目状态: -1(所有), 0(申报), 1(立项), 2(驳回修改),3(已上报学院领导), 4(中期检查), 5(结项)")
@@ -72,7 +72,7 @@ public class ProjectQueryController {
         if (pageNum == null || pageNum <= 0){
             return Result.error(CodeMsg.PAGE_NUM_ERROR);
         }
-        return projectService.getCheckInfo(pageNum, ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue());
+        return projectService.getCheckInfo(pageNum, ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue());
     }
 
 }

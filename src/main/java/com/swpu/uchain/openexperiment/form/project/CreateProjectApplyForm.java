@@ -5,6 +5,8 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.util.Date;
@@ -46,16 +48,18 @@ public class CreateProjectApplyForm {
     @NotNull(message = "建议评审分组必选")
     private Character suggestGroupType;
 
-    @Null
-    @ApiModelProperty("限选年级--不填")
+    @Min(2000)
+    @Max(2090)
+    @NotNull
+    @ApiModelProperty("限选年级")
     private Integer limitGrade;
 
-    @Null
-    @ApiModelProperty("限选专业--不填")
+    @NotNull
+    @ApiModelProperty("限选专业")
     private String limitMajor;
 
-    @Null
-    @ApiModelProperty("限选学院--不填")
+    @NotNull
+    @ApiModelProperty("限选学院")
     private String limitCollege;
 
 
@@ -77,7 +81,6 @@ public class CreateProjectApplyForm {
     @ApiModelProperty("实验结束时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endTime;
-
 
     @ApiModelProperty("所需经费支持")
     private Float applyFunds;

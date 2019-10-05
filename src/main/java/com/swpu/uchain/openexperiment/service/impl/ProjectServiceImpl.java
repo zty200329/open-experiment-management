@@ -477,7 +477,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result reportToCollegeLeader(Long projectGroupId) {
         //TODO,可能会补充站内消息模块功能
-        return updateProjectStatus(projectGroupId, ProjectStatus.REPORT_COLLEGE_LEADER.getValue());
+        return updateProjectStatus(projectGroupId, ProjectStatus.ESTABLISH.getValue());
     }
 
     @Override
