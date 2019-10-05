@@ -2,6 +2,8 @@ package com.swpu.uchain.openexperiment.domain;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @author panghu
  */
@@ -37,5 +39,10 @@ public class OperationRecord {
     /**
      * 执行时间
      */
-    private Long operationTime;
+    private Date operationTime;
+
+    /**
+     * 执行者ID
+     */
+    private Long operationExecutorId;
 }

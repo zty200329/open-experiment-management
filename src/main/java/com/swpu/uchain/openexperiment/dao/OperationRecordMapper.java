@@ -1,8 +1,9 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.DTO.OperationRecordDTO;
+import com.swpu.uchain.openexperiment.VO.project.ProjectHistoryInfoVO;
 import com.swpu.uchain.openexperiment.domain.Announcement;
-import com.swpu.uchain.openexperiment.domain.OperationRecord;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,12 +23,17 @@ public interface OperationRecordMapper {
      */
     int insert(OperationRecordDTO record);
 
+    /**
+     * 多值插入
+     * @param list 待插入的列表
+     * @return
+     */
     int multiInsert(List<OperationRecordDTO> list);
 
-    Announcement selectByPrimaryKey(Long id);
+    ProjectHistoryInfoVO selectByPrimaryKey(Long id);
 
-    List<Announcement> selectAll();
+    List<ProjectHistoryInfoVO> selectAllByProjectId(@Param("projectId") Long projectId);
 
-    int updateByPrimaryKey(Announcement record);
+    int updateByPrimaryKey(ProjectHistoryInfoVO record);
 
 }

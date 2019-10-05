@@ -85,7 +85,7 @@ public interface ProjectService {
      * @param projectGroupIdList 同意项目ID列表
      * @return
      */
-    Result agreeEstablish(List<Long> projectGroupIdList);
+    Result agreeEstablish(List<ProjectCheckForm> projectGroupIdList);
 
     /**
      * 获取项目的立项申请信息
@@ -104,10 +104,9 @@ public interface ProjectService {
     /**
      * 获取所有待审核立项项目信息
      * @param pageNum
-     * @param projectStatus
      * @return
      */
-    Result getCheckInfo(Integer pageNum, Integer projectStatus);
+    Result getCheckInfo(Integer pageNum);
 
     /**
      * 上报学院领导
@@ -152,4 +151,24 @@ public interface ProjectService {
      * @return
      */
     Result rejectProjectApply(List<ProjectCheckForm> formList);
+
+    /**
+     * 学院领导上报到职能部门
+     * @param projectGroupId 项目组ID
+     * @return 上报结果
+     */
+    Result reportToFunctionalDepartment(Long projectGroupId);
+
+    /**
+     * 指导老师确认职能部门的修改
+     * @return
+     */
+    Result ensureOrNotModify(ConfirmForm confirmForm);
+
+    /**
+     * 获取当前用户的项目具体信息
+     * @param projectId 项目ID
+     * @return
+     */
+    Result getProjectDetailById(Long projectId);
 }

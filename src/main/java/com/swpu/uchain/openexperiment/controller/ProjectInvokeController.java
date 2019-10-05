@@ -48,9 +48,15 @@ public class ProjectInvokeController {
         return projectService.applyUpdateProject(updateProjectApplyForm);
     }
 
+    @ApiOperation("确认或者否认职能部门修改立项申请的结果(指导老师进行确认)1,确认(立项成功)  2.否认(立项失败)--可使用")
+    @PostMapping(value = "/ensureOrNotModify", name = "修改立项申请")
+    public Result ensureOrNotModify(@Valid @RequestBody ConfirmForm confirmForm){
+        return projectService.ensureOrNotModify(confirmForm);
+    }
+
     @ApiOperation("申请参与项目接口--可使用")
     @PostMapping(value = "/joinApply", name = "申请参与项目接口")
-    public Result joinApply(@Valid JoinProjectApplyForm joinProjectApplyForm){
+    public Result joinApply(@Valid @RequestBody JoinProjectApplyForm joinProjectApplyForm){
         return userProjectService.applyJoinProject(joinProjectApplyForm);
     }
 
@@ -66,11 +72,13 @@ public class ProjectInvokeController {
         return projectService.rejectJoin(joinForm);
     }
 
-    @ApiOperation("同意立项--待完成")
+    @ApiOperation("同意立项(职能部门)--可使用")
     @PostMapping(value = "/agreeEstablish", name = "同意立项")
-    public Result agreeEstablish(List<Long> projectGroupIdList){
+    public Result agreeEstablish(@Valid @RequestBody List<ProjectCheckForm> projectGroupIdList){
         return projectService.agreeEstablish(projectGroupIdList);
     }
+
+
 
 
     @ApiOperation("修改项目组成员身份")
@@ -98,7 +106,7 @@ public class ProjectInvokeController {
         projectService.generateEstablishExcel();
     }
 
-    @ApiOperation("上报学院领导(二级单位)--待完成")
+    @ApiOperation("上报学院领导(二级单位)--可使用")
     @PostMapping(value = "/reportToCollegeLeader", name = "上报学院领导")
     public Result reportToCollegeLeader(Long projectGroupId){
         if (projectGroupId == null){
@@ -106,6 +114,17 @@ public class ProjectInvokeController {
         }
         return projectService.reportToCollegeLeader(projectGroupId);
     }
+
+
+    @ApiOperation("上报职能部门--可使用")
+    @PostMapping(value = "/reportToFunctionalDepartment")
+    public Result reportToFunctionalDepartment(Long projectGroupId){
+        if (projectGroupId == null){
+            return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
+        }
+        return projectService.reportToFunctionalDepartment(projectGroupId);
+    }
+
 
     @ApiOperation("根据项目名模糊查询项目")
     @GetMapping(value = "/selectProject", name = "根据项目名模糊查询项目--可使用")

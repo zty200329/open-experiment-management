@@ -29,6 +29,11 @@ public class OperationRecordDTO {
      */
     private String operationReason;
 
+    /**
+     * 执行者工号
+     */
+    private Long operationExecutorId;
+
     public OperationRecordDTO() {
     }
 

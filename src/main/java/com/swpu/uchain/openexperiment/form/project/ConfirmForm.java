@@ -1,25 +1,25 @@
 package com.swpu.uchain.openexperiment.form.project;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
- * 项目审核表单
- *
  * @author panghu
  */
 @Data
-public class ProjectCheckForm {
+public class ConfirmForm {
 
     @NotNull
-    @ApiModelProperty("项目的主键")
+    @ApiModelProperty("项目ID")
     private Long projectId;
 
-    @NotNull
-    @ApiModelProperty("拒绝或者同意的的原因")
-    private String reason;
+    @Max(2)
+    @Min(1)
+    @ApiModelProperty("1.确认  2.拒绝")
+    private Integer result;
 
 }

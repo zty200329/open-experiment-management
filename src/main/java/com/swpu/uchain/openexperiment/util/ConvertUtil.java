@@ -6,6 +6,7 @@ import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
 import com.swpu.uchain.openexperiment.VO.permission.RoleVO;
 import com.swpu.uchain.openexperiment.VO.project.ApplyGeneralFormInfoVO;
 import com.swpu.uchain.openexperiment.VO.project.ApplyKeyFormInfoVO;
+import com.swpu.uchain.openexperiment.VO.project.ProjectHistoryInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserDetailVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
 import com.swpu.uchain.openexperiment.VO.user.UserVO;
@@ -14,6 +15,7 @@ import com.swpu.uchain.openexperiment.dao.RoleMapper;
 import com.swpu.uchain.openexperiment.domain.Acl;
 import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.domain.User;
+import com.swpu.uchain.openexperiment.enums.OperationType;
 import com.swpu.uchain.openexperiment.enums.UserType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,5 +145,51 @@ public class ConvertUtil {
             ids[i] = l;
         }
         return ids;
+    }
+
+    public static List<ProjectHistoryInfoVO> getConvertedProjectHistoryInfoVO(List<ProjectHistoryInfoVO> list){
+        for (ProjectHistoryInfoVO info:list
+             ) {
+            //将具体操作转化成文字
+            String operationContent;
+            switch (info.getOperationContent()){
+                case "1":
+                    operationContent = "通过";
+                    break;
+                case "2":
+                    operationContent = "不通过";
+                    break;
+                default:
+                    operationContent = info.getOperationContent();
+            }
+            info.setOperationContent(operationContent);
+
+            String operationType;
+            switch (info.getOperationType()){
+                case "1":
+                    operationType = OperationType.PROJECT_OPERATION_TYPE1.getTips();
+                    break;
+                case "2":
+                    operationType = OperationType.PROJECT_OPERATION_TYPE2.getTips();
+                    break;
+                case "3":
+                    operationType = OperationType.PROJECT_OPERATION_TYPE3.getTips();
+                    break;
+                case "11":
+                    operationType = OperationType.PROJECT_MODIFY_TYPE1.getTips();
+                    break;
+                case "21":
+                    operationType = OperationType.PROJECT_REPORT_TYPE1.getTips();
+                    break;
+                case "22":
+                    operationType = OperationType.PROJECT_REPORT_TYPE2.getTips();
+                    break;
+                default:
+                    operationType = info.getOperationType();
+            }
+            info.setOperationType(operationType);
+
+        }
+        return list;
     }
 }

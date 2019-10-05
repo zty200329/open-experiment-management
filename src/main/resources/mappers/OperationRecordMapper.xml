@@ -3,11 +3,12 @@
 <mapper namespace="com.swpu.uchain.openexperiment.dao.OperationRecordMapper">
     <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.OperationRecord">
         <id column="id" jdbcType="BIGINT" property="id" />
-        <result column="related_id" jdbcType="VARCHAR" property="relatedId" />
+        <result column="related_id" jdbcType="BIGINT" property="relatedId" />
         <result column="operation_type" jdbcType="VARCHAR" property="operationType" />
         <result column="operation_content" jdbcType="VARCHAR" property="operationContent" />
         <result column="operation_reason" jdbcType="VARCHAR" property="operationReason" />
         <result column="operation_time" jdbcType="TIMESTAMP" property="operationTime" />
+        <result column="operation_executor_id" jdbcType="BIGINT" property="operationExecutorId"/>
     </resultMap>
     
     <insert id="insert">
@@ -36,12 +37,20 @@
 
     </delete>
 
-    <select id="selectByPrimaryKey" resultType="com.swpu.uchain.openexperiment.domain.Announcement">
+    <select id="selectByPrimaryKey" resultType="com.swpu.uchain.openexperiment.VO.project.ProjectHistoryInfoVO">
 
     </select>
 
-    <select id="selectAll" resultType="com.swpu.uchain.openexperiment.domain.Announcement">
-
+    <select id="selectAllByProjectId" resultType="com.swpu.uchain.openexperiment.VO.project.ProjectHistoryInfoVO">
+        select
+               operation_type as operationType,
+               operation_content as operationContent,
+               operation_reason as reason,
+               operation_time as operationTime,
+               operation_executor_id as operationExecutorId
+        from operation_record where related_id = #{projectId} and `status` = 'Y'
+        order by operation_time
     </select>
+
 
 </mapper>

@@ -42,23 +42,6 @@ public class ProjectQueryController {
         return Result.success(projectService.getJoinInfo());
     }
 
-    @ApiOperation("实验室获取待审核的项目（1）--可使用")
-    @GetMapping(value = "/getDeclareProjectList", name = "审批项目展示接口")
-    public Result getDeclareProjectList (Integer pageNum){
-        if (pageNum == null || pageNum <= 0){
-            return Result.error(CodeMsg.PAGE_NUM_ERROR);
-        }
-        return projectService.getCheckInfo(pageNum, ProjectStatus.DECLARE.getValue());
-    }
-
-    @ApiOperation("二级单位获取待审核的项目（2）--可使用")
-    @GetMapping(value = "/getLabAllowedProjectList", name = "审批项目展示接口")
-    public Result getLabAllowedProjectList (Integer pageNum){
-        if (pageNum == null || pageNum <= 0){
-            return Result.error(CodeMsg.PAGE_NUM_ERROR);
-        }
-        return projectService.getCheckInfo(pageNum, ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
-    }
 
     @ApiOperation("获取当前用户参与的某状态的项目信息, 项目状态: -1(所有), 0(申报), 1(立项), 2(驳回修改),3(已上报学院领导), 4(中期检查), 5(结项)")
     @GetMapping(value = "/getOwnProjects", name = "获取自己相关的项目信息")
@@ -66,13 +49,19 @@ public class ProjectQueryController {
         return projectService.getCurrentUserProjects(projectStatus);
     }
 
-    @ApiOperation("职能部门获取待立项审核的项目（3）--可使用")
+    @ApiOperation("获取当前用户的项目具体信息(仅指导老师可用)--可使用")
+    @GetMapping("/getProjectDetailById")
+    public Result getProjectDetailById(Long projectId){
+        return projectService.getProjectDetailById(projectId);
+    }
+
+    @ApiOperation("职能部门,二级单位,实验室获取待立项审核的项目--可使用")
     @GetMapping(value = "/getSecondaryUnitAllowedProjectList", name = "审批项目展示接口")
     public Result getSecondaryUnitAllowedProjectList (Integer pageNum){
         if (pageNum == null || pageNum <= 0){
             return Result.error(CodeMsg.PAGE_NUM_ERROR);
         }
-        return projectService.getCheckInfo(pageNum, ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue());
+        return projectService.getCheckInfo(pageNum);
     }
 
 }

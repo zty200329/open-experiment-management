@@ -13,8 +13,9 @@ public enum ProjectStatus {
     /**
      *
      */
-    REJECT_MODIFY(-1,"驳回修改"),
+    ESTABLISH_FAILED(-2,"立项失败"),
 
+    REJECT_MODIFY(-1,"驳回修改"),
 
     DECLARE(0,"申报"),
 

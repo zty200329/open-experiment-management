@@ -22,6 +22,7 @@ import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.CountUtil;
+import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -204,6 +205,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (userProjectGroup == null) {
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
+        //状态不允许修改
         if (projectGroup.getStatus() != ProjectStatus.DECLARE.getValue().intValue()
                 || projectGroup.getStatus() != ProjectStatus.REJECT_MODIFY.getValue().intValue()) {
             return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
@@ -220,6 +222,8 @@ public class ProjectServiceImpl implements ProjectService {
         String[] stuCodes = updateProjectApplyForm.getStuCodes();
         String[] teacherCodes = updateProjectApplyForm.getTeacherCodes();
         userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
+        //修改项目状态,重新开始申报
+        updateProjectStatus(projectGroup.getId(),ProjectStatus.DECLARE.getValue());
         return Result.success();
     }
 
@@ -343,18 +347,27 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result agreeEstablish(List<Long> projectGroupIdList) {
-        for (Long projectGroupId : projectGroupIdList) {
-            Result result = updateProjectStatus(projectGroupId, ProjectStatus.ESTABLISH.getValue());
+    public Result agreeEstablish(List<ProjectCheckForm> projectGroupIdList) {
+        List<OperationRecordDTO> operationRecordDTOS = new LinkedList<>();
+        for (ProjectCheckForm projectCheckForm : projectGroupIdList) {
+            Result result = updateProjectStatus(projectCheckForm.getProjectId(), ProjectStatus.ESTABLISH.getValue());
             if (result.getCode() != 0) {
                 throw new GlobalException(CodeMsg.UPDATE_ERROR);
             }
             //TODO,资金同意操作
-            result = fundsService.agreeFunds(projectGroupId);
+            result = fundsService.agreeFunds(projectCheckForm.getProjectId());
             if (result.getCode() != 0) {
                 throw new GlobalException(CodeMsg.UPDATE_ERROR);
             }
+            OperationRecordDTO operationRecordDTO = new OperationRecordDTO();
+            operationRecordDTO.setOperationType(OperationType.PROJECT_OPERATION_TYPE3.getValue().toString());
+            operationRecordDTO.setOperationContent(CheckResultType.PASS.getValue());
+            operationRecordDTO.setOperationReason(projectCheckForm.getReason());
+            operationRecordDTO.setRelatedId(projectCheckForm.getProjectId());
+            operationRecordDTOS.add(operationRecordDTO);
+            setOperationExecutor(operationRecordDTO);
         }
+        recordMapper.multiInsert(operationRecordDTOS);
         return Result.success();
     }
 
@@ -428,7 +441,29 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result getCheckInfo(Integer pageNum, Integer projectStatus) {
+    public Result getCheckInfo(Integer pageNum) {
+        User user2 = getUserService.getCurrentUser();
+        //获取工号,并通过工号获取角色,再通过角色判定操作类型(只针对于审核这一步)
+        long role = userRoleMapper.selectByPrimaryKey(user2.getId()).getRoleId();
+        Integer projectStatus;
+        //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
+        switch ((int) role) {
+            //职能部门
+            case 6:
+                projectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
+                break;
+            //二级部门(学院领导)
+            case 5:
+                projectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
+                break;
+            //实验室主任
+            case 4:
+                projectStatus = ProjectStatus.DECLARE.getValue();
+                break;
+            default:
+                //超管执行操作
+                projectStatus = -1;
+        }
         PageHelper.startPage(pageNum, countConfig.getCheckProject());
         List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus);
         for (CheckProjectVO checkProjectVO : checkProjectVOs) {
@@ -475,9 +510,46 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result reportToCollegeLeader(Long projectGroupId) {
-        //TODO,可能会补充站内消息模块功能
-        return updateProjectStatus(projectGroupId, ProjectStatus.ESTABLISH.getValue());
+        OperationRecordDTO operationRecordDTO = new OperationRecordDTO();
+        operationRecordDTO.setRelatedId(projectGroupId);
+        operationRecordDTO.setOperationContent(CheckResultType.PASS.getValue());
+        operationRecordDTO.setOperationType(OperationType.PROJECT_REPORT_TYPE1.getValue().toString());
+        setOperationExecutor(operationRecordDTO);
+        recordMapper.insert(operationRecordDTO);
+        return updateProjectStatus(projectGroupId, ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result reportToFunctionalDepartment(Long projectGroupId) {
+        OperationRecordDTO operationRecordDTO = new OperationRecordDTO();
+        operationRecordDTO.setRelatedId(projectGroupId);
+        operationRecordDTO.setOperationContent(CheckResultType.PASS.getValue());
+        operationRecordDTO.setOperationType(OperationType.PROJECT_REPORT_TYPE2.getValue().toString());
+        setOperationExecutor(operationRecordDTO);
+        recordMapper.insert(operationRecordDTO);
+        return updateProjectStatus(projectGroupId, ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue());
+    }
+
+    @Override
+    public Result ensureOrNotModify(ConfirmForm confirmForm) {
+        Integer result = confirmForm.getResult();
+        Long projectId = confirmForm.getProjectId();
+        //确认修改
+        if (result == 1){
+            updateProjectStatus(projectId,ProjectStatus.ESTABLISH.getValue());
+        }else if (result == 2){
+            updateProjectStatus(projectId,ProjectStatus.ESTABLISH_FAILED.getValue());
+        }
+        return Result.success();
+    }
+
+    @Override
+    public Result getProjectDetailById(Long projectId) {
+        List<ProjectHistoryInfoVO> list = recordMapper.selectAllByProjectId(projectId);
+        return Result.success(ConvertUtil.getConvertedProjectHistoryInfoVO(list));
     }
 
     @Override
@@ -546,6 +618,11 @@ public class ProjectServiceImpl implements ProjectService {
         return list;
     }
 
+    /**
+     *  因为是批量操作  所以就最好将拒绝和同意分开
+     * @param formList 项目拒绝信息集合
+     * @return
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result rejectProjectApply(List<ProjectCheckForm> formList) {
@@ -557,13 +634,13 @@ public class ProjectServiceImpl implements ProjectService {
         switch ((int) role) {
             //如果是实验室主任
             case 1:
-                checkOperationType = CheckOperationType.PROJECT_OPERATION_TYPE1.getValue().toString();
+                checkOperationType = OperationType.PROJECT_OPERATION_TYPE1.getValue().toString();
                 break;
             case 2:
-                checkOperationType = CheckOperationType.PROJECT_OPERATION_TYPE2.getValue().toString();
+                checkOperationType = OperationType.PROJECT_OPERATION_TYPE2.getValue().toString();
                 break;
             case 3:
-                checkOperationType = CheckOperationType.PROJECT_OPERATION_TYPE3.getValue().toString();
+                checkOperationType = OperationType.PROJECT_OPERATION_TYPE3.getValue().toString();
                 break;
             default:
                 //超管执行操作
@@ -577,6 +654,7 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecordDTO.setOperationReason(form.getReason());
             operationRecordDTO.setOperationContent(CheckResultType.REJECTED.getValue());
             operationRecordDTO.setOperationType(checkOperationType);
+            operationRecordDTO.setOperationExecutorId(Long.valueOf(user.getCode()));
             //修改状态
             ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
             //如果项目已经是被驳回状态
@@ -590,4 +668,9 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success();
     }
 
+    private void setOperationExecutor(OperationRecordDTO operationRecordDTO){
+        User user = getUserService.getCurrentUser();
+        Long id = Long.valueOf(user.getCode());
+        operationRecordDTO.setRelatedId(id);
+    }
 }
