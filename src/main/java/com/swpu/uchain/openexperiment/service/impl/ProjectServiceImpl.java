@@ -401,6 +401,11 @@ public class ProjectServiceImpl implements ProjectService {
         if (userProjectGroup == null) {
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
+
+        if (userProjectGroup.getStatus() < 5){
+            throw new GlobalException(CodeMsg.FUNDS_NOT_EXIST);
+        }
+
         //拒绝普通用户进行该项操作
         if (userProjectGroup.getMemberRole().intValue() == MemberRole.NORMAL_MEMBER.getValue()) {
             Result.error(CodeMsg.PERMISSION_DENNY);
