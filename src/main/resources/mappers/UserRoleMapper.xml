@@ -39,6 +39,6 @@
     select id, user_id, role_id from user_role where role_id = #{roleId}
   </select>
   <select id="selectByUserId" resultType="com.swpu.uchain.openexperiment.domain.UserRole">
-    select id, user_id, role_id from user_role where role_id = #{userId}
+    select id, user_id, role_id from user_role where user_id = #{userId}
   </select>
 </mapper>

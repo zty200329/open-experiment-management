@@ -67,7 +67,8 @@ public enum CodeMsg {
     FILE_OVERSIZE(607,"文件过大"),
     DOWNLOAD_ERROR(608,"下载失败" ),
     DELETE_FILE_ERROR(609, "删除文件异常"),
-    TIME_DEFINE_ERROR(610,"时间设置错误");
+    TIME_DEFINE_ERROR(610,"时间设置错误"),
+    PROJECT_HAS_BEEN_REJECTED(611,"项目已经被驳回");
 
     private Integer code;
     private String msg;

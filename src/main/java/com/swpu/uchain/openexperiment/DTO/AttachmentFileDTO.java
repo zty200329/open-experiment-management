@@ -11,6 +11,7 @@ import java.util.Date;
  */
 @Data
 public class AttachmentFileDTO {
+
     private Long fileId;
     private Integer downloadTimes;
     private String fileName;
@@ -19,4 +20,5 @@ public class AttachmentFileDTO {
     private Date uploadTime;
     private Long uploadUserId;
     private String userName;
+
 }

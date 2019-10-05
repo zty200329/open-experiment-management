@@ -23,7 +23,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping("/project")
-@Api(tags = "项目模块接口")
+@Api(tags = "项目模块执行接口")
 public class ProjectInvokeController {
 
     private ProjectService projectService;
@@ -72,14 +72,6 @@ public class ProjectInvokeController {
         return projectService.agreeEstablish(projectGroupIdList);
     }
 
-    @ApiOperation("驳回修改--待完成")
-    @PostMapping(value = "/rejectModifyApply", name = "驳回修改")
-    public Result rejectModifyApply(Long projectGroupId){
-        if (projectGroupId == null){
-            return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
-        }
-        return projectService.rejectModifyApply(projectGroupId);
-    }
 
     @ApiOperation("修改项目组成员身份")
     @PostMapping(value = "/aimMemberLeader", name = "修改项目组成员身份")
@@ -125,7 +117,7 @@ public class ProjectInvokeController {
     }
 
     @ApiOperation(" 驳回项目立项申请（实验室，二级单位，职能部门通用接口）")
-    @GetMapping(value = "/rejectProjectApply")
+    @PostMapping(value = "/rejectProjectApply")
     public Result rejectProjectApply(@Valid @RequestBody List<ProjectCheckForm> formList){
         return projectService.rejectProjectApply(formList);
     }

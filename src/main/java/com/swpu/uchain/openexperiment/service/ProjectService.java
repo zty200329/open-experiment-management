@@ -110,13 +110,6 @@ public interface ProjectService {
     Result getCheckInfo(Integer pageNum, Integer projectStatus);
 
     /**
-     * 驳回修改立项申请项目信息
-     * @param projectGroupId
-     * @return
-     */
-    Result rejectModifyApply(Long projectGroupId);
-
-    /**
      * 上报学院领导
      * @param projectGroupId
      * @return
@@ -154,7 +147,7 @@ public interface ProjectService {
     List<SelectProjectVO> selectByProjectName(String name);
 
     /**
-     * 拒绝项目申请接口
+     * 驳回,修改立项申请项目信息
      * @param formList 项目拒绝信息集合
      * @return
      */

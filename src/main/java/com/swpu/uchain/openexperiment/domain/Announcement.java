@@ -10,6 +10,7 @@ import java.util.Date;
  */
 @Data
 public class Announcement{
+
     private Long id;
 
     private Long publisherId;
@@ -22,21 +23,4 @@ public class Announcement{
 
     private Date updateTime;
 
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", publisherId=").append(publisherId);
-        sb.append(", title=").append(title);
-        sb.append(", content=").append(content);
-        sb.append(", publishTime=").append(publishTime);
-        sb.append(", updateTime=").append(updateTime);
-        sb.append("]");
-        return sb.toString();
-    }
 }

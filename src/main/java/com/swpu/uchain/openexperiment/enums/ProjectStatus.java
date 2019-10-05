@@ -12,9 +12,9 @@ import lombok.Getter;
 public enum ProjectStatus {
 
     /**
-     * 立项申请被驳回
+     * 驳回修改
      */
-    APPLY_REJECTED(-1),
+    REJECT_MODIFY(-1),
     /**
      * 申报
      */
@@ -31,10 +31,6 @@ public enum ProjectStatus {
      * 立项
      */
     ESTABLISH(3),
-    /**
-     * 驳回修改
-     */
-    REJECT_MODIFY(4),
     /**
      * 已上报学院领导
      */

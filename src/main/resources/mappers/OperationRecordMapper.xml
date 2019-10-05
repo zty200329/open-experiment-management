@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swpu.uchain.openexperiment.dao.OperationRecordMapper">
+    <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.OperationRecord">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="related_id" jdbcType="VARCHAR" property="relatedId" />
+        <result column="operation_type" jdbcType="VARCHAR" property="operationType" />
+        <result column="operation_content" jdbcType="VARCHAR" property="operationContent" />
+        <result column="operation_reason" jdbcType="VARCHAR" property="operationReason" />
+        <result column="operation_time" jdbcType="TIMESTAMP" property="operationTime" />
+    </resultMap>
+    
+    <insert id="insert">
+        insert into operation_record (related_id, operation_type, operation_content, operation_reason)
+            values (#{relatedId},#{operationType},#{operationContent},#{operationReason})
+    </insert>
+    <insert id="multiInsert">
+        insert into operation_record (related_id, operation_type, operation_content, operation_reason)
+            values
+            <foreach collection="list" item="record" separator=",">
+                (
+                    #{record.relatedId},
+                    #{record.operationType},
+                    #{record.operationContent},
+                    #{record.operationReason}
+                 )
+
+            </foreach>
+    </insert>
+
+    <update id="updateByPrimaryKey">
+
+    </update>
+
+    <delete id="deleteByPrimaryKey">
+
+    </delete>
+
+    <select id="selectByPrimaryKey" resultType="com.swpu.uchain.openexperiment.domain.Announcement">
+
+    </select>
+
+    <select id="selectAll" resultType="com.swpu.uchain.openexperiment.domain.Announcement">
+
+    </select>
+
+</mapper>
