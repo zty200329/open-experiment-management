@@ -80,8 +80,8 @@ public class ProjectInvokeController {
 
 
 
-    @ApiOperation("修改项目组成员身份")
-    @PostMapping(value = "/aimMemberLeader", name = "修改项目组成员身份")
+    @ApiOperation("修改项目组成员身份  1.指导教师2.项目组长3.普通成员--可使用")
+    @PostMapping(value = "/aimMemberLeader", name = "修改项目组成员身份-")
     public Result aimMemberLeader(@Valid @RequestBody AimForm aimForm){
         return userProjectService.aimUserMemberRole(aimForm);
     }
@@ -125,7 +125,7 @@ public class ProjectInvokeController {
     }
 
 
-    @ApiOperation("根据项目名模糊查询项目")
+    @ApiOperation("根据项目名模糊查询项目--可使用")
     @GetMapping(value = "/selectProject", name = "根据项目名模糊查询项目--可使用")
     public Result selectProject(String name){
         if (StringUtils.isEmpty(name)){
