@@ -2,6 +2,9 @@ package com.swpu.uchain.openexperiment.domain;
 
 import lombok.Data;
 
+/**
+ * @author panghu
+ */
 @Data
 public class Message {
 
@@ -13,6 +16,6 @@ public class Message {
     /**
      * 消息内容
      */
-    private String messageContent;
+    private String title;
 
 }

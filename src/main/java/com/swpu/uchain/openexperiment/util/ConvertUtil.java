@@ -1,28 +1,30 @@
 package com.swpu.uchain.openexperiment.util;
 
 import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
+import com.swpu.uchain.openexperiment.VO.MessageVO;
 import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
 import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
 import com.swpu.uchain.openexperiment.VO.permission.RoleVO;
 import com.swpu.uchain.openexperiment.VO.project.ApplyGeneralFormInfoVO;
 import com.swpu.uchain.openexperiment.VO.project.ApplyKeyFormInfoVO;
-import com.swpu.uchain.openexperiment.VO.project.ProjectHistoryInfoVO;
+import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.VO.user.UserDetailVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
 import com.swpu.uchain.openexperiment.VO.user.UserVO;
 import com.swpu.uchain.openexperiment.dao.AclMapper;
 import com.swpu.uchain.openexperiment.dao.RoleMapper;
 import com.swpu.uchain.openexperiment.domain.Acl;
+import com.swpu.uchain.openexperiment.domain.Message;
 import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.OperationType;
 import com.swpu.uchain.openexperiment.enums.UserType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -147,49 +149,75 @@ public class ConvertUtil {
         return ids;
     }
 
-    public static List<ProjectHistoryInfoVO> getConvertedProjectHistoryInfoVO(List<ProjectHistoryInfoVO> list){
-        for (ProjectHistoryInfoVO info:list
+    public static List<ProjectHistoryInfo> getConvertedProjectHistoryInfo(List<ProjectHistoryInfo> list){
+        for (ProjectHistoryInfo info:list
              ) {
             //将具体操作转化成文字
-            String operationContent;
-            switch (info.getOperationContent()){
-                case "1":
-                    operationContent = "通过";
-                    break;
-                case "2":
-                    operationContent = "不通过";
-                    break;
-                default:
-                    operationContent = info.getOperationContent();
-            }
+            String operationContent = operationContentToWord(info.getOperationContent());
             info.setOperationContent(operationContent);
 
-            String operationType;
-            switch (info.getOperationType()){
-                case "1":
-                    operationType = OperationType.PROJECT_OPERATION_TYPE1.getTips();
-                    break;
-                case "2":
-                    operationType = OperationType.PROJECT_OPERATION_TYPE2.getTips();
-                    break;
-                case "3":
-                    operationType = OperationType.PROJECT_OPERATION_TYPE3.getTips();
-                    break;
-                case "11":
-                    operationType = OperationType.PROJECT_MODIFY_TYPE1.getTips();
-                    break;
-                case "21":
-                    operationType = OperationType.PROJECT_REPORT_TYPE1.getTips();
-                    break;
-                case "22":
-                    operationType = OperationType.PROJECT_REPORT_TYPE2.getTips();
-                    break;
-                default:
-                    operationType = info.getOperationType();
-            }
+            String operationType = operationTypeToWord(info.getOperationType());
             info.setOperationType(operationType);
 
         }
         return list;
     }
+
+    public static List<MessageVO> projectHistoryInfoListToMessageList(List<ProjectHistoryInfo> list){
+        List<MessageVO> voList = new LinkedList<>();
+        for (ProjectHistoryInfo info:list
+             ) {
+            MessageVO messageVO = new MessageVO();
+            messageVO.setSendTime(info.getOperationTime());
+            messageVO.setReadStatus(info.getReadStatus());
+            //将具体操作转化成文字
+            String operationContent =  operationContentToWord(info.getOperationContent());
+
+
+            String operationType = operationTypeToWord(info.getOperationType());
+            messageVO.setTitle(operationContent+":"+operationType);
+            voList.add(messageVO);
+        }
+        return voList;
+    }
+
+    private static String operationTypeToWord(String operationType){
+        switch (operationType){
+            case "1":
+                operationType = OperationType.PROJECT_OPERATION_TYPE1.getTips();
+                break;
+            case "2":
+                operationType = OperationType.PROJECT_OPERATION_TYPE2.getTips();
+                break;
+            case "3":
+                operationType = OperationType.PROJECT_OPERATION_TYPE3.getTips();
+                break;
+            case "11":
+                operationType = OperationType.PROJECT_MODIFY_TYPE1.getTips();
+                break;
+            case "21":
+                operationType = OperationType.PROJECT_REPORT_TYPE1.getTips();
+                break;
+            case "22":
+                operationType = OperationType.PROJECT_REPORT_TYPE2.getTips();
+                break;
+            default:
+        }
+        return operationType;
+    }
+
+    private static String operationContentToWord(String operationContent){
+        switch (operationContent){
+            case "1":
+                operationContent = "通过";
+                break;
+            case "2":
+                operationContent = "不通过";
+                break;
+            default:
+        }
+        return operationContent;
+    }
+
+
 }

@@ -1,8 +1,8 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.DTO.OperationRecordDTO;
-import com.swpu.uchain.openexperiment.VO.project.ProjectHistoryInfoVO;
-import com.swpu.uchain.openexperiment.domain.Announcement;
+import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
+import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -32,10 +32,11 @@ public interface OperationRecordMapper {
 
     int setNotVisibleByProjectId(@Param("projectId")Long projectId );
 
-    ProjectHistoryInfoVO selectByPrimaryKey(Long id);
+    ProjectHistoryInfo selectByPrimaryKey(Long id);
 
-    List<ProjectHistoryInfoVO> selectAllByProjectId(@Param("projectId") Long projectId);
+    List<ProjectHistoryInfo> selectAllByProjectId(@Param("projectId") Long projectId);
 
-    int updateByPrimaryKey(ProjectHistoryInfoVO record);
+    int updateByPrimaryKey(ProjectHistoryInfo record);
 
+    List<ProjectHistoryInfo> selectAllByProjectIdList(@Param("list") List<Long> list);
 }

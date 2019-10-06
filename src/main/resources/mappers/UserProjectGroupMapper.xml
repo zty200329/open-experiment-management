@@ -68,4 +68,9 @@
   <select id="selectUserCodesByProjectGroupId" resultType="java.lang.String">
     select user.code from user_project_group inner join user on user.id = user_project_group.user_id where user_project_group.project_group_id = #{projectGroupId}
   </select>
+  <select id="selectProjectGroupIdByUserIdAndMemberRole" resultType="long">
+    select project_group_id
+        from user_project_group
+        where user_id = #{userId} and member_role = #{memberRole}
+  </select>
 </mapper>

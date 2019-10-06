@@ -40,19 +40,36 @@
 
     </delete>
 
-    <select id="selectByPrimaryKey" resultType="com.swpu.uchain.openexperiment.VO.project.ProjectHistoryInfoVO">
+    <select id="selectByPrimaryKey" resultType="com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo">
 
     </select>
 
-    <select id="selectAllByProjectId" resultType="com.swpu.uchain.openexperiment.VO.project.ProjectHistoryInfoVO">
+    <select id="selectAllByProjectId" resultType="com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo">
         select
+               read_status as readStatus,
                operation_type as operationType,
                operation_content as operationContent,
                operation_reason as reason,
                operation_time as operationTime,
                operation_executor_id as operationExecutorId
-        from operation_record where related_id = #{projectId} and `status` = 'Y'
+        from operation_record
+        where related_id = #{projectId} and `status` = 'Y'
         order by operation_time
+    </select>
+    <select id="selectAllByProjectIdList" resultType="com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo">
+        select
+            read_status as readStatus,
+            operation_type as operationType,
+            operation_content as operationContent,
+            operation_reason as reason,
+            operation_time as operationTime,
+            operation_executor_id as operationExecutorId
+        from operation_record
+        where related_id in
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        and `status` = 'Y'
     </select>
 
 

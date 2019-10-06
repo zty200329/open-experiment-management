@@ -1,6 +1,7 @@
-package com.swpu.uchain.openexperiment.VO.project;
+package com.swpu.uchain.openexperiment.DTO;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.Date;
@@ -9,7 +10,7 @@ import java.util.Date;
  * @author panghu
  */
 @Data
-public class ProjectHistoryInfoVO {
+public class ProjectHistoryInfo {
 
     /**
      * 操作类型
@@ -31,5 +32,17 @@ public class ProjectHistoryInfoVO {
      * 具体的操作
      */
     private String operationContent;
+
+
+    /**
+     * 阅读状态 Y已读 N 未读
+     */
+    private String readStatus;
+
+    /**
+     * 执行者工号
+     */
+    @JsonIgnore
+    private Long operationExecutorId;
 
 }

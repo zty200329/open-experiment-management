@@ -3,6 +3,8 @@ package com.swpu.uchain.openexperiment.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.swpu.uchain.openexperiment.DTO.OperationRecordDTO;
+import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
+import com.swpu.uchain.openexperiment.domain.Message;
 import com.swpu.uchain.openexperiment.VO.project.*;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.config.CountConfig;
@@ -19,7 +21,6 @@ import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.CountUtil;
-import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -565,8 +566,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getProjectDetailById(Long projectId) {
-        List<ProjectHistoryInfoVO> list = recordMapper.selectAllByProjectId(projectId);
-        return Result.success(ConvertUtil.getConvertedProjectHistoryInfoVO(list));
+        List<ProjectHistoryInfo> list = recordMapper.selectAllByProjectId(projectId);
+        return Result.success(ConvertUtil.getConvertedProjectHistoryInfo(list));
     }
 
     @Override

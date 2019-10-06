@@ -74,8 +74,4 @@ public class ProjectQueryController {
         return Result.success(projectService.selectByProjectName(name));
     }
 
-
-
-
-
 }

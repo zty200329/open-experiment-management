@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -39,7 +40,12 @@ public class OperationRecordMapperTest {
     }
 
     @Test
-    public void selectByPrimaryKey() {
+    public void selectAllByProjectIdList() {
+
+        List<Long> list = new LinkedList<>();
+        list.add(1L);
+        list.add(4L);
+        System.err.println(recordMapper.selectAllByProjectIdList(list));
     }
 
     @Test

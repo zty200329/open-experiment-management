@@ -132,4 +132,5 @@ public class ProjectInvokeController {
     public Result rejectProjectApply(@Valid @RequestBody List<ProjectCheckForm> formList){
         return projectService.rejectProjectApply(formList);
     }
+
 }
