@@ -7,10 +7,7 @@ import com.swpu.uchain.openexperiment.VO.project.*;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.config.CountConfig;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
-import com.swpu.uchain.openexperiment.dao.OperationRecordMapper;
-import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
-import com.swpu.uchain.openexperiment.dao.UserProjectGroupMapper;
-import com.swpu.uchain.openexperiment.dao.UserRoleMapper;
+import com.swpu.uchain.openexperiment.dao.*;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
@@ -34,41 +31,52 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+
 /**
- * @Author: clf
- * @Date: 19-1-22
- * @Description: 项目管理模块
+ * @author panghu
  */
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-    @Autowired
     private UserService userService;
-    @Autowired
     private ProjectGroupMapper projectGroupMapper;
-    @Autowired
     private UserProjectGroupMapper userProjectGroupMapper;
-    @Autowired
     private RedisService redisService;
-    @Autowired
     private UserProjectService userProjectService;
+    private ProjectFileService projectFileService;
+    private FundsService fundsService;
+    private CountConfig countConfig;
+    private UploadConfig uploadConfig;
+    private ConvertUtil convertUtil;
+    private GetUserService getUserService;
+    private UserRoleMapper userRoleMapper;
+    private OperationRecordMapper recordMapper;
+    private MessageRecordMapper messageRecordMapper;
 
     @Autowired
-    private ProjectFileService projectFileService;
-    @Autowired
-    private FundsService fundsService;
-    @Autowired
-    private CountConfig countConfig;
-    @Autowired
-    private UploadConfig uploadConfig;
-    @Autowired
-    private ConvertUtil convertUtil;
-    @Autowired
-    private GetUserService getUserService;
-    @Autowired
-    private UserRoleMapper userRoleMapper;
-    @Autowired
-    private OperationRecordMapper recordMapper;
+    public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
+                              UserProjectGroupMapper userProjectGroupMapper,
+                              RedisService redisService, UserProjectService userProjectService,
+                              ProjectFileService projectFileService, FundsService fundsService,
+                              CountConfig countConfig, UploadConfig uploadConfig,
+                              ConvertUtil convertUtil, GetUserService getUserService,
+                              UserRoleMapper userRoleMapper, OperationRecordMapper recordMapper,
+                              MessageRecordMapper messageRecordMapper) {
+        this.userService = userService;
+        this.projectGroupMapper = projectGroupMapper;
+        this.userProjectGroupMapper = userProjectGroupMapper;
+        this.redisService = redisService;
+        this.userProjectService = userProjectService;
+        this.projectFileService = projectFileService;
+        this.fundsService = fundsService;
+        this.countConfig = countConfig;
+        this.uploadConfig = uploadConfig;
+        this.convertUtil = convertUtil;
+        this.getUserService = getUserService;
+        this.userRoleMapper = userRoleMapper;
+        this.recordMapper = recordMapper;
+        this.messageRecordMapper = messageRecordMapper;
+    }
 
     @Override
     public boolean insert(ProjectGroup projectGroup) {
@@ -685,6 +693,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Async
     public void sendMessage(Message message){
-
+        messageRecordMapper.insert(message);
     }
 }
