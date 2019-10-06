@@ -7,6 +7,7 @@ import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,5 +64,18 @@ public class ProjectQueryController {
         }
         return projectService.getCheckInfo(pageNum);
     }
+
+    @ApiOperation("根据项目名模糊查询项目--可使用")
+    @GetMapping(value = "/selectProject", name = "根据项目名模糊查询项目--可使用")
+    public Result selectProject(String name){
+        if (StringUtils.isEmpty(name)){
+            return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
+        }
+        return Result.success(projectService.selectByProjectName(name));
+    }
+
+
+
+
 
 }

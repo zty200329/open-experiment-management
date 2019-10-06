@@ -30,6 +30,8 @@ public interface OperationRecordMapper {
      */
     int multiInsert(List<OperationRecordDTO> list);
 
+    int setNotVisibleByProjectId(@Param("projectId")Long projectId );
+
     ProjectHistoryInfoVO selectByPrimaryKey(Long id);
 
     List<ProjectHistoryInfoVO> selectAllByProjectId(@Param("projectId") Long projectId);

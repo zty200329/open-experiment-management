@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.dao.UserProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
@@ -9,6 +10,7 @@ import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.project.AimForm;
 import com.swpu.uchain.openexperiment.form.project.JoinProjectApplyForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
+import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.redis.key.UserProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
@@ -32,13 +34,14 @@ public class UserProjectServiceImpl implements UserProjectService {
     @Autowired
         private UserProjectGroupMapper userProjectGroupMapper;
     @Autowired
-    private ProjectService projectService;
-    @Autowired
     private RedisService redisService;
     @Autowired
     private UserService userService;
     @Autowired
     private GetUserService getUserService;
+    @Autowired
+    private ProjectGroupMapper projectGroupMapper;
+
     @Override
     public boolean insert(UserProjectGroup userProjectGroup) {
         int result = userProjectGroupMapper.insert(userProjectGroup);
@@ -102,7 +105,13 @@ public class UserProjectServiceImpl implements UserProjectService {
         if (user == null){
             return Result.error(CodeMsg.AUTHENTICATION_ERROR);
         }
-        ProjectGroup projectGroup = projectService.selectByProjectGroupId(joinProjectApplyForm.getProjectGroupId());
+        ProjectGroup projectGroup = redisService.get(ProjectGroupKey.getByProjectGroupId, joinProjectApplyForm.getProjectGroupId() + "", ProjectGroup.class);
+        if (projectGroup == null) {
+            projectGroup = projectGroupMapper.selectByPrimaryKey(joinProjectApplyForm.getProjectGroupId());
+            if (projectGroup != null) {
+                redisService.set(ProjectGroupKey.getByProjectGroupId, joinProjectApplyForm.getProjectGroupId() + "", projectGroup);
+            }
+        }
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }

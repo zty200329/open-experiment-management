@@ -25,6 +25,7 @@ import com.swpu.uchain.openexperiment.util.CountUtil;
 import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +41,7 @@ import java.util.List;
  */
 @Service
 public class ProjectServiceImpl implements ProjectService {
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -50,11 +52,9 @@ public class ProjectServiceImpl implements ProjectService {
     private RedisService redisService;
     @Autowired
     private UserProjectService userProjectService;
-    //TODO,答辩小组Service
+
     @Autowired
     private ProjectFileService projectFileService;
-    @Autowired
-    private ProjectService projectService;
     @Autowired
     private FundsService fundsService;
     @Autowired
@@ -190,6 +190,7 @@ public class ProjectServiceImpl implements ProjectService {
 //        userProjectService.addTeacherJoin(teacherCodes, projectGroup.getId());
 
         redisService.deleteFuzzyKey(ProjectGroupKey.getByUserIdAndStatus, currentUser.getId() + "");
+
         return Result.success();
     }
 
@@ -224,6 +225,9 @@ public class ProjectServiceImpl implements ProjectService {
         userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
         //修改项目状态,重新开始申报
         updateProjectStatus(projectGroup.getId(),ProjectStatus.DECLARE.getValue());
+
+        //将之前的历史数据设置为不可见
+        recordMapper.setNotVisibleByProjectId(projectGroup.getId());
         return Result.success();
     }
 
@@ -576,7 +580,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         List<JoinUnCheckVO> joinUnCheckVOS = new ArrayList<>();
         //获取当前教师参与申报的项目组
-        List<ProjectGroup> projectGroups = projectService.selectByUserIdAndProjectStatus(currentUser.getId(), ProjectStatus.DECLARE.getValue());
+        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(currentUser.getId(), ProjectStatus.DECLARE.getValue());
         projectGroups.forEach(projectGroup -> {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(), JoinStatus.APPLYING.getValue());
             for (UserProjectGroup userProjectGroup : userProjectGroups) {
@@ -677,5 +681,10 @@ public class ProjectServiceImpl implements ProjectService {
         User user = getUserService.getCurrentUser();
         Long id = Long.valueOf(user.getCode());
         operationRecordDTO.setRelatedId(id);
+    }
+
+    @Async
+    public void sendMessage(Message message){
+
     }
 }

@@ -32,6 +32,9 @@
     <update id="updateByPrimaryKey">
 
     </update>
+    <update id="setNotVisibleByProjectId">
+        update operation_record set status = 'N' where related_id = #{projectId} and operation_type &lt; 100
+    </update>
 
     <delete id="deleteByPrimaryKey">
 

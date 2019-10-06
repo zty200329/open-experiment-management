@@ -4,6 +4,7 @@ import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
 import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
 import com.swpu.uchain.openexperiment.dao.ProjectFileMapper;
+import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
@@ -14,6 +15,7 @@ import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.file.ConcludingReportForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.FileKey;
+import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.ProjectFileService;
@@ -48,8 +50,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Autowired
     private ProjectFileMapper projectFileMapper;
     @Autowired
-    private ProjectService projectService;
-    @Autowired
     private GetUserService getUserService;
     @Autowired
     private RedisService redisService;
@@ -57,6 +57,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     private XDocService xDocService;
     @Autowired
     private ConvertUtil convertUtil;
+    @Autowired
+    private ProjectGroupMapper projectGroupMapper;
 
 
     @Override
@@ -247,7 +249,13 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public Result uploadConcludingReport(ConcludingReportForm concludingReportForm) {
-        ProjectGroup projectGroup = projectService.selectByProjectGroupId(concludingReportForm.getProjectGroupId());
+        ProjectGroup projectGroup = redisService.get(ProjectGroupKey.getByProjectGroupId, concludingReportForm.getProjectGroupId() + "", ProjectGroup.class);
+        if (projectGroup == null) {
+            projectGroup = projectGroupMapper.selectByPrimaryKey(concludingReportForm.getProjectGroupId());
+            if (projectGroup != null) {
+                redisService.set(ProjectGroupKey.getByProjectGroupId, concludingReportForm.getProjectGroupId() + "", projectGroup);
+            }
+        }
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
