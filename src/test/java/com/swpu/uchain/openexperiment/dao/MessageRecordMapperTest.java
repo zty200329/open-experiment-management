@@ -18,7 +18,7 @@ public class MessageRecordMapperTest {
     public void insert() {
 
         Message message = new Message();
-        message.setMessageContent("测试");
+        message.setTitle("测试");
         message.setUserId(11223L);
         System.err.println(messageRecordMapper.insert(message));
 

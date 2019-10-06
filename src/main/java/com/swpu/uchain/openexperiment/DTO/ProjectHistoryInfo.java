@@ -13,6 +13,11 @@ import java.util.Date;
 public class ProjectHistoryInfo {
 
     /**
+     * 主键
+     */
+    private Long id;
+
+    /**
      * 操作类型
      */
     private String operationType;
@@ -44,5 +49,10 @@ public class ProjectHistoryInfo {
      */
     @JsonIgnore
     private Long operationExecutorId;
+
+    /**
+     * 项目编号
+     */
+    private String projectId;
 
 }

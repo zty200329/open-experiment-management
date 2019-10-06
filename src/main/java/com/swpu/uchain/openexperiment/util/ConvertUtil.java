@@ -170,12 +170,14 @@ public class ConvertUtil {
             MessageVO messageVO = new MessageVO();
             messageVO.setSendTime(info.getOperationTime());
             messageVO.setReadStatus(info.getReadStatus());
+            messageVO.setContent(info.getReason());
+            messageVO.setId(info.getId());
             //将具体操作转化成文字
             String operationContent =  operationContentToWord(info.getOperationContent());
 
 
             String operationType = operationTypeToWord(info.getOperationType());
-            messageVO.setTitle(operationContent+":"+operationType);
+            messageVO.setTitle("项目编号为"+info.getProjectId()+" 的项目"+operationType+" : "+operationContent);
             voList.add(messageVO);
         }
         return voList;

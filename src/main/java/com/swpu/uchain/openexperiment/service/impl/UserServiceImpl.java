@@ -32,7 +32,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,8 +42,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Map;
 
 /**
  * @Author: clf
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final UserDetails userDetails;
         User user1 = getUserService.selectByUserCode(loginForm.getUserCode());
-        if (user==null) {
+        if (user1==null) {
             log.info("认证邮箱信息不存在");
             throw new UsernameNotFoundException(String.format(" user not exist with stuId ='%s'.", loginForm.getUserCode()));
         } else {
@@ -143,6 +143,9 @@ public class UserServiceImpl implements UserService {
         log.info("加载数据库中的userDetails: {}", userDetails);
         //生成真正的token
         final String realToken = jwtTokenUtil.generateToken(userDetails);
+        Map<String, Object> map = new HashMap<>();
+        map.put("token",realToken);
+        map.put("role",roleService.getUserRoles(Long.valueOf(user1.getCode())));
         redisService.delete(VerifyCodeKey.getByClientIp, clientIp);
         return Result.success(realToken);
     }
