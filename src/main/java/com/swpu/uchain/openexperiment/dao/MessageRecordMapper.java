@@ -1,7 +1,7 @@
 package com.swpu.uchain.openexperiment.dao;
 
-import com.swpu.uchain.openexperiment.domain.Funds;
 import com.swpu.uchain.openexperiment.domain.Message;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -11,5 +11,9 @@ import org.springframework.stereotype.Repository;
 public interface MessageRecordMapper {
 
     int insert(Message record);
+
+    int deleteById(@Param("id")Long id);
+
+    int deleteByUserId(@Param("userId")Long userId);
 
 }

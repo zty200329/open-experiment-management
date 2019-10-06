@@ -45,6 +45,7 @@ public class ProjectInvokeController {
     @ApiOperation("修改立项申请--可使用")
     @PostMapping(value = "/updateApply", name = "修改立项申请")
     public Result updateApply(@Valid @RequestBody UpdateProjectApplyForm updateProjectApplyForm){
+        //TODO 指导老师进行修改和职能部门进行修改的区别操作
         return projectService.applyUpdateProject(updateProjectApplyForm);
     }
 
@@ -104,6 +105,7 @@ public class ProjectInvokeController {
     public void generateEstablishExcel(){
         projectService.generateEstablishExcel();
     }
+
 
     @ApiOperation("上报学院领导(二级单位)--可使用")
     @PostMapping(value = "/reportToCollegeLeader", name = "上报学院领导")

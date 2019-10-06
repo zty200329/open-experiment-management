@@ -5,4 +5,10 @@
     <insert id="insert">
         insert into message_record (user_id, message_content) VALUES (#{userId},#{messageContent})
     </insert>
+    <delete id="deleteById">
+        delete from message_record where id = #{id}
+    </delete>
+    <delete id="deleteByUserId">
+        delete from message_record where user_id = #{userId}
+    </delete>
 </mapper>
