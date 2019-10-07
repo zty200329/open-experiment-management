@@ -32,8 +32,13 @@
     <update id="updateByPrimaryKey">
 
     </update>
+    <!--type传入为空则更新所有-->
     <update id="setNotVisibleByProjectId">
-        update operation_record set status = 'N' where related_id = #{projectId} and operation_type &lt; 100
+        update operation_record set status = 'N'
+        where related_id = #{projectId}
+        <if test="type!=null">
+           and operation_type = #{type}
+        </if>
     </update>
 
     <delete id="deleteByPrimaryKey">
@@ -72,6 +77,20 @@
             #{id}
         </foreach>
         and `status` = 'Y'
+    </select>
+    <select id="selectDesignatedTypeListByRelatedIdAndType"
+            resultType="com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo">
+        select
+            id as id,
+            read_status as readStatus,
+            operation_type as operationType,
+            operation_content as operationContent,
+            operation_reason as reason,
+            operation_time as operationTime,
+            operation_executor_id as operationExecutorId,
+            related_id as projectId
+        from operation_record
+        where related_id = #{relatedId} and operation_type = #{type}  and `status` = 'Y'
     </select>
 
 

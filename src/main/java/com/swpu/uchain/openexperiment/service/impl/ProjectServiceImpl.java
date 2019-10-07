@@ -236,7 +236,8 @@ public class ProjectServiceImpl implements ProjectService {
         updateProjectStatus(projectGroup.getId(),ProjectStatus.DECLARE.getValue());
 
         //将之前的历史数据设置为不可见
-        recordMapper.setNotVisibleByProjectId(projectGroup.getId());
+        //type传入为空则更新所有
+        recordMapper.setNotVisibleByProjectId(projectGroup.getId(),null);
         return Result.success();
     }
 
@@ -552,15 +553,22 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result ensureOrNotModify(ConfirmForm confirmForm) {
         Integer result = confirmForm.getResult();
         Long projectId = confirmForm.getProjectId();
         //确认修改
-        if (result == 1){
+        if (recordMapper.selectDesignatedTypeListByRelatedIdAndType
+                (OperationType.PROJECT_MODIFY_TYPE1.getValue(),projectId).size() == 0){
+            throw new GlobalException(CodeMsg.PROJECT_NOT_MODIFY_BY_FUNCTION_DEPARTMENT);
+        }
+        //如果项目通过
+        if (result.toString().equals(CheckResultType.PASS.getValue())){
             updateProjectStatus(projectId,ProjectStatus.ESTABLISH.getValue());
-        }else if (result == 2){
+        }else if (result.toString().equals(CheckResultType.REJECTED.getValue())){
             updateProjectStatus(projectId,ProjectStatus.ESTABLISH_FAILED.getValue());
         }
+        recordMapper.setNotVisibleByProjectId(projectId,OperationType.PROJECT_MODIFY_TYPE1.getValue());
         return Result.success();
     }
 

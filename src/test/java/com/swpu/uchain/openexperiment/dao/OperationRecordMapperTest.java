@@ -49,7 +49,8 @@ public class OperationRecordMapperTest {
     }
 
     @Test
-    public void selectAll() {
+    public void setNotVisibleByProjectId() {
+        recordMapper.setNotVisibleByProjectId(1L,1);
     }
 
     @Test
