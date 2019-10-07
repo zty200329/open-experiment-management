@@ -171,4 +171,11 @@ public interface ProjectService {
      * @return
      */
     Result getProjectDetailById(Long projectId);
+
+    /**
+     * 实验室主任/二级单位 审核操作通过
+     * @param list
+     * @return
+     */
+    Result checkProjectApply(List<ProjectCheckForm> list);
 }

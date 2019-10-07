@@ -571,6 +571,52 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public Result checkProjectApply(List<ProjectCheckForm> formList) {
+        User user = getUserService.getCurrentUser();
+        long role = userRoleMapper.selectByPrimaryKey(user.getId()).getRoleId();
+        String checkOperationType;
+        Integer projectStatus = null;
+        switch ((int) role) {
+            //如果是实验室主任
+            case 4:
+                checkOperationType = OperationType.PROJECT_OPERATION_TYPE1.getValue().toString();
+                projectStatus = ProjectStatus.LAB_ALLOWED.getValue();
+                break;
+            case 5:
+                checkOperationType = OperationType.PROJECT_OPERATION_TYPE2.getValue().toString();
+                projectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
+                break;
+            default:
+                //超管执行操作
+                checkOperationType = "-1";
+        }
+        List<OperationRecordDTO> list = new LinkedList<>();
+        OperationRecordDTO operationRecordDTO = new OperationRecordDTO();
+        for (ProjectCheckForm form : formList
+        ) {
+            operationRecordDTO.setRelatedId(form.getProjectId());
+            operationRecordDTO.setOperationReason(form.getReason());
+            operationRecordDTO.setOperationContent(CheckResultType.PASS.getValue());
+            operationRecordDTO.setOperationType(checkOperationType);
+            operationRecordDTO.setOperationExecutorId(Long.valueOf(user.getCode()));
+            //当角色是实验室主任的时候,项目状态不是
+            ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
+            if (role == 4 && !projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue())){
+                throw new GlobalException(CodeMsg.PROJECT_STATUS_IS_NOT_DECLARE);
+            }
+            //如果不是实验室上报状态,抛出异常
+            if (role == 5 && !projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue())){
+                throw new GlobalException(CodeMsg.PROJECT_STATUS_IS_NOT_LAB_ALLOWED_AND_REPORTED);
+            }
+            //更具不同角色设置不同的项目状态
+            updateProjectStatus(form.getProjectId(), projectStatus);
+            list.add(operationRecordDTO);
+        }
+        recordMapper.multiInsert(list);
+        return Result.success();
+    }
+
+    @Override
     public void generateEstablishExcel() {
         //TODO,使用workbook生成总览表
     }
@@ -651,13 +697,13 @@ public class ProjectServiceImpl implements ProjectService {
         //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
         switch ((int) role) {
             //如果是实验室主任
-            case 1:
+            case 4:
                 checkOperationType = OperationType.PROJECT_OPERATION_TYPE1.getValue().toString();
                 break;
-            case 2:
+            case 5:
                 checkOperationType = OperationType.PROJECT_OPERATION_TYPE2.getValue().toString();
                 break;
-            case 3:
+            case 6:
                 checkOperationType = OperationType.PROJECT_OPERATION_TYPE3.getValue().toString();
                 break;
             default:

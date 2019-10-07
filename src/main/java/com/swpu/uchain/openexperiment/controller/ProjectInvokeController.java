@@ -79,7 +79,11 @@ public class ProjectInvokeController {
         return projectService.agreeEstablish(projectGroupIdList);
     }
 
-
+    @ApiOperation("审核操作(实验室主任+二级单位)--可使用")
+    @PostMapping(value = "/checkProjectApply")
+    public Result checkProjectApply(List<ProjectCheckForm> list){
+        return projectService.checkProjectApply(list);
+    }
 
     @ApiOperation("修改项目组成员身份  1.指导教师2.项目组长3.普通成员--可使用")
     @PostMapping(value = "/aimMemberLeader", name = "修改项目组成员身份-")
