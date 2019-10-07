@@ -8,6 +8,11 @@ import java.util.List;
 
 @Repository
 public interface AclMapper {
+    /**
+     * 根据主键决定
+     * @param id
+     * @return
+     */
     int deleteByPrimaryKey(Long id);
 
     int insert(Acl record);
