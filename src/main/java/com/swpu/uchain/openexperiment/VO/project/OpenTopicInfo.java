@@ -56,9 +56,6 @@ public class OpenTopicInfo {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endTime;
 
-    @ApiModelProperty("所需经费支持")
-    private Float applyFunds;
-
     @ApiModelProperty("限选专业--选填")
     private String limitMajor;
 
