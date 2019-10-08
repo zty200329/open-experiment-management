@@ -36,7 +36,7 @@ public class ProjectQueryController {
     }
 
     @ApiOperation("获取项目的立项信息--可使用")
-    @PostMapping(value = "/getApplyInfo", name = "获取项目的立项信息")
+    @GetMapping(value = "/getApplyInfo", name = "获取项目的立项信息")
     public Result getApplyInfo(Long projectGroupId){
         return projectService.getApplyForm(projectGroupId);
     }
@@ -76,6 +76,12 @@ public class ProjectQueryController {
             return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
         }
         return Result.success(projectService.selectByProjectName(name));
+    }
+
+    @ApiOperation("实验室主任查看待审核项目")
+    @GetMapping("/getPendingReviewByLabLeader")
+    public Result getPendingReviewByLabLeader(){
+        return projectService.getPendingReviewByLabLeader();
     }
 
 }

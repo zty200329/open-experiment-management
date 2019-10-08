@@ -224,6 +224,7 @@ public class UserProjectServiceImpl implements UserProjectService {
                     projectGroupId,
                     UserType.STUDENT);
         }
+        assert result != null;
         if (result.getCode() != 0){
             throw new GlobalException(CodeMsg.ADD_USER_JOIN_ERROR);
         }

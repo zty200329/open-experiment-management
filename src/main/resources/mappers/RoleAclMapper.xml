@@ -33,6 +33,6 @@
     from role_acl
   </select>
     <select id="selectByRoleIdAndAclId" resultMap="BaseResultMap">
-      select * from role_acl where role_id = #{param1} and acl_id = #{param2}
+      select * from role_acl where role_id = #{param1} and acl_id = #{param2} limit 1
     </select>
 </mapper>

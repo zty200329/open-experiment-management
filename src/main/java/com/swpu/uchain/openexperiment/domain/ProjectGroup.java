@@ -122,6 +122,10 @@ public class ProjectGroup implements Serializable {
      */
     private Float applyFunds;
 
+    /**
+     * 主要内容
+     */
+    private String mainContent;
 
 
     private static final long serialVersionUID = 1L;

@@ -184,4 +184,6 @@ public interface ProjectService {
      * @return
      */
     Result getAllOpenTopic();
+
+    Result getPendingReviewByLabLeader();
 }

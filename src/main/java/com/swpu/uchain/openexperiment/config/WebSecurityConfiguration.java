@@ -79,7 +79,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/favicon.ico",
                         "/**/*.html",
                         "/**/*.css",
-                        "/**/*.js"
+                        "/**/*.js",
+                        "/project/**",
+                        "/announcement/**",
+                        "/file/**",
+                        "/info/**",
+                        "/user/**"
                 ).permitAll()
                 //配置swagger界面的匿名访问
                 .antMatchers("/swagger-ui.html").permitAll()

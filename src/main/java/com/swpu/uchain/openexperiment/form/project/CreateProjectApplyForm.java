@@ -90,4 +90,7 @@ public class CreateProjectApplyForm {
     @ApiModelProperty("适宜学生数--选填")
     private Integer fitPeopleNum;
 
+    @ApiModelProperty("主要内容")
+    private String mainContent;
+
 }

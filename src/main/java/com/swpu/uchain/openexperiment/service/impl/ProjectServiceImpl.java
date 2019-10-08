@@ -177,7 +177,8 @@ public class ProjectServiceImpl implements ProjectService {
         BeanUtils.copyProperties(form, projectGroup);
         projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
         //设置申请人
-        projectGroup.setCreatorId(currentUser.getId());
+        projectGroup.setCreatorId(Long.valueOf(currentUser.getCode()));
+
         //插入数据
         Result result = addProjectGroup(projectGroup);
         if (result.getCode() != 0) {
@@ -185,16 +186,17 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         String[] teacherCodes = form.getTeacherCodes();
+        String[] stuCodes = form.getStuCodes();
         boolean isTeacherExist = false;
         for (String teacherCode : teacherCodes) {
             if (teacherCode.equals(currentUser.getCode())) {
                 isTeacherExist = true;
             }
         }
-        if (isTeacherExist){
+        if (!isTeacherExist){
             throw new GlobalException(CodeMsg.LEADING_TEACHER_CONTAINS_ERROR);
         }
-        userProjectService.addTeacherJoin(teacherCodes, projectGroup.getId());
+        userProjectService.addStuAndTeacherJoin(stuCodes,teacherCodes,projectGroup.getId());
 
         redisService.deleteFuzzyKey(ProjectGroupKey.getByUserIdAndStatus, currentUser.getId() + "");
 
@@ -366,7 +368,6 @@ public class ProjectServiceImpl implements ProjectService {
             if (result.getCode() != 0) {
                 throw new GlobalException(CodeMsg.UPDATE_ERROR);
             }
-            //TODO,资金同意操作
             result = fundsService.agreeFunds(projectCheckForm.getProjectId());
             if (result.getCode() != 0) {
                 throw new GlobalException(CodeMsg.UPDATE_ERROR);
@@ -625,6 +626,13 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result getAllOpenTopic() {
         return Result.success(projectGroupMapper.getAllOpenTopic());
+    }
+
+    @Override
+    public Result getPendingReviewByLabLeader() {
+
+        //传入用户为空,则获取所有的指定状态的项目
+        return Result.success(projectGroupMapper.selectByCollegeIdAndStatus(null,ProjectStatus.DECLARE.getValue()));
     }
 
     @Override

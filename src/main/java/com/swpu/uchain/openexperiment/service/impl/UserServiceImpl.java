@@ -212,11 +212,10 @@ public class UserServiceImpl implements UserService {
                 return Result.error(CodeMsg.USER_NO_EXIST);
             }
             UserProjectGroup userProjectGroup = new UserProjectGroup();
-            userProjectGroup.setUserId(user.getId());
+            userProjectGroup.setUserId(Long.valueOf(user.getCode()));
             if (userType.getValue() != UserType.STUDENT.getValue().intValue()){
-                userProjectGroup.setTechnicalRole(convertUtil.getTechnicalRole(user.getUserType()));
                 userProjectGroup.setMemberRole(MemberRole.GUIDANCE_TEACHER.getValue());
-                userProjectGroup.setStatus(JoinStatus.APPLYING.getValue());
+                userProjectGroup.setStatus(JoinStatus.JOINED.getValue());
             }else {
                 userProjectGroup.setMemberRole(MemberRole.NORMAL_MEMBER.getValue());
                 userProjectGroup.setStatus(JoinStatus.JOINED.getValue());
