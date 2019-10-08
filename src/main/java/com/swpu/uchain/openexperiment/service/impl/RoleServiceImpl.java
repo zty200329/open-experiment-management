@@ -100,7 +100,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> getUserRoles(Long userId) {
+    public Role getUserRoles(Long userId) {
         return roleMapper.selectByUserId(userId);
     }
 

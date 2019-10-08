@@ -52,14 +52,15 @@
       limit_college, limit_major, limit_grade, 
       fit_people_num, total_hours, lab_name, 
       project_name, project_type, start_time, 
-      `status`, update_time,apply_funds)
+      `status`, update_time,apply_funds,is_open_topic)
     values (#{id,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{creatorId,jdbcType=BIGINT}, #{endTime,jdbcType=TIMESTAMP}, #{experimentCondition,jdbcType=VARCHAR}, 
       #{suggestGroupType,jdbcType=INTEGER}, #{experimentType,jdbcType=INTEGER}, #{achievementCheck,jdbcType=VARCHAR}, 
       #{limitCollege,jdbcType=VARCHAR}, #{limitMajor,jdbcType=VARCHAR}, #{limitGrade,jdbcType=INTEGER}, 
       #{fitPeopleNum,jdbcType=INTEGER}, #{totalHours,jdbcType=INTEGER}, #{labName,jdbcType=VARCHAR}, 
       #{projectName,jdbcType=VARCHAR}, #{projectType,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP},
-      #{status,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},#{applyFunds,jdbcType=FLOAT})
+      #{status,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},#{applyFunds,jdbcType=FLOAT},
+      #{isOpenTopic}      )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
     update project_group

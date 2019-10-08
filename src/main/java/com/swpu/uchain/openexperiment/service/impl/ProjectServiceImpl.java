@@ -21,6 +21,7 @@ import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.CountUtil;
+import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -145,58 +146,55 @@ public class ProjectServiceImpl implements ProjectService {
     /**
      * 指导教师填写申请立项书
      *
-     * @param createProjectApplyForm 申请立项表单
+     * @param form 申请立项表单
      * @return 申请立项操作结果
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm) {
+    public Result applyCreateProject(CreateProjectApplyForm form) {
         User currentUser = getUserService.getCurrentUser();
 
         //判断用户类型
         if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()) {
             Result.error(CodeMsg.STUDENT_CANT_APPLY);
         }
-        ProjectGroup projectGroup = projectGroupMapper.selectByName(createProjectApplyForm.getProjectName());
+        ProjectGroup projectGroup = projectGroupMapper.selectByName(form.getProjectName());
         if (projectGroup != null) {
             return Result.error(CodeMsg.PROJECT_GROUP_HAD_EXIST);
         }
 
+        //当不开放选题时,不进行学生选择
+        if (form.getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue()) && form.getStuCodes().length != 0){
+            throw new GlobalException(CodeMsg.TOPIC_IS_NOT_OPEN);
+        }
+
         //时间设置出错
-        if (createProjectApplyForm.getStartTime().getTime() >= createProjectApplyForm.getEndTime().getTime()) {
+        if (form.getStartTime().getTime() >= form.getEndTime().getTime()) {
             throw new GlobalException(CodeMsg.TIME_DEFINE_ERROR);
         }
 
         projectGroup = new ProjectGroup();
-        BeanUtils.copyProperties(createProjectApplyForm, projectGroup);
+        BeanUtils.copyProperties(form, projectGroup);
         projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
         //设置申请人
         projectGroup.setCreatorId(currentUser.getId());
+        //插入数据
         Result result = addProjectGroup(projectGroup);
         if (result.getCode() != 0) {
             throw new GlobalException(CodeMsg.ADD_PROJECT_GROUP_ERROR);
         }
-        //将创建者放入用户项目关联表中
 
-        //获取项目ID
-        Long projectGroupId = projectGroupMapper.selectByName(createProjectApplyForm.getProjectName()).getId();
-        UserProjectGroup userProjectGroup = new UserProjectGroup();
-        userProjectGroup.setUserId(currentUser.getId());
-        userProjectGroup.setStatus(JoinStatus.JOINED.getValue());
-        userProjectGroup.setProjectGroupId(projectGroupId);
-        userProjectGroup.setMemberRole(MemberRole.GUIDANCE_TEACHER.getValue());
-        userProjectGroup.setTechnicalRole("指导学生");
-        userProjectGroup.setWorkDivision("指导学生");
-        userProjectGroup.setPersonalJudge("无评价");
-        userProjectGroup.setJoinTime(new Date());
-        userProjectGroup.setUpdateTime(new Date());
-        int res = userProjectGroupMapper.insert(userProjectGroup);
-        if (res != 1) {
-            throw new GlobalException(CodeMsg.ADD_USER_JOIN_ERROR);
+        String[] teacherCodes = form.getTeacherCodes();
+        boolean isTeacherExist = false;
+        for (String teacherCode : teacherCodes) {
+            if (teacherCode.equals(currentUser.getCode())) {
+                isTeacherExist = true;
+            }
         }
-        //对文件上传的处理,1.获取文件名,2.保存文件,3.维护数据库
-//        String[] teacherCodes = createProjectApplyForm.getTeacherCodes();
-//        userProjectService.addTeacherJoin(teacherCodes, projectGroup.getId());
+        if (isTeacherExist){
+            throw new GlobalException(CodeMsg.LEADING_TEACHER_CONTAINS_ERROR);
+        }
+        userProjectService.addTeacherJoin(teacherCodes, projectGroup.getId());
 
         redisService.deleteFuzzyKey(ProjectGroupKey.getByUserIdAndStatus, currentUser.getId() + "");
 
@@ -622,6 +620,12 @@ public class ProjectServiceImpl implements ProjectService {
         }
         recordMapper.multiInsert(list);
         return Result.success();
+    }
+
+    @Override
+    public Result getAllOpenTopic() {
+
+        return null;
     }
 
     @Override

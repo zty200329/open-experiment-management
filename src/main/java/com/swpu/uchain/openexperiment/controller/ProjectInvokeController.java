@@ -38,8 +38,8 @@ public class ProjectInvokeController {
 
     @ApiOperation("申请立项接口--可使用")
     @PostMapping(value = "/createApply", name = "申请立项接口")
-    public Result createApply(@Valid @RequestBody CreateProjectApplyForm createProjectApplyForm){
-        return projectService.applyCreateProject(createProjectApplyForm);
+    public Result createApply(@Valid @RequestBody CreateProjectApplyForm form){
+        return projectService.applyCreateProject(form);
     }
 
     @ApiOperation("修改立项申请--可使用")

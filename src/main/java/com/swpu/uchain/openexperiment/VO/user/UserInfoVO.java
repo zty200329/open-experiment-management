@@ -43,5 +43,5 @@ public class UserInfoVO implements Serializable {
 
     private Integer classNum;
 
-    private List<RoleInfoVO> roleInfoVOS;
+    private RoleInfoVO roleInfoVO;
 }

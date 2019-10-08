@@ -80,5 +80,5 @@ public interface RoleService {
      * @param userId
      * @return
      */
-    List<Role> getUserRoles(Long userId);
+    Role getUserRoles(Long userId);
 }

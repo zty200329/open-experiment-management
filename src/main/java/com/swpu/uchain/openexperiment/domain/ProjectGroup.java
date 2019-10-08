@@ -1,6 +1,5 @@
 package com.swpu.uchain.openexperiment.domain;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -57,6 +56,11 @@ public class ProjectGroup implements Serializable {
      * 成果考核方式
      */
     private String achievementCheck;
+
+    /**
+     * 是否开放选题
+     */
+    private Integer isOpenTopic;
 
     /**
      * 限选学院
@@ -117,6 +121,8 @@ public class ProjectGroup implements Serializable {
      * 所需经费支持
      */
     private Float applyFunds;
+
+
 
     private static final long serialVersionUID = 1L;
 

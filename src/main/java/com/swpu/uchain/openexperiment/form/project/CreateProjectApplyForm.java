@@ -55,18 +55,6 @@ public class CreateProjectApplyForm {
     @ApiModelProperty("限选年级")
     private Integer limitGrade;
 
-    @NotNull
-    @ApiModelProperty("限选专业")
-    private String limitMajor;
-
-    @NotNull
-    @ApiModelProperty("限选学院")
-    private String limitCollege;
-
-
-    @ApiModelProperty("适宜学生数")
-    @NotNull(message = "适宜学生数不能为空")
-    private Integer fitPeopleNum;
 
     @ApiModelProperty("成果考核方式")
     private String achievementCheck;
@@ -86,6 +74,22 @@ public class CreateProjectApplyForm {
     @ApiModelProperty("所需经费支持")
     private Float applyFunds;
 
+    @ApiModelProperty("是否开放选题  1.是,2否,3,开放部分")
+    private Integer isOpenTopic;
 
+    @ApiModelProperty("指导老师编号--选填")
+    private String[] teacherCodes;
+
+    @ApiModelProperty("学生编号--选填,如果开放选题选择否则不能添加学生")
+    private String[] stuCodes;
+
+    @ApiModelProperty("限选专业--选填")
+    private String limitMajor;
+
+    @ApiModelProperty("限选学院--选填")
+    private String limitCollege;
+
+    @ApiModelProperty("适宜学生数--选填")
+    private Integer fitPeopleNum;
 
 }

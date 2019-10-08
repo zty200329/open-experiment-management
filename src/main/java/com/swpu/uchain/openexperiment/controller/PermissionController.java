@@ -146,7 +146,7 @@ public class PermissionController implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        log.info("================== flush()清空缓存 ==============");
+        /*log.info("================== flush()清空缓存 ==============");
         redisService.flush();
         RequestMappingHandlerMapping mapping = (RequestMappingHandlerMapping) context.getBean("requestMappingHandlerMapping");
         Map<RequestMappingInfo, HandlerMethod> map = mapping.getHandlerMethods();
@@ -183,7 +183,7 @@ public class PermissionController implements InitializingBean {
                 log.info("同时添加ADMIN权限： {}", acl);
             }
         }
-        log.info("=============================更新Acl完成================================");
+        log.info("=============================更新Acl完成================================");*/
 
     }
 }

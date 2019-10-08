@@ -23,12 +23,16 @@ public class ProjectQueryController {
 
     private ProjectService projectService;
 
-    private UserProjectService userProjectService;
 
     @Autowired
-    public ProjectQueryController(ProjectService projectService, UserProjectService userProjectService) {
+    public ProjectQueryController(ProjectService projectService) {
         this.projectService = projectService;
-        this.userProjectService = userProjectService;
+    }
+
+    @ApiOperation("学生获取可参与的开放性选题")
+    @GetMapping("/getAllOpenTopic")
+    public Result getAllOpenTopic(){
+        return projectService.getAllOpenTopic();
     }
 
     @ApiOperation("获取项目的立项信息--可使用")

@@ -54,10 +54,10 @@ public interface ProjectService {
 
     /**
      * 立项申请接口
-     * @param createProjectApplyForm 申请立项表单
+     * @param form 申请立项表单
      * @return 接口调用返回结果
      */
-    Result applyCreateProject(CreateProjectApplyForm createProjectApplyForm);
+    Result applyCreateProject(CreateProjectApplyForm form);
 
     /**
      * 更新项目组信息
@@ -178,4 +178,10 @@ public interface ProjectService {
      * @return
      */
     Result checkProjectApply(List<ProjectCheckForm> list);
+
+    /**
+     * 学生获取所有可选立项选题
+     * @return
+     */
+    Result getAllOpenTopic();
 }

@@ -143,10 +143,10 @@ public class UserServiceImpl implements UserService {
         log.info("加载数据库中的userDetails: {}", userDetails);
         //生成真正的token
         final String realToken = jwtTokenUtil.generateToken(userDetails);
-        List<Role> roles = roleService.getUserRoles(Long.valueOf(user1.getCode()));
+        Role role = roleService.getUserRoles(Long.valueOf(user1.getCode()));
         Map<String, Object> map = new HashMap<>(8);
         map.put("token",realToken);
-        map.put("roles",roles);
+        map.put("roles",role);
         redisService.delete(VerifyCodeKey.getByClientIp, clientIp);
         return Result.success(map);
     }
@@ -284,9 +284,9 @@ public class UserServiceImpl implements UserService {
         User currentUser = getUserService.getCurrentUser();
         UserInfoVO userInfoVO = new UserInfoVO();
         BeanUtils.copyProperties(currentUser, userInfoVO);
-        List<Role> roles = roleService.getUserRoles(currentUser.getId());
-        List<RoleInfoVO> roleInfoVOS = convertUtil.convertRoles(roles);
-        userInfoVO.setRoleInfoVOS(roleInfoVOS);
+        Role role = roleService.getUserRoles(currentUser.getId());
+        RoleInfoVO roleInfoVO = convertUtil.convertRoles(role);
+        userInfoVO.setRoleInfoVO(roleInfoVO);
         return Result.success(userInfoVO);
     }
 

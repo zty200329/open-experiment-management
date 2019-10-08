@@ -116,13 +116,9 @@ public class ConvertUtil {
         return userList;
     }
 
-    public  List<RoleInfoVO> convertRoles(List<Role> roles){
-        List<RoleInfoVO> roleList = new ArrayList<>();
-        roles.forEach(role -> {
+    public  RoleInfoVO convertRoles(Role role){
             RoleInfoVO roleInfoVO = convertOneRoleInfo(role);
-            roleList.add(roleInfoVO);
-        });
-        return roleList;
+        return roleInfoVO;
     }
 
     public  RoleInfoVO convertOneRoleInfo(Role role) {

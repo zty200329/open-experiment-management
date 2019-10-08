@@ -22,5 +22,5 @@ public interface RoleMapper {
 
     List<RoleVO> getRoles(Long userId);
 
-    List<Role> selectByUserId(Long userId);
+    Role selectByUserId(Long userId);
 }
