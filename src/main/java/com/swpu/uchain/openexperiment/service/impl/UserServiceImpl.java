@@ -285,7 +285,7 @@ public class UserServiceImpl implements UserService {
         UserInfoVO userInfoVO = new UserInfoVO();
         BeanUtils.copyProperties(currentUser, userInfoVO);
         Role role = roleService.getUserRoles(currentUser.getId());
-        RoleInfoVO roleInfoVO = convertUtil.convertRoles(role);
+        RoleInfoVO roleInfoVO = convertUtil.convertRole(role);
         userInfoVO.setRoleInfoVO(roleInfoVO);
         return Result.success(userInfoVO);
     }

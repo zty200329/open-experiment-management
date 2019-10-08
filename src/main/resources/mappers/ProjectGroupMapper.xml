@@ -62,6 +62,32 @@
       #{status,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},#{applyFunds,jdbcType=FLOAT},
       #{isOpenTopic}      )
   </insert>
+  <resultMap id="TopicInfoResultMap" type="com.swpu.uchain.openexperiment.VO.project.OpenTopicInfo">
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="experiment_condition" jdbcType="VARCHAR" property="experimentCondition" />
+    <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
+    <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
+    <result column="achievement_check" jdbcType="VARCHAR" property="achievementCheck" />
+    <result column="limit_college" jdbcType="VARCHAR" property="limitCollege" />
+    <result column="limit_major" jdbcType="VARCHAR" property="limitMajor" />
+    <result column="limit_grade" jdbcType="INTEGER" property="limitGrade" />
+    <result column="fit_people_num" jdbcType="INTEGER" property="fitPeopleNum" />
+    <result column="total_hours" jdbcType="INTEGER" property="totalHours" />
+    <result column="lab_name" jdbcType="VARCHAR" property="labName" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="project_type" jdbcType="INTEGER" property="projectType" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <collection property="teachers" ofType="com.swpu.uchain.openexperiment.VO.user.Instructor"
+                javaType="java.util.ArrayList" columnPrefix="t_">
+        <id column="real_name" property="realName"/>
+        <id column="qq_num" property="qqNum"/>
+        <id column="mobile_phone" property="mobilePhone"/>
+        <id column="email" property="email"/>
+        <id column="fix_phone" property="fixPhone"/>
+        <id column="sex" property="sex"/>
+    </collection>
+  </resultMap>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
     update project_group
     set address = #{address,jdbcType=VARCHAR},
@@ -86,31 +112,80 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select id, address, create_time, creator_id, end_time, experiment_condition, suggest_group_type, 
-    experiment_type, achievement_check, limit_college, limit_major, limit_grade, fit_people_num, 
-    total_hours, lab_name, project_name, project_type, start_time, `status`, update_time
+    select id,
+           address,
+           create_time,
+           creator_id,
+           end_time,
+           experiment_condition,
+           suggest_group_type,
+           experiment_type,
+           achievement_check,
+           limit_college,
+           limit_major,
+           limit_grade,
+           fit_people_num,
+           total_hours,
+           lab_name,
+           project_name,
+           project_type,
+           start_time,
+           `status`,
+           update_time
     from project_group
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" resultMap="BaseResultMap">
-    select id, address, create_time, creator_id, end_time, experiment_condition, suggest_group_type, 
-    experiment_type, achievement_check, limit_college, limit_major, limit_grade, fit_people_num, 
-    total_hours, lab_name, project_name, project_type, start_time, `status`, update_time
+    select id,
+           address,
+           create_time,
+           creator_id,
+           end_time,
+           experiment_condition,
+           suggest_group_type,
+           experiment_type,
+           achievement_check,
+           limit_college,
+           limit_major,
+           limit_grade,
+           fit_people_num,
+           total_hours,
+           lab_name,
+           project_name,
+           project_type,
+           start_time,
+           `status`,
+           update_time
     from project_group
   </select>
   <select id="selectByName" resultMap="BaseResultMap">
     select * from project_group where project_name = #{projectName}
   </select>
   <select id="selectByUserIdAndStatus" resultMap="BaseResultMap">
-    select project_group.id, project_group.address, project_group.create_time, project_group.creator_id,
-    project_group.end_time, project_group.experiment_condition, project_group.suggest_group_type,
-    project_group.experiment_type, project_group.achievement_check, project_group.limit_college,
-    project_group.limit_major, project_group.limit_grade, project_group.fit_people_num,
-    project_group.total_hours, project_group.lab_name, project_group.project_name, project_group.project_type,
-    project_group.start_time, project_group.`status`, project_group.update_time
+    select
+          project_group.id,
+          project_group.address,
+          project_group.create_time,
+          project_group.creator_id,
+          project_group.end_time,
+          project_group.experiment_condition,
+          project_group.suggest_group_type,
+          project_group.experiment_type,
+          project_group.achievement_check,
+          project_group.limit_college,
+          project_group.limit_major,
+          project_group.limit_grade,
+          project_group.fit_people_num,
+          project_group.total_hours,
+          project_group.lab_name,
+          project_group.project_name,
+          project_group.project_type,
+          project_group.start_time,
+          project_group.`status`,
+          project_group.update_time
     from project_group
-    inner join user_project_group
-    on project_group.id = user_project_group.project_group_id
+            inner join user_project_group
+                on project_group.id = user_project_group.project_group_id
     where user_project_group.user_id = #{param1}
     <choose>
       <when test="param2 >= 0">
@@ -119,17 +194,58 @@
     </choose>
   </select>
   <select id="selectApplyOrderByTime" resultMap="CheckProjectResultMap">
-    select project_group.limit_college, project_group.id, project_group.project_name, project_group.experiment_type,
-    project_group.total_hours, project_group.start_time, project_group.end_time, project_group.lab_name,
-    project_group.address, project_group.suggest_group_type, project_group.project_type
+    select project_group.limit_college,
+           project_group.id,
+           project_group.project_name,
+           project_group.experiment_type,
+           project_group.total_hours,
+           project_group.start_time,
+           project_group.end_time,
+           project_group.lab_name,
+           project_group.address,
+           project_group.suggest_group_type,
+           project_group.project_type
     from project_group
     where status = #{projectStatus}
     order by create_time desc
   </select>
   <select id="selectByFuzzyName" resultMap="SelectProjectMap">
     select project_group.id, project_group.project_name, user.real_name
-    from  project_group
-    inner join user on project_group.creator_id = user.id
+    from project_group
+           inner join user on project_group.creator_id = user.id
     where project_group.project_name like '%${name}%'
   </select>
+    <select id="getAllOpenTopic" resultMap="TopicInfoResultMap">
+      select project_group.id,
+             project_group.address,
+             project_group.create_time,
+             project_group.creator_id,
+             project_group.end_time,
+             project_group.experiment_condition,
+             project_group.suggest_group_type,
+             project_group.experiment_type,
+             project_group.achievement_check,
+             project_group.limit_college,
+             project_group.limit_major,
+             project_group.limit_grade,
+             project_group.fit_people_num,
+             project_group.total_hours,
+             project_group.lab_name,
+             project_group.project_name,
+             project_group.project_type,
+             project_group.start_time,
+             project_group.`status`,
+             project_group.update_time,
+             user_project_group.user_id,
+             user.fix_phone,
+             user.mobile_phone,
+             user.qq_num,
+             user.sex,
+             user.email,
+             user.real_name
+      from project_group
+             left join user_project_group on project_group.id = project_group_id and user_project_group.status = 2 and
+                                             user_project_group.member_role = 1 and project_group.status >
+             inner join user on user_project_group.user_id = user.code
+    </select>
 </mapper>

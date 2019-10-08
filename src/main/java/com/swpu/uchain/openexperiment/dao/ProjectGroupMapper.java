@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.VO.project.CheckProjectVO;
+import com.swpu.uchain.openexperiment.VO.project.OpenTopicInfo;
 import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import org.apache.ibatis.annotations.Param;
@@ -32,4 +33,6 @@ public interface ProjectGroupMapper {
     List<CheckProjectVO> selectApplyOrderByTime(int projectStatus);
 
     List<SelectProjectVO> selectByFuzzyName(@Param("name") String name);
+
+    List<OpenTopicInfo> getAllOpenTopic();
 }

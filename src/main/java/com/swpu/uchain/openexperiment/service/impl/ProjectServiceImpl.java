@@ -624,8 +624,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getAllOpenTopic() {
-
-        return null;
+        return Result.success(projectGroupMapper.getAllOpenTopic());
     }
 
     @Override
