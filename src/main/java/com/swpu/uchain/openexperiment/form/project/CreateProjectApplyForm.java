@@ -49,11 +49,6 @@ public class CreateProjectApplyForm {
     @NotNull(message = "建议评审分组必选")
     private Integer suggestGroupType;
 
-    @NotNull
-    @ApiModelProperty("限选年级")
-    private String limitGrade;
-
-
     @ApiModelProperty("成果考核方式")
     private String achievementCheck;
 
@@ -86,6 +81,10 @@ public class CreateProjectApplyForm {
 
     @ApiModelProperty("限选学院--选填")
     private String limitCollege;
+
+    @NotNull
+    @ApiModelProperty("限选年级")
+    private String limitGrade;
 
     @ApiModelProperty("适宜学生数--选填")
     private Integer fitPeopleNum;

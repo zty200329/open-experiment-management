@@ -75,7 +75,7 @@ public class ProjectGroup implements Serializable {
     /**
      * 限选年级
      */
-    private Integer limitGrade;
+    private String limitGrade;
 
     /**
      *  适宜人数  (项目建议人数)

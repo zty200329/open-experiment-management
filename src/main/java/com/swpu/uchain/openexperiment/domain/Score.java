@@ -11,7 +11,7 @@ public class Score implements Serializable {
 
     private Float averageScore;
 
-    private Float achoevementPoint;
+    private Float achievementPoint;
 
     private static final long serialVersionUID = 1L;
 
@@ -47,12 +47,12 @@ public class Score implements Serializable {
         this.averageScore = averageScore;
     }
 
-    public Float getAchoevementPoint() {
-        return achoevementPoint;
+    public Float getAchievementPoint() {
+        return achievementPoint;
     }
 
-    public void setAchoevementPoint(Float achoevementPoint) {
-        this.achoevementPoint = achoevementPoint;
+    public void setAchievementPoint(Float achievementPoint) {
+        this.achievementPoint = achievementPoint;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class Score implements Serializable {
         sb.append(", userId=").append(userId);
         sb.append(", semester=").append(semester);
         sb.append(", averageScore=").append(averageScore);
-        sb.append(", achoevementPoint=").append(achoevementPoint);
+        sb.append(", achievementPoint=").append(achievementPoint);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

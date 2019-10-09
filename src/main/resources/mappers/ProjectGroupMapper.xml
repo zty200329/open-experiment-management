@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.swpu.uchain.openexperiment.dao.ProjectGroupMapper">
-  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.ProjectGroup">
+  <resultMap id="OpenTopicInfoResultMap" type="com.swpu.uchain.openexperiment.VO.project.OpenTopicInfo">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="address" jdbcType="VARCHAR" property="address" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="experiment_condition" jdbcType="VARCHAR" property="experimentCondition" />
     <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
@@ -20,29 +18,109 @@
     <result column="project_name" jdbcType="VARCHAR" property="projectName" />
     <result column="project_type" jdbcType="INTEGER" property="projectType" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
-    <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="main_content" jdbcType="LONGVARCHAR" property="mainContent"/>
-    <result column="is_open_topic" jdbcType="INTEGER" property="isOpenTopic"/>
+  <collection property="teachers" ofType="com.swpu.uchain.openexperiment.VO.user.Instructor"
+              javaType="java.util.ArrayList" columnPrefix="t_">
+      <id column="real_name" property="realName"/>
+      <id column="qq_num" property="qqNum"/>
+      <id column="mobile_phone" property="mobilePhone"/>
+      <id column="email" property="email"/>
+      <id column="fix_phone" property="fixPhone"/>
+      <id column="sex" property="sex"/>
+  </collection>
   </resultMap>
-  <resultMap id="CheckProjectResultMap" type="com.swpu.uchain.openexperiment.VO.project.CheckProjectVO">
-    <id column="id" jdbcType="BIGINT" property="projectGroupId" />
-    <result column="address" jdbcType="VARCHAR" property="address" />
-    <result column="limit_college" jdbcType="VARCHAR" property="limitCollege" />
-    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
-    <result column="project_type" jdbcType="INTEGER" property="projectType" />
-    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
-    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
-    <result column="total_hours" jdbcType="INTEGER" property="totalHours" />
-    <result column="lab_name" jdbcType="VARCHAR" property="labName" />
-    <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
-    <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
+
+    <resultMap id="ProjectGroupDetailVOResultMap" type="com.swpu.uchain.openexperiment.form.project.ProjectGroupDetailVO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+        <result column="experiment_condition" jdbcType="VARCHAR" property="experimentCondition" />
+        <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
+        <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
+        <result column="achievement_check" jdbcType="VARCHAR" property="achievementCheck" />
+        <result column="limit_college" jdbcType="VARCHAR" property="limitCollege" />
+        <result column="limit_major" jdbcType="VARCHAR" property="limitMajor" />
+        <result column="limit_grade" jdbcType="INTEGER" property="limitGrade" />
+        <result column="fit_people_num" jdbcType="INTEGER" property="fitPeopleNum" />
+        <result column="total_hours" jdbcType="INTEGER" property="totalHours" />
+        <result column="lab_name" jdbcType="VARCHAR" property="labName" />
+        <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+        <result column="project_type" jdbcType="INTEGER" property="projectType" />
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="main_content" jdbcType="LONGVARCHAR" property="mainContent"/>
+        <result column="is_open_topic" jdbcType="INTEGER" property="isOpenTopic"/>
+        <collection property="list" ofType="com.swpu.uchain.openexperiment.VO.user.ProjectUserVO"
+                    javaType="java.util.ArrayList" columnPrefix="u_">
+            <id column="real_name" property="realName"/>
+            <id column="qq_num" property="qqNum"/>
+            <id column="mobile_phone" property="mobilePhone"/>
+            <id column="email" property="email"/>
+            <id column="fix_phone" property="fixPhone"/>
+
+            <id column="sex" property="sex"/>
+            <id column="institute" property="institute"/>
+            <id column="major" property="major"/>
+            <id column="user_type" property="userType"/>
+            <id column="code" property="code"/>
+
+            <id column="technical_role" property="technicalRole"/>
+            <id column="work_division" property="workDivision"/>
+            <id column="join_time" property="joinTime"/>
+            <id column="personal_judge" property="personalJudge"/>
+            <id column="member_role" property="memberRole"/>
+        </collection>
+    </resultMap>
+
+
+    <resultMap id="ProjectGroupResultMap" type="com.swpu.uchain.openexperiment.domain.ProjectGroup">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+        <result column="experiment_condition" jdbcType="VARCHAR" property="experimentCondition" />
+        <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
+        <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
+        <result column="achievement_check" jdbcType="VARCHAR" property="achievementCheck" />
+        <result column="limit_college" jdbcType="VARCHAR" property="limitCollege" />
+        <result column="limit_major" jdbcType="VARCHAR" property="limitMajor" />
+        <result column="limit_grade" jdbcType="INTEGER" property="limitGrade" />
+        <result column="fit_people_num" jdbcType="INTEGER" property="fitPeopleNum" />
+        <result column="total_hours" jdbcType="INTEGER" property="totalHours" />
+        <result column="lab_name" jdbcType="VARCHAR" property="labName" />
+        <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+        <result column="project_type" jdbcType="INTEGER" property="projectType" />
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="main_content" jdbcType="LONGVARCHAR" property="mainContent"/>
+        <result column="is_open_topic" jdbcType="INTEGER" property="isOpenTopic"/>
   </resultMap>
+
+    <resultMap id="CheckProjectResultMap" type="com.swpu.uchain.openexperiment.VO.project.CheckProjectVO">
+        <id column="id" jdbcType="BIGINT" property="projectGroupId" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="limit_college" jdbcType="VARCHAR" property="limitCollege" />
+        <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+        <result column="project_type" jdbcType="INTEGER" property="projectType" />
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+        <result column="total_hours" jdbcType="INTEGER" property="totalHours" />
+        <result column="lab_name" jdbcType="VARCHAR" property="labName" />
+        <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
+        <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
+    </resultMap>
+
   <resultMap id="SelectProjectMap" type="com.swpu.uchain.openexperiment.VO.project.SelectProjectVO">
     <id column="id" jdbcType="BIGINT" property="projectGroupId" />
     <result column="project_name" jdbcType="VARCHAR" property="projectName" />
     <result column="real_name" jdbcType="VARCHAR" property="creatorName"/>
   </resultMap>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from project_group
     where id = #{id,jdbcType=BIGINT}
@@ -65,32 +143,6 @@
                  #{status,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},#{applyFunds,jdbcType=FLOAT},
                  #{isOpenTopic},#{mainContent})
   </insert>
-  <resultMap id="TopicInfoResultMap" type="com.swpu.uchain.openexperiment.VO.project.OpenTopicInfo">
-    <result column="address" jdbcType="VARCHAR" property="address" />
-    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
-    <result column="experiment_condition" jdbcType="VARCHAR" property="experimentCondition" />
-    <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
-    <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
-    <result column="achievement_check" jdbcType="VARCHAR" property="achievementCheck" />
-    <result column="limit_college" jdbcType="VARCHAR" property="limitCollege" />
-    <result column="limit_major" jdbcType="VARCHAR" property="limitMajor" />
-    <result column="limit_grade" jdbcType="INTEGER" property="limitGrade" />
-    <result column="fit_people_num" jdbcType="INTEGER" property="fitPeopleNum" />
-    <result column="total_hours" jdbcType="INTEGER" property="totalHours" />
-    <result column="lab_name" jdbcType="VARCHAR" property="labName" />
-    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
-    <result column="project_type" jdbcType="INTEGER" property="projectType" />
-    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
-    <collection property="teachers" ofType="com.swpu.uchain.openexperiment.VO.user.Instructor"
-                javaType="java.util.ArrayList" columnPrefix="t_">
-        <id column="real_name" property="realName"/>
-        <id column="qq_num" property="qqNum"/>
-        <id column="mobile_phone" property="mobilePhone"/>
-        <id column="email" property="email"/>
-        <id column="fix_phone" property="fixPhone"/>
-        <id column="sex" property="sex"/>
-    </collection>
-  </resultMap>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
     update project_group
     set address = #{address,jdbcType=VARCHAR},
@@ -115,7 +167,7 @@
       main_content = #{mainContent}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ProjectGroupResultMap">
     select id,
            address,
            create_time,
@@ -140,7 +192,7 @@
     from project_group
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap">
+  <select id="selectAll" resultMap="ProjectGroupResultMap">
     select id,
            address,
            create_time,
@@ -164,10 +216,10 @@
            main_Content
     from project_group
   </select>
-  <select id="selectByName" resultMap="BaseResultMap">
+  <select id="selectByName" resultMap="ProjectGroupResultMap">
     select * from project_group where project_name = #{projectName}
   </select>
-  <select id="selectByUserIdAndStatus" resultMap="BaseResultMap">
+  <select id="selectByUserIdAndStatus" resultMap="ProjectGroupResultMap">
     select
           project_group.id,
           project_group.address,
@@ -225,7 +277,7 @@
            inner join user on project_group.creator_id = user.id
     where project_group.project_name like '%${name}%'
   </select>
-    <select id="getAllOpenTopic" resultMap="TopicInfoResultMap">
+    <select id="getAllOpenTopic" resultMap="OpenTopicInfoResultMap">
       select project_group.id,
              project_group.address,
              project_group.create_time,
@@ -259,7 +311,7 @@
                                              user_project_group.member_role = 1 and project_group.status
              inner join user on user_project_group.user_id = user.code
     </select>
-    <select id="selectByCollegeIdAndStatus" resultMap="BaseResultMap" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
+    <select id="selectByCollegeIdAndStatus" resultMap="ProjectGroupResultMap" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         select project_group.id,
                project_group.address,
                project_group.create_time,
@@ -285,5 +337,49 @@
         <if test="college!=null">
             and project_group.limit_college = #{college}
         </if>
+    </select>
+
+    <select id="getProjectGroupDetailVOByProjectId" resultMap="ProjectGroupDetailVOResultMap">
+        select project_group.id,
+               project_group.address,
+               project_group.create_time,
+               project_group.creator_id,
+               project_group.end_time,
+               project_group.experiment_condition,
+               project_group.suggest_group_type,
+               project_group.experiment_type,
+               project_group.achievement_check,
+               project_group.limit_college,
+               project_group.limit_major,
+               project_group.limit_grade,
+               project_group.fit_people_num,
+               project_group.total_hours,
+               project_group.lab_name,
+               project_group.project_name,
+               project_group.project_type,
+               project_group.start_time,
+               project_group.`status`,
+               project_group.update_time,
+               project_group.main_Content,
+               user_project_group.user_id        as u_code,
+               user_project_group.technical_role as u_technical_role,
+               user_project_group.work_division  as u_work_division,
+               user_project_group.member_role    as u_member_role,
+               user_project_group.personal_judge as u_personal_judge,
+               user_project_group.join_time      as u_join_time,
+               user.user_type                    as u_user_type,
+               user.real_name                    as u_real_name,
+               user.sex                          as u_sex,
+               user.qq_num                       as u_qq_num,
+               user.fix_phone                    as u_fix_phone,
+               user.mobile_phone                 as u_mobile_phone,
+               user.institute                    as u_institute,
+               user.grade                        as u_grade,
+               user.major                        as u_major,
+               user.email                        as u_email
+        from project_group
+                 inner join user_project_group on user_project_group.project_group_id = project_group.id
+                 inner join user on user_project_group.user_id = user.code
+        where project_group.id = #{projectId};
     </select>
 </mapper>

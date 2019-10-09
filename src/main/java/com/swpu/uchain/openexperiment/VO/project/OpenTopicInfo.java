@@ -16,6 +16,13 @@ import java.util.List;
 @Data
 public class OpenTopicInfo {
 
+    @ApiModelProperty("项目编号")
+    private Integer id;
+
+
+    @ApiModelProperty("主要内容")
+    private String mainContent;
+
     @ApiModelProperty("实验室名称")
     private String labName;
 
