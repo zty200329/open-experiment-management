@@ -72,6 +72,7 @@
             <id column="join_time" property="joinTime"/>
             <id column="personal_judge" property="personalJudge"/>
             <id column="member_role" property="memberRole"/>
+            <id column="grade" property="grade"/>
         </collection>
     </resultMap>
 
