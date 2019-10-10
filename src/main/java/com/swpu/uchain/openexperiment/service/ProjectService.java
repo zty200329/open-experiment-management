@@ -106,7 +106,11 @@ public interface ProjectService {
      * @param pageNum
      * @return
      */
-    Result getCheckInfo(Integer pageNum);
+    Result getPendingApprovalProjectByLabAdministrator(Integer pageNum);
+
+    Result getPendingApprovalProjectBySecondaryUnit(Integer pageNum);
+
+    Result getPendingApprovalProjectByFunctionalDepartment(Integer pageNum);
 
     /**
      * 上报学院领导
@@ -150,7 +154,7 @@ public interface ProjectService {
      * @param formList 项目拒绝信息集合
      * @return
      */
-    Result rejectProjectApply(List<ProjectCheckForm> formList);
+    Result rejectProjectApplyByLabAdministrator(List<ProjectCheckForm> formList);
 
     /**
      * 学院领导上报到职能部门
@@ -172,12 +176,6 @@ public interface ProjectService {
      */
     Result getProjectDetailById(Long projectId);
 
-    /**
-     * 实验室主任/二级单位 审核操作通过
-     * @param list
-     * @return
-     */
-    Result checkProjectApply(List<ProjectCheckForm> list);
 
     /**
      * 学生获取所有可选立项选题
@@ -188,4 +186,12 @@ public interface ProjectService {
     Result getPendingReviewByLabLeader();
 
     Result getProjectGroupDetailVOByProjectId(Long projectId);
+
+    Result rejectProjectApplyBySecondaryUnit(List<ProjectCheckForm> formList);
+
+    Result rejectProjectApplyByFunctionalDepartment(List<ProjectCheckForm> formList);
+
+    Result approveProjectApplyByLabAdministrator(List<ProjectCheckForm> list);
+
+    Result approveProjectApplyBySecondaryUnit(List<ProjectCheckForm> list);
 }

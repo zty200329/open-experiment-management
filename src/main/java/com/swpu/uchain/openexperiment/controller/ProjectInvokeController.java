@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.enums.RoleType;
 import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.ProjectService;
@@ -60,8 +61,8 @@ public class ProjectInvokeController {
         return userProjectService.applyJoinProject(joinProjectApplyForm);
     }
 
-    @ApiOperation("同意加入项目")
-    @PostMapping(value = "/agreeJoin--可使用，如果在此处添加就无须再项目更新表单中添加学生", name = "同意加入项目")
+    @ApiOperation("同意学生加入项目")
+    @PostMapping(value = "/agreeJoin")
     public Result agreeJoin(@Valid @RequestBody JoinForm[] joinForm){
         return projectService.agreeJoin(joinForm);
     }
@@ -78,10 +79,16 @@ public class ProjectInvokeController {
         return projectService.agreeEstablish(projectGroupIdList);
     }
 
-    @ApiOperation("审核操作(实验室主任+二级单位)--可使用")
-    @PostMapping(value = "/checkProjectApply")
-    public Result checkProjectApply(@RequestBody List<ProjectCheckForm> list){
-        return projectService.checkProjectApply(list);
+    @ApiOperation("实验室批准操作")
+    @PostMapping(value = "/approveProjectApplyByLabAdministrator")
+    public Result approveProjectApplyByLabAdministrator(@RequestBody List<ProjectCheckForm> list){
+        return projectService.approveProjectApplyByLabAdministrator(list);
+    }
+
+    @ApiOperation("实验室批准操作")
+    @PostMapping(value = "/approveProjectApplyBySecondaryUnit")
+    public Result approveProjectApplyBySecondaryUnit(@RequestBody List<ProjectCheckForm> list){
+        return projectService.approveProjectApplyBySecondaryUnit(list);
     }
 
     @ApiOperation("修改项目组成员身份  1.指导教师2.项目组长3.普通成员--可使用")
@@ -91,7 +98,7 @@ public class ProjectInvokeController {
     }
 
 
-    @ApiOperation("追加立项申请内容(资金申请报账)--可使用")
+    @ApiOperation("资金报账(职能部门使用)")
     @PostMapping(value = "/appendCreateApply", name = "追加立项申请内容")
     public Result appendCreateApply(@Valid @RequestBody AppendApplyForm appendApplyForm){
         return projectService.appendCreateApply(appendApplyForm);
@@ -130,10 +137,24 @@ public class ProjectInvokeController {
     }
 
 
-    @ApiOperation(" 驳回项目立项申请（实验室，二级单位，职能部门通用接口）--可使用")
-    @PostMapping(value = "/rejectProjectApply")
-    public Result rejectProjectApply(@Valid @RequestBody List<ProjectCheckForm> formList){
-        return projectService.rejectProjectApply(formList);
+    @ApiOperation(" 实验室驳回项目立项申请")
+    @PostMapping(value = "/rejectProjectApplyByLabAdministrator")
+    public Result rejectProjectApplyByLabAdministrator(@Valid @RequestBody List<ProjectCheckForm> formList){
+        return projectService.rejectProjectApplyByLabAdministrator(formList);
     }
+
+    @ApiOperation(" 二级单位驳回项目立项申请")
+    @PostMapping(value = "/rejectProjectApplyBySecondaryUnit")
+    public Result rejectProjectApplyBySecondaryUnit(@Valid @RequestBody List<ProjectCheckForm> formList){
+        return projectService.rejectProjectApplyBySecondaryUnit(formList);
+    }
+
+    @ApiOperation(" 职能部门驳回项目立项申请")
+    @PostMapping(value = "/rejectProjectApplyByFunctionalDepartment")
+    public Result rejectProjectApplyByFunctionalDepartment(@Valid @RequestBody List<ProjectCheckForm> formList){
+        return projectService.rejectProjectApplyByFunctionalDepartment(formList);
+    }
+
+
 
 }

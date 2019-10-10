@@ -456,13 +456,30 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result getCheckInfo(Integer pageNum) {
-        User user2 = getUserService.getCurrentUser();
+    public Result getPendingApprovalProjectByLabAdministrator(Integer pageNum) {
+        //TODO 身份验证
+        return getCheckInfo(pageNum,RoleType.LAB_ADMINISTRATOR.getValue());
+    }
+
+    @Override
+    public Result getPendingApprovalProjectBySecondaryUnit(Integer pageNum) {
+        //TODO 身份验证
+
+        return getCheckInfo(pageNum, RoleType.SECONDARY_UNIT.getValue());
+    }
+
+    @Override
+    public Result getPendingApprovalProjectByFunctionalDepartment(Integer pageNum) {
+        //TODO 身份验证
+
+        return getCheckInfo(pageNum, RoleType.FUNCTIONAL_DEPARTMENT.getValue());
+    }
+
+    public Result getCheckInfo(Integer pageNum, Integer role) {
         //获取工号,并通过工号获取角色,再通过角色判定操作类型(只针对于审核这一步)
-        long role = userRoleMapper.selectByUserId(Long.valueOf(user2.getCode())).getRoleId();
         Integer projectStatus;
         //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
-        switch ((int) role) {
+        switch (role) {
             //职能部门
             case 6:
                 projectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
@@ -581,14 +598,22 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success(ConvertUtil.getConvertedProjectHistoryInfo(list));
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result checkProjectApply(List<ProjectCheckForm> formList) {
+    public Result approveProjectApplyByLabAdministrator(List<ProjectCheckForm> list) {
+        return checkProjectApply(list,RoleType.LAB_ADMINISTRATOR.getValue());
+    }
+
+    @Override
+    public Result approveProjectApplyBySecondaryUnit(List<ProjectCheckForm> list) {
+        return checkProjectApply(list,RoleType.SECONDARY_UNIT.getValue());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Result checkProjectApply(List<ProjectCheckForm> formList,Integer role) {
         User user = getUserService.getCurrentUser();
-        long role = userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId();
         String checkOperationType;
         Integer projectStatus = null;
-        switch ((int) role) {
+        switch (role) {
             //如果是实验室主任
             case 4:
                 checkOperationType = OperationType.PROJECT_OPERATION_TYPE1.getValue().toString();
@@ -613,11 +638,11 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecordDTO.setOperationExecutorId(Long.valueOf(user.getCode()));
             //当角色是实验室主任的时候,项目状态不是
             ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
-            if (role == 4 && !projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue())){
+            if (role == 4 && !projectGroup.getStatus().equals(projectStatus)){
                 throw new GlobalException(CodeMsg.PROJECT_STATUS_IS_NOT_DECLARE);
             }
             //如果不是实验室上报状态,抛出异常
-            if (role == 5 && !projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue())){
+            if (role == 5 && !projectGroup.getStatus().equals(projectStatus)){
                 throw new GlobalException(CodeMsg.PROJECT_STATUS_IS_NOT_LAB_ALLOWED_AND_REPORTED);
             }
             //更具不同角色设置不同的项目状态
@@ -706,33 +731,58 @@ public class ProjectServiceImpl implements ProjectService {
         return list;
     }
 
+    @Override
+    public Result rejectProjectApplyByLabAdministrator(List<ProjectCheckForm> formList) {
+        //TODO 身份验证
+
+        return rejectProjectApply(formList,RoleType.LAB_ADMINISTRATOR.getValue());
+    }
+
+    @Override
+    public Result rejectProjectApplyBySecondaryUnit(List<ProjectCheckForm> formList) {
+        //TODO 身份验证
+
+        return rejectProjectApply(formList,RoleType.SECONDARY_UNIT.getValue());
+    }
+
+    @Override
+    public Result rejectProjectApplyByFunctionalDepartment(List<ProjectCheckForm> formList) {
+        //TODO 身份验证
+
+        return rejectProjectApply(formList,RoleType.FUNCTIONAL_DEPARTMENT.getValue());
+    }
+
     /**
      *  因为是批量操作  所以就最好将拒绝和同意分开
      * @param formList 项目拒绝信息集合
      * @return
      */
-    @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result rejectProjectApply(List<ProjectCheckForm> formList) {
+    public Result rejectProjectApply(List<ProjectCheckForm> formList,Integer role) {
         User user = getUserService.getCurrentUser();
-        //获取工号,并通过工号获取角色,再通过角色判定操作类型(只针对于审核这一步)
-        long role = userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId();
         String checkOperationType;
+        Integer rightProjectStatus;
         //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
-        switch ((int) role) {
+        switch (role) {
             //如果是实验室主任
             case 4:
                 checkOperationType = OperationType.PROJECT_OPERATION_TYPE1.getValue().toString();
+                rightProjectStatus = ProjectStatus.DECLARE.getValue();
                 break;
+            //二级单位
             case 5:
                 checkOperationType = OperationType.PROJECT_OPERATION_TYPE2.getValue().toString();
+                rightProjectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
                 break;
+            //职能部门
             case 6:
                 checkOperationType = OperationType.PROJECT_OPERATION_TYPE3.getValue().toString();
+                rightProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
                 break;
             default:
                 //超管执行操作
                 checkOperationType = "-1";
+                rightProjectStatus = ProjectStatus.REJECT_MODIFY.getValue();
         }
         List<OperationRecordDTO> list = new LinkedList<>();
         OperationRecordDTO operationRecordDTO = new OperationRecordDTO();
@@ -745,8 +795,8 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecordDTO.setOperationExecutorId(Long.valueOf(user.getCode()));
             //修改状态
             ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
-            //如果项目已经是被驳回状态
-            if (projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())){
+            //如果项目和对应状态不一致
+            if (projectGroup.getStatus().equals(rightProjectStatus)){
                 throw new GlobalException(CodeMsg.PROJECT_HAS_BEEN_REJECTED);
             }
             updateProjectStatus(form.getProjectId(), ProjectStatus.REJECT_MODIFY.getValue());
