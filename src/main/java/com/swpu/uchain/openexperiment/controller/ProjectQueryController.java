@@ -110,4 +110,17 @@ public class ProjectQueryController {
         return projectService.getProjectGroupDetailVOByProjectId(projectId);
     }
 
+
+    @ApiOperation("生成结题总览表--待完成")
+    @GetMapping(value = "generateConclusionExcel", name = "生成结题总览表")
+    public void generateConclusionExcel(){
+        projectService.generateConclusionExcel();
+    }
+
+    @ApiOperation("生成立项总览表--待完成")
+    @GetMapping(value = "generateEstablishExcel", name = "生成立项总览表")
+    public void generateEstablishExcel(){
+        projectService.generateEstablishExcel();
+    }
+
 }
