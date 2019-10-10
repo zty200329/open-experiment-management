@@ -84,4 +84,10 @@ public class ProjectQueryController {
         return projectService.getPendingReviewByLabLeader();
     }
 
+    @ApiOperation("通过项目ID查看项目详情")
+    @GetMapping("/getProjectGroupDetailVOByProjectId")
+    public Result getProjectGroupDetailVOByProjectId(Long projectId){
+        return projectService.getProjectGroupDetailVOByProjectId(projectId);
+    }
+
 }

@@ -186,4 +186,6 @@ public interface ProjectService {
     Result getAllOpenTopic();
 
     Result getPendingReviewByLabLeader();
+
+    Result getProjectGroupDetailVOByProjectId(Long projectId);
 }

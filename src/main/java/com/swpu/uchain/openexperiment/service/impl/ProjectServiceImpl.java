@@ -761,4 +761,12 @@ public class ProjectServiceImpl implements ProjectService {
     public void sendMessage(Message message){
         messageRecordMapper.insert(message);
     }
+
+    @Override
+    public Result getProjectGroupDetailVOByProjectId(Long projectId) {
+        if(projectId == null){
+            throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+        }
+        return Result.success(projectGroupMapper.getProjectGroupDetailVOByProjectId(projectId));
+    }
 }
