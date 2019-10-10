@@ -16,14 +16,15 @@
             values (#{relatedId},#{operationType},#{operationContent},#{operationReason})
     </insert>
     <insert id="multiInsert">
-        insert into operation_record (related_id, operation_type, operation_content, operation_reason)
+        insert into operation_record (related_id, operation_type, operation_content, operation_reason,operation_executor_id)
             values
             <foreach collection="list" item="record" separator=",">
                 (
                     #{record.relatedId},
                     #{record.operationType},
                     #{record.operationContent},
-                    #{record.operationReason}
+                    #{record.operationReason},
+                    #{record.operationExecutorId}
                  )
 
             </foreach>

@@ -42,7 +42,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     private UserService userService;
     private ProjectGroupMapper projectGroupMapper;
-    private UserProjectGroupMapper userProjectGroupMapper;
     private RedisService redisService;
     private UserProjectService userProjectService;
     private ProjectFileService projectFileService;
@@ -57,7 +56,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
-                              UserProjectGroupMapper userProjectGroupMapper,
                               RedisService redisService, UserProjectService userProjectService,
                               ProjectFileService projectFileService, FundsService fundsService,
                               CountConfig countConfig, UploadConfig uploadConfig,
@@ -66,7 +64,6 @@ public class ProjectServiceImpl implements ProjectService {
                               MessageRecordMapper messageRecordMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
-        this.userProjectGroupMapper = userProjectGroupMapper;
         this.redisService = redisService;
         this.userProjectService = userProjectService;
         this.projectFileService = projectFileService;
@@ -462,7 +459,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Result getCheckInfo(Integer pageNum) {
         User user2 = getUserService.getCurrentUser();
         //获取工号,并通过工号获取角色,再通过角色判定操作类型(只针对于审核这一步)
-        long role = userRoleMapper.selectByPrimaryKey(user2.getId()).getRoleId();
+        long role = userRoleMapper.selectByUserId(Long.valueOf(user2.getCode())).getRoleId();
         Integer projectStatus;
         //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
         switch ((int) role) {
@@ -530,6 +527,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result reportToCollegeLeader(Long projectGroupId) {
+        if (!ProjectStatus.LAB_ALLOWED.getValue().equals(projectGroupMapper.selectByPrimaryKey(projectGroupId).getStatus())){
+            throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+        }
         OperationRecordDTO operationRecordDTO = new OperationRecordDTO();
         operationRecordDTO.setRelatedId(projectGroupId);
         operationRecordDTO.setOperationContent(CheckResultType.PASS.getValue());
@@ -542,6 +542,10 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result reportToFunctionalDepartment(Long projectGroupId) {
+        if (!ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue().equals(projectGroupMapper.selectByPrimaryKey(projectGroupId).getStatus())){
+            throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+        }
+
         OperationRecordDTO operationRecordDTO = new OperationRecordDTO();
         operationRecordDTO.setRelatedId(projectGroupId);
         operationRecordDTO.setOperationContent(CheckResultType.PASS.getValue());
@@ -577,10 +581,11 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success(ConvertUtil.getConvertedProjectHistoryInfo(list));
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Result checkProjectApply(List<ProjectCheckForm> formList) {
         User user = getUserService.getCurrentUser();
-        long role = userRoleMapper.selectByPrimaryKey(user.getId()).getRoleId();
+        long role = userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId();
         String checkOperationType;
         Integer projectStatus = null;
         switch ((int) role) {
@@ -711,7 +716,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Result rejectProjectApply(List<ProjectCheckForm> formList) {
         User user = getUserService.getCurrentUser();
         //获取工号,并通过工号获取角色,再通过角色判定操作类型(只针对于审核这一步)
-        long role = userRoleMapper.selectByPrimaryKey(user.getId()).getRoleId();
+        long role = userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId();
         String checkOperationType;
         //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
         switch ((int) role) {

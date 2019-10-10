@@ -28,7 +28,7 @@ public class GetUserService {
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String name = authentication.getName();
-        if (authentication != null && !"anonymousUser".equals(name)){
+        if (!"anonymousUser".equals(name)){
             return selectByUserCode(name);
         }
         return null;

@@ -80,7 +80,7 @@ public class ProjectInvokeController {
 
     @ApiOperation("审核操作(实验室主任+二级单位)--可使用")
     @PostMapping(value = "/checkProjectApply")
-    public Result checkProjectApply(List<ProjectCheckForm> list){
+    public Result checkProjectApply(@RequestBody List<ProjectCheckForm> list){
         return projectService.checkProjectApply(list);
     }
 
@@ -110,7 +110,7 @@ public class ProjectInvokeController {
     }
 
 
-    @ApiOperation("上报学院领导(二级单位)--可使用")
+    @ApiOperation("上报学院领导(二级单位)--(实验室主任)可使用")
     @PostMapping(value = "/reportToCollegeLeader", name = "上报学院领导")
     public Result reportToCollegeLeader(Long projectGroupId){
         if (projectGroupId == null){
@@ -120,7 +120,7 @@ public class ProjectInvokeController {
     }
 
 
-    @ApiOperation("上报职能部门--可使用")
+    @ApiOperation("上报职能部门--(二级单位)可使用")
     @PostMapping(value = "/reportToFunctionalDepartment")
     public Result reportToFunctionalDepartment(Long projectGroupId){
         if (projectGroupId == null){
