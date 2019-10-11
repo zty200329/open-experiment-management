@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.util;
 
+import com.alibaba.druid.sql.visitor.functions.Char;
 import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
 import com.swpu.uchain.openexperiment.VO.MessageVO;
 import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
@@ -52,6 +53,30 @@ public class ConvertUtil {
             urls.add(acl.getUrl());
         }
         return urls;
+    }
+
+    public static Character getCharsuggestGroupType(Integer suggestGroupType){
+        switch (suggestGroupType){
+            case 1:
+                return  'A';
+
+            case 2:
+                return  'B';
+
+            case 3:
+                return  'C';
+
+            case 4:
+                return  'D';
+
+            case 5:
+                return  'E';
+
+            case 6:
+                return  'F';
+            default:
+                return null;
+        }
     }
 
     public  String getTechnicalRole(int type){
@@ -223,6 +248,60 @@ public class ConvertUtil {
             default:
         }
         return operationContent;
+    }
+
+    public static Integer getIntCollege(String strCollege){
+        int result;
+        switch (strCollege){
+            case "马克思主义学院":
+                result = 1;
+                break;
+            case "艺术学院":
+                result = 2;
+                break;
+            case "化学化工学院":
+                result = 3;
+                break;
+            case "地球科学与技术学院":
+                result = 4;
+                break;
+            case "石油与天然气工程学院":
+                result = 5;
+                break;
+            case "电气信息学院":
+                result = 6;
+                break;
+            case "经济管理学院":
+                result = 7;
+                break;
+            case "体育学院":
+                result = 8;
+                break;
+            case "机电工程学院":
+                result = 9;
+                break;
+            case "材料科学与工程学院":
+                result = 10;
+                break;
+            case "理学院":
+                result = 11;
+                break;
+            case "土木工程与建筑学院":
+                result = 12;
+                break;
+            case "法学院":
+                result = 13;
+                break;
+            case "外国语学院":
+                result = 14;
+                break;
+            case "计算机科学学院":
+                result = 15;
+                break;
+            default:
+                result = -1;
+        }
+        return result;
     }
 
 

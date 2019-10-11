@@ -21,8 +21,8 @@ import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.CountUtil;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.xssf.usermodel.*;
 import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +30,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -153,6 +156,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Result applyCreateProject(CreateProjectApplyForm form) {
         User currentUser = getUserService.getCurrentUser();
 
+        Integer college =  currentUser.getInstitute();
         //判断用户类型
         if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()) {
             Result.error(CodeMsg.STUDENT_CANT_APPLY);
@@ -177,7 +181,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
         //设置申请人
         projectGroup.setCreatorId(Long.valueOf(currentUser.getCode()));
-
+        projectGroup.setSubordinateCollege(college);
         //插入数据
         Result result = addProjectGroup(projectGroup);
         if (result.getCode() != 0) {
@@ -668,15 +672,51 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void generateEstablishExcel() {
+    public void generateEstablishExcel(HttpServletResponse response) {
+        User user = getUserService.getCurrentUser();
+        //获取管理人员所管理的学院
+        Integer college = user.getInstitute();
+        List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollege(college);
         // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
         XSSFWorkbook wb = new XSSFWorkbook();
         // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
         XSSFSheet sheet = wb.createSheet("sheet1");
+
+        sheet.setPrintGridlines(true);
+        //3.1设置字体居中
+        XSSFCellStyle cellStyle = wb.createCellStyle();
+        //自动换行
+        cellStyle.setWrapText(true);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+        //序号
+        XSSFRow title = sheet.createRow(0);
+        title.setHeight((short) (16*50));
+        title.createCell(0).setCellValue("西南石油大学第__期(20___-20___年度)课外开放实验项目立项一览表");
+
+        XSSFRow info = sheet.createRow(1);
+        info.createCell(0).setCellValue("单位：（盖章）");
+        info.createCell(3).setCellValue("填报时间");
+
+        // 4.设置表头，即每个列的列名
+        String[] head = {"院/中心","序号","项目名称","实验类型","实验时数","指导教师","负责学生"
+                ,"专业年级","开始时间","结束时间","开放实验室","实验室地点","负责学生电话","申请经费（元）","建议评审分组"};
+        // 4.1创建表头行
+        XSSFRow row = sheet.createRow(2);
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Content-disposition", "attachment;filename="+"test"+".xlsx");
+        try {
+            OutputStream os = response.getOutputStream();
+            wb.write(os);
+            os.flush();
+            os.close();
+        }catch (IOException e){
+            throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
+        }
     }
 
     @Override
-    public void generateConclusionExcel() {
+    public void generateConclusionExcel(HttpServletResponse response) {
         //TODO,使用workbook生成总览表
     }
 

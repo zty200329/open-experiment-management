@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.dao;
 
+import com.swpu.uchain.openexperiment.enums.CollegeType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,6 @@ public class ProjectGroupMapperTest {
 
     @Test
     public void getProjectTableInfoListByCollege() {
-        System.err.println(projectGroupMapper.getProjectTableInfoListByCollege("计科院"));
+        System.err.println(projectGroupMapper.getProjectTableInfoListByCollege(CollegeType.COMPUTER_SCIENCE_COLLEGE.getValue()));
     }
 }

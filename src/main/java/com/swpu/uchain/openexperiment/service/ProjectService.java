@@ -6,6 +6,7 @@ import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.result.Result;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -122,12 +123,12 @@ public interface ProjectService {
     /**
      * 生成立项总览表
      */
-    void generateEstablishExcel();
+    void generateEstablishExcel(HttpServletResponse response);
 
     /**
      * 生成结题总览表
      */
-    void generateConclusionExcel();
+    void generateConclusionExcel(HttpServletResponse response);
 
     /**
      * 获取当前指导老师的项目成员审批列表

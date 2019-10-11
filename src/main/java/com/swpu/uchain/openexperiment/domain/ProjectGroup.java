@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -127,6 +128,11 @@ public class ProjectGroup implements Serializable {
      */
     private String mainContent;
 
+    /**
+     * 所属学院
+     */
+    @JsonIgnore
+    private Integer subordinateCollege;
 
     private static final long serialVersionUID = 1L;
 

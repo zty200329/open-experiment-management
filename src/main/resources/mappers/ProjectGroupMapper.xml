@@ -150,7 +150,7 @@
                                  limit_college, limit_major, limit_grade,
                                  fit_people_num, total_hours, lab_name,
                                  project_name, project_type, start_time,
-                                 `status`, update_time, apply_funds, is_open_topic, main_Content)
+                                 `status`, update_time, apply_funds, is_open_topic, main_Content,subordinate_college)
       values (
                  #{id,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
                  #{creatorId,jdbcType=BIGINT}, #{endTime,jdbcType=TIMESTAMP}, #{experimentCondition,jdbcType=VARCHAR},
@@ -159,7 +159,7 @@
                  #{fitPeopleNum,jdbcType=INTEGER}, #{totalHours,jdbcType=INTEGER}, #{labName,jdbcType=VARCHAR},
                  #{projectName,jdbcType=VARCHAR}, #{projectType,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP},
                  #{status,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},#{applyFunds,jdbcType=FLOAT},
-                 #{isOpenTopic},#{mainContent})
+                 #{isOpenTopic},#{mainContent},#{subordinateCollege})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
     update project_group
@@ -413,10 +413,22 @@
                project_group.apply_funds,
                project_group.experiment_type,
                project_group.suggest_group_type,
-               user.real_name as leadTeacher,
-               (@college = #{college}) as college
-        from project_group left join user on project_group.creator_id = user.code
-
-#         where project_group.status =
+               t_lead_stu.grade+t_lead_stu.major as gradeAndMajor,
+               t_lead_stu.lead_student as leadStudent,
+               t_lead_stu.lead_student_phone as leadStudentPhone,
+               user.real_name      as leadTeacher,
+               project_group.subordinate_college as college
+        from (select user.grade        as grade,
+                     user.major        as major,
+                     user.mobile_phone as lead_student_phone,
+                     user.real_name    as lead_student
+              from project_group
+                       inner join user_project_group on project_group.id = user_project_group.project_group_id
+                       inner join user
+#                         member_role为2 指的是学生组长
+                                  on user.code = user_project_group.user_id and user_project_group.member_role = 2) as t_lead_stu,
+             project_group
+                 left join user on project_group.creator_id = user.code
+        where project_group.subordinate_college = #{college}
     </select>
 </mapper>

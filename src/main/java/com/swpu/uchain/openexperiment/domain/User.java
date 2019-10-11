@@ -37,7 +37,7 @@ public class User implements Serializable {
      */
     private Integer userType;
 
-    private String institute;
+    private Integer institute;
 
     private String major;
 
