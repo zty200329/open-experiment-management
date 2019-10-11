@@ -703,6 +703,39 @@ public class ProjectServiceImpl implements ProjectService {
                 ,"专业年级","开始时间","结束时间","开放实验室","实验室地点","负责学生电话","申请经费（元）","建议评审分组"};
         // 4.1创建表头行
         XSSFRow row = sheet.createRow(2);
+
+        //创建行中的列
+        for (int i = 0; i < head.length; i++) {
+            // 给列写入数据,创建单元格，写入数据
+            row.createCell(i).setCellValue(head[i]);
+        }
+
+        //写入数据
+        for (int i = 0; i < list.size(); i++) {
+            //创建行
+            // 创建行
+            row = sheet.createRow(i+3);
+
+            //设置行高
+            row.setHeight((short) (16*15));
+            // 序号
+            row.createCell(0).setCellValue(list.get(i).getCollege());
+            row.createCell(1).setCellValue(list.get(i).getProjectId());
+            row.createCell(2).setCellValue(list.get(i).getProjectName());
+            row.createCell(3).setCellValue(list.get(i).getExperimentType());
+            row.createCell(4).setCellValue(list.get(i).getTotalHours());
+            row.createCell(5).setCellValue(list.get(i).getLeadTeacher());
+            row.createCell(6).setCellValue(list.get(i).getLeadStudent());
+            row.createCell(7).setCellValue(list.get(i).getGradeAndMajor());
+            row.createCell(8).setCellValue(list.get(i).getStartTime());
+            row.createCell(9).setCellValue(list.get(i).getEndTime());
+            row.createCell(10).setCellValue(list.get(i).getLabName());
+            row.createCell(11).setCellValue(list.get(i).getAddress());
+            row.createCell(12).setCellValue(list.get(i).getLeadStudentPhone());
+            row.createCell(13).setCellValue(list.get(i).getApplyFunds());
+            row.createCell(14).setCellValue(list.get(i).getSuggestGroupType());
+
+        }
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
         response.setHeader("Content-disposition", "attachment;filename="+"test"+".xlsx");
         try {
