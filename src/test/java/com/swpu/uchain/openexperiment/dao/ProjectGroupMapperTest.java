@@ -29,4 +29,9 @@ public class ProjectGroupMapperTest {
     public void getProjectGroupDetailVOByProjectId(){
         System.err.println(projectGroupMapper.getProjectGroupDetailVOByProjectId(1L));
     }
+
+    @Test
+    public void getProjectTableInfoListByCollege() {
+        System.err.println(projectGroupMapper.getProjectTableInfoListByCollege("计科院"));
+    }
 }

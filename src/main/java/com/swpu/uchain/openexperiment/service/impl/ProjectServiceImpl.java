@@ -21,6 +21,8 @@ import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.CountUtil;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -667,7 +669,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void generateEstablishExcel() {
-        //TODO,使用workbook生成总览表
+        // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
+        XSSFWorkbook wb = new XSSFWorkbook();
+        // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
+        XSSFSheet sheet = wb.createSheet("sheet1");
     }
 
     @Override

@@ -5,10 +5,7 @@ import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.file.ConcludingReportForm;
 import com.swpu.uchain.openexperiment.form.file.ReloadApplyForm;
 import com.swpu.uchain.openexperiment.result.Result;
-import com.swpu.uchain.openexperiment.service.GetUserService;
-import com.swpu.uchain.openexperiment.service.ProjectFileService;
-import com.swpu.uchain.openexperiment.service.UserProjectService;
-import com.swpu.uchain.openexperiment.service.UserService;
+import com.swpu.uchain.openexperiment.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +32,8 @@ public class FileController {
     private UserProjectService userProjectService;
     @Autowired
     private GetUserService getUserService;
+    @Autowired
+    private ProjectService projectService;
 
     @ApiOperation("下载立项申请正文doc")
     @GetMapping(value = "/getApplyDoc", name = "下载立项申请正文doc")
@@ -88,4 +87,16 @@ public class FileController {
         projectFileService.downloadAttachmentFile(fileId, response);
     }
 
+
+    @ApiOperation("生成结题总览表--待完成")
+    @GetMapping(value = "generateConclusionExcel", name = "生成结题总览表")
+    public void generateConclusionExcel(){
+        projectService.generateConclusionExcel();
+    }
+
+    @ApiOperation("生成立项总览表--待完成")
+    @GetMapping(value = "generateEstablishExcel", name = "生成立项总览表")
+    public void generateEstablishExcel(){
+        projectService.generateEstablishExcel();
+    }
 }

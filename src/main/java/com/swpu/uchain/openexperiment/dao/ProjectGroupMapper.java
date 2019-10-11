@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.VO.project.CheckProjectVO;
 import com.swpu.uchain.openexperiment.VO.project.OpenTopicInfo;
+import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
 import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.form.project.ProjectGroupDetailVO;
@@ -44,4 +45,6 @@ public interface ProjectGroupMapper {
     List<OpenTopicInfo> getAllOpenTopic();
 
     ProjectGroupDetailVO getProjectGroupDetailVOByProjectId(@Param("projectId")Long projectId );
+
+    List<ProjectTableInfo> getProjectTableInfoListByCollege(@Param("college") String college);
 }
