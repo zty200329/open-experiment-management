@@ -304,5 +304,59 @@ public class ConvertUtil {
         return result;
     }
 
+    public static String getStrCollege(int intCollege){
+        String result;
+        switch (intCollege){
+            case 1:
+                result = "马克思主义学院";
+                break;
+            case 2:
+                result = "艺术学院";
+                break;
+            case 3:
+                result = "化学化工学院";
+                break;
+            case 4:
+                result = "地球科学与技术学院";
+                break;
+            case 5:
+                result = "石油与天然气工程学院";
+                break;
+            case 6:
+                result = "电气信息学院";
+                break;
+            case 7:
+                result = "经济管理学院";
+                break;
+            case 8:
+                result = "体育学院";
+                break;
+            case 9:
+                result = "机电工程学院";
+                break;
+            case 10:
+                result = "材料科学与工程学院";
+                break;
+            case 11:
+                result = "理学院";
+                break;
+            case 12:
+                result = "土木工程与建筑学院";
+                break;
+            case 13:
+                result = "法学院";
+                break;
+            case 14:
+                result = "外国语学院";
+                break;
+            case 15:
+                result = "计算机科学学院";
+                break;
+            default:
+                result = "无";
+        }
+        return result;
+    }
+
 
 }

@@ -413,7 +413,7 @@
                project_group.apply_funds,
                project_group.experiment_type,
                project_group.suggest_group_type,
-               t_lead_stu.grade+t_lead_stu.major as gradeAndMajor,
+               CONCAT(t_lead_stu.grade,t_lead_stu.major) as gradeAndMajor,
                t_lead_stu.lead_student as leadStudent,
                t_lead_stu.lead_student_phone as leadStudentPhone,
                user.real_name      as leadTeacher,

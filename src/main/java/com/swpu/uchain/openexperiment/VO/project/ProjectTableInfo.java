@@ -16,7 +16,7 @@ public class ProjectTableInfo {
     /**
      * 所属学院/中心
      */
-    private String college;
+    private Integer college;
 
     /**
      * 项目编号
