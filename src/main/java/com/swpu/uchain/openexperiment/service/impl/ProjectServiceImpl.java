@@ -21,6 +21,7 @@ import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.CountUtil;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.xssf.usermodel.*;
 import org.aspectj.apache.bcel.classfile.Code;
@@ -680,7 +681,7 @@ public class ProjectServiceImpl implements ProjectService {
         // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
         XSSFWorkbook wb = new XSSFWorkbook();
         // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
-        XSSFSheet sheet = wb.createSheet("sheet1");
+        XSSFSheet sheet = wb.createSheet("workSheet");
 
         sheet.setPrintGridlines(true);
         //3.1设置字体居中
@@ -688,54 +689,67 @@ public class ProjectServiceImpl implements ProjectService {
         //自动换行
         cellStyle.setWrapText(true);
         cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        //当前行的位置
+        int index = 0;
 
         //序号
-        XSSFRow title = sheet.createRow(0);
+        XSSFRow title = sheet.createRow(index);
+        sheet.setColumnWidth(0,256*150);
         title.setHeight((short) (16*50));
-        title.createCell(0).setCellValue("西南石油大学第__期(20___-20___年度)课外开放实验项目立项一览表");
+        title.createCell(index++).setCellValue("西南石油大学第__期(20___-20___年度)课外开放实验项目立项一览表");
 
-        XSSFRow info = sheet.createRow(1);
+        XSSFRow info = sheet.createRow(index);
         info.createCell(0).setCellValue("单位：（盖章）");
+        sheet.setColumnWidth(0,256*20);
         info.createCell(3).setCellValue("填报时间");
+        sheet.setColumnWidth(index,256*20);
+        index++;
 
         // 4.设置表头，即每个列的列名
         String[] head = {"院/中心","序号","项目名称","实验类型","实验时数","指导教师","负责学生"
                 ,"专业年级","开始时间","结束时间","开放实验室","实验室地点","负责学生电话","申请经费（元）","建议评审分组"};
         // 4.1创建表头行
-        XSSFRow row = sheet.createRow(2);
+        XSSFRow row = sheet.createRow(index++);
 
         //创建行中的列
         for (int i = 0; i < head.length; i++) {
+
             // 给列写入数据,创建单元格，写入数据
             row.createCell(i).setCellValue(head[i]);
+
         }
 
         //写入数据
-        for (int i = 0; i < list.size(); i++) {
+        for (ProjectTableInfo projectTableInfo : list) {
             //创建行
             // 创建行
-            row = sheet.createRow(i+3);
+
+            row = sheet.createRow(index++);
 
             //设置行高
-            row.setHeight((short) (16*15));
+            row.setHeight((short) (16 * 22));
             // 序号
-            row.createCell(0).setCellValue(list.get(i).getCollege());
-            row.createCell(1).setCellValue(list.get(i).getProjectId());
-            row.createCell(2).setCellValue(list.get(i).getProjectName());
-            row.createCell(3).setCellValue(list.get(i).getExperimentType());
-            row.createCell(4).setCellValue(list.get(i).getTotalHours());
-            row.createCell(5).setCellValue(list.get(i).getLeadTeacher());
-            row.createCell(6).setCellValue(list.get(i).getLeadStudent());
-            row.createCell(7).setCellValue(list.get(i).getGradeAndMajor());
-            row.createCell(8).setCellValue(list.get(i).getStartTime());
-            row.createCell(9).setCellValue(list.get(i).getEndTime());
-            row.createCell(10).setCellValue(list.get(i).getLabName());
-            row.createCell(11).setCellValue(list.get(i).getAddress());
-            row.createCell(12).setCellValue(list.get(i).getLeadStudentPhone());
-            row.createCell(13).setCellValue(list.get(i).getApplyFunds());
-            row.createCell(14).setCellValue(list.get(i).getSuggestGroupType());
+            row.createCell(0).setCellValue(projectTableInfo.getCollege());
+            row.createCell(1).setCellValue(projectTableInfo.getProjectId());
+            row.createCell(2).setCellValue(projectTableInfo.getProjectName());
+            row.createCell(3).setCellValue(projectTableInfo.getExperimentType());
+            row.createCell(4).setCellValue(projectTableInfo.getTotalHours());
+            row.createCell(5).setCellValue(projectTableInfo.getLeadTeacher());
+            row.createCell(6).setCellValue(projectTableInfo.getLeadStudent());
+            row.createCell(7).setCellValue(projectTableInfo.getGradeAndMajor());
+            row.createCell(8).setCellValue(projectTableInfo.getStartTime());
+            row.createCell(9).setCellValue(projectTableInfo.getEndTime());
+            row.createCell(10).setCellValue(projectTableInfo.getLabName());
+            row.createCell(11).setCellValue(projectTableInfo.getAddress());
+            row.createCell(12).setCellValue(projectTableInfo.getLeadStudentPhone());
+            row.createCell(13).setCellValue(projectTableInfo.getApplyFunds());
+            row.createCell(14).setCellValue(projectTableInfo.getSuggestGroupType());
 
         }
+
+        sheet.createRow(index++).createCell(0).setCellValue("注1：本表由学院（中心）汇总填报。注2：建议评审分组填A-F,数据来源立项申请表");
+        sheet.createRow(++index).createCell(0).setCellValue("主管院长签字:");
+        sheet.createRow(index).createCell(4).setCellValue("经办人");
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
         response.setHeader("Content-disposition", "attachment;filename="+"test"+".xlsx");
         try {
