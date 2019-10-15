@@ -27,9 +27,11 @@ import org.apache.poi.xssf.usermodel.*;
 import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -82,6 +84,8 @@ public class ProjectServiceImpl implements ProjectService {
         this.recordMapper = recordMapper;
         this.messageRecordMapper = messageRecordMapper;
     }
+
+    @Value("${upload.}")
 
     @Override
     public boolean insert(ProjectGroup projectGroup) {
@@ -613,6 +617,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result approveProjectApplyBySecondaryUnit(List<ProjectCheckForm> list) {
         return checkProjectApply(list,RoleType.SECONDARY_UNIT.getValue());
+    }
+
+    @Override
+    public Result createKeyApply(KeyProjectApplyForm form, MultipartFile file) {
+        return null;
     }
 
     @Transactional(rollbackFor = Exception.class)

@@ -195,4 +195,12 @@ public interface ProjectService {
     Result approveProjectApplyByLabAdministrator(List<ProjectCheckForm> list);
 
     Result approveProjectApplyBySecondaryUnit(List<ProjectCheckForm> list);
+
+    /**
+     * 重点项目申请
+     * @param form 申请表单
+     * @param file 材料说明
+     * @return
+     */
+    Result createKeyApply(KeyProjectApplyForm form, MultipartFile file);
 }

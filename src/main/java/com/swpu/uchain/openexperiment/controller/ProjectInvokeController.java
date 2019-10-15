@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -41,6 +42,12 @@ public class ProjectInvokeController {
     @PostMapping(value = "/createApply", name = "申请立项接口")
     public Result createApply(@Valid @RequestBody CreateProjectApplyForm form){
         return projectService.applyCreateProject(form);
+    }
+
+    @ApiOperation("重点项目申请接口")
+    @PostMapping(value = "/createKeyApply")
+    public Result createKeyApply(@Valid KeyProjectApplyForm form, MultipartFile file){
+        return projectService.createKeyApply(form,file);
     }
 
     @ApiOperation("修改立项申请--可使用")

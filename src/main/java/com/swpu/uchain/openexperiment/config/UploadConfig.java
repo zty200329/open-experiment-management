@@ -25,5 +25,7 @@ public class UploadConfig {
      * 上传结题报告文件文件名
      */
     private String concludingFileName;
+
+    private String materialDir;
 }
 
