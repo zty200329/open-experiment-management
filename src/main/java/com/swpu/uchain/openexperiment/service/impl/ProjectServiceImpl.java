@@ -729,7 +729,7 @@ public class ProjectServiceImpl implements ProjectService {
             //设置行高
             row.setHeight((short) (16 * 22));
             // 序号
-            row.createCell(0).setCellValue(projectTableInfo.getCollege());
+            row.createCell(0).setCellValue(ConvertUtil.getStrCollege(projectTableInfo.getCollege()));
             row.createCell(1).setCellValue(projectTableInfo.getProjectId());
             row.createCell(2).setCellValue(projectTableInfo.getProjectName());
             row.createCell(3).setCellValue(projectTableInfo.getExperimentType());
@@ -748,8 +748,11 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         sheet.createRow(index++).createCell(0).setCellValue("注1：本表由学院（中心）汇总填报。注2：建议评审分组填A-F,数据来源立项申请表");
-        sheet.createRow(++index).createCell(0).setCellValue("主管院长签字:");
-        sheet.createRow(index).createCell(4).setCellValue("经办人");
+        index++;
+
+        XSSFRow end = sheet.createRow(index);
+        end.createCell(0).setCellValue("主管院长签字:");
+        end.createCell(3).setCellValue("经办人");
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
         response.setHeader("Content-disposition", "attachment;filename="+"test"+".xlsx");
         try {
@@ -764,7 +767,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void generateConclusionExcel(HttpServletResponse response) {
-        //TODO,使用workbook生成总览表
+
     }
 
     @Override
