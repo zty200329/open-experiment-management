@@ -17,7 +17,7 @@ spring:
       # 配置一个连接在池中最小生存的时间，单位是毫秒
       min-evictable-idle-time-millis: 300000
   redis:
-    port: 6379
+    port: 6380
     host: localhost
     password: "123456"
 mybatis:
@@ -30,7 +30,7 @@ jwt:
 #redis
 redis:
   host: localhost
-  port: 6379
+  port: 6380
   timeout: 10
   poolMaxTotal: 1000
   poolMaxIdle: 500

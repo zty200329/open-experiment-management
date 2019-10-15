@@ -3,7 +3,7 @@ server:
 spring:
   datasource:
     username: root
-    password: "000411"
+    password: "123456"
 
   servlet:
     multipart:
