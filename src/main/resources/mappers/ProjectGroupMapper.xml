@@ -185,7 +185,34 @@
       main_content = #{mainContent}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ProjectGroupResultMap">
+    <select id="selectByPrimaryProjectName" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
+        select id,
+               address,
+               create_time,
+               creator_id,
+               end_time,
+               experiment_condition,
+               suggest_group_type,
+               experiment_type,
+               achievement_check,
+               limit_college,
+               limit_major,
+               limit_grade,
+               fit_people_num,
+               total_hours,
+               lab_name,
+               project_name,
+               project_type,
+               start_time,
+               `status`,
+               update_time,
+               main_Content
+        from project_group
+        where project_name = #{projectName,jdbcType=VARCHAR}
+    </select>
+
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ProjectGroupResultMap">
     select id,
            address,
            create_time,

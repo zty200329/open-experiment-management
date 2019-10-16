@@ -1,13 +1,16 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.domain.UserRole;
+import com.swpu.uchain.openexperiment.form.user.StuMember;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface UserRoleMapper {
+
     int deleteByUserIdAndRoleId(Long userId, Long roleId);
 
     int insert(UserRole record);
@@ -28,4 +31,6 @@ public interface UserRoleMapper {
     UserRole selectByUserIdAndRoleId(Long userId, Long roleId);
 
     List<UserRole> selectByRoleId(Long roleId);
+
+
 }

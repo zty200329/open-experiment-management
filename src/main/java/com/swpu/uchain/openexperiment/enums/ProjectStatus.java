@@ -13,9 +13,11 @@ public enum ProjectStatus {
     /**
      *
      */
-    ESTABLISH_FAILED(-2,"立项失败"),
+    ESTABLISH_FAILED(-3,"立项失败"),
 
-    REJECT_MODIFY(-1,"驳回修改"),
+    REJECT_MODIFY(-2,"驳回修改"),
+
+    TO_DE_CONFIRMED(-1,"待确认--项目组长编写后"),
 
     DECLARE(0,"申报"),
 

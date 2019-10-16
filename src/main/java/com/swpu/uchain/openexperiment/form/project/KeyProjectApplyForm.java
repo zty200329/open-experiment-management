@@ -27,8 +27,8 @@ public class KeyProjectApplyForm {
     @ApiModelProperty("申请费用")
     private float funds;
 
-    @ApiModelProperty("资金说明")
-    private List<FundsForm> fundsList;
+//    @ApiModelProperty("资金说明")
+//    private List<FundsForm> fundsList;
 
     @ApiModelProperty("教师信息")
     private List<TeacherMember> teachers;

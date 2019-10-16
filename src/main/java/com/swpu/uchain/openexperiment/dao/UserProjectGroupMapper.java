@@ -2,9 +2,12 @@ package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
+import com.swpu.uchain.openexperiment.form.user.StuMember;
+import com.swpu.uchain.openexperiment.form.user.TeacherMember;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,4 +37,13 @@ public interface UserProjectGroupMapper {
     List<String> selectUserCodesByProjectGroupId(Long projectGroupId);
 
     List<Long> selectProjectGroupIdByUserIdAndMemberRole(@Param("userId") Long userId,@Param("memberRole")Integer memberRole);
+
+    /**
+     * 更新用户信息
+     * @param stuMember
+     * @return
+     */
+    int updateUserInfo(@Param("stuMember")StuMember stuMember,@Param("date") Date date,Long projectId);
+
+    int updateTeacherTechnicalRole(TeacherMember teacher,@Param("projectId") Long projectId);
 }

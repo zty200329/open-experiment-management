@@ -2,6 +2,11 @@ package com.swpu.uchain.openexperiment.form.user;
 
 import lombok.Data;
 
+import java.util.Date;
+
+/**
+ * @author dengg
+ */
 @Data
 public class TeacherMember {
 
@@ -19,5 +24,6 @@ public class TeacherMember {
      * 技术职称
      */
     private String technicalRole;
+
 
 }

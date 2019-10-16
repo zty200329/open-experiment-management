@@ -15,6 +15,8 @@ import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.funds.FundsForm;
 import com.swpu.uchain.openexperiment.form.project.*;
+import com.swpu.uchain.openexperiment.form.user.StuMember;
+import com.swpu.uchain.openexperiment.form.user.TeacherMember;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -58,7 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
     private UploadConfig uploadConfig;
     private ConvertUtil convertUtil;
     private GetUserService getUserService;
-    private UserRoleMapper userRoleMapper;
+    private UserProjectGroupMapper userProjectGroupMapper;
     private RoleMapper roleMapper;
     private OperationRecordMapper recordMapper;
     private MessageRecordMapper messageRecordMapper;
@@ -69,8 +71,9 @@ public class ProjectServiceImpl implements ProjectService {
                               ProjectFileService projectFileService, FundsService fundsService,
                               CountConfig countConfig, UploadConfig uploadConfig,
                               ConvertUtil convertUtil, GetUserService getUserService,
-                              UserRoleMapper userRoleMapper, OperationRecordMapper recordMapper,
-                              MessageRecordMapper messageRecordMapper,RoleMapper roleMapper) {
+                              OperationRecordMapper recordMapper,
+                              MessageRecordMapper messageRecordMapper,RoleMapper roleMapper,
+                              UserProjectGroupMapper userProjectGroupMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -81,7 +84,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.uploadConfig = uploadConfig;
         this.convertUtil = convertUtil;
         this.getUserService = getUserService;
-        this.userRoleMapper = userRoleMapper;
+        this.userProjectGroupMapper = userProjectGroupMapper;
         this.recordMapper = recordMapper;
         this.messageRecordMapper = messageRecordMapper;
         this.roleMapper = roleMapper;
@@ -622,12 +625,44 @@ public class ProjectServiceImpl implements ProjectService {
         return checkProjectApply(list,RoleType.SECONDARY_UNIT.getValue());
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Result createKeyApply(KeyProjectApplyForm form) {
+        String projectName = form.getProjectName();
+        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryProjectName(projectName);
+        if (projectGroup == null){
+            throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+        }
+        //更新项目状态为等待知道老师审核
+        updateProjectStatus(projectGroup.getId(),ProjectStatus.TO_DE_CONFIRMED.getValue());
+        List<StuMember> stuMemberList = form.getMembers();
 
-        // TODO
-        return null;
+        Long projectId = projectGroup.getId();
 
+        //用于记录更新的条数
+        int counter = 0;
+        for (StuMember stuMember:stuMemberList
+             ) {
+            if (userProjectGroupMapper.updateUserInfo(stuMember,new Date(),projectId) != 0){
+                counter ++;
+            }
+        }
+        //更新条数和传入数值不一致，则说明信息不匹配,同理，老师的信息也是
+        if (counter != stuMemberList.size()) {
+            throw new GlobalException(CodeMsg.USER_INFORMATION_MATCH_ERROR);
+        }
+        counter = 0;
+        for (TeacherMember teacher:form.getTeachers()
+             ) {
+            if (userProjectGroupMapper.updateTeacherTechnicalRole(teacher,projectId) != 0){
+                counter ++;
+            }
+        }
+        if (counter != stuMemberList.size()) {
+            throw new GlobalException(CodeMsg.USER_INFORMATION_MATCH_ERROR);
+        }
+
+        return Result.success();
     }
 
     @Transactional(rollbackFor = Exception.class)

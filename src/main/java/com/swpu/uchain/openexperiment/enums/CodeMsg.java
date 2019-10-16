@@ -74,7 +74,8 @@ public enum CodeMsg {
     PROJECT_NOT_MODIFY_BY_FUNCTION_DEPARTMENT(614,"项目未被职能部门修改"),
     LEADING_TEACHER_CONTAINS_ERROR(615,"指导教师必须包含项目申请人"),
     TOPIC_IS_NOT_OPEN(616,"选题选择开放,无法在申请立项时指定学生"),
-    CURRENT_PROJECT_STATUS_ERROR(617,"当前项目不支持该操作");
+    CURRENT_PROJECT_STATUS_ERROR(617,"当前项目不支持该操作"),
+    USER_INFORMATION_MATCH_ERROR(618,"用户信息匹配错误");
 
 
     private Integer code;

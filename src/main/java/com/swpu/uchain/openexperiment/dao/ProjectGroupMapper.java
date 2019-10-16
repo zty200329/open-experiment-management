@@ -24,6 +24,8 @@ public interface ProjectGroupMapper {
 
     ProjectGroup selectByPrimaryKey(Long id);
 
+    ProjectGroup selectByPrimaryProjectName(@Param("projectName") String projectName);
+
     List<ProjectGroup> selectAll();
 
     int updateByPrimaryKey(ProjectGroup record);
