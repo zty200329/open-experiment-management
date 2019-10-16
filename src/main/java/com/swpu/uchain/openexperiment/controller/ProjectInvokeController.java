@@ -46,8 +46,8 @@ public class ProjectInvokeController {
 
     @ApiOperation("重点项目申请接口")
     @PostMapping(value = "/createKeyApply")
-    public Result createKeyApply(@Valid KeyProjectApplyForm form, MultipartFile file){
-        return projectService.createKeyApply(form,file);
+    public Result createKeyApply(@Valid @RequestBody KeyProjectApplyForm form){
+        return projectService.createKeyApply(form);
     }
 
     @ApiOperation("修改立项申请--可使用")

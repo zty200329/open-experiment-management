@@ -14,10 +14,10 @@ spring:
       max-request-size: 307200000
 
 upload:
-  upload-dir: "/home/panghu/IdeaProjects/OpenExperiment/src/main/resources/testFile/"
-  material_dir: "C:\Users\dengg\Desktop\开放性实验\重点项目申请材料"
   apply-file-name: "立项申请主要内容"
   concluding-file-name: "结题报告"
+  upload-dir: "/home/panghu/IdeaProjects/OpenExperiment/src/main/resources/testFile/"
+  material_dir: "C:/Users/dengg/Desktop/开放性实验/重点项目申请材料"
 
 
 mybatis:

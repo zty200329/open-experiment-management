@@ -12,6 +12,7 @@ import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.JoinStatus;
 import com.swpu.uchain.openexperiment.enums.MemberRole;
 import com.swpu.uchain.openexperiment.enums.UserType;
+import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.user.LoginForm;
 import com.swpu.uchain.openexperiment.form.user.UserUpdateForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
@@ -281,9 +282,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result getMyInfo() {
         User currentUser = getUserService.getCurrentUser();
+        if (currentUser == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
         UserInfoVO userInfoVO = new UserInfoVO();
         BeanUtils.copyProperties(currentUser, userInfoVO);
-        Role role = roleService.getUserRoles(currentUser.getId());
+        Role role = roleService.getUserRoles(Long.valueOf(currentUser.getCode()));
+        //获取Role信息
         RoleInfoVO roleInfoVO = convertUtil.convertRole(role);
         userInfoVO.setRoleInfoVO(roleInfoVO);
         return Result.success(userInfoVO);

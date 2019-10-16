@@ -59,6 +59,7 @@ public class ProjectServiceImpl implements ProjectService {
     private ConvertUtil convertUtil;
     private GetUserService getUserService;
     private UserRoleMapper userRoleMapper;
+    private RoleMapper roleMapper;
     private OperationRecordMapper recordMapper;
     private MessageRecordMapper messageRecordMapper;
 
@@ -69,7 +70,7 @@ public class ProjectServiceImpl implements ProjectService {
                               CountConfig countConfig, UploadConfig uploadConfig,
                               ConvertUtil convertUtil, GetUserService getUserService,
                               UserRoleMapper userRoleMapper, OperationRecordMapper recordMapper,
-                              MessageRecordMapper messageRecordMapper) {
+                              MessageRecordMapper messageRecordMapper,RoleMapper roleMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -83,9 +84,11 @@ public class ProjectServiceImpl implements ProjectService {
         this.userRoleMapper = userRoleMapper;
         this.recordMapper = recordMapper;
         this.messageRecordMapper = messageRecordMapper;
+        this.roleMapper = roleMapper;
     }
 
-    @Value("${upload.}")
+    @Value("${upload.material_dir}")
+    private String materialDir;
 
     @Override
     public boolean insert(ProjectGroup projectGroup) {
@@ -620,8 +623,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result createKeyApply(KeyProjectApplyForm form, MultipartFile file) {
+    public Result createKeyApply(KeyProjectApplyForm form) {
+
+        // TODO
         return null;
+
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -782,8 +788,10 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List getJoinInfo() {
         User currentUser = getUserService.getCurrentUser();
-        //检测学生无法拥有检查看审批列表的功能
-        if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()) {
+        //检测用户是不是老师--后期可省略
+
+        Role role = roleMapper.selectByUserId(Long.valueOf(currentUser.getCode()));
+        if (role.getId() != (RoleType.MENTOR.getValue()).longValue()) {
             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
         }
         List<JoinUnCheckVO> joinUnCheckVOS = new ArrayList<>();

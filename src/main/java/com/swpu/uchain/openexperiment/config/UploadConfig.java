@@ -26,6 +26,9 @@ public class UploadConfig {
      */
     private String concludingFileName;
 
+    /**
+     * 证明材料上传位置
+     */
     private String materialDir;
 }
 
