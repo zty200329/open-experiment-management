@@ -36,6 +36,12 @@ public interface UserProjectGroupMapper {
 
     List<String> selectUserCodesByProjectGroupId(Long projectGroupId);
 
+    /**
+     * 通过角工号和角色查询项目ID
+     * @param userId
+     * @param memberRole
+     * @return
+     */
     List<Long> selectProjectGroupIdByUserIdAndMemberRole(@Param("userId") Long userId,@Param("memberRole")Integer memberRole);
 
     /**

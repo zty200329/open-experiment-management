@@ -49,12 +49,12 @@
     <update id="updateUserInfo">
         update user_project_group
         set update_time = #{date},
-            technical_role = #{technicalRole,jdbcType=VARCHAR},
-            work_division = #{workDivision,jdbcType=VARCHAR},
-            update_time = #{updateTime,jdbcType=TIMESTAMP},
-            member_role = #{memberRole,jdbcType=INTEGER}
+            technical_role = #{stuMember.technicalRole,jdbcType=VARCHAR},
+            work_division = #{stuMember.workDivision,jdbcType=VARCHAR},
+            member_role = #{stuMember.memberRole,jdbcType=INTEGER},
+            person_judge = #{stuMember.personJudge,jdbcType=VARCHAR}
         <!--且角色不为教师-->
-        where user_id = #{userId} and member_role != 1 and project_id = #{projectId}
+        where user_id = #{stuMember.userId} and member_role != 1 and project_group_id = #{projectId}
     </update>
     <update id="updateTeacherTechnicalRole">
         update user_project_group

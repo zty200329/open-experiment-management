@@ -184,6 +184,8 @@ public interface ProjectService {
      */
     Result getAllOpenTopic();
 
+    Result getPendingReviewByLeadTeacher();
+
     Result getPendingReviewByLabLeader();
 
     Result getProjectGroupDetailVOByProjectId(Long projectId);
@@ -202,4 +204,5 @@ public interface ProjectService {
      * @return
      */
     Result createKeyApply(KeyProjectApplyForm form);
+
 }

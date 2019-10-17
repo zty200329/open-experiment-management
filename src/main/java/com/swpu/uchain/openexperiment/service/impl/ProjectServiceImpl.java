@@ -715,9 +715,22 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success(projectGroupMapper.getAllOpenTopic());
     }
 
+    /**
+     * 指导老师获取待审批的项目信息
+     * @return
+     */
     @Override
-    public Result getPendingReviewByLabLeader() {
+    public Result getPendingReviewByLeadTeacher() {
+        User user = getUserService.getCurrentUser();
+        if (user == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        List<ProjectGroup> list = projectGroupMapper.selectByUserIdAndStatus(Long.valueOf(user.getCode()),ProjectStatus.TO_DE_CONFIRMED.getValue());
+        return Result.success(list);
+    }
 
+        @Override
+    public Result getPendingReviewByLabLeader() {
         //传入用户为空,则获取所有的指定状态的项目
         return Result.success(projectGroupMapper.selectByCollegeIdAndStatus(null,ProjectStatus.DECLARE.getValue()));
     }

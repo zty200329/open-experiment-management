@@ -98,7 +98,13 @@ public class ProjectQueryController {
         return Result.success(projectService.selectByProjectName(name));
     }
 
-    @ApiIgnore("实验室主任查看待审核项目")
+    @ApiOperation("指导老师查看待审核的项目")
+    @GetMapping("/getPendingReviewByLeadTeacher")
+    public Result getPendingReviewByLeadTeacher(){
+        return projectService.getPendingReviewByLeadTeacher();
+    }
+
+    @ApiOperation("实验室主任查看待审核项目")
     @GetMapping("/getPendingReviewByLabLeader")
     public Result getPendingReviewByLabLeader(){
         return projectService.getPendingReviewByLabLeader();

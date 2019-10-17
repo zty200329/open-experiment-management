@@ -2,6 +2,8 @@ package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.dao.UserMapper;
 import com.swpu.uchain.openexperiment.domain.User;
+import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.UserKey;
 import org.springframework.security.core.Authentication;
@@ -31,7 +33,7 @@ public class GetUserService {
         if (!"anonymousUser".equals(name)){
             return selectByUserCode(name);
         }
-        return null;
+        throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
     }
 
     public User selectByUserCode(String userCode) {

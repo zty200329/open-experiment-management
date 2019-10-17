@@ -22,7 +22,6 @@ import java.util.Map;
  * @Description:
  * 异常拦截器
  */
-//@ControllerAdvice
 @ResponseBody
 @Slf4j
 public class GlobalExceptionHandler {
