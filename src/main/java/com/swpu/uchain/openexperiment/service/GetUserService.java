@@ -33,7 +33,7 @@ public class GetUserService {
         if (!"anonymousUser".equals(name)){
             return selectByUserCode(name);
         }
-        throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        return null;
     }
 
     public User selectByUserCode(String userCode) {

@@ -50,13 +50,13 @@ public class ProjectInvokeController {
         return projectService.createKeyApply(form);
     }
 
-    @ApiOperation("修改立项申请--可使用")
+    @ApiOperation("职能部门修改立项申请")
     @PostMapping(value = "/updateApply", name = "修改立项申请")
     public Result updateApply(@Valid @RequestBody UpdateProjectApplyForm updateProjectApplyForm){
         return projectService.applyUpdateProject(updateProjectApplyForm);
     }
 
-    @ApiOperation("确认或者否认职能部门修改立项申请的结果(指导老师进行确认)1,确认(立项成功)  2.否认(立项失败)--可使用")
+    @ApiOperation("指导教师确认或者否认职能部门修改立项申请的结果(指导老师进行确认)1,确认(立项成功)  2.否认(立项失败)")
     @PostMapping(value = "/ensureOrNotModify", name = "修改立项申请")
     public Result ensureOrNotModify(@Valid @RequestBody ConfirmForm confirmForm){
         return projectService.ensureOrNotModify(confirmForm);
@@ -80,7 +80,7 @@ public class ProjectInvokeController {
         return projectService.rejectJoin(joinForm);
     }
 
-    @ApiOperation("同意立项(职能部门)--可使用")
+    @ApiOperation("职能部门批准操作")
     @PostMapping(value = "/agreeEstablish", name = "同意立项")
     public Result agreeEstablish(@Valid @RequestBody List<ProjectCheckForm> projectGroupIdList){
         return projectService.agreeEstablish(projectGroupIdList);
@@ -92,7 +92,7 @@ public class ProjectInvokeController {
         return projectService.approveProjectApplyByLabAdministrator(list);
     }
 
-    @ApiOperation("实验室批准操作")
+    @ApiOperation("二级单位（学院）批准操作")
     @PostMapping(value = "/approveProjectApplyBySecondaryUnit")
     public Result approveProjectApplyBySecondaryUnit(@RequestBody List<ProjectCheckForm> list){
         return projectService.approveProjectApplyBySecondaryUnit(list);
@@ -105,11 +105,11 @@ public class ProjectInvokeController {
     }
 
 
-    @ApiOperation("资金报账(职能部门使用)")
-    @PostMapping(value = "/appendCreateApply", name = "追加立项申请内容")
-    public Result appendCreateApply(@Valid @RequestBody AppendApplyForm appendApplyForm){
-        return projectService.appendCreateApply(appendApplyForm);
-    }
+//    @ApiOperation("资金报账(职能部门使用)")
+//    @PostMapping(value = "/appendCreateApply", name = "追加立项申请内容")
+//    public Result appendCreateApply(@Valid @RequestBody AppendApplyForm appendApplyForm){
+//        return projectService.appendCreateApply(appendApplyForm);
+//    }
 
 
     @ApiOperation("上报学院领导(二级单位)--(实验室主任)可使用")

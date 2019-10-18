@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -81,7 +82,7 @@ public class FileController {
         return Result.success();
     }
 
-    @ApiOperation("下载附件")
+    @ApiIgnore("下载附件")
     @GetMapping(value = "downloadAttachmentFile", name = "下载附件")
     public void downloadAttachmentFile(long fileId, HttpServletResponse response){
         projectFileService.downloadAttachmentFile(fileId, response);

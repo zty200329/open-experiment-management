@@ -1,6 +1,6 @@
 package com.swpu.uchain.openexperiment.form.project;
 
-import com.swpu.uchain.openexperiment.form.funds.FundsForm;
+import com.swpu.uchain.openexperiment.form.funds.FundForm;
 import com.swpu.uchain.openexperiment.form.user.StuMember;
 import com.swpu.uchain.openexperiment.form.user.TeacherMember;
 import io.swagger.annotations.Api;
@@ -28,7 +28,7 @@ public class KeyProjectApplyForm {
     private float funds;
 
 //    @ApiModelProperty("资金说明")
-//    private List<FundsForm> fundsList;
+//    private List<FundForm> fundsList;
 
     @ApiModelProperty("教师信息")
     private List<TeacherMember> teachers;

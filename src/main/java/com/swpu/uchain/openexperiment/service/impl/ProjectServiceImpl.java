@@ -2,7 +2,7 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.swpu.uchain.openexperiment.DTO.OperationRecordDTO;
+import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.domain.Message;
 import com.swpu.uchain.openexperiment.VO.project.*;
@@ -13,7 +13,7 @@ import com.swpu.uchain.openexperiment.dao.*;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
-import com.swpu.uchain.openexperiment.form.funds.FundsForm;
+import com.swpu.uchain.openexperiment.form.funds.FundForm;
 import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.form.user.StuMember;
 import com.swpu.uchain.openexperiment.form.user.TeacherMember;
@@ -230,7 +230,7 @@ public class ProjectServiceImpl implements ProjectService {
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
         //状态不允许修改
-        if (projectGroup.getStatus() != ProjectStatus.DECLARE.getValue().intValue()
+        if (projectGroup.getStatus() != ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue().intValue()
                 || projectGroup.getStatus() != ProjectStatus.REJECT_MODIFY.getValue().intValue()) {
             return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
         }
@@ -251,7 +251,11 @@ public class ProjectServiceImpl implements ProjectService {
 
         //将之前的历史数据设置为不可见
         //type传入为空则更新所有
-        recordMapper.setNotVisibleByProjectId(projectGroup.getId(),null);
+        OperationRecord operationRecord = new OperationRecord();
+        operationRecord.setOperationType(OperationType.PROJECT_MODIFY_TYPE1.getValue().toString());
+        operationRecord.setOperationContent(CheckResultType.REJECTED.getValue());
+        setOperationExecutor(operationRecord);
+        recordMapper.insert(operationRecord);
         return Result.success();
     }
 
@@ -376,25 +380,22 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result agreeEstablish(List<ProjectCheckForm> projectGroupIdList) {
-        List<OperationRecordDTO> operationRecordDTOS = new LinkedList<>();
+        List<OperationRecord> operationRecordS = new LinkedList<>();
         for (ProjectCheckForm projectCheckForm : projectGroupIdList) {
             Result result = updateProjectStatus(projectCheckForm.getProjectId(), ProjectStatus.ESTABLISH.getValue());
             if (result.getCode() != 0) {
                 throw new GlobalException(CodeMsg.UPDATE_ERROR);
             }
-            result = fundsService.agreeFunds(projectCheckForm.getProjectId());
-            if (result.getCode() != 0) {
-                throw new GlobalException(CodeMsg.UPDATE_ERROR);
-            }
-            OperationRecordDTO operationRecordDTO = new OperationRecordDTO();
-            operationRecordDTO.setOperationType(OperationType.PROJECT_OPERATION_TYPE3.getValue().toString());
-            operationRecordDTO.setOperationContent(CheckResultType.PASS.getValue());
-            operationRecordDTO.setOperationReason(projectCheckForm.getReason());
-            operationRecordDTO.setRelatedId(projectCheckForm.getProjectId());
-            operationRecordDTOS.add(operationRecordDTO);
-            setOperationExecutor(operationRecordDTO);
+
+            OperationRecord operationRecord = new OperationRecord();
+            operationRecord.setOperationType(OperationType.PROJECT_OPERATION_TYPE3.getValue().toString());
+            operationRecord.setOperationContent(CheckResultType.PASS.getValue());
+            operationRecord.setOperationReason(projectCheckForm.getReason());
+            operationRecord.setRelatedId(projectCheckForm.getProjectId());
+            operationRecordS.add(operationRecord);
+            setOperationExecutor(operationRecord);
         }
-        recordMapper.multiInsert(operationRecordDTOS);
+        recordMapper.multiInsert(operationRecordS);
         return Result.success();
     }
 
@@ -419,58 +420,58 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    @Override
-    public Result appendCreateApply(AppendApplyForm appendApplyForm) {
-        User currentUser = getUserService.getCurrentUser();
-        //获取用户所在的用户项目组信息
-        UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(
-                appendApplyForm.getProjectGroupId(), currentUser.getId());
-        if (userProjectGroup == null) {
-            return Result.error(CodeMsg.USER_NOT_IN_GROUP);
-        }
-
-        if (userProjectGroup.getStatus() < 5){
-            throw new GlobalException(CodeMsg.FUNDS_NOT_EXIST);
-        }
-
-        //拒绝普通用户进行该项操作
-        if (userProjectGroup.getMemberRole().intValue() == MemberRole.NORMAL_MEMBER.getValue()) {
-            Result.error(CodeMsg.PERMISSION_DENNY);
-        }
-        FundsForm[] fundsForms = appendApplyForm.getFundsForms();
-        for (FundsForm fundsForm : fundsForms) {
-            //资金id不为空进行更新操作
-            if (fundsForm.getFundsId() != null) {
-                Funds funds = fundsService.selectById(fundsForm.getFundsId());
-
-                if (funds == null) {
-                    return Result.error(CodeMsg.FUNDS_NOT_EXIST);
-                }
-                //申请通过的资金无进行更新操作
-                if (funds.getStatus().intValue() == FundsStatus.AGREED.getValue()) {
-                    return Result.error(CodeMsg.FUNDS_AGREE_CANT_CHANGE);
-                }
-                BeanUtils.copyProperties(fundsForm, funds);
-                funds.setUpdateTime(new Date());
-                if (!fundsService.update(funds)) {
-                    return Result.error(CodeMsg.UPDATE_ERROR);
-                }
-            } else {
-                //添加资金信息
-                Funds funds = new Funds();
-                BeanUtils.copyProperties(fundsForm, funds);
-                funds.setProjectGroupId(appendApplyForm.getProjectGroupId());
-                funds.setApplicantId(currentUser.getId());
-                funds.setStatus(FundsStatus.APPLYING.getValue());
-                funds.setCreateTime(new Date());
-                funds.setUpdateTime(new Date());
-                if (!fundsService.insert(funds)) {
-                    return Result.error(CodeMsg.ADD_ERROR);
-                }
-            }
-        }
-        return Result.success();
-    }
+//    @Override
+//    public Result appendCreateApply(AppendApplyForm appendApplyForm) {
+//        User currentUser = getUserService.getCurrentUser();
+//        //获取用户所在的用户项目组信息
+//        UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(
+//                appendApplyForm.getProjectGroupId(), currentUser.getId());
+//        if (userProjectGroup == null) {
+//            return Result.error(CodeMsg.USER_NOT_IN_GROUP);
+//        }
+//
+//        if (userProjectGroup.getStatus() < 5){
+//            throw new GlobalException(CodeMsg.FUNDS_NOT_EXIST);
+//        }
+//
+//        //拒绝普通用户进行该项操作
+//        if (userProjectGroup.getMemberRole().intValue() == MemberRole.NORMAL_MEMBER.getValue()) {
+//            Result.error(CodeMsg.PERMISSION_DENNY);
+//        }
+//        FundForm[] fundsForms = appendApplyForm.getFundForms();
+//        for (FundForm fundsForm : fundsForms) {
+//            //资金id不为空进行更新操作
+//            if (fundsForm.getFundsId() != null) {
+//                Funds funds = fundsService.selectById(fundsForm.getFundsId());
+//
+//                if (funds == null) {
+//                    return Result.error(CodeMsg.FUNDS_NOT_EXIST);
+//                }
+//                //申请通过的资金无进行更新操作
+//                if (funds.getStatus().intValue() == FundsStatus.AGREED.getValue()) {
+//                    return Result.error(CodeMsg.FUNDS_AGREE_CANT_CHANGE);
+//                }
+//                BeanUtils.copyProperties(fundsForm, funds);
+//                funds.setUpdateTime(new Date());
+//                if (!fundsService.update(funds)) {
+//                    return Result.error(CodeMsg.UPDATE_ERROR);
+//                }
+//            } else {
+//                //添加资金信息
+//                Funds funds = new Funds();
+//                BeanUtils.copyProperties(fundsForm, funds);
+//                funds.setProjectGroupId(appendApplyForm.getProjectGroupId());
+//                funds.setApplicantId(currentUser.getId());
+//                funds.setStatus(FundsStatus.APPLYING.getValue());
+//                funds.setCreateTime(new Date());
+//                funds.setUpdateTime(new Date());
+//                if (!fundsService.insert(funds)) {
+//                    return Result.error(CodeMsg.ADD_ERROR);
+//                }
+//            }
+//        }
+//        return Result.success();
+//    }
 
     @Override
     public Result getPendingApprovalProjectByLabAdministrator(Integer pageNum) {
@@ -564,12 +565,12 @@ public class ProjectServiceImpl implements ProjectService {
         if (!ProjectStatus.LAB_ALLOWED.getValue().equals(projectGroupMapper.selectByPrimaryKey(projectGroupId).getStatus())){
             throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
         }
-        OperationRecordDTO operationRecordDTO = new OperationRecordDTO();
-        operationRecordDTO.setRelatedId(projectGroupId);
-        operationRecordDTO.setOperationContent(CheckResultType.PASS.getValue());
-        operationRecordDTO.setOperationType(OperationType.PROJECT_REPORT_TYPE1.getValue().toString());
-        setOperationExecutor(operationRecordDTO);
-        recordMapper.insert(operationRecordDTO);
+        OperationRecord operationRecord = new OperationRecord();
+        operationRecord.setRelatedId(projectGroupId);
+        operationRecord.setOperationContent(CheckResultType.PASS.getValue());
+        operationRecord.setOperationType(OperationType.PROJECT_REPORT_TYPE1.getValue().toString());
+        setOperationExecutor(operationRecord);
+        recordMapper.insert(operationRecord);
         return updateProjectStatus(projectGroupId, ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
     }
 
@@ -580,12 +581,12 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
         }
 
-        OperationRecordDTO operationRecordDTO = new OperationRecordDTO();
-        operationRecordDTO.setRelatedId(projectGroupId);
-        operationRecordDTO.setOperationContent(CheckResultType.PASS.getValue());
-        operationRecordDTO.setOperationType(OperationType.PROJECT_REPORT_TYPE2.getValue().toString());
-        setOperationExecutor(operationRecordDTO);
-        recordMapper.insert(operationRecordDTO);
+        OperationRecord operationRecord = new OperationRecord();
+        operationRecord.setRelatedId(projectGroupId);
+        operationRecord.setOperationContent(CheckResultType.PASS.getValue());
+        operationRecord.setOperationType(OperationType.PROJECT_REPORT_TYPE2.getValue().toString());
+        setOperationExecutor(operationRecord);
+        recordMapper.insert(operationRecord);
         return updateProjectStatus(projectGroupId, ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue());
     }
 
@@ -684,15 +685,15 @@ public class ProjectServiceImpl implements ProjectService {
                 //超管执行操作
                 checkOperationType = "-1";
         }
-        List<OperationRecordDTO> list = new LinkedList<>();
-        OperationRecordDTO operationRecordDTO = new OperationRecordDTO();
+        List<OperationRecord> list = new LinkedList<>();
+        OperationRecord operationRecord = new OperationRecord();
         for (ProjectCheckForm form : formList
         ) {
-            operationRecordDTO.setRelatedId(form.getProjectId());
-            operationRecordDTO.setOperationReason(form.getReason());
-            operationRecordDTO.setOperationContent(CheckResultType.PASS.getValue());
-            operationRecordDTO.setOperationType(checkOperationType);
-            operationRecordDTO.setOperationExecutorId(Long.valueOf(user.getCode()));
+            operationRecord.setRelatedId(form.getProjectId());
+            operationRecord.setOperationReason(form.getReason());
+            operationRecord.setOperationContent(CheckResultType.PASS.getValue());
+            operationRecord.setOperationType(checkOperationType);
+            operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
             //当角色是实验室主任的时候,项目状态不是
             ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
             if (role == 4 && !projectGroup.getStatus().equals(projectStatus)){
@@ -704,7 +705,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
             //更具不同角色设置不同的项目状态
             updateProjectStatus(form.getProjectId(), projectStatus);
-            list.add(operationRecordDTO);
+            list.add(operationRecord);
         }
         recordMapper.multiInsert(list);
         return Result.success();
@@ -944,15 +945,15 @@ public class ProjectServiceImpl implements ProjectService {
                 checkOperationType = "-1";
                 rightProjectStatus = ProjectStatus.REJECT_MODIFY.getValue();
         }
-        List<OperationRecordDTO> list = new LinkedList<>();
-        OperationRecordDTO operationRecordDTO = new OperationRecordDTO();
+        List<OperationRecord> list = new LinkedList<>();
+        OperationRecord operationRecord = new OperationRecord();
         for (ProjectCheckForm form : formList
         ) {
-            operationRecordDTO.setRelatedId(form.getProjectId());
-            operationRecordDTO.setOperationReason(form.getReason());
-            operationRecordDTO.setOperationContent(CheckResultType.REJECTED.getValue());
-            operationRecordDTO.setOperationType(checkOperationType);
-            operationRecordDTO.setOperationExecutorId(Long.valueOf(user.getCode()));
+            operationRecord.setRelatedId(form.getProjectId());
+            operationRecord.setOperationReason(form.getReason());
+            operationRecord.setOperationContent(CheckResultType.REJECTED.getValue());
+            operationRecord.setOperationType(checkOperationType);
+            operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
             //修改状态
             ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
             //如果项目和对应状态不一致
@@ -960,16 +961,16 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new GlobalException(CodeMsg.PROJECT_HAS_BEEN_REJECTED);
             }
             updateProjectStatus(form.getProjectId(), ProjectStatus.REJECT_MODIFY.getValue());
-            list.add(operationRecordDTO);
+            list.add(operationRecord);
         }
         recordMapper.multiInsert(list);
         return Result.success();
     }
 
-    private void setOperationExecutor(OperationRecordDTO operationRecordDTO){
+    private void setOperationExecutor(OperationRecord operationRecord){
         User user = getUserService.getCurrentUser();
         Long id = Long.valueOf(user.getCode());
-        operationRecordDTO.setRelatedId(id);
+        operationRecord.setRelatedId(id);
     }
 
     @Async

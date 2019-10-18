@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.domain.Funds;
+import com.swpu.uchain.openexperiment.form.funds.FundForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import org.springframework.stereotype.Repository;
 
@@ -22,4 +23,6 @@ public interface FundsMapper {
     List<Funds> selectByProjectGroupId(Long projectGroupId);
 
     int updateProjectFundsStatus(Long projectGroupId, Integer fundsStatus);
+
+    int multiInsert(List<Funds> list);
 }

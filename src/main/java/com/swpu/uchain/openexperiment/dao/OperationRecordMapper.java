@@ -1,6 +1,6 @@
 package com.swpu.uchain.openexperiment.dao;
 
-import com.swpu.uchain.openexperiment.DTO.OperationRecordDTO;
+import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import org.apache.ibatis.annotations.Param;
@@ -21,14 +21,14 @@ public interface OperationRecordMapper {
      * @param record 待插入的数据
      * @return
      */
-    int insert(OperationRecordDTO record);
+    int insert(OperationRecord record);
 
     /**
      * 多值插入
      * @param list 待插入的列表
      * @return
      */
-    int multiInsert(List<OperationRecordDTO> list);
+    int multiInsert(List<OperationRecord> list);
 
     /**
      * 更具指定类型 设置记录不可见

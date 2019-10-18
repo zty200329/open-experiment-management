@@ -100,7 +100,7 @@ public interface ProjectService {
      * @param appendApplyForm
      * @return
      */
-    Result appendCreateApply(AppendApplyForm appendApplyForm);
+//    Result appendCreateApply(AppendApplyForm appendApplyForm);
 
     /**
      * 获取所有待审核立项项目信息

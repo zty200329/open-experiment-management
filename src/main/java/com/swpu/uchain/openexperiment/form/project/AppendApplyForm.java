@@ -1,6 +1,6 @@
 package com.swpu.uchain.openexperiment.form.project;
 
-import com.swpu.uchain.openexperiment.form.funds.FundsForm;
+import com.swpu.uchain.openexperiment.form.funds.FundForm;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -21,5 +21,5 @@ public class AppendApplyForm {
 
     @NotNull(message = "资金申请表不能为空")
     @ApiModelProperty("资金申请数组")
-    private FundsForm[] fundsForms;
+    private FundForm[] fundsForms;
 }

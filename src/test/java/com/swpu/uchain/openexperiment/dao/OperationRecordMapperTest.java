@@ -1,7 +1,6 @@
 package com.swpu.uchain.openexperiment.dao;
 
-import com.swpu.uchain.openexperiment.DTO.OperationRecordDTO;
-import com.swpu.uchain.openexperiment.domain.OperationRecord;
+import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +27,13 @@ public class OperationRecordMapperTest {
     @Test
     public void insert() {
 
-        List<OperationRecordDTO> list = new ArrayList<>();
-        OperationRecordDTO operationRecordDTO = new OperationRecordDTO();
-        operationRecordDTO.setOperationContent("1");
-        operationRecordDTO.setOperationReason("满足要求");
-        operationRecordDTO.setOperationType("1");
-        operationRecordDTO.setRelatedId(1L);
-        list.add(operationRecordDTO);
+        List<OperationRecord> list = new ArrayList<>();
+        OperationRecord operationRecord = new OperationRecord();
+        operationRecord.setOperationContent("1");
+        operationRecord.setOperationReason("满足要求");
+        operationRecord.setOperationType("1");
+        operationRecord.setRelatedId(1L);
+        list.add(operationRecord);
         System.err.println(recordMapper.multiInsert(list));
 
     }

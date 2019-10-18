@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
  * @Description:
  */
 @Data
-public class FundsForm {
+public class FundForm {
 
     @ApiModelProperty("资金的id,不为空时表示更新,为空表示添加")
     private Long fundsId;
@@ -25,5 +25,5 @@ public class FundsForm {
 
     @ApiModelProperty("具体金额")
     @NotNull(message = "具体金额不能为空")
-    private Integer amount;
+    private Float amount;
 }

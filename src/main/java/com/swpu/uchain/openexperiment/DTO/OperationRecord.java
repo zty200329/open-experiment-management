@@ -6,7 +6,7 @@ import lombok.Data;
  * @author panghu
  */
 @Data
-public class OperationRecordDTO {
+public class OperationRecord {
 
     /**
      * 所关联的主键
@@ -34,10 +34,10 @@ public class OperationRecordDTO {
      */
     private Long operationExecutorId;
 
-    public OperationRecordDTO() {
+    public OperationRecord() {
     }
 
-    public OperationRecordDTO(Long relatedId, String operationType, String operationContent, String operationReason) {
+    public OperationRecord(Long relatedId, String operationType, String operationContent, String operationReason) {
         this.relatedId = relatedId;
         this.operationType = operationType;
         this.operationContent = operationContent;

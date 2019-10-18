@@ -13,8 +13,11 @@ public class Funds implements Serializable {
 
     private Long id;
 
-    private Integer amount;
+    private Float amount;
 
+    /**
+     *  报账原由
+     */
     private String use;
 
     private Integer type;
