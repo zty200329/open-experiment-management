@@ -90,9 +90,6 @@ public class ProjectServiceImpl implements ProjectService {
         this.roleMapper = roleMapper;
     }
 
-    @Value("${upload.material_dir}")
-    private String materialDir;
-
     @Override
     public boolean insert(ProjectGroup projectGroup) {
         return projectGroupMapper.insert(projectGroup) == 1;
