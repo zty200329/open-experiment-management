@@ -5,6 +5,7 @@ import com.swpu.uchain.openexperiment.form.funds.FundSetForm;
 import com.swpu.uchain.openexperiment.form.funds.FundsForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.FundsService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 /**
  * @author dengg
  */
+@Api("资金管理接口")
 @RestController
 public class FundsController {
 
