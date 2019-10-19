@@ -245,12 +245,12 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public Result uploadConcludingReport(ConcludingReportForm concludingReportForm) {
-        ProjectGroup projectGroup = redisService.get(ProjectGroupKey.getByProjectGroupId, concludingReportForm.getProjectGroupId() + "", ProjectGroup.class);
+    public Result uploadConcludingReport(Long projectId,MultipartFile file) {
+        ProjectGroup projectGroup = redisService.get(ProjectGroupKey.getByProjectGroupId, projectId + "", ProjectGroup.class);
         if (projectGroup == null) {
-            projectGroup = projectGroupMapper.selectByPrimaryKey(concludingReportForm.getProjectGroupId());
+            projectGroup = projectGroupMapper.selectByPrimaryKey(projectId);
             if (projectGroup != null) {
-                redisService.set(ProjectGroupKey.getByProjectGroupId, concludingReportForm.getProjectGroupId() + "", projectGroup);
+                redisService.set(ProjectGroupKey.getByProjectGroupId, projectId + "", projectGroup);
             }
         }
         if (projectGroup == null){
@@ -262,7 +262,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         ProjectFile projectFile = getAimNameProjectFile(projectGroup.getId(), uploadConfig.getConcludingFileName());
         if (projectFile != null){
             FileUtil.uploadFile(
-                    concludingReportForm.getMultipartFile(),
+                    file,
                     FileUtil.getFileRealPath(
                             projectFile.getId(),
                             uploadConfig.getUploadDir(),
@@ -274,14 +274,14 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile.setUploadUserId(currentUser.getId());
         projectFile.setFileName(uploadConfig.getConcludingFileName());
         projectFile.setUploadTime(new Date());
-        projectFile.setSize(FileUtil.FormatFileSize(concludingReportForm.getMultipartFile().getSize()));
-        projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(concludingReportForm.getMultipartFile())));
+        projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
+        projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(file)));
         projectFile.setDownloadTimes(0);
         if (!insert(projectFile)) {
             return Result.error(CodeMsg.ADD_ERROR);
         }
         if (!FileUtil.uploadFile(
-                concludingReportForm.getMultipartFile(),
+                file,
                 FileUtil.getFileRealPath(
                         projectFile.getId(),
                         uploadConfig.getUploadDir(),

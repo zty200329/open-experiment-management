@@ -101,8 +101,7 @@ public interface ProjectFileService {
 
     /**
      * 上传结题报告文件
-     * @param concludingReportForm
      * @return
      */
-    Result uploadConcludingReport(ConcludingReportForm concludingReportForm);
+    Result uploadConcludingReport(Long projectId,MultipartFile file);
 }

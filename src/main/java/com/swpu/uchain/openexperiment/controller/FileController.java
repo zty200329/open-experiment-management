@@ -66,8 +66,8 @@ public class FileController {
 
     @ApiOperation("上传结题报告")
     @PostMapping(value = "/uploadConcludingReport", name = "上传结题报告")
-    public Object uploadConcludingReport(@Valid @RequestBody ConcludingReportForm concludingReportForm){
-        return projectFileService.uploadConcludingReport(concludingReportForm);
+    public Object uploadConcludingReport(Long projectId,MultipartFile file){
+        return projectFileService.uploadConcludingReport(projectId,file);
     }
 
     @ApiOperation("显示所有附件信息")

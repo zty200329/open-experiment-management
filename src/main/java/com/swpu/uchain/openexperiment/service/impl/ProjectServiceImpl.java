@@ -141,16 +141,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectGroup> selectByUserIdAndProjectStatus(Long userId, Integer projectStatus) {
         //获取当前用户参与的所有项目
-        List<ProjectGroup> projectGroups = (List<ProjectGroup>) redisService.getList(
-                ProjectGroupKey.getByUserIdAndStatus,
-                userId + "_" + projectStatus);
-        if (projectGroups == null || projectGroups.size() == 0) {
-            projectGroups = projectGroupMapper.selectByUserIdAndStatus(userId, projectStatus);
-            if (projectGroups != null && projectGroups.size() != 0) {
-                redisService.setList(ProjectGroupKey.getByUserIdAndStatus, userId + "_" + projectStatus, projectGroups);
-            }
-        }
-        return projectGroups;
+        return projectGroupMapper.selectByUserIdAndStatus(userId, projectStatus);
     }
 
     /**
@@ -842,7 +833,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         List<JoinUnCheckVO> joinUnCheckVOS = new ArrayList<>();
         //获取当前教师参与申报的项目组
-        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(currentUser.getId(), ProjectStatus.DECLARE.getValue());
+        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), ProjectStatus.LAB_ALLOWED.getValue());
         projectGroups.forEach(projectGroup -> {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(), JoinStatus.APPLYING.getValue());
             for (UserProjectGroup userProjectGroup : userProjectGroups) {
