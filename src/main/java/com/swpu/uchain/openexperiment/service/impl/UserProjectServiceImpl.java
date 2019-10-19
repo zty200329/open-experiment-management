@@ -90,13 +90,7 @@ public class UserProjectServiceImpl implements UserProjectService {
 
     @Override
     public UserProjectGroup selectByProjectGroupIdAndUserId(Long projectGroupId, Long userId) {
-        UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, userId);
-            if (userProjectGroup != null){
-                redisService.set(UserProjectGroupKey.getByProjectGroupIdAndUserId,
-                        projectGroupId + "_" + userId,
-                        userProjectGroup);
-            }
-        return userProjectGroup;
+        return userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, userId);
     }
 
     @Override
@@ -105,22 +99,16 @@ public class UserProjectServiceImpl implements UserProjectService {
         if (user == null){
             return Result.error(CodeMsg.AUTHENTICATION_ERROR);
         }
-        ProjectGroup projectGroup = redisService.get(ProjectGroupKey.getByProjectGroupId, joinProjectApplyForm.getProjectGroupId() + "", ProjectGroup.class);
-        if (projectGroup == null) {
-            projectGroup = projectGroupMapper.selectByPrimaryKey(joinProjectApplyForm.getProjectGroupId());
-            if (projectGroup != null) {
-                redisService.set(ProjectGroupKey.getByProjectGroupId, joinProjectApplyForm.getProjectGroupId() + "", projectGroup);
-            }
-        }
+        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(joinProjectApplyForm.getProjectGroupId());
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
         //项目还未审核的话
-        if (projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue())){
-            return Result.error(CodeMsg.PROJECT_IS_DECLARE);
+        if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue())){
+            return Result.error(CodeMsg.PROJECT_IS_NOT_LAB_ALLOWED);
         }
         //判断已经申请和申请被拒绝
-        if (selectByProjectGroupIdAndUserId(projectGroup.getId(), user.getId()) != null){
+        if (selectByProjectGroupIdAndUserId(projectGroup.getId(), Long.valueOf(user.getCode())) != null){
             return Result.error(CodeMsg.ALREADY_APPLY);
         }
         //检验申请条件

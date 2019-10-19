@@ -348,9 +348,10 @@
              user.email as t_email,
              user.real_name as t_real_name
       from project_group
-             left join user_project_group on project_group.id = project_group_id and user_project_group.status = 2 and
-                                             user_project_group.member_role = 1 and project_group.status
+             left join user_project_group on project_group.id = project_group_id and user_project_group.status = 2  and
+                                             user_project_group.member_role = 1
              inner join user on user_project_group.user_id = user.code
+        where project_group.status = 1<!--1指的是实验室审核通过-->  and project_group.is_open_topic !=2 <!--2是指不开放-->
     </select>
     <select id="selectByCollegeIdAndStatus" resultMap="ProjectGroupResultMap" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         select project_group.id,

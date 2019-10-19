@@ -88,7 +88,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         Announcement announcement = new Announcement();
         announcement.setTitle(publishForm.getTitle());
         announcement.setContent(publishForm.getContent());
-        announcement.setPublisherId(user.getId());
+        announcement.setPublisherId(Long.valueOf(user.getCode()));
         announcement.setPublishTime(new Date());
         announcement.setUpdateTime(new Date());
         if (insert(announcement)){

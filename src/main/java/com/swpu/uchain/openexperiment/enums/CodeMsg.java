@@ -34,10 +34,11 @@ public enum CodeMsg {
     /**
      *  项目相关 1501-1600
      */
-    PROJECT_STATUS_IS_NOT_DECLARE(1502,"项目状态不是申报状态"),
+    PROJECT_STATUS_IS_NOT_DECLARE(1501,"项目状态不是申报状态"),
+    PROJECT_IS_NOT_LAB_ALLOWED(1502,"项目非实验室审核通过状态"),
     PROJECT_STATUS_IS_NOT_CONCLUDED(1503,"项目非结题状态"),
     PROJECT_GROUP_INFO_CANT_CHANGE(532, "项目非实验室上报状态，无法修改"),
-
+    REACH_NUM_MAX(518,"已经达到人数限制,无法进行申请" ),
 
 
 
@@ -63,7 +64,6 @@ public enum CodeMsg {
     ROLE_ACL_HAD_EXIST(515, "当前角色已拥有该权限,不能重复添加" ),
     PROJECT_GROUP_NOT_EXIST(516, "项目组不存在" ),
     NOT_MATCH_LIMIT(517, "不符合条件,无法参与项目" ),
-    REACH_NUM_MAX(518,"已经达到人数限制,无法进行申请" ),
     PROJECT_GROUP_HAD_EXIST(519,"该项目已存在,请修改项目名" ),
     USER_HAD_JOINED(520,"用户已经加入该项目,不需要重复添加" ),
     USER_HAD_BEEN_REJECTED(520,"用户曾已经被拒绝,无法再次加入"),
@@ -81,7 +81,6 @@ public enum CodeMsg {
     ADD_USER_JOIN_ERROR(534, "用户加入项目异常"),
     STUDENT_CANT_APPLY(535, "学生无法申请立项"),
     ALREADY_APPLY(536, "已经进行申请操作,无法再次操作,请勿重复操作"),
-    PROJECT_IS_DECLARE(537,"项目还未审核，无法申请加入"),
 
     TIME_DEFINE_ERROR(610,"时间设置错误"),
     PROJECT_HAS_BEEN_REJECTED(611,"项目已经被驳回"),

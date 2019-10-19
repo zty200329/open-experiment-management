@@ -62,7 +62,7 @@ public class ProjectInvokeController {
         return projectService.ensureOrNotModify(confirmForm);
     }
 
-    @ApiOperation("申请参与项目接口--可使用")
+    @ApiOperation("学生申请参与项目接口")
     @PostMapping(value = "/joinApply", name = "申请参与项目接口")
     public Result joinApply(@Valid @RequestBody JoinProjectApplyForm joinProjectApplyForm){
         return userProjectService.applyJoinProject(joinProjectApplyForm);
@@ -149,6 +149,7 @@ public class ProjectInvokeController {
     public Result rejectProjectApplyByFunctionalDepartment(@Valid @RequestBody List<ProjectCheckForm> formList){
         return projectService.rejectProjectApplyByFunctionalDepartment(formList);
     }
+
 
 
 

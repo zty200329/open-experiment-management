@@ -86,7 +86,7 @@
     from user_project_group
   </select>
   <select id="selectByProjectGroupIdAndUserId" resultMap="BaseResultMap">
-    select * from user_project_group where project_group_id = #{param1} and user_id = #{param2}
+    select * from user_project_group where project_group_id = #{param1} and user_id = #{param2} limit 1
   </select>
   <select id="selectByProjectGroupId" resultMap="BaseResultMap">
     select * from user_project_group where project_group_id = #{projectGroupId}

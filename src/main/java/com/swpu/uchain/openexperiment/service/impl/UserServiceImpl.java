@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean insert(User user) {
         if (userMapper.insert(user) == 1){
-            redisService.set(UserKey.getByUserId, user.getId() + "", user);
+            redisService.set(UserKey.getByUserId, Long.valueOf(user.getCode()) + "", user);
             redisService.set(UserKey.getUserByUserCode, user.getCode(), user);
             return true;
         }
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean update(User user) {
         if (userMapper.updateByPrimaryKey(user) == 1){
-            redisService.set(UserKey.getByUserId, user.getId() + "", user);
+            redisService.set(UserKey.getByUserId, Long.valueOf(user.getCode()) + "", user);
             redisService.set(UserKey.getUserByUserCode, user.getCode(), user);
             return true;
         }
@@ -187,7 +187,7 @@ public class UserServiceImpl implements UserService {
         if (user == null){
             user = userMapper.selectByUserCode(String.valueOf(userId));
             if (user != null){
-                redisService.set(UserKey.getByUserId, user.getId() + "", user);
+                redisService.set(UserKey.getByUserId, Long.valueOf(user.getCode()) + "", user);
             }
         }
         return user;
@@ -269,7 +269,7 @@ public class UserServiceImpl implements UserService {
             return Result.error(CodeMsg.USER_NO_EXIST);
         }
         User currentUser = getUserService.getCurrentUser();
-        if (user.getId().intValue() != Long.valueOf(currentUser.getCode())){
+        if (Long.valueOf(user.getCode()).intValue() != Long.valueOf(currentUser.getCode())){
             return Result.error(CodeMsg.PERMISSION_DENNY);
         }
         BeanUtils.copyProperties(userUpdateForm, user);

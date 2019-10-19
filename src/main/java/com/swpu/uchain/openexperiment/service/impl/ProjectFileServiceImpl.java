@@ -129,7 +129,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         User user = getUserService.getCurrentUser();
         //TODO,校验当前用户是否有权进行上传
         ProjectFile projectFile = new ProjectFile();
-        projectFile.setUploadUserId(user.getId());
+        projectFile.setUploadUserId(Long.valueOf(user.getCode()));
         projectFile.setFileType(FileType.WORD.getValue());
         projectFile.setFileName(uploadConfig.getApplyFileName());
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));

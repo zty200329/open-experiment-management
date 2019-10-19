@@ -36,18 +36,21 @@ public class FileController {
     @Autowired
     private ProjectService projectService;
 
+    @ApiIgnore
     @ApiOperation("下载立项申请正文doc")
     @GetMapping(value = "/getApplyDoc", name = "下载立项申请正文doc")
     public void getApplyDoc(Long fileId, HttpServletResponse response){
         projectFileService.downloadApplyFile(fileId, response);
     }
 
+    @ApiIgnore
     @ApiOperation("下载立项申请正文的pdf")
     @GetMapping(value = "getApplyPdf", name = "下载立项申请正文的pdf")
     public void getApplyPdf(Long fileId, HttpServletResponse response){
         projectFileService.downloadApplyPdf(fileId, response);
     }
 
+    @ApiIgnore
     @ApiOperation("重新上传立项申请正文")
     @PostMapping(value = "/reloadApplyDoc", name = "重新上传立项申请正文")
     public Object reloadApplyDoc(@Valid @RequestBody ReloadApplyForm reloadApplyForm){
@@ -58,24 +61,27 @@ public class FileController {
         return projectFileService.uploadApplyDoc(reloadApplyForm.getFile(), reloadApplyForm.getProjectGroupId());
     }
 
-    @ApiOperation("附件上传--6，普通项目结题验收报告；7，重点项目结题验收报告 8，普通项目实验报告")
+
+    @ApiIgnore("附件上传--6，普通项目结题验收报告；7，重点项目结题验收报告 8，普通项目实验报告")
     @PostMapping(value = "/uploadAttachmentFile", name = "上传附件")
     public Object uploadAttachmentFile(MultipartFile multipartFile,Integer attachmentType){
         return projectFileService.uploadAttachmentFile(multipartFile,attachmentType);
     }
 
-    @ApiOperation("上传结题报告")
+    @ApiOperation("上传结题报告--重点项目和普通项目")
     @PostMapping(value = "/uploadConcludingReport", name = "上传结题报告")
     public Object uploadConcludingReport(Long projectId,MultipartFile file){
         return projectFileService.uploadConcludingReport(projectId,file);
     }
 
+    @ApiIgnore
     @ApiOperation("显示所有附件信息")
     @GetMapping(value = "listAttachmentFiles", name = "显示所有附件信息")
     public Object listAttachmentFiles(){
         return projectFileService.listAttachmentFiles();
     }
 
+    @ApiIgnore
     @PostMapping(value = "/deleteFile", name = "删除指定文件")
     public Object deleteFile(long fileId){
         projectFileService.delete(fileId);

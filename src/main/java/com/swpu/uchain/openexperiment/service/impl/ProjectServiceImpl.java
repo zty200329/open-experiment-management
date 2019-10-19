@@ -165,8 +165,8 @@ public class ProjectServiceImpl implements ProjectService {
             return Result.error(CodeMsg.PROJECT_GROUP_HAD_EXIST);
         }
 
-        //当不开放选题时,不进行学生选择
-        if (form.getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue()) && form.getStuCodes().length != 0){
+        //当不开放选题时,进行学生选择
+        if (form.getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue()) && form.getStuCodes().length == 0){
             throw new GlobalException(CodeMsg.TOPIC_IS_NOT_OPEN);
         }
 
@@ -272,9 +272,9 @@ public class ProjectServiceImpl implements ProjectService {
         User user = userService.selectByUserId(projectGroup.getCreatorId());
         UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(
                 projectGroup.getId(),
-                user.getId());
+                Long.valueOf(user.getCode()));
         projectDetails.setCreator(new UserMemberVO(
-                user.getId(),
+                Long.valueOf(user.getCode()),
                 user.getRealName(),
                 userProjectGroup.getMemberRole()));
         //设置项目的成员信息
@@ -387,6 +387,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getApplyForm(Long projectGroupId) {
+
+        // TODO ???
         ProjectGroup projectGroup = selectByProjectGroupId(projectGroupId);
         if (projectGroup == null) {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
@@ -509,7 +511,7 @@ public class ProjectServiceImpl implements ProjectService {
             for (UserProjectGroup userProjectGroup : userProjectGroups) {
                 UserMemberVO userMemberVO = new UserMemberVO();
                 User user = userService.selectByUserId(userProjectGroup.getUserId());
-                userMemberVO.setUserId(user.getId());
+                userMemberVO.setUserId(Long.valueOf(user.getCode()));
                 userMemberVO.setUserName(user.getRealName());
                 userMemberVO.setMemberRole(userProjectGroup.getMemberRole());
                 //设置负责人(项目组长)电话
@@ -604,12 +606,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result approveProjectApplyByLabAdministrator(List<ProjectCheckForm> list) {
-        return checkProjectApply(list,RoleType.LAB_ADMINISTRATOR.getValue());
+        return approveProjectApply(list,RoleType.LAB_ADMINISTRATOR.getValue());
     }
 
     @Override
     public Result approveProjectApplyBySecondaryUnit(List<ProjectCheckForm> list) {
-        return checkProjectApply(list,RoleType.SECONDARY_UNIT.getValue());
+        return approveProjectApply(list,RoleType.SECONDARY_UNIT.getValue());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -653,19 +655,27 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Result checkProjectApply(List<ProjectCheckForm> formList,Integer role) {
+    public Result approveProjectApply(List<ProjectCheckForm> formList,Integer role) {
         User user = getUserService.getCurrentUser();
+        if(user == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
         String checkOperationType;
+        //当前状态
         Integer projectStatus = null;
+        //将要被更新成的状态
+        Integer updateProjectStatus = null;
         switch (role) {
             //如果是实验室主任
             case 4:
                 checkOperationType = OperationType.PROJECT_OPERATION_TYPE1.getValue().toString();
-                projectStatus = ProjectStatus.LAB_ALLOWED.getValue();
+                projectStatus = ProjectStatus.DECLARE.getValue();
+                updateProjectStatus = ProjectStatus.LAB_ALLOWED.getValue();
                 break;
             case 5:
                 checkOperationType = OperationType.PROJECT_OPERATION_TYPE2.getValue().toString();
-                projectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
+                projectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
+                updateProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
                 break;
             default:
                 //超管执行操作
@@ -683,14 +693,14 @@ public class ProjectServiceImpl implements ProjectService {
             //当角色是实验室主任的时候,项目状态不是
             ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
             if (role == 4 && !projectGroup.getStatus().equals(projectStatus)){
-                throw new GlobalException(CodeMsg.PROJECT_STATUS_IS_NOT_DECLARE);
+                throw new GlobalException("项目编号为"+projectGroup.getId()+"的项目非申报状态",CodeMsg.PROJECT_STATUS_IS_NOT_DECLARE.getCode());
             }
             //如果不是实验室上报状态,抛出异常
             if (role == 5 && !projectGroup.getStatus().equals(projectStatus)){
-                throw new GlobalException(CodeMsg.PROJECT_STATUS_IS_NOT_LAB_ALLOWED_AND_REPORTED);
+                throw new GlobalException("项目编号为"+projectGroup.getId()+"的项目非实验室上报状态",CodeMsg.PROJECT_STATUS_IS_NOT_LAB_ALLOWED_AND_REPORTED.getCode());
             }
-            //更具不同角色设置不同的项目状态
-            updateProjectStatus(form.getProjectId(), projectStatus);
+            //根据不同角色设置不同的项目状态
+            updateProjectStatus(form.getProjectId(), updateProjectStatus);
             list.add(operationRecord);
         }
         recordMapper.multiInsert(list);
@@ -724,6 +734,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void generateEstablishExcel(HttpServletResponse response) {
+
+        //TODO 区分学院
         User user = getUserService.getCurrentUser();
         //获取管理人员所管理的学院
         Integer college = user.getInstitute();

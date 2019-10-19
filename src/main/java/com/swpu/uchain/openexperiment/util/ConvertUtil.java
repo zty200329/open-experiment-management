@@ -134,7 +134,7 @@ public class ConvertUtil {
         users.forEach(user -> {
             UserManageInfo userManageInfo = new UserManageInfo();
             BeanUtils.copyProperties(user, userManageInfo);
-            List<RoleVO> roles = roleMapper.getRoles(user.getId());
+            List<RoleVO> roles = roleMapper.getRoles(Long.valueOf(user.getCode()));
             userManageInfo.setRoles(roles);
             userList.add(userManageInfo);
         });
