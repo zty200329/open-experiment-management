@@ -56,7 +56,7 @@ public class ProjectQueryController {
         return projectService.getCurrentUserProjects(projectStatus);
     }
 
-    @ApiOperation("获取当前用户的项目具体信息--可使用")
+    @ApiOperation("通过项目ID查看项目详情--项目进度信息")
     @GetMapping("/getProjectDetailById")
     public Result getProjectDetailById(Long projectId){
         return projectService.getProjectDetailById(projectId);
@@ -110,7 +110,7 @@ public class ProjectQueryController {
         return projectService.getPendingReviewByLabLeader();
     }
 
-    @ApiOperation("通过项目ID查看项目详情")
+    @ApiOperation("通过项目ID查看项目详情--成员和项目信息")
     @GetMapping("/getProjectGroupDetailVOByProjectId")
     public Result getProjectGroupDetailByProjectId(Long projectId){
         return projectService.getProjectGroupDetailVOByProjectId(projectId);
