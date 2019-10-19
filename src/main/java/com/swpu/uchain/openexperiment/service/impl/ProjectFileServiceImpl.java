@@ -10,6 +10,7 @@ import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.FileType;
+import com.swpu.uchain.openexperiment.enums.ProjectStatus;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.file.ConcludingReportForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
@@ -200,7 +201,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public Result uploadAttachmentFile(MultipartFile multipartFile) {
+    public Result uploadAttachmentFile(MultipartFile multipartFile,Integer attachmentType) {
         if (multipartFile == null || multipartFile.isEmpty()){
             return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
@@ -256,7 +257,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
-        //TODO,判断项目组状态是否在结项状态下
+        if (!projectGroup.getStatus().equals(ProjectStatus.CONCLUDED.getValue())){
+            throw new GlobalException(CodeMsg.PROJECT_STATUS_IS_NOT_CONCLUDED);
+        }
 
         //判断是否存在该文件,若存在则进行覆盖
         ProjectFile projectFile = getAimNameProjectFile(projectGroup.getId(), uploadConfig.getConcludingFileName());
@@ -269,7 +272,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                             uploadConfig.getConcludingFileName()));
         }
         User currentUser = getUserService.getCurrentUser();
+
         //TODO,校验当前用户是否有权进行上传
+
+
         projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
         projectFile.setFileName(uploadConfig.getConcludingFileName());

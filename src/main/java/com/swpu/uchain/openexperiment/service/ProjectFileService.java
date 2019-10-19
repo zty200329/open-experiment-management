@@ -84,7 +84,7 @@ public interface ProjectFileService {
      * @param multipartFile
      * @return
      */
-    Result uploadAttachmentFile(MultipartFile multipartFile);
+    Result uploadAttachmentFile(MultipartFile multipartFile,Integer attachmentType);
 
     /**
      * 下载附件
