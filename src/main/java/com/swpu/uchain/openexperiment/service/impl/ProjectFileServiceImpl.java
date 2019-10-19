@@ -211,7 +211,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(multipartFile)));
         projectFile.setSize(FileUtil.FormatFileSize(multipartFile.getSize()));
         projectFile.setUploadTime(new Date());
-        projectFile.setUploadUserId(currentUser.getId());
+        projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
         if (!insert(projectFile)) {
             return Result.error(CodeMsg.ADD_ERROR);
         }
@@ -271,7 +271,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         User currentUser = getUserService.getCurrentUser();
         //TODO,校验当前用户是否有权进行上传
         projectFile = new ProjectFile();
-        projectFile.setUploadUserId(currentUser.getId());
+        projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
         projectFile.setFileName(uploadConfig.getConcludingFileName());
         projectFile.setUploadTime(new Date());
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));

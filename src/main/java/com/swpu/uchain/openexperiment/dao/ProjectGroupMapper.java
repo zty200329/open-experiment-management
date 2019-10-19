@@ -32,7 +32,7 @@ public interface ProjectGroupMapper {
 
     ProjectGroup selectByName(String projectName);
 
-    List<ProjectGroup> selectByUserIdAndStatus(Long userId, Integer projectStatus);
+    List<ProjectGroup> selectByUserIdAndStatus(@Param("userId") Long userId,@Param("projectStatus") Integer projectStatus);
 
     List<ProjectGroup> selectByCollegeIdAndStatus(@Param("college") String college,@Param("projectStatus") Integer projectStatus);
 

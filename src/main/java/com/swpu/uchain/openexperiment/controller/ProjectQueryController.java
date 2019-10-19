@@ -9,6 +9,7 @@ import com.swpu.uchain.openexperiment.service.UserProjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -50,9 +51,9 @@ public class ProjectQueryController {
     }
 
 
-//    @ApiIgnore("获取当前用户参与的某状态的项目信息, 项目状态: -1(所有), 0(申报), 1(立项), 2(驳回修改),3(已上报学院领导), 4(中期检查), 5(结项)")
+    @ApiIgnore("获取当前用户参与的某状态的项目信息, 项目状态: 不传(所有), 0(申报), 1(立项), 2(驳回修改),3(已上报学院领导), 4(中期检查), 5(结项)")
     @GetMapping(value = "/getOwnProjects", name = "获取自己相关的项目信息")
-    public Result getOwnProjects(int projectStatus){
+    public Result getOwnProjects(@RequestParam(required = false) Integer projectStatus){
         return projectService.getCurrentUserProjects(projectStatus);
     }
 

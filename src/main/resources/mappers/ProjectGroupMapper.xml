@@ -290,12 +290,9 @@
     from project_group
             inner join user_project_group
                 on project_group.id = user_project_group.project_group_id
-    <if test="param2!=null">
-        where user_project_group.user_id = #{param1}
-    </if>
-
-    <if test="param1!=null">
-        and project_group.`status` = #{param2}
+        where user_project_group.user_id = #{userId}
+    <if test="projectStatus!=null">
+        and project_group.`status` = #{projectStatus}
     </if>
   </select>
   <select id="selectApplyOrderByTime" resultMap="CheckProjectResultMap">

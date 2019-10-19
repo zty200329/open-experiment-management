@@ -200,8 +200,6 @@ public class ProjectServiceImpl implements ProjectService {
         }
         userProjectService.addStuAndTeacherJoin(stuCodes,teacherCodes,projectGroup.getId());
 
-        redisService.deleteFuzzyKey(ProjectGroupKey.getByUserIdAndStatus, currentUser.getId() + "");
-
         return Result.success();
     }
 
@@ -213,7 +211,7 @@ public class ProjectServiceImpl implements ProjectService {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
         User currentUser = getUserService.getCurrentUser();
-        UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(updateProjectApplyForm.getProjectGroupId(), currentUser.getId());
+        UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(updateProjectApplyForm.getProjectGroupId(), Long.valueOf(currentUser.getCode()));
         if (userProjectGroup == null) {
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
@@ -250,23 +248,23 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result getCurrentUserProjects(Integer projectStatus) {
         User currentUser = getUserService.getCurrentUser();
-        if (userService == null) {
+        if (currentUser == null) {
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
-        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(currentUser.getId(), projectStatus);
+        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), projectStatus);
         //设置当前用户的所有项目VO
         List<MyProjectVO> myProjectVOS = new ArrayList<>();
         for (ProjectGroup projectGroup : projectGroups) {
             MyProjectVO myProjectVO = new MyProjectVO();
             BeanUtils.copyProperties(projectGroup, myProjectVO);
             myProjectVO.setProjectGroupId(projectGroup.getId());
-            myProjectVO.setProjectDetails(getProjectDetails(projectGroup));
+//            myProjectVO.setProjectDetails(getProjectDetails(projectGroup));
             myProjectVOS.add(myProjectVO);
         }
         return Result.success(myProjectVOS);
     }
 
-    public ProjectDetails getProjectDetails(ProjectGroup projectGroup) {
+    private ProjectDetails getProjectDetails(ProjectGroup projectGroup) {
         ProjectDetails projectDetails = new ProjectDetails();
         projectDetails.setLabName(projectGroup.getLabName());
         projectDetails.setAddress(projectGroup.getAddress());
@@ -413,7 +411,7 @@ public class ProjectServiceImpl implements ProjectService {
 //        User currentUser = getUserService.getCurrentUser();
 //        //获取用户所在的用户项目组信息
 //        UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(
-//                appendApplyForm.getProjectGroupId(), currentUser.getId());
+//                appendApplyForm.getProjectGroupId(), Long.valueOf(currentUser.getCode());
 //        if (userProjectGroup == null) {
 //            return Result.error(CodeMsg.USER_NOT_IN_GROUP);
 //        }
@@ -449,7 +447,7 @@ public class ProjectServiceImpl implements ProjectService {
 //                Funds funds = new Funds();
 //                BeanUtils.copyProperties(fundsForm, funds);
 //                funds.setProjectGroupId(appendApplyForm.getProjectGroupId());
-//                funds.setApplicantId(currentUser.getId());
+//                funds.setApplicantId(Long.valueOf(currentUser.getCode());
 //                funds.setStatus(FundsStatus.APPLYING.getValue());
 //                funds.setCreateTime(new Date());
 //                funds.setUpdateTime(new Date());

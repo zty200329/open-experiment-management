@@ -171,7 +171,7 @@ public class UserProjectServiceImpl implements UserProjectService {
     public Result aimUserMemberRole(AimForm aimForm) {
         //判断当前操作用户是否存在项目组
         User currentUser = getUserService.getCurrentUser();
-        UserProjectGroup group = selectByProjectGroupIdAndUserId(aimForm.getProjectGroupId(), currentUser.getId());
+        UserProjectGroup group = selectByProjectGroupIdAndUserId(aimForm.getProjectGroupId(), Long.valueOf(currentUser.getCode()));
         if (group == null){
             Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }

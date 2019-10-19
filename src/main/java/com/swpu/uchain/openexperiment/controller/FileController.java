@@ -52,7 +52,7 @@ public class FileController {
     @PostMapping(value = "/reloadApplyDoc", name = "重新上传立项申请正文")
     public Object reloadApplyDoc(@Valid @RequestBody ReloadApplyForm reloadApplyForm){
         User currentUser = getUserService.getCurrentUser();
-        if (userProjectService.selectByProjectGroupIdAndUserId(currentUser.getId(), reloadApplyForm.getProjectGroupId()) == null) {
+        if (userProjectService.selectByProjectGroupIdAndUserId(Long.valueOf(currentUser.getCode()), reloadApplyForm.getProjectGroupId()) == null) {
             return Result.error(CodeMsg.PERMISSION_DENNY);
         }
         return projectFileService.uploadApplyDoc(reloadApplyForm.getFile(), reloadApplyForm.getProjectGroupId());

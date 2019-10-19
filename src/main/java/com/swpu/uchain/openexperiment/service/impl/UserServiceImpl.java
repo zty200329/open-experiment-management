@@ -269,7 +269,7 @@ public class UserServiceImpl implements UserService {
             return Result.error(CodeMsg.USER_NO_EXIST);
         }
         User currentUser = getUserService.getCurrentUser();
-        if (user.getId().intValue() != currentUser.getId()){
+        if (user.getId().intValue() != Long.valueOf(currentUser.getCode())){
             return Result.error(CodeMsg.PERMISSION_DENNY);
         }
         BeanUtils.copyProperties(userUpdateForm, user);
