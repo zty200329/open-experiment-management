@@ -165,8 +165,8 @@ public class ProjectServiceImpl implements ProjectService {
             return Result.error(CodeMsg.PROJECT_GROUP_HAD_EXIST);
         }
 
-        //当不开放选题时,进行学生选择
-        if (form.getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue()) && form.getStuCodes().length == 0){
+        //开放选题时,不进行学生选择
+        if (form.getIsOpenTopic().equals(OpenTopicType.OPEN_TOPIC_ALL.getValue()) && form.getStuCodes().length != 0){
             throw new GlobalException(CodeMsg.TOPIC_IS_NOT_OPEN);
         }
 
@@ -388,7 +388,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result getApplyForm(Long projectGroupId) {
 
-        // TODO ???
         ProjectGroup projectGroup = selectByProjectGroupId(projectGroupId);
         if (projectGroup == null) {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
@@ -836,6 +835,9 @@ public class ProjectServiceImpl implements ProjectService {
     public List getJoinInfo() {
         User currentUser = getUserService.getCurrentUser();
         //检测用户是不是老师--后期可省略
+        if (currentUser == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
 
         Role role = roleMapper.selectByUserId(Long.valueOf(currentUser.getCode()));
         if (role.getId() != (RoleType.MENTOR.getValue()).longValue()) {
@@ -844,7 +846,14 @@ public class ProjectServiceImpl implements ProjectService {
         List<JoinUnCheckVO> joinUnCheckVOS = new ArrayList<>();
         //获取当前教师参与申报的项目组
         List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), ProjectStatus.LAB_ALLOWED.getValue());
-        projectGroups.forEach(projectGroup -> {
+        for (int i = 0; i < projectGroups.size(); i++) {
+            if (projectGroups.get(i) == null ) {
+                break;
+            }
+            while (projectGroups.get(i).getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue())) {
+                i++;
+            }
+            ProjectGroup projectGroup = projectGroups.get(i);
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(), JoinStatus.APPLYING.getValue());
             for (UserProjectGroup userProjectGroup : userProjectGroups) {
                 JoinUnCheckVO joinUnCheckVO = new JoinUnCheckVO();
@@ -856,7 +865,7 @@ public class ProjectServiceImpl implements ProjectService {
                 joinUnCheckVO.setUserDetailVO(convertUtil.convertUserDetailVO(user));
                 joinUnCheckVOS.add(joinUnCheckVO);
             }
-        });
+        }
         return joinUnCheckVOS;
     }
 

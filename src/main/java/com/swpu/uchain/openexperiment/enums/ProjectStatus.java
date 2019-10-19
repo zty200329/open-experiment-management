@@ -21,7 +21,7 @@ public enum ProjectStatus {
 
     DECLARE(0,"申报"),
 
-    LAB_ALLOWED(1,"实验室审核通过,待上报"),
+        LAB_ALLOWED(1,"实验室审核通过,待上报"),
 
     LAB_ALLOWED_AND_REPORTED(2,"实验室审核通过并已上报"),
 

@@ -214,7 +214,7 @@ public class UserProjectServiceImpl implements UserProjectService {
         }
         assert result != null;
         if (result.getCode() != 0){
-            throw new GlobalException(CodeMsg.ADD_USER_JOIN_ERROR);
+            throw new GlobalException(CodeMsg.USER_NO_EXIST);
         }
     }
 

@@ -14,11 +14,11 @@ public enum ProjectType {
     /**
      * 重点项目
      */
-    KEY(1),
+    KEY(2),
     /**
      * 普通项目
      */
-    GENERAL(2)
+    GENERAL(1)
     ;
     private Integer value;
 

@@ -286,7 +286,8 @@
           project_group.start_time,
           project_group.`status`,
           project_group.update_time,
-          project_group.main_Content
+          project_group.main_Content,
+          project_group.is_open_topic
     from project_group
             inner join user_project_group
                 on project_group.id = user_project_group.project_group_id

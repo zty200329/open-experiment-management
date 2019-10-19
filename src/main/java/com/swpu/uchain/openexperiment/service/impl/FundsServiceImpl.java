@@ -87,14 +87,7 @@ public class FundsServiceImpl implements FundsService {
 
     @Override
     public List<Funds> getFundsDetails(Long projectGroupId) {
-        List<Funds> fundsList = (List<Funds>) redisService.getList(FundsKey.getByProjectGroupId, projectGroupId + "");
-        if (fundsList == null || fundsList.size() == 0){
-            fundsList = fundsMapper.selectByProjectGroupId(projectGroupId);
-            if (fundsList != null && fundsList.size() != 0){
-                redisService.setList(FundsKey.getByProjectGroupId, projectGroupId + "", fundsList);
-            }
-        }
-        return fundsList;
+        return fundsMapper.selectByProjectGroupId(projectGroupId);
     }
 
     @Override
