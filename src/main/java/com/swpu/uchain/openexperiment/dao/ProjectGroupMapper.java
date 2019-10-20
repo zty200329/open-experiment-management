@@ -5,7 +5,7 @@ import com.swpu.uchain.openexperiment.VO.project.OpenTopicInfo;
 import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
 import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
-import com.swpu.uchain.openexperiment.form.project.ProjectGroupDetailVO;
+import com.swpu.uchain.openexperiment.VO.project.ProjectGroupDetailVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

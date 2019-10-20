@@ -1,8 +1,6 @@
-package com.swpu.uchain.openexperiment.form.project;
+package com.swpu.uchain.openexperiment.VO.project;
 
-import com.swpu.uchain.openexperiment.DTO.ProjectUserDTO;
 import com.swpu.uchain.openexperiment.VO.user.ProjectUserVO;
-import com.swpu.uchain.openexperiment.domain.User;
 import lombok.Data;
 
 import java.util.Date;

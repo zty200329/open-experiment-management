@@ -218,17 +218,12 @@ public class ProjectServiceImpl implements ProjectService {
         //更新项目组基本信息
         BeanUtils.copyProperties(updateProjectApplyForm, projectGroup);
         update(projectGroup);
-        //对文件上传的处理,1.获取文件名,2.保存文件,3.维护数据库
-//        Result result = projectFileService.uploadApplyDoc(file, projectGroup.getId());
-//        if (result.getCode() != 0){
-//            throw new GlobalException(CodeMsg.UPLOAD_ERROR);
-//        }
         userProjectService.deleteByProjectGroupId(projectGroup.getId());
         String[] stuCodes = updateProjectApplyForm.getStuCodes();
         String[] teacherCodes = updateProjectApplyForm.getTeacherCodes();
         userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
         //修改项目状态,重新开始申报
-        updateProjectStatus(projectGroup.getId(),ProjectStatus.DECLARE.getValue());
+        updateProjectStatus(projectGroup.getId(),ProjectStatus.ESTABLISH.getValue());
 
         //将之前的历史数据设置为不可见
         //type传入为空则更新所有
@@ -611,45 +606,7 @@ public class ProjectServiceImpl implements ProjectService {
         return approveProjectApply(list,RoleType.SECONDARY_UNIT.getValue());
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public Result createKeyApply(KeyProjectApplyForm form) {
-        String projectName = form.getProjectName();
-        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryProjectName(projectName);
-        if (projectGroup == null){
-            throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
-        }
-        //更新项目状态为等待知道老师审核
-        updateProjectStatus(projectGroup.getId(),ProjectStatus.TO_DE_CONFIRMED.getValue());
-        List<StuMember> stuMemberList = form.getMembers();
 
-        Long projectId = projectGroup.getId();
-
-        //用于记录更新的条数
-        int counter = 0;
-        for (StuMember stuMember:stuMemberList
-             ) {
-            if (userProjectGroupMapper.updateUserInfo(stuMember,new Date(),projectId) != 0){
-                counter ++;
-            }
-        }
-        //更新条数和传入数值不一致，则说明信息不匹配,同理，老师的信息也是
-        if (counter != stuMemberList.size()) {
-            throw new GlobalException(CodeMsg.USER_INFORMATION_MATCH_ERROR);
-        }
-        counter = 0;
-        for (TeacherMember teacher:form.getTeachers()
-             ) {
-            if (userProjectGroupMapper.updateTeacherTechnicalRole(teacher,projectId) != 0){
-                counter ++;
-            }
-        }
-        if (counter != stuMemberList.size()) {
-            throw new GlobalException(CodeMsg.USER_INFORMATION_MATCH_ERROR);
-        }
-
-        return Result.success();
-    }
 
     @Transactional(rollbackFor = GlobalException.class)
     public Result approveProjectApply(List<ProjectCheckForm> formList,Integer role) {

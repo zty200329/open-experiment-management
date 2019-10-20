@@ -30,7 +30,7 @@
         </collection>
     </resultMap>
 
-    <resultMap id="ProjectGroupDetailVOResultMap" type="com.swpu.uchain.openexperiment.form.project.ProjectGroupDetailVO">
+    <resultMap id="ProjectGroupDetailVOResultMap" type="com.swpu.uchain.openexperiment.VO.project.ProjectGroupDetailVO">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="address" jdbcType="VARCHAR" property="address" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />

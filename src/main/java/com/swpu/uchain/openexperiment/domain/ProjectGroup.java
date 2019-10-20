@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.swpu.uchain.openexperiment.enums.CollegeType;
 import lombok.Data;
 
 import javax.validation.constraints.Null;
@@ -49,7 +50,7 @@ public class ProjectGroup implements Serializable {
      */
     private Integer suggestGroupType;
 
-    /**项目类型: 1.普通,2.重点
+    /**项目类型: 1.普通,2.重点 {@link com.swpu.uchain.openexperiment.enums.ExperimentType}
      *
      */
     private Integer experimentType;
@@ -100,7 +101,7 @@ public class ProjectGroup implements Serializable {
     private String projectName;
 
     /**
-     * 项目类型  1.普通,2.重点
+     * 项目类型  1.普通,2.重点  {@link com.swpu.uchain.openexperiment.enums.ProjectType}
      */
     private Integer projectType;
 
@@ -130,7 +131,7 @@ public class ProjectGroup implements Serializable {
     private String mainContent;
 
     /**
-     * 所属学院
+     * 所属学院  {@link CollegeType#getValue()}
      */
     @JsonIgnore
     private Integer subordinateCollege;

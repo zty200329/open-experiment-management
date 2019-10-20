@@ -1,6 +1,5 @@
 package com.swpu.uchain.openexperiment.enums;
 
-import io.swagger.models.auth.In;
 import lombok.Getter;
 
 /**

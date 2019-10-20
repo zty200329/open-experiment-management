@@ -198,11 +198,4 @@ public interface ProjectService {
 
     Result approveProjectApplyBySecondaryUnit(List<ProjectCheckForm> list);
 
-    /**
-     * 重点项目申请
-     * @param form 申请表单
-     * @return
-     */
-    Result createKeyApply(KeyProjectApplyForm form);
-
 }

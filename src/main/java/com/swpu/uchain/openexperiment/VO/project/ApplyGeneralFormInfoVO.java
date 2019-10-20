@@ -28,9 +28,14 @@ public class ApplyGeneralFormInfoVO implements Serializable {
      */
     private String projectName;
     /**
-     * 项目类型
+     * 项目分类类型
      */
     private Integer projectType;
+
+    /**项目类型: 1.普通,2.重点 {@link com.swpu.uchain.openexperiment.enums.ExperimentType}
+     *
+     */
+    private Integer experimentType;
     /**
      * 实验条件
      */

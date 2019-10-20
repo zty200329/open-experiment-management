@@ -17,16 +17,15 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.validation.Valid;
 import java.util.List;
 
+
 /**
- * @Author: clf
- * @Date: 19-1-21
- * @Description:
- * 项目操作接口
+ * @author dengg
+ *
  */
 @CrossOrigin
 @RestController
 @RequestMapping("/project")
-@Api(tags = "项目模块执行接口")
+@Api(tags = "普通项目模块执行接口")
 public class ProjectInvokeController {
 
     private ProjectService projectService;
@@ -41,14 +40,8 @@ public class ProjectInvokeController {
 
     @ApiOperation("申请立项接口--可使用")
     @PostMapping(value = "/createApply", name = "申请立项接口")
-    public Result createApply(@Valid @RequestBody CreateProjectApplyForm form){
+    public Result createApply(@Valid @RequestBody CreateProjectApplyForm form) {
         return projectService.applyCreateProject(form);
-    }
-
-    @ApiOperation("重点项目申请接口")
-    @PostMapping(value = "/createKeyApply")
-    public Result createKeyApply(@Valid @RequestBody KeyProjectApplyForm form){
-        return projectService.createKeyApply(form);
     }
 
     @ApiOperation("职能部门修改立项申请")
@@ -150,8 +143,6 @@ public class ProjectInvokeController {
     public Result rejectProjectApplyByFunctionalDepartment(@Valid @RequestBody List<ProjectCheckForm> formList){
         return projectService.rejectProjectApplyByFunctionalDepartment(formList);
     }
-
-
 
 
 }

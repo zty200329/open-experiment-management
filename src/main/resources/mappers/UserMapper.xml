@@ -71,13 +71,26 @@
     select * from user where code = #{userCode}
   </select>
   <select id="selectProjectJoinedUsers" resultMap="BaseResultMap">
-  select user.id, user.code, user.email, user.fix_phone, user.id_card, user.mobile_phone, user.`password`,
-  user.qq_num, user.real_name, user.sex, user.user_type, user.institute, user.major, user.grade, user.class_num
-  from user
-  inner join user_project_group
-  on user.id = user_project_group.user_id
-  where user_project_group.project_group_id = #{projectId}
-  and user_project_group.status = 2
+    select user.id,
+           user.code,
+           user.email,
+           user.fix_phone,
+           user.id_card,
+           user.mobile_phone,
+           user.`password`,
+           user.qq_num,
+           user.real_name,
+           user.sex,
+           user.user_type,
+           user.institute,
+           user.major,
+           user.grade,
+           user.class_num
+    from user
+           inner join user_project_group
+                      on user.code = user_project_group.user_id
+    where user_project_group.project_group_id = #{projectId}
+      and user_project_group.status = 2
   </select>
   <select id="selectByRandom" resultMap="BaseResultMap">
     select * from user
