@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swpu.uchain.openexperiment.dao.KeyProjectStatusMapper">
+
+    <insert id="insert">
+        insert into key_project_status(project_id,`status`,subordinate_college) values (#{projectId},#{status},#{college})
+    </insert>
+    <update id="update">
+        update key_project_status set `status` = #{status} where project_id = #{projectId}
+    </update>
+    <select id="getStatusByProjectId" resultType="java.lang.Integer">
+        select status from key_project_status where project_id = #{projectId}
+    </select>
+    <select id="getProjectIdListByStatusAndCollege" resultType="java.lang.Long">
+        select
+               project_id as projectId,`
+               status`,
+               subordinate_college as subordinateCollege
+        from key_project_status
+        where 1=1
+         <if test="status!=null">
+             and `status` = #{status}
+         </if>
+         <if test="college!=null">
+             and
+         </if>
+    </select>
+
+
+</mapper>
+
