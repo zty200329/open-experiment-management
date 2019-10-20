@@ -64,6 +64,7 @@ public class ProjectServiceImpl implements ProjectService {
     private RoleMapper roleMapper;
     private OperationRecordMapper recordMapper;
     private MessageRecordMapper messageRecordMapper;
+    private UserMapper userMapper;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -73,7 +74,7 @@ public class ProjectServiceImpl implements ProjectService {
                               ConvertUtil convertUtil, GetUserService getUserService,
                               OperationRecordMapper recordMapper,
                               MessageRecordMapper messageRecordMapper,RoleMapper roleMapper,
-                              UserProjectGroupMapper userProjectGroupMapper) {
+                              UserProjectGroupMapper userProjectGroupMapper,UserMapper userMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -88,6 +89,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.recordMapper = recordMapper;
         this.messageRecordMapper = messageRecordMapper;
         this.roleMapper = roleMapper;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -113,14 +115,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectGroup selectByProjectGroupId(Long projectGroupId) {
-        ProjectGroup projectGroup = redisService.get(ProjectGroupKey.getByProjectGroupId, projectGroupId + "", ProjectGroup.class);
-        if (projectGroup == null) {
-            projectGroup = projectGroupMapper.selectByPrimaryKey(projectGroupId);
-            if (projectGroup != null) {
-                redisService.set(ProjectGroupKey.getByProjectGroupId, projectGroupId + "", projectGroup);
-            }
-        }
-        return projectGroup;
+        return projectGroupMapper.selectByPrimaryKey(projectGroupId);
     }
 
     /**
@@ -398,6 +393,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (projectGroup.getProjectType().intValue() == ProjectType.KEY.getValue()) {
             ApplyKeyFormInfoVO applyKeyFormInfoVO = convertUtil.addUserDetailVO(users, ApplyKeyFormInfoVO.class);
             applyKeyFormInfoVO.setFundsDetails(fundsService.getFundsDetails(projectGroupId));
+            applyKeyFormInfoVO.setCreatorName(userMapper.selectByUserCode(String.valueOf(projectGroup.getCreatorId())).getRealName());
             BeanUtils.copyProperties(projectGroup, applyKeyFormInfoVO);
             applyKeyFormInfoVO.setProjectGroupId(projectGroup.getId());
             return Result.success(applyKeyFormInfoVO);
@@ -405,6 +401,7 @@ public class ProjectServiceImpl implements ProjectService {
             ApplyGeneralFormInfoVO applyGeneralFormInfoVO = convertUtil.addUserDetailVO(users, ApplyGeneralFormInfoVO.class);
             BeanUtils.copyProperties(projectGroup, applyGeneralFormInfoVO);
             applyGeneralFormInfoVO.setProjectGroupId(projectGroup.getId());
+            applyGeneralFormInfoVO.setCreatorName(userMapper.selectByUserCode(String.valueOf(projectGroup.getCreatorId())).getRealName());
             return Result.success(applyGeneralFormInfoVO);
         }
     }
@@ -654,7 +651,7 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success();
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = GlobalException.class)
     public Result approveProjectApply(List<ProjectCheckForm> formList,Integer role) {
         User user = getUserService.getCurrentUser();
         if(user == null){
@@ -688,7 +685,7 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecord.setRelatedId(form.getProjectId());
             operationRecord.setOperationReason(form.getReason());
             operationRecord.setOperationType(OperationType.AGREE.getValue());
-            operationRecord.setOperationType(operationUnit);
+            operationRecord.setOperationUnit(operationUnit);
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
             //当角色是实验室主任的时候,项目状态不是
             ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());

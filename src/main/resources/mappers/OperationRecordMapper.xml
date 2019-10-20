@@ -5,7 +5,7 @@
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="related_id" jdbcType="BIGINT" property="relatedId" />
         <result column="operation_type" jdbcType="VARCHAR" property="operationType" />
-        <result column="operation_content" jdbcType="VARCHAR" property="operationContent" />
+        <result column="operation_content" jdbcType="VARCHAR" property="operationUnit" />
         <result column="operation_reason" jdbcType="VARCHAR" property="operationReason" />
         <result column="operation_time" jdbcType="TIMESTAMP" property="operationTime" />
         <result column="operation_executor_id" jdbcType="BIGINT" property="operationExecutorId"/>
@@ -13,7 +13,7 @@
     
     <insert id="insert">
         insert into operation_record (related_id, operation_type, operation_unit, operation_reason)
-            values (#{relatedId},#{operationType},#{operationContent},#{operationReason})
+            values (#{relatedId},#{operationType},#{operationUnit},#{operationReason})
     </insert>
     <insert id="multiInsert">
         insert into operation_record (related_id, operation_type, operation_unit, operation_reason,operation_executor_id)
@@ -22,7 +22,7 @@
                 (
                     #{record.relatedId},
                     #{record.operationType},
-                    #{record.operationContent},
+                    #{record.operationUnit},
                     #{record.operationReason},
                     #{record.operationExecutorId}
                  )

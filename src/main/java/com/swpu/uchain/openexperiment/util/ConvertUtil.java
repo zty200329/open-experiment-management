@@ -182,8 +182,8 @@ public class ConvertUtil {
 //        for (ProjectHistoryInfo info:list
 //             ) {
 //            //将具体操作转化成文字
-//            String operationContent = operationContentToWord(info.getOperationContent());
-//            info.setOperationContent(operationContent);
+//            String operationUnit = operationUnitToWord(info.getOperationContent());
+//            info.setOperationContent(operationUnit);
 //
 //            String operationType = operationTypeToWord(info.getOperationType());
 //            info.setOperationType(operationType);
@@ -202,11 +202,11 @@ public class ConvertUtil {
 //            messageVO.setContent(info.getReason());
 //            messageVO.setId(info.getId());
 //            //将具体操作转化成文字
-//            String operationContent =  operationContentToWord(info.getOperationContent());
+//            String operationUnit =  operationUnitToWord(info.getOperationContent());
 //
 //
 //            String operationType = operationTypeToWord(info.getOperationType());
-//            messageVO.setTitle("项目编号为"+info.getProjectId()+" 的项目"+operationType+" : "+operationContent);
+//            messageVO.setTitle("项目编号为"+info.getProjectId()+" 的项目"+operationType+" : "+operationUnit);
 //            voList.add(messageVO);
 //        }
 //        return voList;
@@ -237,17 +237,17 @@ public class ConvertUtil {
 //        return operationType;
 //    }
 
-    private static String operationContentToWord(String operationContent){
-        switch (operationContent){
+    private static String operationUnitToWord(String operationUnit){
+        switch (operationUnit){
             case "1":
-                operationContent = "通过";
+                operationUnit = "通过";
                 break;
             case "2":
-                operationContent = "不通过";
+                operationUnit = "不通过";
                 break;
             default:
         }
-        return operationContent;
+        return operationUnit;
     }
 
     public static Integer getIntCollege(String strCollege){

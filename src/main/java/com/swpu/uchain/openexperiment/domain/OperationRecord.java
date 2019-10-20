@@ -29,7 +29,7 @@ public class OperationRecord {
     /**
      * 具体操作
      */
-    private String operationContent;
+    private String operationUnit;
 
     /**
      * 操作理由

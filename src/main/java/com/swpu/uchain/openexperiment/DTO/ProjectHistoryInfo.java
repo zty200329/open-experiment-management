@@ -36,7 +36,7 @@ public class ProjectHistoryInfo {
     /**
      * 具体的操作
      */
-    private String operationContent;
+    private String operationUnit;
 
 
     /**

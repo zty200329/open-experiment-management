@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -70,6 +71,37 @@ public class ApplyGeneralFormInfoVO implements Serializable {
      * 项目文件id
      */
     private Long projectFileId;
+
+    /**
+     * 主要内容
+     */
+    private String mainContent;
+
+    /**
+     * 开始时间
+     */
+    private Date startTime;
+
+    /**
+     * 项目开展进度
+     */
+    private Integer status;
+
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
+
+    /**
+     * 实验地点
+     */
+    private String address;
+
+    /**
+     * 创建者名字
+     */
+    private String creatorName;
+
     /**
      * 指导教师
      */
@@ -78,5 +110,6 @@ public class ApplyGeneralFormInfoVO implements Serializable {
      * 学生成员
      */
     private List<UserDetailVO> stuMembers;
+
 
 }
