@@ -41,7 +41,7 @@ public class MessageServiceImpl implements MessageService {
         Long userId = Long.valueOf(user.getCode());
         List<Long> projectGroupIdList = userProjectGroupMapper.selectProjectGroupIdByUserIdAndMemberRole(userId, MemberRole.GUIDANCE_TEACHER.getValue());
         List<ProjectHistoryInfo> list = operationRecordMapper.selectAllByProjectIdList(projectGroupIdList);
-        return Result.success(ConvertUtil.projectHistoryInfoListToMessageList(list));
+        return Result.success(list);
     }
 
     @Override

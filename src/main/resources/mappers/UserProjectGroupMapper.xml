@@ -102,4 +102,12 @@
         from user_project_group
         where user_id = #{userId} and member_role = #{memberRole}
   </select>
+    <select id="selectStuCount" resultType="java.lang.Integer">
+        select count(user_id) from user_project_group
+        where project_group_id = #{projectId}
+        and member_role != 1 <!--且角色不为指导教师-->
+        <if test="status!=null">
+            and status = #{status}
+        </if>
+    </select>
 </mapper>

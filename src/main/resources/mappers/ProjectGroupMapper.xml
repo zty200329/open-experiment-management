@@ -291,7 +291,7 @@
     from project_group
             inner join user_project_group
                 on project_group.id = user_project_group.project_group_id
-        where user_project_group.user_id = #{userId}
+            where user_project_group.user_id = #{userId}
     <if test="projectStatus!=null">
         and project_group.`status` = #{projectStatus}
     </if>

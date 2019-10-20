@@ -4,6 +4,7 @@ import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import com.swpu.uchain.openexperiment.form.user.StuMember;
 import com.swpu.uchain.openexperiment.form.user.TeacherMember;
+import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -52,4 +53,12 @@ public interface UserProjectGroupMapper {
     int updateUserInfo(@Param("stuMember")StuMember stuMember,@Param("date") Date date,Long projectId);
 
     int updateTeacherTechnicalRole(TeacherMember teacher,@Param("projectId") Long projectId);
+
+    /**
+     * 通过项目编号和成员状态查询成员数量
+     * @param id
+     * @param status 1，申请 ，2.加入  3 被拒绝的
+     * @return
+     */
+    Integer selectStuCount(@Param("projectId") Long id,@Param("status") Integer status);
 }

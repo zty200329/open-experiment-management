@@ -81,4 +81,14 @@ public class MyProjectVO implements Serializable {
      * 中期检查
      */
     private String achievementCheck;
+
+    /**
+     * 实验室名称
+     */
+    private String labName;
+
+    /**
+     * 已选项目人数
+     */
+    private Integer numberOfTheSelected;
 }

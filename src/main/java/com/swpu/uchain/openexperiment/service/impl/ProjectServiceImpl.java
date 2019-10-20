@@ -238,8 +238,8 @@ public class ProjectServiceImpl implements ProjectService {
         //将之前的历史数据设置为不可见
         //type传入为空则更新所有
         OperationRecord operationRecord = new OperationRecord();
-        operationRecord.setOperationType(OperationType.PROJECT_MODIFY_TYPE1.getValue().toString());
-        operationRecord.setOperationContent(CheckResultType.REJECTED.getValue());
+        operationRecord.setOperationType(OperationType.MODIFY.getValue());
+        operationRecord.setOperationUnit(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue());
         setOperationExecutor(operationRecord);
         recordMapper.insert(operationRecord);
         return Result.success();
@@ -253,15 +253,17 @@ public class ProjectServiceImpl implements ProjectService {
         }
         List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), projectStatus);
         //设置当前用户的所有项目VO
-        List<MyProjectVO> myProjectVOS = new ArrayList<>();
+        List<MyProjectVO> projectVOS = new ArrayList<>();
         for (ProjectGroup projectGroup : projectGroups) {
+            Integer numberOfSelectedStu = userProjectGroupMapper.selectStuCount(projectGroup.getId(),null);
             MyProjectVO myProjectVO = new MyProjectVO();
             BeanUtils.copyProperties(projectGroup, myProjectVO);
             myProjectVO.setProjectGroupId(projectGroup.getId());
+            myProjectVO.setNumberOfTheSelected(numberOfSelectedStu);
 //            myProjectVO.setProjectDetails(getProjectDetails(projectGroup));
-            myProjectVOS.add(myProjectVO);
+            projectVOS.add(myProjectVO);
         }
-        return Result.success(myProjectVOS);
+        return Result.success(projectVOS);
     }
 
     private ProjectDetails getProjectDetails(ProjectGroup projectGroup) {
@@ -374,8 +376,8 @@ public class ProjectServiceImpl implements ProjectService {
             }
 
             OperationRecord operationRecord = new OperationRecord();
-            operationRecord.setOperationType(OperationType.PROJECT_OPERATION_TYPE3.getValue().toString());
-            operationRecord.setOperationContent(CheckResultType.PASS.getValue());
+            operationRecord.setOperationType(OperationType.AGREE.getValue());
+            operationRecord.setOperationUnit(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue());
             operationRecord.setOperationReason(projectCheckForm.getReason());
             operationRecord.setRelatedId(projectCheckForm.getProjectId());
             operationRecordS.add(operationRecord);
@@ -554,8 +556,8 @@ public class ProjectServiceImpl implements ProjectService {
         }
         OperationRecord operationRecord = new OperationRecord();
         operationRecord.setRelatedId(projectGroupId);
-        operationRecord.setOperationContent(CheckResultType.PASS.getValue());
-        operationRecord.setOperationType(OperationType.PROJECT_REPORT_TYPE1.getValue().toString());
+        operationRecord.setOperationUnit(OperationUnit.LAB_ADMINISTRATOR.getValue());
+        operationRecord.setOperationType(OperationType.REPORT.getValue());
         setOperationExecutor(operationRecord);
         recordMapper.insert(operationRecord);
         return updateProjectStatus(projectGroupId, ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
@@ -570,8 +572,8 @@ public class ProjectServiceImpl implements ProjectService {
 
         OperationRecord operationRecord = new OperationRecord();
         operationRecord.setRelatedId(projectGroupId);
-        operationRecord.setOperationContent(CheckResultType.PASS.getValue());
-        operationRecord.setOperationType(OperationType.PROJECT_REPORT_TYPE2.getValue().toString());
+        operationRecord.setOperationUnit(OperationUnit.SECONDARY_UNIT.getValue());
+        operationRecord.setOperationType(OperationType.REPORT.getValue());
         setOperationExecutor(operationRecord);
         recordMapper.insert(operationRecord);
         return updateProjectStatus(projectGroupId, ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue());
@@ -584,23 +586,22 @@ public class ProjectServiceImpl implements ProjectService {
         Long projectId = confirmForm.getProjectId();
         //确认修改
         if (recordMapper.selectDesignatedTypeListByRelatedIdAndType
-                (OperationType.PROJECT_MODIFY_TYPE1.getValue(),projectId).size() == 0){
+                (OperationType.AGREE.getValue(),projectId).size() == 0){
             throw new GlobalException(CodeMsg.PROJECT_NOT_MODIFY_BY_FUNCTION_DEPARTMENT);
         }
         //如果项目通过
-        if (result.toString().equals(CheckResultType.PASS.getValue())){
+        if (result.equals(OperationType.AGREE.getValue())){
             updateProjectStatus(projectId,ProjectStatus.ESTABLISH.getValue());
-        }else if (result.toString().equals(CheckResultType.REJECTED.getValue())){
+        }else if (result.equals(OperationType.REJECT.getValue())){
             updateProjectStatus(projectId,ProjectStatus.ESTABLISH_FAILED.getValue());
         }
-        recordMapper.setNotVisibleByProjectId(projectId,OperationType.PROJECT_MODIFY_TYPE1.getValue());
         return Result.success();
     }
 
     @Override
     public Result getProjectDetailById(Long projectId) {
         List<ProjectHistoryInfo> list = recordMapper.selectAllByProjectId(projectId);
-        return Result.success(ConvertUtil.getConvertedProjectHistoryInfo(list));
+        return Result.success(list);
     }
 
     @Override
@@ -659,7 +660,7 @@ public class ProjectServiceImpl implements ProjectService {
         if(user == null){
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
-        String checkOperationType;
+        Integer operationUnit;
         //当前状态
         Integer projectStatus = null;
         //将要被更新成的状态
@@ -667,18 +668,18 @@ public class ProjectServiceImpl implements ProjectService {
         switch (role) {
             //如果是实验室主任
             case 4:
-                checkOperationType = OperationType.PROJECT_OPERATION_TYPE1.getValue().toString();
+                operationUnit = OperationUnit.LAB_ADMINISTRATOR.getValue();
                 projectStatus = ProjectStatus.DECLARE.getValue();
                 updateProjectStatus = ProjectStatus.LAB_ALLOWED.getValue();
                 break;
             case 5:
-                checkOperationType = OperationType.PROJECT_OPERATION_TYPE2.getValue().toString();
+                operationUnit = OperationUnit.SECONDARY_UNIT.getValue();
                 projectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
                 updateProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
                 break;
             default:
                 //超管执行操作
-                checkOperationType = "-1";
+                operationUnit = -5;
         }
         List<OperationRecord> list = new LinkedList<>();
         OperationRecord operationRecord = new OperationRecord();
@@ -686,8 +687,8 @@ public class ProjectServiceImpl implements ProjectService {
         ) {
             operationRecord.setRelatedId(form.getProjectId());
             operationRecord.setOperationReason(form.getReason());
-            operationRecord.setOperationContent(CheckResultType.PASS.getValue());
-            operationRecord.setOperationType(checkOperationType);
+            operationRecord.setOperationType(OperationType.AGREE.getValue());
+            operationRecord.setOperationType(operationUnit);
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
             //当角色是实验室主任的时候,项目状态不是
             ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
@@ -928,28 +929,28 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional(rollbackFor = Exception.class)
     public Result rejectProjectApply(List<ProjectCheckForm> formList,Integer role) {
         User user = getUserService.getCurrentUser();
-        String checkOperationType;
+        Integer operationUnit;
         Integer rightProjectStatus;
         //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
         switch (role) {
             //如果是实验室主任
             case 4:
-                checkOperationType = OperationType.PROJECT_OPERATION_TYPE1.getValue().toString();
+                operationUnit = OperationUnit.LAB_ADMINISTRATOR.getValue();
                 rightProjectStatus = ProjectStatus.DECLARE.getValue();
                 break;
             //二级单位
             case 5:
-                checkOperationType = OperationType.PROJECT_OPERATION_TYPE2.getValue().toString();
+                operationUnit = OperationUnit.SECONDARY_UNIT.getValue();
                 rightProjectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
                 break;
             //职能部门
             case 6:
-                checkOperationType = OperationType.PROJECT_OPERATION_TYPE3.getValue().toString();
+                operationUnit = OperationUnit.FUNCTIONAL_DEPARTMENT.getValue();
                 rightProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
                 break;
             default:
                 //超管执行操作
-                checkOperationType = "-1";
+                operationUnit = -5;
                 rightProjectStatus = ProjectStatus.REJECT_MODIFY.getValue();
         }
         List<OperationRecord> list = new LinkedList<>();
@@ -958,8 +959,8 @@ public class ProjectServiceImpl implements ProjectService {
         ) {
             operationRecord.setRelatedId(form.getProjectId());
             operationRecord.setOperationReason(form.getReason());
-            operationRecord.setOperationContent(CheckResultType.REJECTED.getValue());
-            operationRecord.setOperationType(checkOperationType);
+            operationRecord.setOperationUnit(OperationType.REJECT.getValue());
+            operationRecord.setOperationType(operationUnit);
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
             //修改状态
             ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());

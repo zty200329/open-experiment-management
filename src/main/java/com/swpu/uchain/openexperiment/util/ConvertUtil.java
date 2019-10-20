@@ -177,65 +177,65 @@ public class ConvertUtil {
         }
         return ids;
     }
+//
+//    public static List<ProjectHistoryInfo> getConvertedProjectHistoryInfo(List<ProjectHistoryInfo> list){
+//        for (ProjectHistoryInfo info:list
+//             ) {
+//            //将具体操作转化成文字
+//            String operationContent = operationContentToWord(info.getOperationContent());
+//            info.setOperationContent(operationContent);
+//
+//            String operationType = operationTypeToWord(info.getOperationType());
+//            info.setOperationType(operationType);
+//
+//        }
+//        return list;
+//    }
 
-    public static List<ProjectHistoryInfo> getConvertedProjectHistoryInfo(List<ProjectHistoryInfo> list){
-        for (ProjectHistoryInfo info:list
-             ) {
-            //将具体操作转化成文字
-            String operationContent = operationContentToWord(info.getOperationContent());
-            info.setOperationContent(operationContent);
-
-            String operationType = operationTypeToWord(info.getOperationType());
-            info.setOperationType(operationType);
-
-        }
-        return list;
-    }
-
-    public static List<MessageVO> projectHistoryInfoListToMessageList(List<ProjectHistoryInfo> list){
-        List<MessageVO> voList = new LinkedList<>();
-        for (ProjectHistoryInfo info:list
-             ) {
-            MessageVO messageVO = new MessageVO();
-            messageVO.setSendTime(info.getOperationTime());
-            messageVO.setReadStatus(info.getReadStatus());
-            messageVO.setContent(info.getReason());
-            messageVO.setId(info.getId());
-            //将具体操作转化成文字
-            String operationContent =  operationContentToWord(info.getOperationContent());
-
-
-            String operationType = operationTypeToWord(info.getOperationType());
-            messageVO.setTitle("项目编号为"+info.getProjectId()+" 的项目"+operationType+" : "+operationContent);
-            voList.add(messageVO);
-        }
-        return voList;
-    }
-
-    private static String operationTypeToWord(String operationType){
-        switch (operationType){
-            case "1":
-                operationType = OperationType.PROJECT_OPERATION_TYPE1.getTips();
-                break;
-            case "2":
-                operationType = OperationType.PROJECT_OPERATION_TYPE2.getTips();
-                break;
-            case "3":
-                operationType = OperationType.PROJECT_OPERATION_TYPE3.getTips();
-                break;
-            case "11":
-                operationType = OperationType.PROJECT_MODIFY_TYPE1.getTips();
-                break;
-            case "21":
-                operationType = OperationType.PROJECT_REPORT_TYPE1.getTips();
-                break;
-            case "22":
-                operationType = OperationType.PROJECT_REPORT_TYPE2.getTips();
-                break;
-            default:
-        }
-        return operationType;
-    }
+//    public static List<MessageVO> projectHistoryInfoListToMessageList(List<ProjectHistoryInfo> list){
+//        List<MessageVO> voList = new LinkedList<>();
+//        for (ProjectHistoryInfo info:list
+//             ) {
+//            MessageVO messageVO = new MessageVO();
+//            messageVO.setSendTime(info.getOperationTime());
+//            messageVO.setReadStatus(info.getReadStatus());
+//            messageVO.setContent(info.getReason());
+//            messageVO.setId(info.getId());
+//            //将具体操作转化成文字
+//            String operationContent =  operationContentToWord(info.getOperationContent());
+//
+//
+//            String operationType = operationTypeToWord(info.getOperationType());
+//            messageVO.setTitle("项目编号为"+info.getProjectId()+" 的项目"+operationType+" : "+operationContent);
+//            voList.add(messageVO);
+//        }
+//        return voList;
+//    }
+//
+//    private static String operationTypeToWord(String operationType){
+//        switch (operationType){
+//            case "1":
+//                operationType = OperationType.PROJECT_OPERATION_TYPE1.getTips();
+//                break;
+//            case "2":
+//                operationType = OperationType.PROJECT_OPERATION_TYPE2.getTips();
+//                break;
+//            case "3":
+//                operationType = OperationType.PROJECT_OPERATION_TYPE3.getTips();
+//                break;
+//            case "11":
+//                operationType = OperationType.PROJECT_MODIFY_TYPE1.getTips();
+//                break;
+//            case "21":
+//                operationType = OperationType.PROJECT_REPORT_TYPE1.getTips();
+//                break;
+//            case "22":
+//                operationType = OperationType.PROJECT_REPORT_TYPE2.getTips();
+//                break;
+//            default:
+//        }
+//        return operationType;
+//    }
 
     private static String operationContentToWord(String operationContent){
         switch (operationContent){

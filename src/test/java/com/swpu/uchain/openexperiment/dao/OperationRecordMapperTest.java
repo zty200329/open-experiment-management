@@ -27,15 +27,6 @@ public class OperationRecordMapperTest {
     @Test
     public void insert() {
 
-        List<OperationRecord> list = new ArrayList<>();
-        OperationRecord operationRecord = new OperationRecord();
-        operationRecord.setOperationContent("1");
-        operationRecord.setOperationReason("满足要求");
-        operationRecord.setOperationType("1");
-        operationRecord.setRelatedId(1L);
-        list.add(operationRecord);
-        System.err.println(recordMapper.multiInsert(list));
-
     }
 
     @Test

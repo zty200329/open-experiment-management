@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -133,6 +134,14 @@ public class ProjectGroup implements Serializable {
      */
     @JsonIgnore
     private Integer subordinateCollege;
+
+
+    /**
+     * 已选项目人数
+     */
+    @JsonIgnore
+    @Null
+    private Integer numberOfTheSelected;
 
     private static final long serialVersionUID = 1L;
 

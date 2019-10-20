@@ -12,11 +12,11 @@
     </resultMap>
     
     <insert id="insert">
-        insert into operation_record (related_id, operation_type, operation_content, operation_reason)
+        insert into operation_record (related_id, operation_type, operation_unit, operation_reason)
             values (#{relatedId},#{operationType},#{operationContent},#{operationReason})
     </insert>
     <insert id="multiInsert">
-        insert into operation_record (related_id, operation_type, operation_content, operation_reason,operation_executor_id)
+        insert into operation_record (related_id, operation_type, operation_unit, operation_reason,operation_executor_id)
             values
             <foreach collection="list" item="record" separator=",">
                 (
@@ -54,7 +54,7 @@
         select
                read_status as readStatus,
                operation_type as operationType,
-               operation_content as operationContent,
+               operation_unit as operationUnit,
                operation_reason as reason,
                operation_time as operationTime,
                operation_executor_id as operationExecutorId
@@ -67,7 +67,7 @@
             id as id,
             read_status as readStatus,
             operation_type as operationType,
-            operation_content as operationContent,
+            operation_unit as operationUnit,
             operation_reason as reason,
             operation_time as operationTime,
             operation_executor_id as operationExecutorId,
@@ -85,7 +85,7 @@
             id as id,
             read_status as readStatus,
             operation_type as operationType,
-            operation_content as operationContent,
+            operation_unit as operationUnit,
             operation_reason as reason,
             operation_time as operationTime,
             operation_executor_id as operationExecutorId,

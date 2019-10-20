@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.DTO;
 
+import io.swagger.models.auth.In;
 import lombok.Data;
 
 /**
@@ -16,13 +17,13 @@ public class OperationRecord {
     /**
      * 操作类型
      */
-    private String operationType;
+    private Integer operationType;
 
 
     /**
      * 具体操作
      */
-    private String operationContent;
+    private Integer operationUnit;
 
     /**
      * 操作理由
@@ -37,10 +38,11 @@ public class OperationRecord {
     public OperationRecord() {
     }
 
-    public OperationRecord(Long relatedId, String operationType, String operationContent, String operationReason) {
+    public OperationRecord(Long relatedId, Integer operationType, Integer operationUnit, String operationReason, Long operationExecutorId) {
         this.relatedId = relatedId;
         this.operationType = operationType;
-        this.operationContent = operationContent;
+        this.operationUnit = operationUnit;
         this.operationReason = operationReason;
+        this.operationExecutorId = operationExecutorId;
     }
 }
