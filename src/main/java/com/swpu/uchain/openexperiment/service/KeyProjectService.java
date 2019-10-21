@@ -1,7 +1,10 @@
 package com.swpu.uchain.openexperiment.service;
 
+import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
 import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
 import com.swpu.uchain.openexperiment.result.Result;
+
+import java.util.List;
 
 /**
  * @author dengg
@@ -20,4 +23,30 @@ public interface KeyProjectService {
      * @return
      */
     Result getKeyProjectApplyingListByGuideTeacher();
+
+    Result getKeyProjectApplyingListByLabAdmin();
+
+    Result getKeyProjectApplyingListBySecondaryUnit();
+
+    Result getKeyProjectApplyingListByFunctionalDepartment();
+
+    Result agreeKeyProjectByGuideTeacher(List<KeyProjectCheck> list);
+
+    Result agreeKeyProjectByLabAdministrator(List<KeyProjectCheck> list);
+
+    Result agreeKeyProjectBySecondaryUnit(List<KeyProjectCheck> list);
+
+    Result agreeKeyProjectByFunctionalDepartment(List<KeyProjectCheck> list);
+
+    Result reportKeyProjectByLabAdministrator(List<KeyProjectCheck> list);
+
+    Result reportKeyProjectBySecondaryUnit(List<KeyProjectCheck> list);
+
+    Result rejectKeyProjectByLabAdministrator(List<KeyProjectCheck> list);
+
+    Result rejectKeyProjectBySecondaryUnit(List<KeyProjectCheck> list);
+
+    Result rejectKeyProjectByFunctionalDepartment(List<KeyProjectCheck> list);
+
+    Result rejectKeyProjectByGuideTeacher(List<KeyProjectCheck> list);
 }

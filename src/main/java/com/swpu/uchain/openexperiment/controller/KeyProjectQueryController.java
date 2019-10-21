@@ -31,4 +31,23 @@ public class KeyProjectQueryController {
     public Result getKeyProjectApplyingListByGuideTeacher(){
         return keyProjectService.getKeyProjectApplyingListByGuideTeacher();
     }
+
+    @GetMapping(value = "/getKeyProjectApplyingListByLabAdmin")
+    @ApiOperation("实验室主任获取项目待审核的重点项目信息")
+    public Result getKeyProjectApplyingListByLabAdmin(){
+        return keyProjectService.getKeyProjectApplyingListByLabAdmin();
+    }
+
+    @GetMapping(value = "/getKeyProjectApplyingListBySecondaryUnit")
+    @ApiOperation("实验室主任获取项目待审核的重点项目信息")
+    public Result getKeyProjectApplyingListBySecondaryUnit(){
+        return keyProjectService.getKeyProjectApplyingListBySecondaryUnit();
+    }
+
+    @GetMapping(value = "/getKeyProjectApplyingListByFunctionalDepartment")
+    @ApiOperation("实验室主任获取项目待审核的重点项目信息")
+    public Result getKeyProjectApplyingListByFunctionalDepartment(){
+        return keyProjectService.getKeyProjectApplyingListByFunctionalDepartment();
+    }
+
 }

@@ -19,6 +19,8 @@ public enum KeyProjectStatus {
 
     TO_DE_CONFIRMED(-1,"待确认--项目组长编写后"),
 
+    GUIDE_TEACHER_ALLOWED(0,"指导老师确认"),
+
     LAB_ALLOWED(1,"实验室审核通过,待上报"),
 
     LAB_ALLOWED_AND_REPORTED(2,"实验室审核通过并已上报"),

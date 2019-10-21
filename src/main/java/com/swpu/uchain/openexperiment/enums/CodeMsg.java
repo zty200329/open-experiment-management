@@ -96,7 +96,8 @@ public enum CodeMsg {
      * 其他异常 1801-1900
      */
     PARAM_CANT_BE_NULL(1801, "参数不能为空" ),
-    ADD_ERROR(1802, "添加失败" );
+    ADD_ERROR(1802, "添加失败" ),
+    UNKNOWN_ROLE_TYPE_AND_OPERATION_TYPE(1803,"未知角色类型和操作类型");
 
     private Integer code;
     private String msg;

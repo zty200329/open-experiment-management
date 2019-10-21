@@ -7,8 +7,15 @@
         insert into key_project_status(project_id,`status`,subordinate_college,creator_id)
             values (#{projectId},#{status},#{college},#{creatorId})
     </insert>
-    <update id="update">
+        <update id="update">
         update key_project_status set `status` = #{status} where project_id = #{projectId}
+    </update>
+    <update id="updateList">
+        update key_project_status set `status` = #{status}
+            where project_id in
+                  <foreach collection="list" item="projectId" open="(" close=")" separator=",">
+                      #{projectId}
+                  </foreach>
     </update>
     <select id="getStatusByProjectId" resultType="java.lang.Integer">
         select status from key_project_status where project_id = #{projectId}
@@ -29,23 +36,25 @@
     </select>
     <select id="getKeyProjectListByUserId" resultType="com.swpu.uchain.openexperiment.DTO.KeyProjectDTO">
         SELECT
-            project_group.id AS id,
-            project_group.apply_funds AS applyFunds,
-            project_group.main_Content AS mainContent,
-            project_group.address,
-            project_group.lab_name AS labName,
-            project_group.project_name AS projectName,
-            key_project_status.`status` AS STATUS,
-            key_project_status.create_time AS createTime,
-            `user`.real_name AS creatorName
+        DISTINCT
+        project_group.id AS id,
+        project_group.apply_funds AS applyFunds,
+        project_group.main_Content AS mainContent,
+        project_group.address,
+        project_group.lab_name AS labName,
+        project_group.project_name AS projectName,
+        key_project_status.`status` AS STATUS,
+        key_project_status.create_time AS createTime,
+        `user`.real_name AS creatorName
         FROM
-            `user`,
-            project_group
-                INNER JOIN key_project_status ON project_group.id = key_project_status.project_id
+        user_project_group,
+        project_group
+        INNER JOIN key_project_status ON project_group.id = key_project_status.project_id
+        left join `user` on key_project_status.creator_id = user.`code`
         WHERE
-            `user`.`code` = #{userId}
+        `user_project_group`.`user_id` = #{userId}
         <if test="status!=null">
-            `status` = #{status}
+            and key_project_status.`status` = #{status}
         </if>
     </select>
 

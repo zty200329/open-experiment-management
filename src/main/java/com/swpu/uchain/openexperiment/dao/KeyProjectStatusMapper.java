@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.dao;
 import com.swpu.uchain.openexperiment.DTO.KeyProjectDTO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,6 +18,8 @@ public interface KeyProjectStatusMapper {
                @Param("college") Integer College,@Param("creatorId") Long creatorId);
 
     int update(@Param("projectId") Long projectId,@Param("status") Integer status);
+
+    int updateList(@Param("list")List<Long> projectId, @Param("status")Integer status);
 
     Integer getStatusByProjectId(@Param("projectId") Long projectId);
 
