@@ -1,6 +1,5 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
@@ -13,27 +12,20 @@ import com.swpu.uchain.openexperiment.dao.*;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
-import com.swpu.uchain.openexperiment.form.funds.FundForm;
 import com.swpu.uchain.openexperiment.form.project.*;
-import com.swpu.uchain.openexperiment.form.user.StuMember;
-import com.swpu.uchain.openexperiment.form.user.TeacherMember;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.CountUtil;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.xssf.usermodel.*;
-import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -455,26 +447,26 @@ public class ProjectServiceImpl implements ProjectService {
 //    }
 
     @Override
-    public Result getPendingApprovalProjectByLabAdministrator(Integer pageNum) {
+    public Result getPendingApprovalProjectByLabAdministrator() {
         //TODO 身份验证
-        return getCheckInfo(pageNum,RoleType.LAB_ADMINISTRATOR.getValue());
+        return getCheckInfo(RoleType.LAB_ADMINISTRATOR.getValue());
     }
 
     @Override
-    public Result getPendingApprovalProjectBySecondaryUnit(Integer pageNum) {
+    public Result getPendingApprovalProjectBySecondaryUnit() {
         //TODO 身份验证
 
-        return getCheckInfo(pageNum, RoleType.SECONDARY_UNIT.getValue());
+        return getCheckInfo(RoleType.SECONDARY_UNIT.getValue());
     }
 
     @Override
-    public Result getPendingApprovalProjectByFunctionalDepartment(Integer pageNum) {
+    public Result getPendingApprovalProjectByFunctionalDepartment() {
         //TODO 身份验证
 
-        return getCheckInfo(pageNum, RoleType.FUNCTIONAL_DEPARTMENT.getValue());
+        return getCheckInfo(RoleType.FUNCTIONAL_DEPARTMENT.getValue());
     }
 
-    public Result getCheckInfo(Integer pageNum, Integer role) {
+    private Result getCheckInfo(Integer role) {
         //获取工号,并通过工号获取角色,再通过角色判定操作类型(只针对于审核这一步)
         Integer projectStatus;
         //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
@@ -495,7 +487,6 @@ public class ProjectServiceImpl implements ProjectService {
                 //超管执行操作
                 projectStatus = -1;
         }
-        PageHelper.startPage(pageNum, countConfig.getCheckProject());
         List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus);
         for (CheckProjectVO checkProjectVO : checkProjectVOs) {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getProjectGroupId());

@@ -1,9 +1,11 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.swpu.uchain.openexperiment.DTO.KeyProjectDTO;
 import com.swpu.uchain.openexperiment.dao.KeyProjectStatusMapper;
 import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.dao.UserProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
+import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.KeyProjectStatus;
 import com.swpu.uchain.openexperiment.enums.ProjectStatus;
@@ -48,12 +50,14 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         if (projectGroup == null){
             throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
+        User user = getUserService.getCurrentUser();
         Long projectId = projectGroup.getId();
         if (projectGroup.getStatus() < ProjectStatus.LAB_ALLOWED.getValue()){
             throw new GlobalException(CodeMsg.PROJECT_IS_NOT_LAB_ALLOWED);
         }
         //创建重点项目状态
-        keyProjectStatusMapper.insert(projectId, KeyProjectStatus.TO_DE_CONFIRMED.getValue(),projectGroup.getSubordinateCollege());
+        keyProjectStatusMapper.insert(projectId, KeyProjectStatus.TO_DE_CONFIRMED.getValue(),
+                projectGroup.getSubordinateCollege(), Long.valueOf(user.getCode()));
 
         List<StuMember> stuMemberList = form.getMembers();
 
@@ -84,9 +88,14 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     @Override
-    public Result getKeyProjectApplyingList() {
-        //TODO 要显示哪些内容
-        return null;
+    public Result getKeyProjectApplyingListByGuideTeacher() {
+        User user = getUserService.getCurrentUser();
+        if (user == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        Long userId = Long.valueOf(user.getCode());
+        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectListByUserId(userId,KeyProjectStatus.TO_DE_CONFIRMED.getValue());
+        return Result.success(list);
     }
 
 }

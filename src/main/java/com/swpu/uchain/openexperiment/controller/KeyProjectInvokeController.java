@@ -16,7 +16,7 @@ import javax.validation.Valid;
 @CrossOrigin
 @RestController
 @RequestMapping("/project")
-@Api(tags = "重点项目模块执行接口")
+@Api(tags = "项目（重点）模块执行接口")
 public class KeyProjectInvokeController {
 
     private KeyProjectService keyProjectService;

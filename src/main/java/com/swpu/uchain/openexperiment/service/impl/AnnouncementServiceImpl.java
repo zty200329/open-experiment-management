@@ -114,8 +114,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public Result getList(Integer pageNum) {
-        PageHelper.startPage(pageNum, countConfig.getAnnouncement());
+    public Result getList() {
         List<AnnouncementListVO> listVOS = announcementMapper.selectOrderByTime();
         PageInfo<AnnouncementListVO> pageInfo = new PageInfo<>(listVOS);
         return Result.success(pageInfo);

@@ -19,5 +19,5 @@ public interface KeyProjectService {
      * 指导教师获取带审批的重点项目申请表
      * @return
      */
-    Result getKeyProjectApplyingList();
+    Result getKeyProjectApplyingListByGuideTeacher();
 }

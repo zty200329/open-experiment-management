@@ -26,4 +26,6 @@ public class KeyProjectInfo {
      */
     private Integer subordinateCollege;
 
+    private Long creatorId;
+
 }

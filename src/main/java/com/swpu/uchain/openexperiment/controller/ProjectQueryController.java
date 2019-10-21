@@ -20,7 +20,7 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @CrossOrigin
 @RestController
-@Api(tags = "项目模块查询接口")
+@Api(tags = "项目(普通)模块查询接口")
 @RequestMapping("/project")
 public class ProjectQueryController {
 
@@ -65,29 +65,22 @@ public class ProjectQueryController {
 
     @ApiOperation("实验室获取待立项审核的项目")
     @GetMapping(value = "getPendingApprovalProjectByLabAdministrator")
-    public Result getPendingApprovalProjectByLabAdministrator (Integer pageNum){
-        if (pageNum == null || pageNum <= 0){
-            return Result.error(CodeMsg.PAGE_NUM_ERROR);
-        }
-        return projectService.getPendingApprovalProjectByLabAdministrator(pageNum);
+    public Result getPendingApprovalProjectByLabAdministrator (){
+        return projectService.getPendingApprovalProjectByLabAdministrator();
     }
 
     @ApiOperation("二级单位获取待立项审核的项目")
     @GetMapping(value = "getPendingApprovalProjectBySecondaryUnit")
-    public Result getPendingApprovalProjectBySecondaryUnit (Integer pageNum){
-        if (pageNum == null || pageNum <= 0){
-            return Result.error(CodeMsg.PAGE_NUM_ERROR);
-        }
-        return projectService.getPendingApprovalProjectBySecondaryUnit(pageNum);
+    public Result getPendingApprovalProjectBySecondaryUnit (){
+
+        return projectService.getPendingApprovalProjectBySecondaryUnit();
     }
 
     @ApiOperation("职能部门获取待立项审核的项目")
     @GetMapping(value = "getPendingApprovalProjectByFunctionalDepartment")
-    public Result getPendingApprovalProjectByFunctionalDepartment (Integer pageNum){
-        if (pageNum == null || pageNum <= 0){
-            return Result.error(CodeMsg.PAGE_NUM_ERROR);
-        }
-        return projectService.getPendingApprovalProjectByFunctionalDepartment(pageNum);
+    public Result getPendingApprovalProjectByFunctionalDepartment (){
+
+        return projectService.getPendingApprovalProjectByFunctionalDepartment();
     }
 
     @ApiOperation("根据项目名模糊查询项目--可使用")

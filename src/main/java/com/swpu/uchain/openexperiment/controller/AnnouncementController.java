@@ -43,11 +43,8 @@ public class AnnouncementController {
 
     @ApiOperation("公告列表")
     @GetMapping(value = "/list", name = "公告列表")
-    public Object list(Integer pageNum){
-        if (pageNum == null){
-            return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
-        }
-        return announcementService.getList(pageNum);
+    public Object list(){
+        return announcementService.getList();
     }
 
     @ApiOperation("删除公告")

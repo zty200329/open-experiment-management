@@ -56,10 +56,10 @@ public interface AnnouncementService {
 
     /**
      * 获取公告指定分页数据
-     * @param pageNum
+     * @param
      * @return
      */
-    Result getList(Integer pageNum);
+    Result getList();
 
     Result changeInfo(AnnouncementUpdateForm updateForm);
 }

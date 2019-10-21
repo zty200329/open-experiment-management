@@ -104,14 +104,13 @@ public interface ProjectService {
 
     /**
      * 获取所有待审核立项项目信息
-     * @param pageNum
      * @return
      */
-    Result getPendingApprovalProjectByLabAdministrator(Integer pageNum);
+    Result getPendingApprovalProjectByLabAdministrator();
 
-    Result getPendingApprovalProjectBySecondaryUnit(Integer pageNum);
+    Result getPendingApprovalProjectBySecondaryUnit();
 
-    Result getPendingApprovalProjectByFunctionalDepartment(Integer pageNum);
+    Result getPendingApprovalProjectByFunctionalDepartment();
 
     /**
      * 上报学院领导
