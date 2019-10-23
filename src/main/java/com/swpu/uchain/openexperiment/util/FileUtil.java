@@ -86,7 +86,7 @@ public class FileUtil {
             //response.setContentType("application/force-download");//应用程序强制下载
             File file = new File(realPath);
             //如果文件不存在
-            if (file == null || !file.exists()) {
+            if (!file.exists()) {
                 log.error("文件 " + realPath + " 不存在!");
                 return false;
             }
@@ -179,5 +179,9 @@ public class FileUtil {
             return true;
         }
         return false;
+    }
+
+    public static void main(String[] args) {
+
     }
 }

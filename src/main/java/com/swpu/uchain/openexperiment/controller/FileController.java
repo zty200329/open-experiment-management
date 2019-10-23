@@ -36,7 +36,6 @@ public class FileController {
     @Autowired
     private ProjectService projectService;
 
-    @ApiIgnore
     @ApiOperation("下载立项申请正文doc")
     @GetMapping(value = "/getApplyDoc", name = "下载立项申请正文doc")
     public void getApplyDoc(Long fileId, HttpServletResponse response){
@@ -50,15 +49,14 @@ public class FileController {
         projectFileService.downloadApplyPdf(fileId, response);
     }
 
-    @ApiIgnore
-    @ApiOperation("重新上传立项申请正文")
-    @PostMapping(value = "/reloadApplyDoc", name = "重新上传立项申请正文")
-    public Object reloadApplyDoc(@Valid @RequestBody ReloadApplyForm reloadApplyForm){
+    @ApiOperation("上传立项申请正文")
+    @PostMapping(value = "/reloadApplyDoc", name = "上传立项申请正文")
+    public Object reloadApplyDoc(Long projectGroupId,MultipartFile file){
         User currentUser = getUserService.getCurrentUser();
-        if (userProjectService.selectByProjectGroupIdAndUserId(Long.valueOf(currentUser.getCode()), reloadApplyForm.getProjectGroupId()) == null) {
+        if (userProjectService.selectByProjectGroupIdAndUserId(projectGroupId,Long.valueOf(currentUser.getCode())) == null) {
             return Result.error(CodeMsg.PERMISSION_DENNY);
         }
-        return projectFileService.uploadApplyDoc(reloadApplyForm.getFile(), reloadApplyForm.getProjectGroupId());
+        return projectFileService.uploadApplyDoc(file, projectGroupId);
     }
 
 
@@ -101,7 +99,7 @@ public class FileController {
          projectService.generateConclusionExcel(response);
     }
 
-    @ApiOperation("生成立项总览表--待完成")
+    @ApiOperation("生成立项总览表--可使用")
     @PostMapping(value = "/generateEstablishExcel", name = "生成立项总览表")
     public void generateEstablishExcel(HttpServletResponse response){
         projectService.generateEstablishExcel(response);

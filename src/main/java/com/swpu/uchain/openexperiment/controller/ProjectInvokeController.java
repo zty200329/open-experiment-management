@@ -108,11 +108,11 @@ public class ProjectInvokeController {
 
     @ApiOperation("上报学院领导(二级单位)--(实验室主任)可使用")
     @PostMapping(value = "/reportToCollegeLeader", name = "上报学院领导")
-    public Result reportToCollegeLeader(Long projectGroupId){
-        if (projectGroupId == null){
+    public Result reportToCollegeLeader(@RequestBody List<Long> projectGroupIdList){
+        if (projectGroupIdList == null){
             return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
         }
-        return projectService.reportToCollegeLeader(projectGroupId);
+        return projectService.reportToCollegeLeader(projectGroupIdList);
     }
 
 

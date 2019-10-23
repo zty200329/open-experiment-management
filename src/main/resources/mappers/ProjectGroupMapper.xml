@@ -185,6 +185,12 @@
       main_content = #{mainContent}
     where id = #{id,jdbcType=BIGINT}
   </update>
+    <update id="updateProjectStatusOfList">
+        update project_group set `status` = #{status} where id in
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
     <select id="selectByPrimaryProjectName" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         select id,
                address,
@@ -289,12 +295,14 @@
           project_group.main_Content,
           project_group.is_open_topic
     from project_group
-            inner join user_project_group
-                on project_group.id = user_project_group.project_group_id
-            where user_project_group.user_id = #{userId}
+    <where>
+    <if test="userId!=null">
+        and user_project_group.user_id = #{userId}
+    </if>
     <if test="projectStatus!=null">
         and project_group.`status` = #{projectStatus}
     </if>
+    </where>
   </select>
   <select id="selectApplyOrderByTime" resultMap="CheckProjectResultMap">
     select project_group.limit_college,
@@ -455,5 +463,12 @@
              project_group
                  left join user on project_group.creator_id = user.code
         where project_group.subordinate_college = #{college}
+    </select>
+    <select id="selectSpecifiedProjectList" resultType="java.lang.Integer">
+        select count(id) from  project_group where id in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and `status` = #{status}
     </select>
 </mapper>

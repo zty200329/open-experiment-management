@@ -67,6 +67,7 @@ public class CreateProjectApplyForm {
     @ApiModelProperty("所需经费支持")
     private Float applyFunds;
 
+    @NotNull(message = "选题不为空")
     @ApiModelProperty("是否开放选题  1.是,2否,3,开放部分")
     private Integer isOpenTopic;
 
@@ -89,6 +90,7 @@ public class CreateProjectApplyForm {
     @ApiModelProperty("适宜学生数--选填")
     private Integer fitPeopleNum;
 
+    @NotNull(message = "主要内容不为空")
     @ApiModelProperty("主要内容")
     private String mainContent;
 

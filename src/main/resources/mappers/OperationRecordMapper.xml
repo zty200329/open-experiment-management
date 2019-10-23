@@ -13,11 +13,11 @@
     
     <insert id="insert">
         insert into operation_record (related_id, operation_type, operation_unit, operation_reason)
-            values (#{relatedId},#{operationType},#{operationUnit},#{operationReason})
+            valueS (#{relatedId},#{operationType},#{operationUnit},#{operationReason})
     </insert>
     <insert id="multiInsert">
         insert into operation_record (related_id, operation_type, operation_unit, operation_reason,operation_executor_id)
-            values
+            value
             <foreach collection="list" item="record" separator=",">
                 (
                     #{record.relatedId},

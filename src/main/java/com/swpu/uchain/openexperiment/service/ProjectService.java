@@ -114,10 +114,10 @@ public interface ProjectService {
 
     /**
      * 上报学院领导
-     * @param projectGroupId
+     * @param projectGroupIdList
      * @return
      */
-    Result reportToCollegeLeader(Long projectGroupId);
+    Result reportToCollegeLeader(List<Long> projectGroupIdList);
 
     /**
      * 生成立项总览表
@@ -197,4 +197,7 @@ public interface ProjectService {
 
     Result approveProjectApplyBySecondaryUnit(List<ProjectCheckForm> list);
 
+    Result getToBeReportedProjectBySecondaryUnit();
+
+    Result getToBeReportedProjectByLabLeader();
 }

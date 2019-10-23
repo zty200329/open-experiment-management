@@ -49,4 +49,9 @@ public interface ProjectGroupMapper {
     ProjectGroupDetailVO getProjectGroupDetailVOByProjectId(@Param("projectId")Long projectId );
 
     List<ProjectTableInfo> getProjectTableInfoListByCollege(@Param("college") Integer college);
+
+    int updateProjectStatusOfList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);
+
+    int selectSpecifiedProjectList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);
+
 }

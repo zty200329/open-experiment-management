@@ -26,13 +26,15 @@
                status`,
                subordinate_college as subordinateCollege
         from key_project_status
-        where 1=1
-         <if test="status!=null">
-             and `status` = #{status}
-         </if>
-         <if test="college!=null">
-             and
-         </if>
+        <where>
+            <if test="status!=null">
+                and `status` = #{status}
+            </if>
+            <if test="college!=null">
+                and
+            </if>
+        </where>
+
     </select>
     <select id="getKeyProjectListByUserId" resultType="com.swpu.uchain.openexperiment.DTO.KeyProjectDTO">
         SELECT

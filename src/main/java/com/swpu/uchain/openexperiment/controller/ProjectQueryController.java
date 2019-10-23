@@ -72,7 +72,6 @@ public class ProjectQueryController {
     @ApiOperation("二级单位获取待立项审核的项目")
     @GetMapping(value = "getPendingApprovalProjectBySecondaryUnit")
     public Result getPendingApprovalProjectBySecondaryUnit (){
-
         return projectService.getPendingApprovalProjectBySecondaryUnit();
     }
 
@@ -92,6 +91,7 @@ public class ProjectQueryController {
         return Result.success(projectService.selectByProjectName(name));
     }
 
+    @ApiIgnore
     @ApiOperation("指导老师查看待审核的项目")
     @GetMapping("/getPendingReviewByLeadTeacher")
     public Result getPendingReviewByLeadTeacher(){
@@ -110,5 +110,17 @@ public class ProjectQueryController {
         return projectService.getProjectGroupDetailVOByProjectId(projectId);
     }
 
+
+    @ApiOperation("指导老师查看待上报的项目")
+    @GetMapping("/getToBeReportedProjectByLeadTeacher")
+    public Result getToBeReportedProjectByLeadTeacher(){
+        return projectService.getToBeReportedProjectBySecondaryUnit();
+    }
+
+    @ApiOperation("实验室主任查看待上报项目")
+    @GetMapping("/getToBeReportedProjectByLabLeader")
+    public Result getToBeReportedProjectByLabLeader(){
+        return projectService.getToBeReportedProjectByLabLeader();
+    }
 
 }

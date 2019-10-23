@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 @SpringBootTest
@@ -34,5 +37,13 @@ public class ProjectGroupMapperTest {
     @Test
     public void getProjectTableInfoListByCollege() {
         System.err.println(projectGroupMapper.getProjectTableInfoListByCollege(CollegeType.COMPUTER_SCIENCE_COLLEGE.getValue()));
+    }
+
+    @Test
+    public void updateProjectStatusOfList(){
+        List<Long> list = new LinkedList<>();
+        list.add(21L);
+        list.add(22L);
+        projectGroupMapper.updateProjectStatusOfList(list,2);
     }
 }
