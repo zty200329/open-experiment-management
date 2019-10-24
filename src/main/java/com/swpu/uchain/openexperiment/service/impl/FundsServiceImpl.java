@@ -1,24 +1,18 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.swpu.uchain.openexperiment.VO.project.ApplyGeneralFormInfoVO;
-import com.swpu.uchain.openexperiment.VO.project.ApplyKeyFormInfoVO;
 import com.swpu.uchain.openexperiment.dao.FundsMapper;
 import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.Funds;
-import com.swpu.uchain.openexperiment.domain.ProjectGroup;
-import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.FundsStatus;
-import com.swpu.uchain.openexperiment.enums.ProjectType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.funds.FundForm;
-import com.swpu.uchain.openexperiment.form.funds.FundSetForm;
 import com.swpu.uchain.openexperiment.form.funds.FundsForm;
+import com.swpu.uchain.openexperiment.form.funds.FundsUpdateForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.FundsKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.FundsService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -125,11 +119,13 @@ public class FundsServiceImpl implements FundsService {
         return Result.success();
     }
 
+
     @Override
-    public Result setProjectSupportAmount(FundSetForm fundSetForm) {
-        if (projectGroupMapper.selectByPrimaryKey(fundSetForm.getProjectId()) == null){
-            throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+    public Result updateProjectApplyFundsBySecondaryUnit(FundsUpdateForm form) {
+        if (form.getProjectIdList().size() == 0){
+            throw new GlobalException(CodeMsg.UPDATE_ERROR);
         }
+        fundsMapper.updateProjectListFunds(form.getProjectIdList(),form.getFundsMount());
         return Result.success();
     }
 

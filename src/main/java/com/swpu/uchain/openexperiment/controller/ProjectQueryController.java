@@ -98,9 +98,9 @@ public class ProjectQueryController {
     }
 
 
-    @ApiOperation("指导老师查看待上报的项目")
-    @GetMapping("/getToBeReportedProjectByLeadTeacher")
-    public Result getToBeReportedProjectByLeadTeacher(){
+    @ApiOperation("二级单位查看待上报的项目")
+    @GetMapping("/getToBeReportedProjectBySecondaryUnit")
+    public Result getToBeReportedProjectBySecondaryUnit(){
         return projectService.getToBeReportedProjectBySecondaryUnit();
     }
 

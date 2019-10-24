@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.service;
 import com.swpu.uchain.openexperiment.domain.Funds;
 import com.swpu.uchain.openexperiment.form.funds.FundSetForm;
 import com.swpu.uchain.openexperiment.form.funds.FundsForm;
+import com.swpu.uchain.openexperiment.form.funds.FundsUpdateForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
 import java.util.List;
@@ -63,10 +64,11 @@ public interface FundsService {
      */
     Result cashReimbursement(FundsForm form);
 
+
+
     /**
      * 设置项目 支持资金
-     * @param fundSetForm
      * @return
      */
-    Result setProjectSupportAmount(FundSetForm fundSetForm);
+    Result updateProjectApplyFundsBySecondaryUnit(FundsUpdateForm form);
 }

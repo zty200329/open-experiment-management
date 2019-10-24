@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.controller;
 import com.swpu.uchain.openexperiment.domain.Funds;
 import com.swpu.uchain.openexperiment.form.funds.FundSetForm;
 import com.swpu.uchain.openexperiment.form.funds.FundsForm;
+import com.swpu.uchain.openexperiment.form.funds.FundsUpdateForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.FundsService;
 import io.swagger.annotations.Api;
@@ -34,10 +35,12 @@ public class FundsController {
         return fundsService.cashReimbursement(form);
     }
 
-    @ApiOperation("设置项目资金")
-    @PostMapping("/setProjectSupportAmount")
-    public Result setProjectSupportAmount(@Valid @RequestBody FundSetForm fundSetForm){
-        return fundsService.setProjectSupportAmount(fundSetForm);
+
+    @ApiOperation("二级单位修改项目金额")
+    @PostMapping(value = "/updateProjectApplyFundsBySecondaryUnit")
+    public Result updateProjectApplyFundsBySecondaryUnit(@Valid @RequestBody FundsUpdateForm form){
+        return fundsService.updateProjectApplyFundsBySecondaryUnit(form);
     }
+
 
 }

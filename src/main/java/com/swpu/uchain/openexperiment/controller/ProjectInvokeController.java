@@ -2,8 +2,10 @@ package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.RoleType;
+import com.swpu.uchain.openexperiment.form.funds.FundsUpdateForm;
 import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.result.Result;
+import com.swpu.uchain.openexperiment.service.FundsService;
 import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import io.swagger.annotations.Api;
@@ -32,10 +34,14 @@ public class ProjectInvokeController {
 
     private UserProjectService userProjectService;
 
+    private FundsService fundsService;
+
     @Autowired
-    public ProjectInvokeController(ProjectService projectService, UserProjectService userProjectService) {
+    public ProjectInvokeController(ProjectService projectService, UserProjectService userProjectService,
+                                   FundsService fundsService) {
         this.projectService = projectService;
         this.userProjectService = userProjectService;
+        this.fundsService = fundsService;
     }
 
     @ApiOperation("申请立项接口--可使用")
@@ -143,6 +149,4 @@ public class ProjectInvokeController {
     public Result rejectProjectApplyByFunctionalDepartment(@Valid @RequestBody List<ProjectCheckForm> formList){
         return projectService.rejectProjectApplyByFunctionalDepartment(formList);
     }
-
-
 }

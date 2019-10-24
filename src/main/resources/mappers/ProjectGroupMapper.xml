@@ -273,7 +273,7 @@
   </select>
   <select id="selectByUserIdAndStatus" resultMap="ProjectGroupResultMap">
     select
-          project_group.id,
+          user_project_group.project_group_id as id,
           project_group.address,
           project_group.create_time,
           project_group.creator_id,
@@ -295,10 +295,10 @@
           project_group.update_time,
           project_group.main_Content,
           project_group.is_open_topic
-    from project_group
+    from project_group inner join user_project_group on user_project_group.project_group_id = project_group.id
     <where>
     <if test="userId!=null">
-        and user_project_group.user_id = #{userId}
+        user_project_group.user_id = #{userId}
     </if>
     <if test="projectStatus!=null">
         and project_group.`status` = #{projectStatus}

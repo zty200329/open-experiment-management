@@ -68,7 +68,15 @@
     set `status` = #{param2}
     where project_group_id = #{param1}
   </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <update id="updateProjectListFunds">
+        UPDATE project_group
+        SET apply_funds = #{supportAmount}
+        where project_group.id in
+        <foreach collection="list" item="id" separator="," open="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select id, amount, `use`, `type`, applicant_id, project_group_id, `status`, create_time, 
     update_time
     from funds

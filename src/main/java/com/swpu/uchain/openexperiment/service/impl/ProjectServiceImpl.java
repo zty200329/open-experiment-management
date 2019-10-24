@@ -472,11 +472,11 @@ public class ProjectServiceImpl implements ProjectService {
         switch (role) {
             //二级部门(学院领导)
             case 5:
-                projectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
+                projectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
                 break;
             //实验室主任
             case 4:
-                projectStatus = ProjectStatus.DECLARE.getValue();
+                projectStatus = ProjectStatus.LAB_ALLOWED.getValue();
                 break;
             default:
                 throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
