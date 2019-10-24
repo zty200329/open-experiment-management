@@ -55,7 +55,7 @@ public enum CodeMsg {
     FILE_OVERSIZE(1607,"文件过大"),
     DOWNLOAD_ERROR(1608,"下载失败" ),
     DELETE_FILE_ERROR(1609, "删除文件异常"),
-
+    FILE_NAME_EMPTY_ERROR(1610,"文件名不能为空"),
 
     REQUEST_METHOD_ERROR(550,"不支持%s的请求方式" ),
     SERVER_ERROR(500,"服务器未知错误:%s" ),

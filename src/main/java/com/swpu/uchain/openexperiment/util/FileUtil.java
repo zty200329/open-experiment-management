@@ -1,11 +1,15 @@
 package com.swpu.uchain.openexperiment.util;
 
+import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.FileType;
+import com.swpu.uchain.openexperiment.exception.GlobalException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +26,7 @@ public class FileUtil {
 
     /**
      * 获取文件类型
+     *
      * @param suffix
      * @return
      */
@@ -59,15 +64,16 @@ public class FileUtil {
 
     /**
      * 上传文件
+     *
      * @param multipartFile
      * @param realPath
      * @return
      */
-    public static boolean uploadFile(MultipartFile multipartFile,String realPath){
+    public static boolean uploadFile(MultipartFile multipartFile, String realPath) {
         try {
             byte[] bytes = multipartFile.getBytes();
             Path path = Paths.get(realPath);
-            Files.write(path,bytes);
+            Files.write(path, bytes);
         } catch (IOException e) {
             return false;
         }
@@ -76,43 +82,61 @@ public class FileUtil {
 
     /**
      * 下载文件
+     *
      * @param response
      * @param realPath
      * @return
      */
-    public static boolean downloadFile(HttpServletResponse response, String realPath){
+    public static boolean downloadFile(HttpServletResponse response, String realPath) {
+        File file = new File(realPath);
+        //如果文件不存在
+        if (!file.exists()) {
+            log.error("文件 " + realPath + " 不存在!");
+            return true;
+        }
+        String simpleName = file.getName().substring(file.getName().lastIndexOf("/") + 1);
+        String newFileName = new String(simpleName.getBytes(), StandardCharsets.UTF_8);
+        //不设置这个的话，有可能会乱码
+        response.setContentType("application/force-download");
         try {
-            response.setCharacterEncoding("UTF-8");
-            //response.setContentType("application/force-download");//应用程序强制下载
-            File file = new File(realPath);
-            //如果文件不存在
-            if (!file.exists()) {
-                log.error("文件 " + realPath + " 不存在!");
-                return false;
-            }
-            String simpleName = file.getName().substring(file.getName().lastIndexOf("/") + 1);
-            String newFileName = new String(simpleName.getBytes(), "utf-8");
-            response.setHeader("Content-disposition", "attachment;filename=" + newFileName);
-            BufferedInputStream bis = new BufferedInputStream(
-                    new FileInputStream(file));
-            BufferedOutputStream bos = new BufferedOutputStream(
-                    response.getOutputStream());
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = bis.read(buffer)) != -1) {
-                bos.write(buffer, 0, length);
-            }
-            if (bis != null){
-                bis.close();
-            }
-            if (bos != null){
-                bos.close();
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(newFileName,"UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        byte[] buffer = new byte[1024];
+        //文件输入流
+        FileInputStream fis = null;
+        BufferedInputStream bis = null;
+
+        //输出流
+        OutputStream os = null;
+        try {
+            os = response.getOutputStream();
+            fis = new FileInputStream(file);
+            bis = new BufferedInputStream(fis);
+            int i = bis.read(buffer);
+            while (i != -1) {
+                os.write(buffer);
+                i = bis.read(buffer);
             }
         } catch (Exception e) {
-            return false;
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        return true;
-    }
+        log.info("文件下载中........");
+        try {
+            assert bis != null;
+            bis.close();
+            fis.close();
+            assert os != null;
+            os.close();
+        } catch (IOException e) {
+            log.error("error:{}", e.getMessage());
+        }
+        log.info("文件下载完成");
+        return false;
+
+}
 
     /**
      * 获取文件真正的路径
@@ -181,7 +205,17 @@ public class FileUtil {
         return false;
     }
 
-    public static void main(String[] args) {
-
+    /**
+     * 解决IE edge 文件上传 文件名却出现了全路径+文件名的形式
+     * @param fileName 文件名
+     * @return
+     */
+    public static String getRealFilename(String fileName){
+        if (fileName == null){
+            throw new GlobalException(CodeMsg.FILE_NAME_EMPTY_ERROR);
+        }
+        //最后一位  注意是"\\",主要针对于微软的浏览器
+        int lastIndexOfSlash = fileName.lastIndexOf(".");
+        return fileName.substring(lastIndexOfSlash);
     }
 }

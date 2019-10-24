@@ -18,6 +18,9 @@ public class ProjectFile implements Serializable {
 
     private String fileName;
 
+    /**
+     *  {@link com.swpu.uchain.openexperiment.enums.FileType}
+     */
     private Integer fileType;
 
     private String size;

@@ -20,18 +20,28 @@
     <select id="getStatusByProjectId" resultType="java.lang.Integer">
         select status from key_project_status where project_id = #{projectId}
     </select>
-    <select id="getProjectIdListByStatusAndCollege" resultType="com.swpu.uchain.openexperiment.DTO.KeyProjectDTO">
-        select
-               project_id as projectId,`
-               status`,
-               subordinate_college as subordinateCollege
-        from key_project_status
+    <select id="getKeyProjectDTOListByStatusAndCollege" resultType="com.swpu.uchain.openexperiment.DTO.KeyProjectDTO">
+        SELECT
+            key_project_status.project_id AS id,
+            key_project_status.`status` AS STATUS,
+            key_project_status.create_time AS createTime,
+            project_group.apply_funds AS applyFunds,
+            project_group.project_name AS projectName,
+            project_group.lab_name AS labName,
+            project_group.address AS address,
+            project_group.main_Content AS mainContent,
+            `user`.real_name AS creatorName,
+            `user`.`code` AS userId
+            FROM
+            key_project_status
+            INNER JOIN project_group ON key_project_status.project_id = project_group.id
+            LEFT JOIN `user` ON key_project_status.creator_id = `user`.code;
         <where>
             <if test="status!=null">
                 and `status` = #{status}
             </if>
             <if test="college!=null">
-                and
+                and college = #{college}
             </if>
         </where>
 

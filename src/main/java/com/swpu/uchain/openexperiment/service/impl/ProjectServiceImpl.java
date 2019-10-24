@@ -669,13 +669,13 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
             //当角色是实验室主任的时候,项目状态不是
             ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
-            if (role == 4 && !projectGroup.getStatus().equals(projectStatus)){
-                throw new GlobalException("项目编号为"+projectGroup.getId()+"的项目非申报状态",CodeMsg.PROJECT_STATUS_IS_NOT_DECLARE.getCode());
-            }
+//            if (role == 4 && !projectGroup.getStatus().equals(projectStatus)){
+//                throw new GlobalException("项目编号为"+projectGroup.getId()+"的项目非申报状态",CodeMsg.PROJECT_STATUS_IS_NOT_DECLARE.getCode());
+//            }
             //如果不是实验室上报状态,抛出异常
-            if (role == 5 && !projectGroup.getStatus().equals(projectStatus)){
-                throw new GlobalException("项目编号为"+projectGroup.getId()+"的项目非实验室上报状态",CodeMsg.PROJECT_STATUS_IS_NOT_LAB_ALLOWED_AND_REPORTED.getCode());
-            }
+//            if (role == 5 && !projectGroup.getStatus().equals(projectStatus)){
+//                throw new GlobalException("项目编号为"+projectGroup.getId()+"的项目非实验室上报状态",CodeMsg.PROJECT_STATUS_IS_NOT_LAB_ALLOWED_AND_REPORTED.getCode());
+//            }
             //根据不同角色设置不同的项目状态
             updateProjectStatus(form.getProjectId(), updateProjectStatus);
             list.add(operationRecord);

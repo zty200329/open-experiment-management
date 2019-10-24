@@ -12,7 +12,6 @@ import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.FileType;
 import com.swpu.uchain.openexperiment.enums.ProjectStatus;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
-import com.swpu.uchain.openexperiment.form.file.ConcludingReportForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.FileKey;
 import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
@@ -33,6 +32,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+
+import static com.swpu.uchain.openexperiment.util.FileUtil.getRealFilename;
 
 /**
  * @Description
@@ -95,14 +96,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public ProjectFile selectById(Long id) {
-        ProjectFile projectFile = redisService.get(FileKey.getById, id + "", ProjectFile.class);
-        if (projectFile == null){
-            projectFile = projectFileMapper.selectByPrimaryKey(id);
-            if (projectFile == null){
-                redisService.set(FileKey.getById, id + "", projectFile);
-            }
-        }
-        return projectFile;
+        return projectFileMapper.selectByPrimaryKey(id);
     }
 
     @Override
@@ -113,15 +107,18 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Override
     public Result uploadApplyDoc(MultipartFile file, Long projectGroupId) {
         ProjectFile mark = getAimNameProjectFile(projectGroupId, uploadConfig.getApplyFileName());
-        if (mark != null) {
-            File dest = new File(
-                    FileUtil.getFileRealPath(mark.getId(),
-                    uploadConfig.getUploadDir(),
-                    uploadConfig.getApplyFileName()));
-            dest.delete();
-        }
+        //先检查文件是否为空
         if (file.isEmpty()) {
             return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
+        }
+
+        if (mark != null) {
+            //如果存在则
+            File dest = new File(
+                    FileUtil.getFileRealPath(mark.getId(),
+                            uploadConfig.getUploadDir(),
+                            uploadConfig.getApplyFileName()));
+            dest.delete();
         }
         if (!checkFileFormat(file, FileType.WORD.getValue())) {
             return Result.error(CodeMsg.FORMAT_UNSUPPORTED);
@@ -131,7 +128,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         ProjectFile projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(user.getCode()));
         projectFile.setFileType(FileType.WORD.getValue());
-        projectFile.setFileName(uploadConfig.getApplyFileName());
+        projectFile.setFileName(uploadConfig.getApplyFileName()+getRealFilename(file.getOriginalFilename()));
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
         projectFile.setUploadTime(new Date());
         projectFile.setDownloadTimes(0);
@@ -156,8 +153,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (projectFile == null){
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
-        String realPath = FileUtil.getFileRealPath(fileId, uploadConfig.getUploadDir(), uploadConfig.getApplyFileName());
-        if (!FileUtil.downloadFile(response, realPath)){
+        String realPath = FileUtil.getFileRealPath(fileId, uploadConfig.getUploadDir(), projectFile.getFileName());
+        if (FileUtil.downloadFile(response, realPath)){
             throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
         }
         projectFile.setDownloadTimes(projectFile.getDownloadTimes() + 1);
@@ -178,7 +175,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 FileUtil.getFileNameWithoutSuffix(projectFile.getFileName()) + ".pdf");
         File file = new File(realPath);
         if (file.exists()){
-            if (!FileUtil.downloadFile(response, realPath)) {
+            if (FileUtil.downloadFile(response, realPath)) {
                 throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
             }
         }
@@ -190,7 +187,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             e.printStackTrace();
             log.error("======================XDoc文件类型转换异常=========================");
         }
-        if (!FileUtil.downloadFile(response, realPath)) {
+        if (FileUtil.downloadFile(response, realPath)) {
             throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
         }
     }
@@ -233,7 +230,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (projectFile == null){
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
-        if (!FileUtil.downloadFile(response, FileUtil.getFileRealPath(fileId, uploadConfig.getUploadDir(),projectFile.getFileName()))) {
+        if (FileUtil.downloadFile(response, FileUtil.getFileRealPath(fileId, uploadConfig.getUploadDir(), projectFile.getFileName()))) {
             throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
         }
     }

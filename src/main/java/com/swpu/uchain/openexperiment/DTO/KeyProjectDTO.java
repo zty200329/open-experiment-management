@@ -22,6 +22,11 @@ public class KeyProjectDTO {
     private Date createTime;
 
     /**
+     * 创建者的学号
+     */
+    private Long userId;
+
+    /**
      * 创建者名字
      */
     private String creatorName;

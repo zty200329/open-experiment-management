@@ -107,19 +107,19 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result getKeyProjectApplyingListByLabAdmin() {
-        List<KeyProjectDTO> list = keyProjectStatusMapper.getProjectIdListByStatusAndCollege(KeyProjectStatus.GUIDE_TEACHER_ALLOWED.getValue(),null);
+        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.GUIDE_TEACHER_ALLOWED.getValue(),null);
         return Result.success(list);
     }
 
     @Override
     public Result getKeyProjectApplyingListBySecondaryUnit() {
-        List<KeyProjectDTO> list = keyProjectStatusMapper.getProjectIdListByStatusAndCollege(KeyProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue(),null);
+        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue(),null);
         return Result.success(list);
     }
 
     @Override
     public Result getKeyProjectApplyingListByFunctionalDepartment() {
-        List<KeyProjectDTO> list = keyProjectStatusMapper.getProjectIdListByStatusAndCollege(KeyProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue(),null);
+        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue(),null);
         return Result.success(list);
     }
 
