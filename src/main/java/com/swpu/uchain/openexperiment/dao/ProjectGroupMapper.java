@@ -48,6 +48,11 @@ public interface ProjectGroupMapper {
 
     ProjectGroupDetailVO getProjectGroupDetailVOByProjectId(@Param("projectId")Long projectId );
 
+    /**
+     * 总览表项目信息
+     * @param college
+     * @return
+     */
     List<ProjectTableInfo> getProjectTableInfoListByCollege(@Param("college") Integer college);
 
     int updateProjectStatusOfList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);

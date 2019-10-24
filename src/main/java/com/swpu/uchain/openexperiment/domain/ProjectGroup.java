@@ -136,7 +136,6 @@ public class ProjectGroup implements Serializable {
     @JsonIgnore
     private Integer subordinateCollege;
 
-
     /**
      * 已选项目人数
      */

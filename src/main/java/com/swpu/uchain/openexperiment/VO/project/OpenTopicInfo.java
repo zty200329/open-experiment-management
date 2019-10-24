@@ -44,10 +44,8 @@ public class OpenTopicInfo {
     @ApiModelProperty("1.A组石工地堪,2.B组化工材料3.C组机械力学4.D电气及制作,5.E组软件与数学,6.F组经管法律艺体人文")
     private Integer suggestGroupType;
 
-    @Min(2000)
-    @Max(2090)
     @ApiModelProperty("限选年级")
-    private Integer limitGrade;
+    private String limitGrade;
 
     @ApiModelProperty("成果考核方式")
     private String achievementCheck;

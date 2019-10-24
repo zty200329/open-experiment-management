@@ -85,7 +85,6 @@ public enum CodeMsg {
 
     TIME_DEFINE_ERROR(610,"时间设置错误"),
     PROJECT_HAS_BEEN_REJECTED(611,"项目已经被驳回"),
-    PROJECT_STATUS_IS_NOT_LAB_ALLOWED_AND_REPORTED(613,"项目状态不是实验室上报状态"),
     PROJECT_NOT_MODIFY_BY_FUNCTION_DEPARTMENT(614,"项目未被职能部门修改"),
     LEADING_TEACHER_CONTAINS_ERROR(615,"指导教师必须包含项目申请人"),
     TOPIC_IS_NOT_OPEN(616,"选题选择开放,无法在申请立项时指定学生"),

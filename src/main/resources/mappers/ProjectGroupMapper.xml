@@ -131,6 +131,7 @@
         <result column="lab_name" jdbcType="VARCHAR" property="labName" />
         <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
         <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
+        <result column="apply_funds" property="fundsApplyAmount"/>
     </resultMap>
 
     <resultMap id="SelectProjectMap" type="com.swpu.uchain.openexperiment.VO.project.SelectProjectVO">
@@ -316,7 +317,8 @@
            project_group.address,
            project_group.suggest_group_type,
            project_group.project_type,
-           project_group.main_Content
+           project_group.main_Content,
+           project_group.apply_funds
     from project_group
     where status = #{projectStatus}
     order by create_time desc

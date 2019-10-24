@@ -1,9 +1,7 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.github.pagehelper.PageInfo;
 import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
-import com.swpu.uchain.openexperiment.domain.Message;
 import com.swpu.uchain.openexperiment.VO.project.*;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.config.CountConfig;
@@ -18,9 +16,11 @@ import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
-import com.swpu.uchain.openexperiment.util.CountUtil;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -65,8 +65,8 @@ public class ProjectServiceImpl implements ProjectService {
                               CountConfig countConfig, UploadConfig uploadConfig,
                               ConvertUtil convertUtil, GetUserService getUserService,
                               OperationRecordMapper recordMapper,
-                              MessageRecordMapper messageRecordMapper,RoleMapper roleMapper,
-                              UserProjectGroupMapper userProjectGroupMapper,UserMapper userMapper) {
+                              MessageRecordMapper messageRecordMapper, RoleMapper roleMapper,
+                              UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -143,7 +143,7 @@ public class ProjectServiceImpl implements ProjectService {
         System.err.println(form.toString());
         User currentUser = getUserService.getCurrentUser();
 
-        Integer college =  currentUser.getInstitute();
+        Integer college = currentUser.getInstitute();
         //判断用户类型
         if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()) {
             Result.error(CodeMsg.STUDENT_CANT_APPLY);
@@ -154,7 +154,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         //开放选题时,不进行学生选择
-        if (form.getIsOpenTopic().equals(OpenTopicType.OPEN_TOPIC_ALL.getValue()) && form.getStuCodes() != null){
+        if (form.getIsOpenTopic().equals(OpenTopicType.OPEN_TOPIC_ALL.getValue()) && form.getStuCodes() != null) {
             throw new GlobalException(CodeMsg.TOPIC_IS_NOT_OPEN);
         }
 
@@ -183,10 +183,10 @@ public class ProjectServiceImpl implements ProjectService {
                 isTeacherExist = true;
             }
         }
-        if (!isTeacherExist){
+        if (!isTeacherExist) {
             throw new GlobalException(CodeMsg.LEADING_TEACHER_CONTAINS_ERROR);
         }
-        userProjectService.addStuAndTeacherJoin(stuCodes,teacherCodes,projectGroup.getId());
+        userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
 
         return Result.success();
     }
@@ -216,7 +216,7 @@ public class ProjectServiceImpl implements ProjectService {
         String[] teacherCodes = updateProjectApplyForm.getTeacherCodes();
         userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
         //修改项目状态,重新开始申报
-        updateProjectStatus(projectGroup.getId(),ProjectStatus.ESTABLISH.getValue());
+        updateProjectStatus(projectGroup.getId(), ProjectStatus.ESTABLISH.getValue());
 
         //将之前的历史数据设置为不可见
         //type传入为空则更新所有
@@ -238,7 +238,7 @@ public class ProjectServiceImpl implements ProjectService {
         //设置当前用户的所有项目VO
         List<MyProjectVO> projectVOS = new ArrayList<>();
         for (ProjectGroup projectGroup : projectGroups) {
-            Integer numberOfSelectedStu = userProjectGroupMapper.selectStuCount(projectGroup.getId(),null);
+            Integer numberOfSelectedStu = userProjectGroupMapper.selectStuCount(projectGroup.getId(), null);
             MyProjectVO myProjectVO = new MyProjectVO();
             BeanUtils.copyProperties(projectGroup, myProjectVO);
             myProjectVO.setProjectGroupId(projectGroup.getId());
@@ -467,15 +467,9 @@ public class ProjectServiceImpl implements ProjectService {
         return getCheckInfo(RoleType.FUNCTIONAL_DEPARTMENT.getValue());
     }
 
-    private Result getCheckInfo(Integer role) {
-        //获取工号,并通过工号获取角色,再通过角色判定操作类型(只针对于审核这一步)
+    private Result getReportInfo(Integer role) {
         Integer projectStatus;
-        //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
         switch (role) {
-            //职能部门
-            case 6:
-                projectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
-                break;
             //二级部门(学院领导)
             case 5:
                 projectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
@@ -485,489 +479,506 @@ public class ProjectServiceImpl implements ProjectService {
                 projectStatus = ProjectStatus.DECLARE.getValue();
                 break;
             default:
-                //超管执行操作
-                projectStatus = -3;
+                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
         }
         List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus);
         for (CheckProjectVO checkProjectVO : checkProjectVOs) {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getProjectGroupId());
             List<UserMemberVO> guidanceTeachers = new ArrayList<>();
-            List<UserMemberVO> memberStudents = new ArrayList<>();
-            for (UserProjectGroup userProjectGroup : userProjectGroups) {
+            for (UserProjectGroup userProjectGroup:userProjectGroups
+                 ) {
                 UserMemberVO userMemberVO = new UserMemberVO();
-                User user = userService.selectByUserId(userProjectGroup.getUserId());
-                userMemberVO.setUserId(Long.valueOf(user.getCode()));
-                userMemberVO.setUserName(user.getRealName());
                 userMemberVO.setMemberRole(userProjectGroup.getMemberRole());
-                //设置负责人(项目组长)电话
-                switch (userProjectGroup.getMemberRole()) {
-                    case 1:
-                        guidanceTeachers.add(userMemberVO);
-                        break;
-                    case 2:
-                        checkProjectVO.setGroupLeaderPhone(user.getMobilePhone());
-                        memberStudents.add(userMemberVO);
-                        break;
-                    case 3:
-                        memberStudents.add(userMemberVO);
-                        break;
-                    default:
-                        break;
-                }
-                //设置立项申请文件的id
-                ProjectFile applyProjectFile = projectFileService.getAimNameProjectFile(
-                        userProjectGroup.getProjectGroupId(),
-                        uploadConfig.getApplyFileName());
-                if (applyProjectFile != null) {
-                    checkProjectVO.setApplyFileId(applyProjectFile.getId());
-                }
-                List<Funds> fundsDetails = fundsService.getFundsDetails(userProjectGroup.getProjectGroupId());
-                checkProjectVO.setFundsApplyAmount(CountUtil.countFundsTotalAmount(fundsDetails));
-                checkProjectVO.setMemberStudents(memberStudents);
-                checkProjectVO.setGuidanceTeachers(guidanceTeachers);
+                userMemberVO.setUserId(userProjectGroup.getUserId());
+                userMemberVO.setUserName(userMapper.selectByUserCode(String.valueOf(userProjectGroup.getUserId())).getRealName());
+                guidanceTeachers.add(userMemberVO);
             }
+            checkProjectVO.setGuidanceTeachers(guidanceTeachers);
         }
         return Result.success(checkProjectVOs);
     }
 
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Result reportToCollegeLeader(List<Long> projectGroupIdList) {
-        List<OperationRecord> list = new LinkedList<>();
-        if (!checkProjectStatus(projectGroupIdList,ProjectStatus.LAB_ALLOWED.getValue())){
-            throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+        private Result getCheckInfo (Integer role){
+            //获取工号,并通过工号获取角色,再通过角色判定操作类型(只针对于审核这一步)
+            Integer projectStatus;
+            //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
+            switch (role) {
+                //职能部门
+                case 6:
+                    projectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
+                    break;
+                //二级部门(学院领导)
+                case 5:
+                    projectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
+                    break;
+                //实验室主任
+                case 4:
+                    projectStatus = ProjectStatus.DECLARE.getValue();
+                    break;
+                default:
+                    //超管执行操作
+                    projectStatus = -3;
+            }
+            List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus);
+            for (CheckProjectVO checkProjectVO : checkProjectVOs) {
+                List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getProjectGroupId());
+                List<UserMemberVO> guidanceTeachers = new ArrayList<>();
+                List<UserMemberVO> memberStudents = new ArrayList<>();
+                for (UserProjectGroup userProjectGroup : userProjectGroups) {
+                    UserMemberVO userMemberVO = new UserMemberVO();
+                    User user = userService.selectByUserId(userProjectGroup.getUserId());
+                    userMemberVO.setUserId(Long.valueOf(user.getCode()));
+                    userMemberVO.setUserName(user.getRealName());
+                    userMemberVO.setMemberRole(userProjectGroup.getMemberRole());
+                    //设置负责人(项目组长)
+                    switch (userProjectGroup.getMemberRole()) {
+                        case 1:
+                            guidanceTeachers.add(userMemberVO);
+                            break;
+                        case 2:
+                            checkProjectVO.setGroupLeaderPhone(user.getMobilePhone());
+                            memberStudents.add(userMemberVO);
+                            break;
+                        case 3:
+                            memberStudents.add(userMemberVO);
+                            break;
+                        default:
+                            break;
+                    }
+                    //设置立项申请文件的id
+                    ProjectFile applyProjectFile = projectFileService.getAimNameProjectFile(
+                            userProjectGroup.getProjectGroupId(),
+                            uploadConfig.getApplyFileName());
+                    if (applyProjectFile != null) {
+                        checkProjectVO.setApplyFileId(applyProjectFile.getId());
+                    }
+                    checkProjectVO.setMemberStudents(memberStudents);
+                    checkProjectVO.setGuidanceTeachers(guidanceTeachers);
+                }
+            }
+            return Result.success(checkProjectVOs);
         }
-        for (Long projectId:projectGroupIdList
-             ) {
+
+        private boolean checkProjectStatus (List < Long > projectIdList, Integer status){
+            int count = projectGroupMapper.selectSpecifiedProjectList(projectIdList, status);
+            return count == projectIdList.size();
+        }
+
+
+        @Transactional(rollbackFor = Exception.class)
+        public Result reportToHigherUnit (List < Long > projectGroupIdList, ProjectStatus
+            rightProjectStatus, OperationUnit operationUnit){
+            List<OperationRecord> list = new LinkedList<>();
+            if (!checkProjectStatus(projectGroupIdList, rightProjectStatus.getValue())) {
+                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+            }
+            for (Long projectId : projectGroupIdList
+            ) {
+                OperationRecord operationRecord = new OperationRecord();
+                operationRecord.setRelatedId(projectId);
+                operationRecord.setOperationUnit(operationUnit.getValue());
+                operationRecord.setOperationType(OperationType.REPORT.getValue());
+                setOperationExecutor(operationRecord);
+
+                list.add(operationRecord);
+            }
+
+            recordMapper.multiInsert(list);
+            ProjectStatus newProjectStatus;
+            if (rightProjectStatus == ProjectStatus.LAB_ALLOWED){
+                newProjectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED;
+            //如果是二级单位操作
+            }else {
+                newProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED;
+            }
+            projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, newProjectStatus.getValue());
+            return Result.success();
+        }
+
+        @Override
+        @Transactional(rollbackFor = GlobalException.class)
+        public Result reportToCollegeLeader (List < Long > projectGroupIdList) {
+            return reportToHigherUnit(projectGroupIdList, ProjectStatus.LAB_ALLOWED, OperationUnit.LAB_ADMINISTRATOR);
+        }
+
+        @Override
+        @Transactional(rollbackFor = Exception.class)
+        public Result reportToFunctionalDepartment (List < Long > projectGroupIdList) {
+            return reportToHigherUnit(projectGroupIdList, ProjectStatus.SECONDARY_UNIT_ALLOWED, OperationUnit.SECONDARY_UNIT);
+        }
+
+
+        @Override
+        @Transactional(rollbackFor = Exception.class)
+        public Result ensureOrNotModify (ConfirmForm confirmForm){
+            Integer result = confirmForm.getResult();
+            Long projectId = confirmForm.getProjectId();
+            //确认修改
+            if (recordMapper.selectDesignatedTypeListByRelatedIdAndType
+                    (OperationType.AGREE.getValue(), projectId).size() == 0) {
+                throw new GlobalException(CodeMsg.PROJECT_NOT_MODIFY_BY_FUNCTION_DEPARTMENT);
+            }
+            //如果项目通过
+            if (result.equals(OperationType.AGREE.getValue())) {
+                updateProjectStatus(projectId, ProjectStatus.ESTABLISH.getValue());
+            } else if (result.equals(OperationType.REJECT.getValue())) {
+                updateProjectStatus(projectId, ProjectStatus.ESTABLISH_FAILED.getValue());
+            }
+            return Result.success();
+        }
+
+        @Override
+        public Result getProjectDetailById (Long projectId){
+            List<ProjectHistoryInfo> list = recordMapper.selectAllByProjectId(projectId);
+            return Result.success(list);
+        }
+
+        @Override
+        public Result approveProjectApplyByLabAdministrator (List < ProjectCheckForm > list) {
+            return approveProjectApply(list, RoleType.LAB_ADMINISTRATOR.getValue());
+        }
+
+        @Override
+        public Result approveProjectApplyBySecondaryUnit (List < ProjectCheckForm > list) {
+            return approveProjectApply(list, RoleType.SECONDARY_UNIT.getValue());
+        }
+
+        @Override
+        public Result getToBeReportedProjectByLabLeader () {
+            User user = getUserService.getCurrentUser();
+            if (user == null) {
+                throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+            }
+            return getReportInfo(RoleType.LAB_ADMINISTRATOR.getValue());
+        }
+
+        @Override
+        public Result getToBeReportedProjectBySecondaryUnit () {
+            User user = getUserService.getCurrentUser();
+            if (user == null) {
+                throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+            }
+            return getReportInfo(RoleType.SECONDARY_UNIT.getValue());
+        }
+
+
+        @Transactional(rollbackFor = GlobalException.class)
+        public Result approveProjectApply (List < ProjectCheckForm > formList, Integer role){
+            User user = getUserService.getCurrentUser();
+            if (user == null) {
+                throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+            }
+            Integer operationUnit;
+            //当前状态
+            Integer projectStatus = null;
+            //将要被更新成的状态
+            Integer updateProjectStatus = null;
+            switch (role) {
+                //如果是实验室主任
+                case 4:
+                    operationUnit = OperationUnit.LAB_ADMINISTRATOR.getValue();
+                    projectStatus = ProjectStatus.DECLARE.getValue();
+                    updateProjectStatus = ProjectStatus.LAB_ALLOWED.getValue();
+                    break;
+                case 5:
+                    operationUnit = OperationUnit.SECONDARY_UNIT.getValue();
+                    projectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
+                    updateProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
+                    break;
+                default:
+                    //超管执行操作
+                    operationUnit = -5;
+            }
+            List<OperationRecord> list = new LinkedList<>();
             OperationRecord operationRecord = new OperationRecord();
-            operationRecord.setRelatedId(projectId);
-            operationRecord.setOperationUnit(OperationUnit.LAB_ADMINISTRATOR.getValue());
-            operationRecord.setOperationType(OperationType.REPORT.getValue());
-            setOperationExecutor(operationRecord);
-
-            list.add(operationRecord);
-        }
-
-        recordMapper.multiInsert(list);
-        projectGroupMapper.updateProjectStatusOfList(projectGroupIdList,ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
-        return Result.success();
-    }
-
-    private boolean checkProjectStatus(List<Long> projectIdList,Integer status){
-       int count = projectGroupMapper.selectSpecifiedProjectList(projectIdList,status);
-        return count == projectIdList.size();
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Result reportToFunctionalDepartment(Long projectGroupId) {
-        if (!ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue().equals(projectGroupMapper.selectByPrimaryKey(projectGroupId).getStatus())){
-            throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
-        }
-
-        OperationRecord operationRecord = new OperationRecord();
-        operationRecord.setRelatedId(projectGroupId);
-        operationRecord.setOperationUnit(OperationUnit.SECONDARY_UNIT.getValue());
-        operationRecord.setOperationType(OperationType.REPORT.getValue());
-        setOperationExecutor(operationRecord);
-        recordMapper.insert(operationRecord);
-        return updateProjectStatus(projectGroupId, ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue());
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Result ensureOrNotModify(ConfirmForm confirmForm) {
-        Integer result = confirmForm.getResult();
-        Long projectId = confirmForm.getProjectId();
-        //确认修改
-        if (recordMapper.selectDesignatedTypeListByRelatedIdAndType
-                (OperationType.AGREE.getValue(),projectId).size() == 0){
-            throw new GlobalException(CodeMsg.PROJECT_NOT_MODIFY_BY_FUNCTION_DEPARTMENT);
-        }
-        //如果项目通过
-        if (result.equals(OperationType.AGREE.getValue())){
-            updateProjectStatus(projectId,ProjectStatus.ESTABLISH.getValue());
-        }else if (result.equals(OperationType.REJECT.getValue())){
-            updateProjectStatus(projectId,ProjectStatus.ESTABLISH_FAILED.getValue());
-        }
-        return Result.success();
-    }
-
-    @Override
-    public Result getProjectDetailById(Long projectId) {
-        List<ProjectHistoryInfo> list = recordMapper.selectAllByProjectId(projectId);
-        return Result.success(list);
-    }
-
-    @Override
-    public Result approveProjectApplyByLabAdministrator(List<ProjectCheckForm> list) {
-        return approveProjectApply(list,RoleType.LAB_ADMINISTRATOR.getValue());
-    }
-
-    @Override
-    public Result approveProjectApplyBySecondaryUnit(List<ProjectCheckForm> list) {
-        return approveProjectApply(list,RoleType.SECONDARY_UNIT.getValue());
-    }
-
-    @Override
-    public Result getToBeReportedProjectByLabLeader() {
-        User user = getUserService.getCurrentUser();
-        if (user == null){
-            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
-        }
-        List<ProjectGroup> list = projectGroupMapper.selectByUserIdAndStatus(null,ProjectStatus.LAB_ALLOWED.getValue());
-        return Result.success(list);
-    }
-
-    @Override
-    public Result getToBeReportedProjectBySecondaryUnit() {
-        User user = getUserService.getCurrentUser();
-        if (user == null){
-            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
-        }
-        List<ProjectGroup> list = projectGroupMapper.selectByUserIdAndStatus(null,ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue());
-        return Result.success(list);
-    }
-
-
-    @Transactional(rollbackFor = GlobalException.class)
-    public Result approveProjectApply(List<ProjectCheckForm> formList,Integer role) {
-        User user = getUserService.getCurrentUser();
-        if(user == null){
-            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
-        }
-        Integer operationUnit;
-        //当前状态
-        Integer projectStatus = null;
-        //将要被更新成的状态
-        Integer updateProjectStatus = null;
-        switch (role) {
-            //如果是实验室主任
-            case 4:
-                operationUnit = OperationUnit.LAB_ADMINISTRATOR.getValue();
-                projectStatus = ProjectStatus.DECLARE.getValue();
-                updateProjectStatus = ProjectStatus.LAB_ALLOWED.getValue();
-                break;
-            case 5:
-                operationUnit = OperationUnit.SECONDARY_UNIT.getValue();
-                projectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
-                updateProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
-                break;
-            default:
-                //超管执行操作
-                operationUnit = -5;
-        }
-        List<OperationRecord> list = new LinkedList<>();
-        OperationRecord operationRecord = new OperationRecord();
-        for (ProjectCheckForm form : formList
-        ) {
-            operationRecord.setRelatedId(form.getProjectId());
-            operationRecord.setOperationReason(form.getReason());
-            operationRecord.setOperationType(OperationType.AGREE.getValue());
-            operationRecord.setOperationUnit(operationUnit);
-            operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
-            //当角色是实验室主任的时候,项目状态不是
-            ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
+            for (ProjectCheckForm form : formList
+            ) {
+                operationRecord.setRelatedId(form.getProjectId());
+                operationRecord.setOperationReason(form.getReason());
+                operationRecord.setOperationType(OperationType.AGREE.getValue());
+                operationRecord.setOperationUnit(operationUnit);
+                operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
+                //当角色是实验室主任的时候,项目状态不是
+                ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
 //            if (role == 4 && !projectGroup.getStatus().equals(projectStatus)){
 //                throw new GlobalException("项目编号为"+projectGroup.getId()+"的项目非申报状态",CodeMsg.PROJECT_STATUS_IS_NOT_DECLARE.getCode());
 //            }
-            //如果不是实验室上报状态,抛出异常
+                //如果不是实验室上报状态,抛出异常
 //            if (role == 5 && !projectGroup.getStatus().equals(projectStatus)){
 //                throw new GlobalException("项目编号为"+projectGroup.getId()+"的项目非实验室上报状态",CodeMsg.PROJECT_STATUS_IS_NOT_LAB_ALLOWED_AND_REPORTED.getCode());
 //            }
-            //根据不同角色设置不同的项目状态
-            updateProjectStatus(form.getProjectId(), updateProjectStatus);
-            list.add(operationRecord);
+                //根据不同角色设置不同的项目状态
+                updateProjectStatus(form.getProjectId(), updateProjectStatus);
+                list.add(operationRecord);
+            }
+            recordMapper.multiInsert(list);
+            return Result.success();
         }
-        recordMapper.multiInsert(list);
-        return Result.success();
-    }
-
-    @Override
-    public Result getAllOpenTopic() {
-        return Result.success(projectGroupMapper.getAllOpenTopic());
-    }
-
-    /**
-     * 指导老师获取待审批的项目信息
-     * @return
-     */
-    @Override
-    public Result getPendingReviewByLeadTeacher() {
-        User user = getUserService.getCurrentUser();
-        if (user == null){
-            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
-        }
-        List<ProjectGroup> list = projectGroupMapper.selectByUserIdAndStatus(Long.valueOf(user.getCode()),ProjectStatus.TO_DE_CONFIRMED.getValue());
-        return Result.success(list);
-    }
 
         @Override
-    public Result getPendingReviewByLabLeader() {
-        //传入用户为空,则获取所有的指定状态的项目
-        return Result.success(projectGroupMapper.selectByCollegeIdAndStatus(null,ProjectStatus.DECLARE.getValue()));
-    }
-
-    @Override
-    public void generateEstablishExcel(HttpServletResponse response) {
-
-        //TODO 区分学院
-        User user = getUserService.getCurrentUser();
-        //获取管理人员所管理的学院
-        Integer college = user.getInstitute();
-        List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollege(college);
-        // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
-        XSSFWorkbook wb = new XSSFWorkbook();
-        // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
-        XSSFSheet sheet = wb.createSheet("workSheet");
-
-        sheet.setPrintGridlines(true);
-        //3.1设置字体居中
-        XSSFCellStyle cellStyle = wb.createCellStyle();
-        //自动换行
-        cellStyle.setWrapText(true);
-        cellStyle.setAlignment(HorizontalAlignment.CENTER);
-        //当前行的位置
-        int index = 0;
-
-        //序号
-        XSSFRow title = sheet.createRow(index);
-        sheet.setColumnWidth(0,256*150);
-        title.setHeight((short) (16*50));
-        title.createCell(index++).setCellValue("西南石油大学第__期(20___-20___年度)课外开放实验项目立项一览表");
-
-        XSSFRow info = sheet.createRow(index);
-        info.createCell(0).setCellValue("单位：（盖章）");
-        sheet.setColumnWidth(0,256*20);
-        info.createCell(3).setCellValue("填报时间");
-        sheet.setColumnWidth(index,256*20);
-        index++;
-
-        // 4.设置表头，即每个列的列名
-        String[] head = {"院/中心","序号","项目名称","实验类型","实验时数","指导教师","负责学生"
-                ,"专业年级","开始时间","结束时间","开放实验室","实验室地点","负责学生电话","申请经费（元）","建议评审分组"};
-        // 4.1创建表头行
-        XSSFRow row = sheet.createRow(index++);
-
-        //创建行中的列
-        for (int i = 0; i < head.length; i++) {
-
-            // 给列写入数据,创建单元格，写入数据
-            row.createCell(i).setCellValue(head[i]);
-
+        public Result getAllOpenTopic () {
+            return Result.success(projectGroupMapper.getAllOpenTopic());
         }
 
-        //写入数据
-        for (ProjectTableInfo projectTableInfo : list) {
-            //创建行
-            // 创建行
+        @Override
+        public void generateEstablishExcel (HttpServletResponse response){
 
-            row = sheet.createRow(index++);
+            //TODO 区分学院
+            User user = getUserService.getCurrentUser();
+            //获取管理人员所管理的学院
+            Integer college = user.getInstitute();
+            List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollege(college);
+            // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
+            XSSFWorkbook wb = new XSSFWorkbook();
+            // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
+            XSSFSheet sheet = wb.createSheet("workSheet");
 
-            //设置行高
-            row.setHeight((short) (16 * 22));
-            // 序号
-            row.createCell(0).setCellValue(ConvertUtil.getStrCollege(projectTableInfo.getCollege()));
-            row.createCell(1).setCellValue(projectTableInfo.getProjectId());
-            row.createCell(2).setCellValue(projectTableInfo.getProjectName());
-            row.createCell(3).setCellValue(projectTableInfo.getExperimentType());
-            row.createCell(4).setCellValue(projectTableInfo.getTotalHours());
-            row.createCell(5).setCellValue(projectTableInfo.getLeadTeacher());
-            row.createCell(6).setCellValue(projectTableInfo.getLeadStudent());
-            row.createCell(7).setCellValue(projectTableInfo.getGradeAndMajor());
-            row.createCell(8).setCellValue(projectTableInfo.getStartTime());
-            row.createCell(9).setCellValue(projectTableInfo.getEndTime());
-            row.createCell(10).setCellValue(projectTableInfo.getLabName());
-            row.createCell(11).setCellValue(projectTableInfo.getAddress());
-            row.createCell(12).setCellValue(projectTableInfo.getLeadStudentPhone());
-            row.createCell(13).setCellValue(projectTableInfo.getApplyFunds());
-            row.createCell(14).setCellValue(projectTableInfo.getSuggestGroupType());
+            sheet.setPrintGridlines(true);
+            //3.1设置字体居中
+            XSSFCellStyle cellStyle = wb.createCellStyle();
+            //自动换行
+            cellStyle.setWrapText(true);
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+            //当前行的位置
+            int index = 0;
 
-        }
+            //序号
+            XSSFRow title = sheet.createRow(index);
+            sheet.setColumnWidth(0, 256 * 150);
+            title.setHeight((short) (16 * 50));
+            title.createCell(index++).setCellValue("西南石油大学第__期(20___-20___年度)课外开放实验项目立项一览表");
 
-        sheet.createRow(index++).createCell(0).setCellValue("注1：本表由学院（中心）汇总填报。注2：建议评审分组填A-F,数据来源立项申请表");
-        index++;
+            XSSFRow info = sheet.createRow(index);
+            info.createCell(0).setCellValue("单位：（盖章）");
+            sheet.setColumnWidth(0, 256 * 20);
+            info.createCell(3).setCellValue("填报时间");
+            sheet.setColumnWidth(index, 256 * 20);
+            index++;
 
-        XSSFRow end = sheet.createRow(index);
-        end.createCell(0).setCellValue("主管院长签字:");
-        end.createCell(3).setCellValue("经办人");
-        response.setContentType("application/vnd.ms-excel;charset=utf-8");
-        response.setHeader("Content-disposition", "attachment;filename="+"test"+".xlsx");
-        try {
-            OutputStream os = response.getOutputStream();
-            wb.write(os);
-            os.flush();
-            os.close();
-        }catch (IOException e){
-            throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
-        }
-    }
+            // 4.设置表头，即每个列的列名
+            String[] head = {"院/中心", "序号", "项目名称", "实验类型", "实验时数", "指导教师", "负责学生"
+                    , "专业年级", "开始时间", "结束时间", "开放实验室", "实验室地点", "负责学生电话", "申请经费（元）", "建议评审分组"};
+            // 4.1创建表头行
+            XSSFRow row = sheet.createRow(index++);
 
-    @Override
-    public void generateConclusionExcel(HttpServletResponse response) {
+            //创建行中的列
+            for (int i = 0; i < head.length; i++) {
 
-    }
+                // 给列写入数据,创建单元格，写入数据
+                row.createCell(i).setCellValue(head[i]);
 
-    @Override
-    public List getJoinInfo() {
-        User currentUser = getUserService.getCurrentUser();
-        //检测用户是不是老师--后期可省略
-        if (currentUser == null){
-            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
-        }
-
-        Role role = roleMapper.selectByUserId(Long.valueOf(currentUser.getCode()));
-        if (role.getId() != (RoleType.MENTOR.getValue()).longValue()) {
-            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
-        }
-        List<JoinUnCheckVO> joinUnCheckVOS = new ArrayList<>();
-        //获取当前教师参与申报的项目组
-        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), ProjectStatus.LAB_ALLOWED.getValue());
-        for (int i = 0; i < projectGroups.size(); i++) {
-            if (projectGroups.get(i) == null ) {
-                break;
             }
-            while (projectGroups.get(i).getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue())) {
-                i++;
+
+            //写入数据
+            for (ProjectTableInfo projectTableInfo : list) {
+                //创建行
+                // 创建行
+
+                row = sheet.createRow(index++);
+
+                //设置行高
+                row.setHeight((short) (16 * 22));
+                // 序号
+                row.createCell(0).setCellValue(ConvertUtil.getStrCollege(projectTableInfo.getCollege()));
+                row.createCell(1).setCellValue(projectTableInfo.getProjectId());
+                row.createCell(2).setCellValue(projectTableInfo.getProjectName());
+                row.createCell(3).setCellValue(projectTableInfo.getExperimentType());
+                row.createCell(4).setCellValue(projectTableInfo.getTotalHours());
+                row.createCell(5).setCellValue(projectTableInfo.getLeadTeacher());
+                row.createCell(6).setCellValue(projectTableInfo.getLeadStudent());
+                row.createCell(7).setCellValue(projectTableInfo.getGradeAndMajor());
+                row.createCell(8).setCellValue(projectTableInfo.getStartTime());
+                row.createCell(9).setCellValue(projectTableInfo.getEndTime());
+                row.createCell(10).setCellValue(projectTableInfo.getLabName());
+                row.createCell(11).setCellValue(projectTableInfo.getAddress());
+                row.createCell(12).setCellValue(projectTableInfo.getLeadStudentPhone());
+                row.createCell(13).setCellValue(projectTableInfo.getApplyFunds());
+                row.createCell(14).setCellValue(projectTableInfo.getSuggestGroupType());
+
             }
-            ProjectGroup projectGroup = projectGroups.get(i);
-            List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(), JoinStatus.APPLYING.getValue());
-            for (UserProjectGroup userProjectGroup : userProjectGroups) {
-                JoinUnCheckVO joinUnCheckVO = new JoinUnCheckVO();
-                User user = userService.selectByUserId(userProjectGroup.getUserId());
-                joinUnCheckVO.setProjectGroupId(projectGroup.getId());
-                joinUnCheckVO.setProjectName(projectGroup.getProjectName());
-                joinUnCheckVO.setPersonJudge(userProjectGroup.getPersonalJudge());
-                joinUnCheckVO.setTechnicalRole(userProjectGroup.getTechnicalRole());
-                joinUnCheckVO.setUserDetailVO(convertUtil.convertUserDetailVO(user));
-                joinUnCheckVOS.add(joinUnCheckVO);
+
+            sheet.createRow(index++).createCell(0).setCellValue("注1：本表由学院（中心）汇总填报。注2：建议评审分组填A-F,数据来源立项申请表");
+            index++;
+
+            XSSFRow end = sheet.createRow(index);
+            end.createCell(0).setCellValue("主管院长签字:");
+            end.createCell(3).setCellValue("经办人");
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("Content-disposition", "attachment;filename=" + "test" + ".xlsx");
+            try {
+                OutputStream os = response.getOutputStream();
+                wb.write(os);
+                os.flush();
+                os.close();
+            } catch (IOException e) {
+                throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
             }
         }
-        return joinUnCheckVOS;
-    }
 
-    @Override
-    public Result rejectJoin(JoinForm[] joinForm) {
-        for (JoinForm form : joinForm) {
-            UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(form.getProjectGroupId(), form.getUserId());
-            if (userProjectGroup == null) {
-                return Result.error(CodeMsg.USER_NOT_APPLYING);
-            }
-            if (userProjectGroup.getStatus() != JoinStatus.APPLYING.getValue().intValue()) {
-                return Result.error(CodeMsg.USER_HAD_JOINED_CANT_REJECT);
-            }
-            userProjectGroup.setStatus(JoinStatus.UN_PASS.getValue());
-            if (!userProjectService.update(userProjectGroup)) {
-                return Result.error(CodeMsg.UPDATE_ERROR);
-            }
+        @Override
+        public void generateConclusionExcel (HttpServletResponse response){
+
         }
-        return Result.success();
-    }
 
-    @Override
-    public List<SelectProjectVO> selectByProjectName(String name) {
-        List<SelectProjectVO> list = (List<SelectProjectVO>) redisService.getList(ProjectGroupKey.getByFuzzyName, name);
-        if (list == null || list.size() == 0) {
-            list = projectGroupMapper.selectByFuzzyName(name);
-            if (list != null) {
-                redisService.setList(ProjectGroupKey.getByFuzzyName, name, list);
+        @Override
+        public List getJoinInfo () {
+            User currentUser = getUserService.getCurrentUser();
+            //检测用户是不是老师--后期可省略
+            if (currentUser == null) {
+                throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
             }
+
+            Role role = roleMapper.selectByUserId(Long.valueOf(currentUser.getCode()));
+            if (role.getId() != (RoleType.MENTOR.getValue()).longValue()) {
+                throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+            }
+            List<JoinUnCheckVO> joinUnCheckVOS = new ArrayList<>();
+            //获取当前教师参与申报的项目组
+            List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), ProjectStatus.LAB_ALLOWED.getValue());
+            for (int i = 0; i < projectGroups.size(); i++) {
+                if (projectGroups.get(i) == null) {
+                    break;
+                }
+                while (projectGroups.get(i).getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue())) {
+                    i++;
+                }
+                ProjectGroup projectGroup = projectGroups.get(i);
+                List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(), JoinStatus.APPLYING.getValue());
+                for (UserProjectGroup userProjectGroup : userProjectGroups) {
+                    JoinUnCheckVO joinUnCheckVO = new JoinUnCheckVO();
+                    User user = userService.selectByUserId(userProjectGroup.getUserId());
+                    joinUnCheckVO.setProjectGroupId(projectGroup.getId());
+                    joinUnCheckVO.setProjectName(projectGroup.getProjectName());
+                    joinUnCheckVO.setPersonJudge(userProjectGroup.getPersonalJudge());
+                    joinUnCheckVO.setTechnicalRole(userProjectGroup.getTechnicalRole());
+                    joinUnCheckVO.setUserDetailVO(convertUtil.convertUserDetailVO(user));
+                    joinUnCheckVOS.add(joinUnCheckVO);
+                }
+            }
+            return joinUnCheckVOS;
         }
-        return list;
-    }
 
-    @Override
-    public Result rejectProjectApplyByLabAdministrator(List<ProjectCheckForm> formList) {
-        //TODO 身份验证
-
-        return rejectProjectApply(formList,RoleType.LAB_ADMINISTRATOR.getValue());
-    }
-
-    @Override
-    public Result rejectProjectApplyBySecondaryUnit(List<ProjectCheckForm> formList) {
-        //TODO 身份验证
-
-        return rejectProjectApply(formList,RoleType.SECONDARY_UNIT.getValue());
-    }
-
-    @Override
-    public Result rejectProjectApplyByFunctionalDepartment(List<ProjectCheckForm> formList) {
-        //TODO 身份验证
-
-        return rejectProjectApply(formList,RoleType.FUNCTIONAL_DEPARTMENT.getValue());
-    }
-
-    /**
-     *  因为是批量操作  所以就最好将拒绝和同意分开
-     * @param formList 项目拒绝信息集合
-     * @return
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public Result rejectProjectApply(List<ProjectCheckForm> formList,Integer role) {
-        User user = getUserService.getCurrentUser();
-        Integer operationUnit;
-        Integer rightProjectStatus;
-        //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
-        switch (role) {
-            //如果是实验室主任
-            case 4:
-                operationUnit = OperationUnit.LAB_ADMINISTRATOR.getValue();
-                rightProjectStatus = ProjectStatus.DECLARE.getValue();
-                break;
-            //二级单位
-            case 5:
-                operationUnit = OperationUnit.SECONDARY_UNIT.getValue();
-                rightProjectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
-                break;
-            //职能部门
-            case 6:
-                operationUnit = OperationUnit.FUNCTIONAL_DEPARTMENT.getValue();
-                rightProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
-                break;
-            default:
-                //超管执行操作
-                operationUnit = -5;
-                rightProjectStatus = ProjectStatus.REJECT_MODIFY.getValue();
+        @Override
+        public Result rejectJoin (JoinForm[]joinForm){
+            for (JoinForm form : joinForm) {
+                UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(form.getProjectGroupId(), form.getUserId());
+                if (userProjectGroup == null) {
+                    return Result.error(CodeMsg.USER_NOT_APPLYING);
+                }
+                if (userProjectGroup.getStatus() != JoinStatus.APPLYING.getValue().intValue()) {
+                    return Result.error(CodeMsg.USER_HAD_JOINED_CANT_REJECT);
+                }
+                userProjectGroup.setStatus(JoinStatus.UN_PASS.getValue());
+                if (!userProjectService.update(userProjectGroup)) {
+                    return Result.error(CodeMsg.UPDATE_ERROR);
+                }
+            }
+            return Result.success();
         }
-        List<OperationRecord> list = new LinkedList<>();
-        OperationRecord operationRecord = new OperationRecord();
-        for (ProjectCheckForm form : formList
-        ) {
-            operationRecord.setRelatedId(form.getProjectId());
-            operationRecord.setOperationReason(form.getReason());
-            operationRecord.setOperationUnit(OperationType.REJECT.getValue());
-            operationRecord.setOperationType(operationUnit);
-            operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
-            //修改状态
-            ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
-            //如果项目和对应状态不一致
+
+        @Override
+        public List<SelectProjectVO> selectByProjectName (String name){
+            List<SelectProjectVO> list = (List<SelectProjectVO>) redisService.getList(ProjectGroupKey.getByFuzzyName, name);
+            if (list == null || list.size() == 0) {
+                list = projectGroupMapper.selectByFuzzyName(name);
+                if (list != null) {
+                    redisService.setList(ProjectGroupKey.getByFuzzyName, name, list);
+                }
+            }
+            return list;
+        }
+
+        @Override
+        public Result rejectProjectApplyByLabAdministrator (List < ProjectCheckForm > formList) {
+            //TODO 身份验证
+
+            return rejectProjectApply(formList, RoleType.LAB_ADMINISTRATOR.getValue());
+        }
+
+        @Override
+        public Result rejectProjectApplyBySecondaryUnit (List < ProjectCheckForm > formList) {
+            //TODO 身份验证
+
+            return rejectProjectApply(formList, RoleType.SECONDARY_UNIT.getValue());
+        }
+
+        @Override
+        public Result rejectProjectApplyByFunctionalDepartment (List < ProjectCheckForm > formList) {
+            //TODO 身份验证
+
+            return rejectProjectApply(formList, RoleType.FUNCTIONAL_DEPARTMENT.getValue());
+        }
+
+        /**
+         *  因为是批量操作  所以就最好将拒绝和同意分开
+         * @param formList 项目拒绝信息集合
+         * @return
+         */
+        @Transactional(rollbackFor = Exception.class)
+        public Result rejectProjectApply (List < ProjectCheckForm > formList, Integer role){
+            User user = getUserService.getCurrentUser();
+            Integer operationUnit;
+            Integer rightProjectStatus;
+            //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
+            switch (role) {
+                //如果是实验室主任
+                case 4:
+                    operationUnit = OperationUnit.LAB_ADMINISTRATOR.getValue();
+                    rightProjectStatus = ProjectStatus.DECLARE.getValue();
+                    break;
+                //二级单位
+                case 5:
+                    operationUnit = OperationUnit.SECONDARY_UNIT.getValue();
+                    rightProjectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
+                    break;
+                //职能部门
+                case 6:
+                    operationUnit = OperationUnit.FUNCTIONAL_DEPARTMENT.getValue();
+                    rightProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
+                    break;
+                default:
+                    //超管执行操作
+                    operationUnit = -5;
+                    rightProjectStatus = ProjectStatus.REJECT_MODIFY.getValue();
+            }
+            List<OperationRecord> list = new LinkedList<>();
+            OperationRecord operationRecord = new OperationRecord();
+            for (ProjectCheckForm form : formList
+            ) {
+                operationRecord.setRelatedId(form.getProjectId());
+                operationRecord.setOperationReason(form.getReason());
+                operationRecord.setOperationUnit(OperationType.REJECT.getValue());
+                operationRecord.setOperationType(operationUnit);
+                operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
+                //修改状态
+                ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
+                //如果项目和对应状态不一致
 //            if (projectGroup.getStatus().equals(rightProjectStatus)){
 //                throw new GlobalException(CodeMsg.PROJECT_HAS_BEEN_REJECTED);
 //            }
-            updateProjectStatus(form.getProjectId(), ProjectStatus.REJECT_MODIFY.getValue());
-            list.add(operationRecord);
+                updateProjectStatus(form.getProjectId(), ProjectStatus.REJECT_MODIFY.getValue());
+                list.add(operationRecord);
+            }
+            recordMapper.multiInsert(list);
+            return Result.success();
         }
-        recordMapper.multiInsert(list);
-        return Result.success();
-    }
 
-    private void setOperationExecutor(OperationRecord operationRecord){
-        User user = getUserService.getCurrentUser();
-        Long id = Long.valueOf(user.getCode());
-        operationRecord.setRelatedId(id);
-    }
-
-    @Async
-    public void sendMessage(Message message){
-        messageRecordMapper.insert(message);
-    }
-
-    @Override
-    public Result getProjectGroupDetailVOByProjectId(Long projectId) {
-        if(projectId == null){
-            throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+        private void setOperationExecutor (OperationRecord operationRecord){
+            User user = getUserService.getCurrentUser();
+            Long id = Long.valueOf(user.getCode());
+            operationRecord.setRelatedId(id);
         }
-        return Result.success(projectGroupMapper.getProjectGroupDetailVOByProjectId(projectId));
-    }
+
+        @Async
+        public void sendMessage (Message message){
+            messageRecordMapper.insert(message);
+        }
+
+        @Override
+        public Result getProjectGroupDetailVOByProjectId (Long projectId){
+            if (projectId == null) {
+                throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+            }
+            return Result.success(projectGroupMapper.getProjectGroupDetailVOByProjectId(projectId));
+        }
 }

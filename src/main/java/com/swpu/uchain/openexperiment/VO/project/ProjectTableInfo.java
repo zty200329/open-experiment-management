@@ -2,9 +2,6 @@ package com.swpu.uchain.openexperiment.VO.project;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.util.Date;
 
 /**
  * 总览表的项目信息

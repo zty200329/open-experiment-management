@@ -20,8 +20,6 @@ public class CheckProjectVO implements Serializable {
     private String projectName;
     private Integer experimentType;
     private Integer totalHours;
-    private List<UserMemberVO> guidanceTeachers;
-    private List<UserMemberVO> memberStudents;
     private Date startTime;
     private Date endTime;
     private String labName;
@@ -31,4 +29,7 @@ public class CheckProjectVO implements Serializable {
     private Integer suggestGroupType;
     private Integer projectType;
     private Long applyFileId;
+
+    private List<UserMemberVO> guidanceTeachers;
+    private List<UserMemberVO> memberStudents;
 }

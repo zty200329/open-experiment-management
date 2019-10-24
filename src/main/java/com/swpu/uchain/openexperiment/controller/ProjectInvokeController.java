@@ -118,11 +118,11 @@ public class ProjectInvokeController {
 
     @ApiOperation("上报职能部门--(二级单位)可使用")
     @PostMapping(value = "/reportToFunctionalDepartment")
-    public Result reportToFunctionalDepartment(Long projectGroupId){
-        if (projectGroupId == null){
+    public Result reportToFunctionalDepartment(@RequestBody List<Long> projectGroupIdList){
+        if (projectGroupIdList == null){
             return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
         }
-        return projectService.reportToFunctionalDepartment(projectGroupId);
+        return projectService.reportToFunctionalDepartment(projectGroupIdList);
     }
 
 
