@@ -72,7 +72,7 @@
         UPDATE project_group
         SET apply_funds = #{supportAmount}
         where project_group.id in
-        <foreach collection="list" item="id" separator="," open="," close=")">
+        <foreach collection="list" item="id" separator="," open="(" close=")">
             #{id}
         </foreach>
     </update>

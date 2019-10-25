@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.dao;
 
 import com.swpu.uchain.openexperiment.enums.CollegeType;
+import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,8 @@ public class ProjectGroupMapperTest {
     }
 
     @Test
-    public void getProjectTableInfoListByCollege() {
-        System.err.println(projectGroupMapper.getProjectTableInfoListByCollege(CollegeType.COMPUTER_SCIENCE_COLLEGE.getValue()));
+    public void getProjectTableInfoListByCollegeAndList() {
+        System.err.println(projectGroupMapper.getProjectTableInfoListByCollegeAndList(CollegeType.COMPUTER_SCIENCE_COLLEGE.getValue(),null));
     }
 
     @Test
@@ -45,5 +46,13 @@ public class ProjectGroupMapperTest {
         list.add(21L);
         list.add(22L);
         projectGroupMapper.updateProjectStatusOfList(list,2);
+    }
+
+    @Test
+    public void conditionQuery(){
+        QueryConditionForm form = new QueryConditionForm();
+        form.setProjectName("系统");
+        form.setLimitGrade("2020");
+        System.err.println(projectGroupMapper.conditionQuery(form));
     }
 }

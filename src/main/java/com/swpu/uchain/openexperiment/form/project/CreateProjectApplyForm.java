@@ -83,7 +83,6 @@ public class CreateProjectApplyForm {
     @ApiModelProperty("限选学院--选填")
     private String limitCollege;
 
-    @NotNull
     @ApiModelProperty("限选年级")
     private String limitGrade;
 

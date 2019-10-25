@@ -141,11 +141,11 @@
     </resultMap>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from project_group
+    delete from openexperiment.project_group
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
-      insert into project_group (id, address, create_time,
+      insert into openexperiment.project_group (id, address, create_time,
                                  creator_id, end_time, experiment_condition,
                                  suggest_group_type, experiment_type, achievement_check,
                                  limit_college, limit_major, limit_grade,
@@ -163,7 +163,7 @@
                  #{isOpenTopic},#{mainContent},#{subordinateCollege})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
-    update project_group
+    update openexperiment.project_group
     set address = #{address,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       creator_id = #{creatorId,jdbcType=BIGINT},
@@ -187,7 +187,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
     <update id="updateProjectStatusOfList">
-        update project_group set `status` = #{status} where id in
+        update openexperiment.project_group set `status` = #{status} where id in
         <foreach collection="list" item="id" separator="," open="(" close=")">
             #{id}
         </foreach>
@@ -214,7 +214,7 @@
                `status`,
                update_time,
                main_Content
-        from project_group
+        from openexperiment.project_group
         where project_name = #{projectName,jdbcType=VARCHAR}
     </select>
 
@@ -241,7 +241,7 @@
            `status`,
            update_time,
            main_Content
-    from project_group
+    from openexperiment.project_group
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" resultMap="ProjectGroupResultMap">
@@ -266,67 +266,67 @@
            `status`,
            update_time,
            main_Content
-    from project_group
+    from openexperiment.project_group
   </select>
   <select id="selectByName" resultMap="ProjectGroupResultMap">
-    select * from project_group where project_name = #{projectName}
+    select * from openexperiment.project_group where project_name = #{projectName}
   </select>
   <select id="selectByUserIdAndStatus" resultMap="ProjectGroupResultMap">
     select
-          user_project_group.project_group_id as id,
-          project_group.address,
-          project_group.create_time,
-          project_group.creator_id,
-          project_group.end_time,
-          project_group.experiment_condition,
-          project_group.suggest_group_type,
-          project_group.experiment_type,
-          project_group.achievement_check,
-          project_group.limit_college,
-          project_group.limit_major,
-          project_group.limit_grade,
-          project_group.fit_people_num,
-          project_group.total_hours,
-          project_group.lab_name,
-          project_group.project_name,
-          project_group.project_type,
-          project_group.start_time,
-          project_group.`status`,
-          project_group.update_time,
-          project_group.main_Content,
-          project_group.is_open_topic
-    from project_group inner join user_project_group on user_project_group.project_group_id = project_group.id
+          openexperiment.user_project_group.project_group_id as id,
+          openexperiment.project_group.address,
+          openexperiment.project_group.create_time,
+          openexperiment.project_group.creator_id,
+          openexperiment.project_group.end_time,
+          openexperiment.project_group.experiment_condition,
+          openexperiment.project_group.suggest_group_type,
+          openexperiment.project_group.experiment_type,
+          openexperiment.project_group.achievement_check,
+          openexperiment.project_group.limit_college,
+          openexperiment.project_group.limit_major,
+          openexperiment.project_group.limit_grade,
+          openexperiment.project_group.fit_people_num,
+          openexperiment.project_group.total_hours,
+          openexperiment.project_group.lab_name,
+          openexperiment.project_group.project_name,
+          openexperiment.project_group.project_type,
+          openexperiment.project_group.start_time,
+          openexperiment.project_group.`status`,
+          openexperiment.project_group.update_time,
+          openexperiment.project_group.main_Content,
+          openexperiment.project_group.is_open_topic
+    from openexperiment.project_group inner join openexperiment.user_project_group on user_project_group.project_group_id = openexperiment.project_group.id
     <where>
     <if test="userId!=null">
         user_project_group.user_id = #{userId}
     </if>
     <if test="projectStatus!=null">
-        and project_group.`status` = #{projectStatus}
+        and openexperiment.project_group.`status` = #{projectStatus}
     </if>
     </where>
   </select>
   <select id="selectApplyOrderByTime" resultMap="CheckProjectResultMap">
-    select project_group.limit_college,
-           project_group.id,
-           project_group.project_name,
-           project_group.experiment_type,
-           project_group.total_hours,
-           project_group.start_time,
-           project_group.end_time,
-           project_group.lab_name,
-           project_group.address,
-           project_group.suggest_group_type,
-           project_group.project_type,
-           project_group.main_Content,
-           project_group.apply_funds
-    from project_group
+    select openexperiment.project_group.limit_college,
+           openexperiment.project_group.id,
+           openexperiment.project_group.project_name,
+           openexperiment.project_group.experiment_type,
+           openexperiment.project_group.total_hours,
+           openexperiment.project_group.start_time,
+           openexperiment.project_group.end_time,
+           openexperiment.project_group.lab_name,
+           openexperiment.project_group.address,
+           openexperiment.project_group.suggest_group_type,
+           openexperiment.project_group.project_type,
+           openexperiment.project_group.main_Content,
+           openexperiment.project_group.apply_funds
+    from openexperiment.project_group
     where status = #{projectStatus}
     order by create_time desc
   </select>
   <select id="selectByFuzzyName" resultMap="SelectProjectMap">
-    select project_group.id, project_group.project_name, user.real_name
-    from project_group
-           inner join user on project_group.creator_id = user.id
+    select openexperiment.project_group.id, openexperiment.project_group.project_name, user.real_name
+    from openexperiment.project_group
+           inner join openexperiment.user on project_group.creator_id = user.id
     where project_group.project_name like '%${name}%'
   </select>
     <select id="getAllOpenTopic" resultMap="OpenTopicInfoResultMap">
@@ -358,10 +358,10 @@
              user.sex as t_sex,
              user.email as t_email,
              user.real_name as t_real_name
-      from project_group
-             left join user_project_group on project_group.id = project_group_id and user_project_group.status = 2  and
+      from openexperiment.project_group
+             left join openexperiment.user_project_group on project_group.id = project_group_id and user_project_group.status = 2  and
                                              user_project_group.member_role = 1
-             inner join user on user_project_group.user_id = user.code
+             inner join openexperiment.user on user_project_group.user_id = user.code
         where project_group.status = 1<!--1指的是实验室审核通过-->  and project_group.is_open_topic !=2 <!--2是指不开放-->
     </select>
     <select id="selectByCollegeIdAndStatus" resultMap="ProjectGroupResultMap" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
@@ -386,7 +386,7 @@
                project_group.`status`,
                project_group.update_time,
                project_group.main_Content
-        from project_group where status = #{projectStatus}
+        from openexperiment.project_group where status = #{projectStatus}
         <if test="college!=null">
             and project_group.limit_college = #{college}
         </if>
@@ -430,47 +430,102 @@
                user.grade                        as u_grade,
                user.major                        as u_major,
                user.email                        as u_email
-        from project_group
-                 inner join user_project_group on user_project_group.project_group_id = project_group.id
-                 inner join user on user_project_group.user_id = user.code
+        from openexperiment.project_group
+                 inner join openexperiment.user_project_group on user_project_group.project_group_id = project_group.id
+                 inner join openexperiment.user on user_project_group.user_id = user.code
         where project_group.id = #{projectId};
     </select>
-    <select id="getProjectTableInfoListByCollege" resultMap="ProjectTableInfoResultMap"
+    <select id="getProjectTableInfoListByCollegeAndList" resultMap="ProjectTableInfoResultMap"
             resultType="com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo">
-        select project_group.id,
-               project_group.address,
-               project_group.create_time,
-               project_group.start_time,
-               project_group.end_time,
-               project_group.total_hours,
-               project_group.project_name,
-               project_group.lab_name,
-               project_group.apply_funds,
-               project_group.experiment_type,
-               project_group.suggest_group_type,
-               CONCAT(t_lead_stu.grade,t_lead_stu.major) as gradeAndMajor,
-               t_lead_stu.lead_student as leadStudent,
-               t_lead_stu.lead_student_phone as leadStudentPhone,
-               user.real_name      as leadTeacher,
-               project_group.subordinate_college as college
-        from (select user.grade        as grade,
-                     user.major        as major,
-                     user.mobile_phone as lead_student_phone,
-                     user.real_name    as lead_student
-              from project_group
-                       inner join user_project_group on project_group.id = user_project_group.project_group_id
-                       inner join user
-#                         member_role为2 指的是学生组长
-                                  on user.code = user_project_group.user_id and user_project_group.member_role = 2) as t_lead_stu,
-             project_group
-                 left join user on project_group.creator_id = user.code
-        where project_group.subordinate_college = #{college}
+        SELECT DISTINCT
+            project_group.id as id,
+            project_group.address,
+            project_group.create_time,
+            project_group.start_time,
+            project_group.end_time,
+            project_group.total_hours,
+            project_group.project_name,
+            project_group.lab_name,
+            project_group.apply_funds,
+            project_group.experiment_type,
+            project_group.suggest_group_type,
+            project_group.subordinate_college          AS college,
+            CONCAT(t_lead_stu.grade, t_lead_stu.major) AS gradeAndMajor,
+            t_lead_stu.lead_student                    AS leadStudent,
+            t_lead_stu.lead_student_phone              AS leadStudentPhone,
+            `user`.real_name                           AS leadTeacher,
+            `user`.mobile_phone                        AS leadTeacherPhone
+        FROM openexperiment.project_group
+        INNER JOIN openexperiment.user_project_group ON user_project_group.project_group_id = project_group.id
+        INNER JOIN openexperiment.`user` ON project_group.creator_id = `user`.`code`
+        LEFT JOIN (
+            SELECT
+                `user`.grade                        AS grade,
+                `user`.major                        AS major,
+                `user`.mobile_phone                 AS lead_student_phone,
+                `user`.real_name                    AS lead_student,
+                openexperiment.user_project_group.project_group_id AS related_project_id
+            FROM openexperiment.`user`
+            INNER JOIN openexperiment.user_project_group
+                ON `user`.`code` = user_project_group.user_id
+                AND `user_project_group`.member_role = 2
+            ) AS t_lead_stu ON project_group.id = related_project_id
+        <where>
+            <if test="college!=null">
+                project_group.subordinate_college = #{college}
+            </if>
+            <if test="list!=null">
+                and project_group.id in
+                <foreach collection="list" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY
+        project_group.id
     </select>
     <select id="selectSpecifiedProjectList" resultType="java.lang.Integer">
-        select count(id) from  project_group where id in
+        select count(id) from  openexperiment.project_group where id in
         <foreach collection="list" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>
         and `status` = #{status}
+    </select>
+    <select id="conditionQuery" resultType="java.lang.Long">
+        select project_group.id
+            from openexperiment.project_group
+        <where>
+            <if test="status!=null">
+                project_group.status = #{status}
+            </if>
+            <if test="college!=null">
+                and project_group.college = #{college}
+            </if>
+            <if test="suggestGroupType!=null">
+                and project_group.suggest_group_type = #{suggestGroupType}
+            </if>
+            <if test="experimentType!=null">
+                and project_group.experiment_type = #{experimentType}
+            </if>
+            <if test="startTime!=null" >
+                and project_group.start_time &gt;= #{startTime}
+            </if>
+            <if test="endTime!=null">
+                and project_group.end_time &lt;= #{endTime}
+            </if>
+            <!--locate函数会比like的全局匹配更快-->
+            <if test="limitMajor!=null">
+                and locate(#{limitMajor},project_group.limit_major)
+            </if>
+            <if test="limitCollege!=null">
+                and locate(#{limitCollege},project_group.limit_college)
+            </if>
+            <if test="limitGrade!=null">
+                and locate(#{limitGrade},project_group.limit_grade)
+            </if>
+            <if test="projectName!=null">
+                and locate(#{projectName},project_group.project_name)
+            </if>
+        </where>
     </select>
 </mapper>

@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.service;
 import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.form.project.*;
+import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
 import javax.servlet.http.HttpServletResponse;
@@ -233,4 +234,11 @@ public interface ProjectService {
     Result approveProjectApplyByLabAdministrator(List<ProjectCheckForm> list);
 
     Result approveProjectApplyBySecondaryUnit(List<ProjectCheckForm> list);
+
+    /**
+     * 根据指定条件查询项目信息
+     * @param form
+     * @return
+     */
+    Result conditionallyQueryOfCheckedProjectByFunctionalDepartment(QueryConditionForm form);
 }

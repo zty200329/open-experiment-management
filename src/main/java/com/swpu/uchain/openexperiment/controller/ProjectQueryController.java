@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.controller;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.ProjectStatus;
 import com.swpu.uchain.openexperiment.enums.RoleType;
+import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
@@ -110,4 +111,9 @@ public class ProjectQueryController {
         return projectService.getToBeReportedProjectByLabLeader();
     }
 
+    @ApiOperation("职能部门根据条件查询项目信息")
+    @PostMapping("/conditionallyQueryOfCheckedProjectByFunctionalDepartment")
+    public Result conditionallyQueryOfCheckedProjectByFunctionalDepartment(@RequestBody QueryConditionForm form){
+        return projectService.conditionallyQueryOfCheckedProjectByFunctionalDepartment(form);
+    }
 }

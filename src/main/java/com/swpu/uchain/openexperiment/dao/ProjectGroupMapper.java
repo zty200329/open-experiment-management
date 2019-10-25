@@ -6,6 +6,7 @@ import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
 import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.VO.project.ProjectGroupDetailVO;
+import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -46,17 +47,18 @@ public interface ProjectGroupMapper {
      */
     List<OpenTopicInfo> getAllOpenTopic();
 
-    ProjectGroupDetailVO getProjectGroupDetailVOByProjectId(@Param("projectId")Long projectId );
+    ProjectGroupDetailVO getProjectGroupDetailVOByProjectId(@Param("projectId")Long projectId);
 
     /**
      * 总览表项目信息
      * @param college
      * @return
      */
-    List<ProjectTableInfo> getProjectTableInfoListByCollege(@Param("college") Integer college);
+    List<ProjectTableInfo> getProjectTableInfoListByCollegeAndList(@Param("college") Integer college,@Param("list") List projectIdList);
 
     int updateProjectStatusOfList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);
 
     int selectSpecifiedProjectList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);
 
+    List<Long> conditionQuery(QueryConditionForm form);
 }

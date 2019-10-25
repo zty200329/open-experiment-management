@@ -11,6 +11,7 @@ import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.project.*;
+import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -627,23 +628,38 @@ public class ProjectServiceImpl implements ProjectService {
             return Result.success();
         }
 
-        @Override
-        public Result getProjectDetailById (Long projectId){
-            List<ProjectHistoryInfo> list = recordMapper.selectAllByProjectId(projectId);
-            return Result.success(list);
-        }
+    @Override
+    public Result getProjectDetailById (Long projectId){
+        List<ProjectHistoryInfo> list = recordMapper.selectAllByProjectId(projectId);
+        return Result.success(list);
+    }
 
-        @Override
-        public Result approveProjectApplyByLabAdministrator (List < ProjectCheckForm > list) {
-            return approveProjectApply(list, RoleType.LAB_ADMINISTRATOR.getValue());
-        }
+    @Override
+    public Result approveProjectApplyByLabAdministrator (List < ProjectCheckForm > list) {
+        return approveProjectApply(list, RoleType.LAB_ADMINISTRATOR.getValue());
+    }
 
-        @Override
-        public Result approveProjectApplyBySecondaryUnit (List < ProjectCheckForm > list) {
-            return approveProjectApply(list, RoleType.SECONDARY_UNIT.getValue());
-        }
+    @Override
+    public Result approveProjectApplyBySecondaryUnit (List < ProjectCheckForm > list) {
+        return approveProjectApply(list, RoleType.SECONDARY_UNIT.getValue());
+    }
 
-        @Override
+    @Override
+    public Result conditionallyQueryOfCheckedProjectByFunctionalDepartment(QueryConditionForm form){
+        form.setStatus(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue());
+        return conditionallyQueryOfCheckedProject(form);
+    }
+
+    private Result conditionallyQueryOfCheckedProject(QueryConditionForm form) {
+        List<Long>  projectIdList = projectGroupMapper.conditionQuery(form);
+        if (projectIdList == null){
+            return Result.success();
+        }
+        List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(null,projectIdList);
+        return Result.success(list);
+    }
+
+    @Override
         public Result getToBeReportedProjectByLabLeader () {
             User user = getUserService.getCurrentUser();
             if (user == null) {
@@ -727,7 +743,7 @@ public class ProjectServiceImpl implements ProjectService {
             User user = getUserService.getCurrentUser();
             //获取管理人员所管理的学院
             Integer college = user.getInstitute();
-            List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollege(college);
+            List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(college,null);
             // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
             XSSFWorkbook wb = new XSSFWorkbook();
             // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
