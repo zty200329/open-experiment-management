@@ -438,7 +438,7 @@
     <select id="getProjectTableInfoListByCollegeAndList" resultMap="ProjectTableInfoResultMap"
             resultType="com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo">
         SELECT DISTINCT
-            project_group.id as id,
+            project_group.id,
             project_group.address,
             project_group.create_time,
             project_group.start_time,
@@ -481,8 +481,6 @@
                 </foreach>
             </if>
         </where>
-        ORDER BY
-        project_group.id
     </select>
     <select id="selectSpecifiedProjectList" resultType="java.lang.Integer">
         select count(id) from  openexperiment.project_group where id in
@@ -527,5 +525,32 @@
                 and locate(#{projectName},project_group.project_name)
             </if>
         </where>
+    </select>
+    <select id="selectHistoricalInfoByUnitAndOperation" resultMap="ProjectGroupResultMap"
+            resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
+        SELECT
+            project_group.id,
+            project_group.address,
+            project_group.create_time,
+            project_group.creator_id,
+            project_group.end_time,
+            project_group.experiment_condition,
+            project_group.suggest_group_type,
+            project_group.experiment_type,
+            project_group.achievement_check,
+            project_group.limit_college,
+            project_group.limit_major,
+            project_group.limit_grade,
+            project_group.fit_people_num,
+            project_group.total_hours,
+            project_group.lab_name,
+            project_group.project_name,
+            project_group.project_type,
+            project_group.start_time,
+            project_group.`status`,
+            project_group.main_Content
+        FROM openexperiment.project_group
+        INNER JOIN openexperiment.operation_record ON operation_record.related_id = project_group.id
+        WHERE operation_record.operation_unit = #{unit} AND operation_record.operation_type = #{type} AND operation_record.status = 'Y'
     </select>
 </mapper>

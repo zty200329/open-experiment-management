@@ -1,19 +1,17 @@
 package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
-import com.swpu.uchain.openexperiment.enums.ProjectStatus;
-import com.swpu.uchain.openexperiment.enums.RoleType;
+import com.swpu.uchain.openexperiment.form.project.HistoryQueryProjectInfo;
 import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.ProjectService;
-import com.swpu.uchain.openexperiment.service.UserProjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
+
+import javax.validation.Valid;
 
 /**
  * 项目模块查询接口
@@ -115,5 +113,11 @@ public class ProjectQueryController {
     @PostMapping("/conditionallyQueryOfCheckedProjectByFunctionalDepartment")
     public Result conditionallyQueryOfCheckedProjectByFunctionalDepartment(@RequestBody QueryConditionForm form){
         return projectService.conditionallyQueryOfCheckedProjectByFunctionalDepartment(form);
+    }
+
+    @ApiOperation("所有的单位查看历史的操作")
+    @PostMapping("/getHistoricalProjectInfoByUnitAndOperation")
+    public Result getHistoricalProjectInfoByUnitAndOperation(@Valid @RequestBody HistoryQueryProjectInfo info ){
+        return projectService.getHistoricalProjectInfoByUnitAndOperation(info);
     }
 }

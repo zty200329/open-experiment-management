@@ -37,6 +37,7 @@ public interface ProjectGroupMapper {
 
     List<ProjectGroup> selectByCollegeIdAndStatus(@Param("college") String college,@Param("projectStatus") Integer projectStatus);
 
+
     List<CheckProjectVO> selectApplyOrderByTime(int projectStatus);
 
     List<SelectProjectVO> selectByFuzzyName(@Param("name") String name);
@@ -61,4 +62,6 @@ public interface ProjectGroupMapper {
     int selectSpecifiedProjectList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);
 
     List<Long> conditionQuery(QueryConditionForm form);
+
+    List<ProjectGroup> selectHistoricalInfoByUnitAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType);
 }

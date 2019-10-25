@@ -241,4 +241,11 @@ public interface ProjectService {
      * @return
      */
     Result conditionallyQueryOfCheckedProjectByFunctionalDepartment(QueryConditionForm form);
+
+    /**
+     * 查询历史信息
+     * @param info
+     * @return
+     */
+    Result getHistoricalProjectInfoByUnitAndOperation(HistoryQueryProjectInfo info);
 }

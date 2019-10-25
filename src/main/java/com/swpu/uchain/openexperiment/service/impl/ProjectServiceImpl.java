@@ -650,10 +650,18 @@ public class ProjectServiceImpl implements ProjectService {
         return conditionallyQueryOfCheckedProject(form);
     }
 
+    @Override
+    public Result getHistoricalProjectInfoByUnitAndOperation(HistoryQueryProjectInfo info) {
+
+        // TODO 权限验证
+        List<ProjectGroup> list = projectGroupMapper.selectHistoricalInfoByUnitAndOperation(info.getOperationUnit(),info.getOperationType());
+        return Result.success(list);
+    }
+
     private Result conditionallyQueryOfCheckedProject(QueryConditionForm form) {
         List<Long>  projectIdList = projectGroupMapper.conditionQuery(form);
-        if (projectIdList == null){
-            return Result.success();
+        if (projectIdList.isEmpty()){
+            return Result.success(null);
         }
         List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(null,projectIdList);
         return Result.success(list);
