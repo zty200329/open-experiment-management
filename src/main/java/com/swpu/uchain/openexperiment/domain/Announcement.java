@@ -23,4 +23,6 @@ public class Announcement{
 
     private Date updateTime;
 
+    private Integer status;
+
 }

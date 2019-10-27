@@ -15,11 +15,11 @@
     <result column="title" jdbcType="VARCHAR" property="title" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from announcement
+    delete from openexperiment.announcement
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.Announcement">
-    insert into announcement (id, publisher_id, title, 
+    insert into openexperiment.announcement (id, publisher_id, title,
       content, publish_time, update_time
       )
     values (#{id,jdbcType=BIGINT}, #{publisherId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
@@ -27,7 +27,7 @@
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.Announcement">
-    update announcement
+    update openexperiment.announcement
     set publisher_id = #{publisherId,jdbcType=BIGINT},
       title = #{title,jdbcType=VARCHAR},
       content = #{content,jdbcType=VARCHAR},
@@ -35,18 +35,24 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select id, publisher_id, title, content, publish_time, update_time
-    from announcement
+  <update id="updateAnnouncementStatusById">
+    update openexperiment.announcement set status = #{status} where id = #{id}
+  </update>
+  <select id="selectByPrimaryKeyAndStatus" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, publisher_id, title, content, publish_time, update_time,status
+    from openexperiment.announcement
     where id = #{id,jdbcType=BIGINT}
+    <if test="param2!=null">
+      and status = #{status}
+    </if>
   </select>
   <select id="selectAll" resultMap="BaseResultMap">
     select id, publisher_id, title, content, publish_time, update_time
-    from announcement
+    from openexperiment.announcement
   </select>
   <select id="selectOrderByTime" resultMap="ListResultMap">
     select id, title, publish_time
-    from announcement
+    from openexperiment.announcement
     order by publish_time
     desc
   </select>

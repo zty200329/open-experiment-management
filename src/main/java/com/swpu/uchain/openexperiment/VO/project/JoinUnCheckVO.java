@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.VO.project;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swpu.uchain.openexperiment.VO.user.UserDetailVO;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class JoinUnCheckVO implements Serializable {
     /**
      * 用户参与项目关系id
      */
+    @JsonIgnore
     private Long userProjectId;
     /**
      * 项目组id

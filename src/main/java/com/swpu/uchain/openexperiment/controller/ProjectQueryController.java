@@ -115,7 +115,7 @@ public class ProjectQueryController {
         return projectService.conditionallyQueryOfCheckedProjectByFunctionalDepartment(form);
     }
 
-    @ApiOperation("所有的单位查看历史的操作")
+    @ApiOperation("所有的单位查看历史的操作--以上报，已驳回")
     @PostMapping("/getHistoricalProjectInfoByUnitAndOperation")
     public Result getHistoricalProjectInfoByUnitAndOperation(@Valid @RequestBody HistoryQueryProjectInfo info ){
         return projectService.getHistoricalProjectInfoByUnitAndOperation(info);

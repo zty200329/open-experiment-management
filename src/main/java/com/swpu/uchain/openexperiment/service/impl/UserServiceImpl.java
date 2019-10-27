@@ -305,6 +305,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Result getUserInfoByUserId(Long userId) {
+        return Result.success(userMapper.selectByUserCode(String.valueOf(userId)));
+    }
+
+    @Override
     public List<User> selectByKeyWord(String keyWord, boolean isTeacher) {
         List<User> users = (List<User>) redisService.getList(UserKey.getByKeyWord, keyWord + isTeacher);
         if (users == null || users.size() == 0){

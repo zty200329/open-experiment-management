@@ -49,5 +49,11 @@ public class UserController {
         return userService.getManageUsersByKeyWord(keyWord);
     }
 
+    @ApiOperation("根据用户工号查看用户信息")
+    @GetMapping("/getUserInfoByUserId")
+    public Result getUserInfoByUserId(Long userId){
+        return userService.getUserInfoByUserId(userId);
+    }
+
 
 }

@@ -17,7 +17,7 @@ public interface AnnouncementService {
      * @param announcement
      * @return
      */
-    boolean insert(Announcement announcement);
+    boolean insertAndPublish(Announcement announcement);
 
     /**
      * 更新公告信息
@@ -31,13 +31,6 @@ public interface AnnouncementService {
      * @param id
      */
     void delete(Long id);
-
-    /**
-     * 按id进行查找对应的公告
-     * @param announcementId
-     * @return
-     */
-    Announcement selectById(Long announcementId);
 
     /**
      * 发布公告
@@ -62,4 +55,8 @@ public interface AnnouncementService {
     Result getList();
 
     Result changeInfo(AnnouncementUpdateForm updateForm);
+
+    Result createAndSave(AnnouncementPublishForm publishForm);
+
+    Result publishSavedAnnouncement(Long announcementId);
 }

@@ -119,4 +119,6 @@ public interface UserService {
      * @return
      */
     Result getManageUsersByKeyWord(String keyWord);
+
+    Result getUserInfoByUserId(Long userId);
 }
