@@ -1,8 +1,10 @@
 package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementPublishForm;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementUpdateForm;
+import com.swpu.uchain.openexperiment.form.announcement.QueryCondition;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AnnouncementService;
 import io.swagger.annotations.Api;
@@ -27,6 +29,8 @@ public class AnnouncementController {
     @Autowired
     private AnnouncementService announcementService;
 
+
+
     @ApiOperation("发布公告")
     @PostMapping(value = "/publish", name = "发布公告")
     public Result publish(@RequestBody @Valid AnnouncementPublishForm publishForm){
@@ -46,6 +50,12 @@ public class AnnouncementController {
     @GetMapping(value = "/list", name = "公告列表")
     public Result list(){
         return announcementService.getList();
+    }
+
+    @ApiOperation("根据条件查询公告")
+    @GetMapping(value = "/queryByCondition")
+    public Result queryByCondition(@RequestBody @Valid QueryCondition condition){
+        return announcementService.queryByCondition(condition);
     }
 
     @ApiOperation("删除公告")
@@ -71,7 +81,19 @@ public class AnnouncementController {
     @ApiOperation("发布未发布的公告")
     @GetMapping("/publishSavedAnnouncement")
     public Result publishSavedAnnouncement(Long announcementId){
+        if (announcementId == null){
+            throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
+        }
         return announcementService.publishSavedAnnouncement(announcementId);
+    }
+
+    @ApiOperation("取消发布公告")
+    @GetMapping("/cancelPublish")
+    public Result cancelPublish(Long announcementId){
+        if (announcementId == null){
+            throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
+        }
+        return announcementService.cancelPublish(announcementId);
     }
 
 }

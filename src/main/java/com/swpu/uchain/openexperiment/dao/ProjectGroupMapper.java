@@ -6,7 +6,7 @@ import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
 import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.VO.project.ProjectGroupDetailVO;
-import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
+import com.swpu.uchain.openexperiment.form.project.QueryConditionForm;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

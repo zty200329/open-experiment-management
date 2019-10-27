@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.service;
 import com.swpu.uchain.openexperiment.domain.Announcement;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementPublishForm;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementUpdateForm;
+import com.swpu.uchain.openexperiment.form.announcement.QueryCondition;
 import com.swpu.uchain.openexperiment.result.Result;
 
 /**
@@ -59,4 +60,8 @@ public interface AnnouncementService {
     Result createAndSave(AnnouncementPublishForm publishForm);
 
     Result publishSavedAnnouncement(Long announcementId);
+
+    Result cancelPublish(Long announcementId);
+
+    Result queryByCondition(QueryCondition condition);
 }

@@ -11,7 +11,7 @@ import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.project.*;
-import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
+import com.swpu.uchain.openexperiment.form.project.QueryConditionForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -747,9 +747,11 @@ public class ProjectServiceImpl implements ProjectService {
         @Override
         public void generateEstablishExcel (HttpServletResponse response){
 
-            //TODO 区分学院
             User user = getUserService.getCurrentUser();
             //获取管理人员所管理的学院
+            if (user == null){
+                throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+            }
             Integer college = user.getInstitute();
             List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(college,null);
             // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
@@ -781,7 +783,7 @@ public class ProjectServiceImpl implements ProjectService {
 
             // 4.设置表头，即每个列的列名
             String[] head = {"院/中心", "序号", "项目名称", "实验类型", "实验时数", "指导教师", "负责学生"
-                    , "专业年级", "开始时间", "结束时间", "开放实验室", "实验室地点", "负责学生电话", "申请经费（元）", "建议评审分组"};
+                    , "专业年级", "开始时间", "结束时间", "开放\r\n实验室", "实验室地点", "负责学生\r\n电话", "申请经费（元）", "建议\r\n评审分组"};
             // 4.1创建表头行
             XSSFRow row = sheet.createRow(index++);
 
@@ -789,6 +791,7 @@ public class ProjectServiceImpl implements ProjectService {
             for (int i = 0; i < head.length; i++) {
 
                 // 给列写入数据,创建单元格，写入数据
+                row.setHeight((short) (16*40));
                 row.createCell(i).setCellValue(head[i]);
 
             }

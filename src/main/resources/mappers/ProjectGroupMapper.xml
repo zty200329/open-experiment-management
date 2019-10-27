@@ -472,7 +472,7 @@
             ) AS t_lead_stu ON project_group.id = related_project_id
         <where>
             <if test="college!=null">
-                project_group.subordinate_college = #{college}
+                project_group.subordinate_college = #{college} and project_group.status = 5 <!--5指的是立项-->
             </if>
             <if test="list!=null">
                 and project_group.id in

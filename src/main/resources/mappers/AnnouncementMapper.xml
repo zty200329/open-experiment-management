@@ -20,10 +20,10 @@
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.Announcement">
     insert into openexperiment.announcement (id, publisher_id, title,
-      content, publish_time, update_time
+      content, publish_time, update_time,status
       )
     values (#{id,jdbcType=BIGINT}, #{publisherId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
-      #{content,jdbcType=VARCHAR}, #{publishTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      #{content,jdbcType=VARCHAR}, #{publishTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},#{status}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.Announcement">
@@ -42,7 +42,7 @@
     select id, publisher_id, title, content, publish_time, update_time,status
     from openexperiment.announcement
     where id = #{id,jdbcType=BIGINT}
-    <if test="param2!=null">
+    <if test="status!=null">
       and status = #{status}
     </if>
   </select>
@@ -50,9 +50,23 @@
     select id, publisher_id, title, content, publish_time, update_time
     from openexperiment.announcement
   </select>
-  <select id="selectOrderByTime" resultMap="ListResultMap">
-    select id, title, publish_time
+  <select id="selectByConditionAndOrderByTime" resultMap="ListResultMap">
+    select id, title, publish_time,status
     from openexperiment.announcement
+    <where>
+      <if test="startTime!=null">
+        publish_time &gt;= #{startTime}
+      </if>
+      <if test="endTime!=null">
+        and publish_time &lt;= #{endTime}
+      </if>
+      <if test="status!=null">
+        and status= #{status}
+      </if>
+      <if test="title!=null">
+        and locate(#{title},title)
+      </if>
+    </where>
     order by publish_time
     desc
   </select>

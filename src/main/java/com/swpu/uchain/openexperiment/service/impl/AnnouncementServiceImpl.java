@@ -1,25 +1,21 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementListVO;
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementVO;
-import com.swpu.uchain.openexperiment.config.CountConfig;
 import com.swpu.uchain.openexperiment.dao.AnnouncementMapper;
 import com.swpu.uchain.openexperiment.dao.UserMapper;
 import com.swpu.uchain.openexperiment.domain.Announcement;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.AnnouncementStatus;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
-import com.swpu.uchain.openexperiment.enums.ProjectStatus;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementPublishForm;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementUpdateForm;
+import com.swpu.uchain.openexperiment.form.announcement.QueryCondition;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.AnnouncementKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AnnouncementService;
-import com.swpu.uchain.openexperiment.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -73,11 +69,11 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         announcementMapper.deleteByPrimaryKey(id);
     }
 
-    private Announcement selectByIdAndStatus(Long announcementId,AnnouncementStatus status) {
+    private Announcement selectByIdAndStatus(Long announcementId,Integer status) {
         Announcement announcement = redisService.get(AnnouncementKey.getById, announcementId + "", Announcement.class);
         if (announcement == null){
-            announcement = announcementMapper.selectByPrimaryKeyAndStatus(announcementId,status.getValue());
-            if (announcement != null){
+            announcement = announcementMapper.selectByPrimaryKeyAndStatus(announcementId,status);
+            if (announcement != null && announcement.getStatus().equals(AnnouncementStatus.PUBLISHED.getValue())){
                 redisService.set(AnnouncementKey.getById, announcementId + "", announcement);
             }
         }
@@ -97,13 +93,15 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     @Override
     public Result readAnnouncementDetail(Long announcementId) {
-        Announcement announcement = selectByIdAndStatus(announcementId, AnnouncementStatus.PUBLISHED);
+        Announcement announcement = selectByIdAndStatus(announcementId,null);
         if (announcement != null){
             AnnouncementVO announcementVO = new AnnouncementVO();
             BeanUtils.copyProperties(announcement, announcementVO);
-            redisService.incr(AnnouncementKey.getClickTimesById, announcementId + "");
-            Integer clickTimes = redisService.get(AnnouncementKey.getClickTimesById, announcementId + "", Integer.class);
-            announcementVO.setClickTimes(clickTimes);
+            if (announcement.getStatus().equals(AnnouncementStatus.PUBLISHED.getValue())) {
+                redisService.incr(AnnouncementKey.getClickTimesById, announcementId + "");
+                Integer clickTimes = redisService.get(AnnouncementKey.getClickTimesById, announcementId + "", Integer.class);
+                announcementVO.setClickTimes(clickTimes);
+            }
             return Result.success(announcementVO);
         }
         return Result.error(CodeMsg.ANNOUNCEMENT_NOT_EXIST);
@@ -111,7 +109,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     @Override
     public Result getList() {
-        List<AnnouncementListVO> listVOS = announcementMapper.selectOrderByTime();
+        //使用无条件查询
+        List<AnnouncementListVO> listVOS = announcementMapper.selectByConditionAndOrderByTime(null);
         return Result.success(listVOS);
     }
 
@@ -146,6 +145,18 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         //设置阅读次数
         redisService.set(AnnouncementKey.getClickTimesById, announcement.getId() + "", 0);
         return Result.success();
+    }
+
+    @Override
+    public Result cancelPublish(Long announcementId) {
+        redisService.delete(AnnouncementKey.getById, announcementId + "");
+        announcementMapper.updateAnnouncementStatusById(AnnouncementStatus.SAVE.getValue(),announcementId);
+        return Result.success();
+    }
+
+    @Override
+    public Result queryByCondition(QueryCondition condition) {
+        return Result.success(announcementMapper.selectByConditionAndOrderByTime(condition));
     }
 
     private Announcement convertFormToModel(AnnouncementPublishForm publishForm,AnnouncementStatus status){

@@ -25,4 +25,9 @@ public class AnnouncementListVO implements Serializable {
      * 发布时间
      */
     private Date publishTime;
+
+    /**
+     * 状态 1，已发布 2，未发布  {@link com.swpu.uchain.openexperiment.enums.AnnouncementStatus}
+     */
+    private Integer status;
 }

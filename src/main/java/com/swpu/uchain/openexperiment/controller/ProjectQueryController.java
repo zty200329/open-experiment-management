@@ -2,7 +2,7 @@ package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.project.HistoryQueryProjectInfo;
-import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
+import com.swpu.uchain.openexperiment.form.project.QueryConditionForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.ProjectService;
 import io.swagger.annotations.Api;
