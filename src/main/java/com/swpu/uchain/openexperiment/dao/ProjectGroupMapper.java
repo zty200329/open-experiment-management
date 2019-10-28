@@ -19,6 +19,8 @@ import java.util.List;
 @Repository
 public interface ProjectGroupMapper {
 
+    int getIndexByCollege(@Param("college")Integer college);
+
     int deleteByPrimaryKey(Long id);
 
     int insert(ProjectGroup record);

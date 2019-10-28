@@ -16,9 +16,14 @@ public class ProjectTableInfo {
     private Integer college;
 
     /**
-     * 项目编号
+     * 主键
      */
     private Long projectId;
+
+    /**
+     * 项目编号
+     */
+    private String serialNumber;
 
     /**
      * 项目名称

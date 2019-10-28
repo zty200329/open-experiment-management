@@ -15,6 +15,7 @@ import java.util.List;
  */
 @Data
 public class CheckProjectVO implements Serializable {
+    private String serialNumber;
     private String limitCollege;
     private Long projectGroupId;
     private String projectName;

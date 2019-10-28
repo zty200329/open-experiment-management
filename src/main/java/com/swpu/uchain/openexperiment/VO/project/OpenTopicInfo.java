@@ -16,9 +16,11 @@ import java.util.List;
 @Data
 public class OpenTopicInfo {
 
-    @ApiModelProperty("项目编号")
+    @ApiModelProperty("主键")
     private Integer id;
 
+    @ApiModelProperty("项目编号")
+    private String serialNumber;
 
     @ApiModelProperty("主要内容")
     private String mainContent;

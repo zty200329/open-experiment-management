@@ -17,6 +17,7 @@ import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
+import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -143,6 +144,14 @@ public class ProjectServiceImpl implements ProjectService {
         User currentUser = getUserService.getCurrentUser();
 
         Integer college = currentUser.getInstitute();
+        if (college == null){
+            throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
+        }
+        //获取这是该院第几个项目
+        int index = projectGroupMapper.getIndexByCollege(college);
+
+        String serialNumber = SerialNumberUtil.getSerialNumberOfProject(college,form.getProjectType(),++index);
+
         //判断用户类型
         if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()) {
             Result.error(CodeMsg.STUDENT_CANT_APPLY);
@@ -168,6 +177,7 @@ public class ProjectServiceImpl implements ProjectService {
         //设置申请人
         projectGroup.setCreatorId(Long.valueOf(currentUser.getCode()));
         projectGroup.setSubordinateCollege(college);
+        projectGroup.setSerialNumber(serialNumber);
         //插入数据
         Result result = addProjectGroup(projectGroup);
         if (result.getCode() != 0) {

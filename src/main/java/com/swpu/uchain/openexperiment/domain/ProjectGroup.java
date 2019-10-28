@@ -20,6 +20,11 @@ public class ProjectGroup implements Serializable {
     private Long id;
 
     /**
+     * 项目编号
+     */
+    private String serialNumber;
+
+    /**
      * 实验地点
      */
     private String address;

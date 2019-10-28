@@ -3,6 +3,7 @@
 <mapper namespace="com.swpu.uchain.openexperiment.dao.ProjectGroupMapper">
     <resultMap id="OpenTopicInfoResultMap" type="com.swpu.uchain.openexperiment.VO.project.OpenTopicInfo">
         <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
         <result column="address" jdbcType="VARCHAR" property="address" />
         <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
         <result column="experiment_condition" jdbcType="VARCHAR" property="experimentCondition" />
@@ -33,6 +34,7 @@
     <resultMap id="ProjectGroupDetailVOResultMap" type="com.swpu.uchain.openexperiment.VO.project.ProjectGroupDetailVO">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
         <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
@@ -79,6 +81,7 @@
 
     <resultMap id="ProjectGroupResultMap" type="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
         <result column="address" jdbcType="VARCHAR" property="address" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
@@ -105,7 +108,7 @@
     <resultMap id="ProjectTableInfoResultMap" type="com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo">
 
         <id column="id" jdbcType="BIGINT" property="projectId" />
-
+        <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
         <result column="address" jdbcType="VARCHAR" property="address" />
         <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
         <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
@@ -122,6 +125,7 @@
     <resultMap id="CheckProjectResultMap" type="com.swpu.uchain.openexperiment.VO.project.CheckProjectVO">
         <id column="id" jdbcType="BIGINT" property="projectGroupId" />
         <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
         <result column="limit_college" jdbcType="VARCHAR" property="limitCollege" />
         <result column="project_name" jdbcType="VARCHAR" property="projectName" />
         <result column="project_type" jdbcType="INTEGER" property="projectType" />
@@ -222,6 +226,7 @@
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ProjectGroupResultMap">
     select id,
            address,
+           serial_number,
            create_time,
            creator_id,
            end_time,
@@ -275,6 +280,7 @@
     select
           openexperiment.user_project_group.project_group_id as id,
           openexperiment.project_group.address,
+          openexperiment.project_group.serial_number,
           openexperiment.project_group.create_time,
           openexperiment.project_group.creator_id,
           openexperiment.project_group.end_time,
@@ -307,6 +313,7 @@
   </select>
   <select id="selectApplyOrderByTime" resultMap="CheckProjectResultMap">
     select openexperiment.project_group.limit_college,
+           openexperiment.project_group.serial_number,
            openexperiment.project_group.id,
            openexperiment.project_group.project_name,
            openexperiment.project_group.experiment_type,
@@ -331,6 +338,7 @@
   </select>
     <select id="getAllOpenTopic" resultMap="OpenTopicInfoResultMap">
       select project_group.id,
+            project_group.serial_number,
              project_group.address,
              project_group.create_time,
              project_group.creator_id,
@@ -366,6 +374,7 @@
     </select>
     <select id="selectByCollegeIdAndStatus" resultMap="ProjectGroupResultMap" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         select project_group.id,
+            project_group.serial_number,
                project_group.address,
                project_group.create_time,
                project_group.creator_id,
@@ -394,6 +403,7 @@
 
     <select id="getProjectGroupDetailVOByProjectId" resultMap="ProjectGroupDetailVOResultMap">
         select project_group.id,
+            project_group.serial_number,
                project_group.address,
                project_group.create_time,
                project_group.creator_id,
@@ -439,6 +449,7 @@
             resultType="com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo">
         SELECT DISTINCT
             project_group.id,
+            project_group.serial_number,
             project_group.address,
             project_group.create_time,
             project_group.start_time,
@@ -530,6 +541,8 @@
             resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         SELECT
             project_group.id,
+            project_group.serial_number,
+            project_group.serial_number,
             project_group.address,
             project_group.create_time,
             project_group.creator_id,
@@ -552,5 +565,8 @@
         FROM openexperiment.project_group
         INNER JOIN openexperiment.operation_record ON operation_record.related_id = project_group.id
         WHERE operation_record.operation_unit = #{unit} AND operation_record.operation_type = #{type} AND operation_record.status = 'Y'
+    </select>
+    <select id="getIndexByCollege" resultType="java.lang.Integer">
+        select  count(serial_number) from openexperiment.project_group where subordinate_college = #{college}
     </select>
 </mapper>

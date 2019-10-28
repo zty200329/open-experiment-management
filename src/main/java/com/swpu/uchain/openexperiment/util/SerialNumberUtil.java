@@ -4,7 +4,6 @@ import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.CollegeType;
 import com.swpu.uchain.openexperiment.enums.ProjectType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
-import io.swagger.models.auth.In;
 
 import java.util.Calendar;
 
@@ -19,7 +18,7 @@ public class SerialNumberUtil {
      * @param index 该院的第几个项目
      * @return 完整项目编号
      */
-    public static String getSerialNumberOfProject(CollegeType college, ProjectType projectType,Integer index){
+    public static String getSerialNumberOfProject(Integer college, Integer projectType,Integer index){
 
         if (projectType == null){
             throw new GlobalException(CodeMsg.PROJECT_TYPE_NULL_ERROR);
@@ -35,19 +34,18 @@ public class SerialNumberUtil {
 
         String projectTypeValue;
         //如果重点项目
-        if (projectType == ProjectType.KEY) {
+        if (projectType.equals(ProjectType.KEY.getValue())) {
             projectTypeValue = "KSZ";
         //如果是普通项目
         }else {
             projectTypeValue = "KSP";
         }
-        serialNumber = year+projectTypeValue+String.format("%02d", college.getValue())+String.format("%03d", index);
+        serialNumber = year+projectTypeValue+String.format("%02d", college)+String.format("%03d", index);
         return serialNumber;
     }
 
     public static void main(String[] args) {
-        String number = getSerialNumberOfProject(CollegeType.MARXISM_COLLEGE,ProjectType.KEY,1);
+        String number = getSerialNumberOfProject(CollegeType.MARXISM_COLLEGE.getValue(),ProjectType.KEY.getValue(),1);
         System.err.println(number);
     }
-
 }
