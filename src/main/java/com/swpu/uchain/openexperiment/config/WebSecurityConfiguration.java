@@ -85,7 +85,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/file/**",
                         "/info/**",
                         "/user/**",
-                        "/test/**"
+                        "/test/**",
+                        "/druid/**"
                 ).permitAll()
                 //配置swagger界面的匿名访问
                 .antMatchers("/swagger-ui.html").permitAll()
@@ -98,6 +99,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //配置允许匿名访问的路径
                 .antMatchers("/anon/*").permitAll()
                 .antMatchers("/uchain/shutdown").permitAll()
+                .antMatchers("/druid/**").permitAll()
                 .anyRequest().authenticated();
 
         //配置自己的验证过滤器
