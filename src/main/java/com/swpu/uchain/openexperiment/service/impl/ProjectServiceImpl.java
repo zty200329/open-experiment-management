@@ -253,7 +253,7 @@ public class ProjectServiceImpl implements ProjectService {
             BeanUtils.copyProperties(projectGroup, myProjectVO);
             myProjectVO.setProjectGroupId(projectGroup.getId());
             myProjectVO.setNumberOfTheSelected(numberOfSelectedStu);
-//            myProjectVO.setProjectDetails(getProjectDetails(projectGroup));
+            myProjectVO.setProjectDetails(getProjectDetails(projectGroup));
             projectVOS.add(myProjectVO);
         }
         return Result.success(projectVOS);

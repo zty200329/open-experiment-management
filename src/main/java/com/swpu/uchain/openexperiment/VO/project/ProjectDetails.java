@@ -32,10 +32,6 @@ public class ProjectDetails implements Serializable {
      */
     private String address;
     /**
-     * 参与成员
-     */
-    private List<UserMemberVO> members;
-    /**
      * 申报经费总额
      */
     private Integer totalApplyFundsAmount;
@@ -51,4 +47,9 @@ public class ProjectDetails implements Serializable {
      * 项目相关文件
      */
     private List<ProjectFile> projectFiles;
+
+    /**
+     * 参与成员
+     */
+    private List<UserMemberVO> members;
 }
