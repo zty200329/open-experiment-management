@@ -53,7 +53,7 @@ public class AnnouncementController {
     }
 
     @ApiOperation("根据条件查询公告")
-    @GetMapping(value = "/queryByCondition")
+    @PostMapping(value = "/queryByCondition")
     public Result queryByCondition(@RequestBody @Valid QueryCondition condition){
         return announcementService.queryByCondition(condition);
     }

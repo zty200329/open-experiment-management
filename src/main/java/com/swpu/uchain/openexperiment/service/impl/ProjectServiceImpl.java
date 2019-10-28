@@ -49,7 +49,6 @@ public class ProjectServiceImpl implements ProjectService {
     private UserProjectService userProjectService;
     private ProjectFileService projectFileService;
     private FundsService fundsService;
-    private CountConfig countConfig;
     private UploadConfig uploadConfig;
     private ConvertUtil convertUtil;
     private GetUserService getUserService;
@@ -63,7 +62,7 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
                               RedisService redisService, UserProjectService userProjectService,
                               ProjectFileService projectFileService, FundsService fundsService,
-                              CountConfig countConfig, UploadConfig uploadConfig,
+                              UploadConfig uploadConfig,
                               ConvertUtil convertUtil, GetUserService getUserService,
                               OperationRecordMapper recordMapper,
                               MessageRecordMapper messageRecordMapper, RoleMapper roleMapper,
@@ -74,7 +73,6 @@ public class ProjectServiceImpl implements ProjectService {
         this.userProjectService = userProjectService;
         this.projectFileService = projectFileService;
         this.fundsService = fundsService;
-        this.countConfig = countConfig;
         this.uploadConfig = uploadConfig;
         this.convertUtil = convertUtil;
         this.getUserService = getUserService;
@@ -224,6 +222,7 @@ public class ProjectServiceImpl implements ProjectService {
         OperationRecord operationRecord = new OperationRecord();
         operationRecord.setOperationType(OperationType.MODIFY.getValue());
         operationRecord.setOperationUnit(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue());
+        //设置执行人
         setOperationExecutor(operationRecord);
         recordMapper.insert(operationRecord);
         return Result.success();
@@ -993,7 +992,7 @@ public class ProjectServiceImpl implements ProjectService {
         private void setOperationExecutor (OperationRecord operationRecord){
             User user = getUserService.getCurrentUser();
             Long id = Long.valueOf(user.getCode());
-            operationRecord.setRelatedId(id);
+            operationRecord.setOperationExecutorId(id);
         }
 
         @Async

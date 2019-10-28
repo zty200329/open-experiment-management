@@ -40,7 +40,8 @@ public enum CodeMsg {
     PROJECT_GROUP_INFO_CANT_CHANGE(1504, "项目非实验室上报状态，无法修改"),
     REACH_NUM_MAX(1505,"已经达到人数限制,无法进行申请" ),
     PROJECT_CURRENT_STATUS_ERROR(1506,"当前项目状态不支持该操作"),
-
+    PROJECT_TYPE_NULL_ERROR(1507,"项目类型不能为空"),
+    COLLEGE_TYPE_NULL_ERROR(1508,"学院类型不能为空，请补充用户学院信息"),
 
 
     /**

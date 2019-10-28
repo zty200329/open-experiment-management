@@ -8,6 +8,7 @@ import com.swpu.uchain.openexperiment.domain.Announcement;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.AnnouncementStatus;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.enums.ProjectStatus;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementPublishForm;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementUpdateForm;
@@ -141,9 +142,12 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         if (announcement == null){
             throw new GlobalException(CodeMsg.ANNOUNCEMENT_NOT_EXIST);
         }
+        //先更新缓存状态
+        announcement.setStatus(AnnouncementStatus.PUBLISHED.getValue());
         redisService.set(AnnouncementKey.getById, announcement.getId() + "", announcement);
         //设置阅读次数
         redisService.set(AnnouncementKey.getClickTimesById, announcement.getId() + "", 0);
+        announcementMapper.updateAnnouncementStatusById(AnnouncementStatus.PUBLISHED.getValue(),announcementId);
         return Result.success();
     }
 

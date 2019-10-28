@@ -50,7 +50,7 @@ public class ProjectGroup implements Serializable {
      */
     private Integer suggestGroupType;
 
-    /**项目类型: 1.普通,2.重点 {@link com.swpu.uchain.openexperiment.enums.ExperimentType}
+    /**实验类型 {@link com.swpu.uchain.openexperiment.enums.ExperimentType}
      *
      */
     private Integer experimentType;
