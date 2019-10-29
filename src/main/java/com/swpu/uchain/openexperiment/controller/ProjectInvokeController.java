@@ -34,14 +34,10 @@ public class ProjectInvokeController {
 
     private UserProjectService userProjectService;
 
-    private FundsService fundsService;
-
     @Autowired
-    public ProjectInvokeController(ProjectService projectService, UserProjectService userProjectService,
-                                   FundsService fundsService) {
+    public ProjectInvokeController(ProjectService projectService, UserProjectService userProjectService) {
         this.projectService = projectService;
         this.userProjectService = userProjectService;
-        this.fundsService = fundsService;
     }
 
     @ApiOperation("申请立项接口--可使用")
@@ -50,7 +46,7 @@ public class ProjectInvokeController {
         return projectService.applyCreateProject(form);
     }
 
-    @ApiOperation("职能部门修改立项申请")
+    @ApiOperation("修改立项申请")
     @PostMapping(value = "/updateApply", name = "修改立项申请")
     public Result updateApply(@Valid @RequestBody UpdateProjectApplyForm updateProjectApplyForm){
         return projectService.applyUpdateProject(updateProjectApplyForm);
@@ -74,11 +70,31 @@ public class ProjectInvokeController {
         return projectService.agreeJoin(joinForm);
     }
 
-    @ApiOperation("拒绝某用户加入项目组--可使用")
+    @ApiOperation("拒绝某用户加入项目组")
     @PostMapping(value = "/rejectJoin", name = "拒绝某用户加入项目组")
     public Result rejectJoin(@Valid @RequestBody JoinForm[] joinForm){
         return projectService.rejectJoin(joinForm);
     }
+
+    @ApiOperation("在指定项目组中添加学生")
+    @PostMapping("/addStudentToProject")
+    public Result addStudentToProject(@Valid @RequestBody JoinForm joinForm){
+        return projectService.addStudentToProject(joinForm);
+    }
+
+    @ApiOperation("在指定项目组中移除学生")
+    @PostMapping("/removeStudentFromProject")
+    public Result removeStudentFromProject(@Valid @RequestBody JoinForm joinForm){
+        return projectService.removeStudentFromProject(joinForm);
+    }
+
+
+    @ApiOperation("修改项目组成员身份  1.指导教师2.项目组长3.普通成员--可使用")
+    @PostMapping(value = "/aimMemberLeader", name = "修改项目组成员身份-")
+    public Result aimMemberLeader(@Valid @RequestBody AimForm aimForm){
+        return userProjectService.aimUserMemberRole(aimForm);
+    }
+
 
     @ApiOperation("职能部门批准操作")
     @PostMapping(value = "/agreeEstablish", name = "同意立项")
@@ -96,12 +112,6 @@ public class ProjectInvokeController {
     @PostMapping(value = "/approveProjectApplyBySecondaryUnit")
     public Result approveProjectApplyBySecondaryUnit(@RequestBody List<ProjectCheckForm> list){
         return projectService.approveProjectApplyBySecondaryUnit(list);
-    }
-
-    @ApiOperation("修改项目组成员身份  1.指导教师2.项目组长3.普通成员--可使用")
-    @PostMapping(value = "/aimMemberLeader", name = "修改项目组成员身份-")
-    public Result aimMemberLeader(@Valid @RequestBody AimForm aimForm){
-        return userProjectService.aimUserMemberRole(aimForm);
     }
 
 
@@ -149,4 +159,5 @@ public class ProjectInvokeController {
     public Result rejectProjectApplyByFunctionalDepartment(@Valid @RequestBody List<ProjectCheckForm> formList){
         return projectService.rejectProjectApplyByFunctionalDepartment(formList);
     }
+
 }

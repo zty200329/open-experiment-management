@@ -156,7 +156,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         String realPath = FileUtil.getFileRealPath(fileId, uploadConfig.getUploadDir(), projectFile.getFileName());
         if (FileUtil.downloadFile(response, realPath)){
             throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
-        }
+    }
         projectFile.setDownloadTimes(projectFile.getDownloadTimes() + 1);
         if (!update(projectFile)) {
             throw new GlobalException(CodeMsg.UPDATE_ERROR);

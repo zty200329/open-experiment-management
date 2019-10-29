@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.form.member.MemberQueryCondition;
 import com.swpu.uchain.openexperiment.form.project.HistoryQueryProjectInfo;
 import com.swpu.uchain.openexperiment.form.project.QueryConditionForm;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -49,6 +50,11 @@ public class ProjectQueryController {
         return Result.success(projectService.getJoinInfo());
     }
 
+    @ApiOperation("根据条件查询项目成员申请信息")
+    @PostMapping(value = "/getApplyingJoinInfoByCondition")
+    public Result getApplyingJoinInfoByCondition(@RequestBody @Valid MemberQueryCondition condition){
+        return projectService.getApplyingJoinInfoByCondition(condition);
+    }
 
     @ApiOperation("获取当前用户参与的某状态的项目信息, 项目状态: 不传(所有), 0(申报), 1(立项), 2(驳回修改),3(已上报学院领导), 4(中期检查), 5(结项)")
     @GetMapping(value = "/getOwnProjects", name = "获取自己相关的项目信息")

@@ -162,7 +162,7 @@ public class ConvertUtil {
         return roleInfoVO;
     }
 
-    public  UserDetailVO convertUserDetailVO(User user) {
+    public UserDetailVO convertUserDetailVO(User user) {
         UserDetailVO userDetailVO = new UserDetailVO();
         BeanUtils.copyProperties(user, userDetailVO);
         return userDetailVO;

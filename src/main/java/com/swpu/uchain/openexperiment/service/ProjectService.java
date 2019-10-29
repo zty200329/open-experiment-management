@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
+import com.swpu.uchain.openexperiment.form.member.MemberQueryCondition;
 import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.form.project.QueryConditionForm;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -248,4 +249,10 @@ public interface ProjectService {
      * @return
      */
     Result getHistoricalProjectInfoByUnitAndOperation(HistoryQueryProjectInfo info);
+
+    Result getApplyingJoinInfoByCondition(MemberQueryCondition condition);
+
+    Result addStudentToProject(JoinForm joinForm);
+
+    Result removeStudentFromProject(JoinForm joinForm);
 }

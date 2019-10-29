@@ -19,6 +19,6 @@ public class JoinForm {
     @NotNull(message = "项目组id不能为空")
     private Long projectGroupId;
 
-    @ApiModelProperty("同意的原因")
+    @ApiModelProperty("同意或者拒绝的原因")
     private String reason;
 }

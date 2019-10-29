@@ -23,7 +23,7 @@ public interface UserProjectGroupMapper {
 
     UserProjectGroup selectByPrimaryKey(Long id);
 
-    List<UserProjectGroup> selectAll();
+    List<UserProjectGroup> selectAllByUserId(@Param("userId")Long userId);
 
     int updateByPrimaryKey(UserProjectGroup record);
 

@@ -52,8 +52,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Transactional(rollbackFor = GlobalException.class)
     @Override
     public Result createKeyApply(KeyProjectApplyForm form) {
-        String projectName = form.getProjectName();
-        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryProjectName(projectName);
+        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(form.getProjectId());
         if (projectGroup == null){
             throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
@@ -68,29 +67,10 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
         List<StuMember> stuMemberList = form.getMembers();
 
-        //用于记录更新的条数
-        int counter = 0;
         for (StuMember stuMember:stuMemberList
         ) {
-            if (userProjectGroupMapper.updateUserInfo(stuMember,new Date(),projectId) != 0){
-                counter ++;
-            }
+            userProjectGroupMapper.updateUserInfo(stuMember, new Date(), projectId);
         }
-        //更新条数和传入数值不一致，则说明信息不匹配,同理，老师的信息也是
-        if (counter != stuMemberList.size()) {
-            throw new GlobalException(CodeMsg.USER_INFORMATION_MATCH_ERROR);
-        }
-        counter = 0;
-        for (TeacherMember teacher:form.getTeachers()
-        ) {
-            if (userProjectGroupMapper.updateTeacherTechnicalRole(teacher,projectId) != 0){
-                counter ++;
-            }
-        }
-        if (counter != stuMemberList.size()) {
-            throw new GlobalException(CodeMsg.USER_INFORMATION_MATCH_ERROR);
-        }
-
         return Result.success();
     }
 

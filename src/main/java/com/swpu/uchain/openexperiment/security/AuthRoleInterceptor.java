@@ -36,7 +36,6 @@ public class AuthRoleInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
-        String json = JSON.toJSONString(Result.error(CodeMsg.AUTHENTICATION_ERROR));
         User user = getUserService.getCurrentUser();
         //若当前用户为未认证用户则跳过权限验证,交给security做身份认证
         if (user == null) {
@@ -52,7 +51,6 @@ public class AuthRoleInterceptor extends HandlerInterceptorAdapter {
                 return true;
             }
         }
-        json = JSON.toJSONString(Result.error(CodeMsg.PERMISSION_DENNY));
         log.error("............权限不足...........");
 //        response.getWriter().append(json);
         return true;

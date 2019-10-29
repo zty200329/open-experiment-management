@@ -10,6 +10,7 @@ import com.swpu.uchain.openexperiment.dao.*;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
+import com.swpu.uchain.openexperiment.form.member.MemberQueryCondition;
 import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.form.project.QueryConditionForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
@@ -32,10 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -203,6 +201,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm) {
+        //TODO 时间限制
+
         ProjectGroup projectGroup = selectByProjectGroupId(updateProjectApplyForm.getProjectGroupId());
         if (projectGroup == null) {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
@@ -311,7 +311,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result agreeJoin(JoinForm[] joinForm) {
         for (JoinForm form : joinForm) {
-
             User user = userService.selectByUserId(form.getUserId());
             if (user == null) {
                 return Result.error(CodeMsg.USER_NO_EXIST);
@@ -781,7 +780,7 @@ public class ProjectServiceImpl implements ProjectService {
             XSSFRow title = sheet.createRow(index);
             sheet.setColumnWidth(0, 256 * 150);
             title.setHeight((short) (16 * 50));
-            title.createCell(index++).setCellValue("西南石油大学第__期(20___-20___年度)课外开放实验项目立项一览表");
+            title.createCell(index++).setCellValue("西南石油大学第"+getYear()/100+"期("+getYear()+"-"+(getYear()+1)+"年度)课外开放实验项目立项一览表");
 
             XSSFRow info = sheet.createRow(index);
             info.createCell(0).setCellValue("单位：（盖章）");
@@ -853,7 +852,65 @@ public class ProjectServiceImpl implements ProjectService {
 
         @Override
         public void generateConclusionExcel (HttpServletResponse response){
+            User user = getUserService.getCurrentUser();
+            Integer college = user.getInstitute();
+            // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
+            XSSFWorkbook wb = new XSSFWorkbook();
+            // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
+            XSSFSheet sheet = wb.createSheet("workSheet");
 
+            sheet.setPrintGridlines(true);
+            //3.1设置字体居中
+            XSSFCellStyle cellStyle = wb.createCellStyle();
+            //自动换行
+            cellStyle.setWrapText(true);
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+            //当前行的位置
+            int index = 0;
+            //序号
+            XSSFRow title = sheet.createRow(index);
+            sheet.setColumnWidth(0, 256 * 150);
+            title.setHeight((short) (16 * 50));
+            title.createCell(index++).setCellValue("西南石油大学第"+getYear()/100+"期（"+getYear()+"-"+(getYear()+1)+"年度）课外开放实验普通项目结题验收一览表");
+            XSSFRow info = sheet.createRow(index++);
+
+            info.createCell(0).setCellValue("单位：（盖章）");
+            String[] columns = {"序号","学院","开放实验室","项目编号","实验类型","实验时数"
+                    ,"指导教师","教师公号","学生姓名","学生学号","组员职责","专业年级","起止时间","验收时间","验收结果","备注"};
+
+            // 4.1创建表头行
+            XSSFRow row = sheet.createRow(index);
+            sheet.setColumnWidth(index, 256 * 24);
+            //创建行中的列
+            for (int i = 0; i < columns.length; i++) {
+
+                // 给列写入数据,创建单元格，写入数据
+                row.setHeight((short) (16*40));
+                row.createCell(i).setCellValue(columns[i]);
+            }
+
+            sheet.createRow(++index).createCell(0).setCellValue("注1：本表由学院（中心）汇总填报。注2：建议评审分组填A-F,数据来源立项申请表");
+            index++;
+
+            XSSFRow end = sheet.createRow(index);
+            end.createCell(0).setCellValue("主管院长签字:");
+            end.createCell(3).setCellValue("经办人");
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("Content-disposition", "attachment;filename=" + "Conclusion" + ".xlsx");
+            try {
+                OutputStream os = response.getOutputStream();
+                wb.write(os);
+                os.flush();
+                os.close();
+            } catch (IOException e) {
+                throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
+            }
+
+        }
+
+        private int getYear(){
+            Calendar calendar = Calendar.getInstance();
+            return calendar.get(Calendar.YEAR);
         }
 
         @Override
@@ -879,19 +936,104 @@ public class ProjectServiceImpl implements ProjectService {
                     i++;
                 }
                 ProjectGroup projectGroup = projectGroups.get(i);
-                List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(), JoinStatus.APPLYING.getValue());
+                List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(),null);
                 for (UserProjectGroup userProjectGroup : userProjectGroups) {
-                    JoinUnCheckVO joinUnCheckVO = new JoinUnCheckVO();
-                    User user = userService.selectByUserId(userProjectGroup.getUserId());
-                    joinUnCheckVO.setProjectGroupId(projectGroup.getId());
-                    joinUnCheckVO.setProjectName(projectGroup.getProjectName());
-                    joinUnCheckVO.setPersonJudge(userProjectGroup.getPersonalJudge());
-                    joinUnCheckVO.setTechnicalRole(userProjectGroup.getTechnicalRole());
-                    joinUnCheckVO.setUserDetailVO(convertUtil.convertUserDetailVO(user));
+                    JoinUnCheckVO joinUnCheckVO = getJoinUnCheckVO(userProjectGroup,projectGroup);
                     joinUnCheckVOS.add(joinUnCheckVO);
                 }
             }
             return joinUnCheckVOS;
+        }
+
+        @Override
+        public Result getApplyingJoinInfoByCondition(MemberQueryCondition condition){
+            User currentUser = getUserService.getCurrentUser();
+            //检测用户
+            if (currentUser == null) {
+                throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+            }
+            if (condition == null){
+                throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
+            }
+            List<JoinUnCheckVO> joinUnCheckVOS = new ArrayList<>();
+            if (condition.getId() == null){
+                List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), ProjectStatus.LAB_ALLOWED.getValue());
+                for (int i = 0; i < projectGroups.size(); i++) {
+                    if (projectGroups.get(i) == null) {
+                        break;
+                    }
+                    while (projectGroups.get(i).getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue())) {
+                        i++;
+                    }
+                    ProjectGroup projectGroup = projectGroups.get(i);
+                    List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(), condition.getStatus());
+                    for (UserProjectGroup userProjectGroup : userProjectGroups) {
+                        JoinUnCheckVO joinUnCheckVO = getJoinUnCheckVO(userProjectGroup,projectGroup);
+                        joinUnCheckVOS.add(joinUnCheckVO);
+                    }
+                }
+            //编号，状态同时存在
+            }else {
+                List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(condition.getId(), condition.getStatus());
+                ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(condition.getId());
+                for (UserProjectGroup userProjectGroup : userProjectGroups) {
+                    JoinUnCheckVO joinUnCheckVO = getJoinUnCheckVO(userProjectGroup,projectGroup);
+                    joinUnCheckVOS.add(joinUnCheckVO);
+                }
+            }
+            return Result.success(joinUnCheckVOS);
+        }
+
+    @Override
+    public Result addStudentToProject(JoinForm joinForm) {
+        User user = getUserService.getCurrentUser();
+        Long userId = Long.valueOf(user.getCode());
+        UserProjectGroup userProjectGroupOfCurrentUser = userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(),userId);
+        if (userProjectGroupOfCurrentUser == null || !userProjectGroupOfCurrentUser.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())){
+            throw new GlobalException(CodeMsg.USER_NOT_IN_GROUP);
+        }
+        if (userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(),joinForm.getUserId()) != null){
+            throw new GlobalException(CodeMsg.USER_HAD_JOINED);
+        }
+        UserProjectGroup userProjectGroup = new UserProjectGroup();
+        userProjectGroup.setUserId(joinForm.getUserId());
+        userProjectGroup.setProjectGroupId(joinForm.getProjectGroupId());
+        userProjectGroupMapper.insert(userProjectGroup);
+        return Result.success();
+    }
+
+    @Override
+    public Result removeStudentFromProject(JoinForm joinForm) {
+        User user = getUserService.getCurrentUser();
+        Long userId = Long.valueOf(user.getCode());
+        UserProjectGroup userProjectGroupOfCurrentUser = userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(),userId);
+        if (userProjectGroupOfCurrentUser == null || !userProjectGroupOfCurrentUser.getMemberRole().equals(MemberRole.PROJECT_GROUP_LEADER.getValue())){
+            throw new GlobalException(CodeMsg.USER_NOT_IN_GROUP);
+        }
+        UserProjectGroup userProjectGroupOfJoinUser = userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(),joinForm.getUserId());
+        if (userProjectGroupOfJoinUser == null){
+            throw new GlobalException(CodeMsg.USER_HAD_JOINED_CANT_REJECT);
+        }
+        userProjectGroupMapper.deleteByPrimaryKey(userProjectGroupOfCurrentUser.getId());
+        return Result.success();
+    }
+
+    private JoinUnCheckVO getJoinUnCheckVO(UserProjectGroup userProjectGroup,ProjectGroup projectGroup){
+            User user = userService.selectByUserId(userProjectGroup.getUserId());
+            JoinUnCheckVO joinUnCheckVO = new JoinUnCheckVO();
+            joinUnCheckVO.setId(projectGroup.getId());
+            joinUnCheckVO.setMemberRole(userProjectGroup.getMemberRole());
+            joinUnCheckVO.setSerialNumber(projectGroup.getSerialNumber());
+            joinUnCheckVO.setProjectName(projectGroup.getProjectName());
+            joinUnCheckVO.setProjectType(projectGroup.getProjectType());
+            joinUnCheckVO.setPersonJudge(userProjectGroup.getPersonalJudge());
+            joinUnCheckVO.setTechnicalRole(userProjectGroup.getTechnicalRole());
+            joinUnCheckVO.setApplyTime(userProjectGroup.getJoinTime());
+            joinUnCheckVO.setExperimentType(projectGroup.getExperimentType());
+            joinUnCheckVO.setUserDetailVO(convertUtil.convertUserDetailVO(user));
+            joinUnCheckVO.setStatus(userProjectGroup.getStatus());
+
+            return joinUnCheckVO;
         }
 
         @Override

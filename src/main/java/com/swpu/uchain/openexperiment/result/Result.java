@@ -1,6 +1,5 @@
 package com.swpu.uchain.openexperiment.result;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import lombok.Data;
@@ -10,7 +9,6 @@ import lombok.Data;
  * @author clf
  */
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Result<T> {
     private Integer code;
     private String msg;

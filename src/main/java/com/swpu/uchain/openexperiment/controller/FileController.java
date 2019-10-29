@@ -27,6 +27,7 @@ import javax.validation.Valid;
 @RequestMapping("/file")
 @Api(tags = "文件管理接口")
 public class FileController {
+
     @Autowired
     private ProjectFileService projectFileService;
     @Autowired
@@ -66,9 +67,10 @@ public class FileController {
         return projectFileService.uploadAttachmentFile(multipartFile,attachmentType);
     }
 
+
     @ApiOperation("上传结题报告--重点项目和普通项目")
     @PostMapping(value = "/uploadConcludingReport", name = "上传结题报告")
-    public Object uploadConcludingReport(Long projectId,MultipartFile file){
+    public Result uploadConcludingReport(Long projectId,MultipartFile file){
         return projectFileService.uploadConcludingReport(projectId,file);
     }
 

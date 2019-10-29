@@ -38,11 +38,4 @@ public class StuMember {
      * 评价
      */
     private String personalJudge;
-
-    /**
-     * 成员角色
-     */
-    @Max(3)
-    @Min(2)
-    private Integer memberRole;
 }
