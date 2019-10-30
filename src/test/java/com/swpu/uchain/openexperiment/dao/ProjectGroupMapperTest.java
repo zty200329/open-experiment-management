@@ -33,10 +33,6 @@ public class ProjectGroupMapperTest {
         System.err.println(projectGroupMapper.getProjectGroupDetailVOByProjectId(1L));
     }
 
-    @Test
-    public void getProjectTableInfoListByCollegeAndList() {
-        System.err.println(projectGroupMapper.getProjectTableInfoListByCollegeAndList(CollegeType.COMPUTER_SCIENCE_COLLEGE.getValue(),null));
-    }
 
     @Test
     public void updateProjectStatusOfList(){

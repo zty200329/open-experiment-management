@@ -143,16 +143,18 @@ public class ProjectGroup implements Serializable {
     private List<UserMemberVO> memberVOList;
 
     /**
+     * 已选项目人数
+     */
+    @Null
+    private Integer numberOfTheSelected;
+
+    /**
      * 所属学院  {@link CollegeType#getValue()}
      */
     @JsonIgnore
     private Integer subordinateCollege;
 
-    /**
-     * 已选项目人数
-     */
-    @Null
-    private Integer numberOfTheSelected;
+
 
     private static final long serialVersionUID = 1L;
 
