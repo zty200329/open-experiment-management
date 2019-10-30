@@ -87,19 +87,30 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result getKeyProjectApplyingListByLabAdmin() {
-        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.GUIDE_TEACHER_ALLOWED.getValue(),null);
-        return Result.success(list);
+         return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.GUIDE_TEACHER_ALLOWED,null);
     }
 
     @Override
     public Result getKeyProjectApplyingListBySecondaryUnit() {
-        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue(),null);
-        return Result.success(list);
+        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.LAB_ALLOWED_AND_REPORTED,null);
     }
 
     @Override
     public Result getKeyProjectApplyingListByFunctionalDepartment() {
-        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue(),null);
+        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED,null);
+    }
+
+    private Result getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus status,CollegeType college){
+        Integer collegeOfInteger = null;
+        if (college!=null){
+            collegeOfInteger = college.getValue();
+        }
+        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(status.getValue(),collegeOfInteger);
+        for (KeyProjectDTO keyProjectDTO :list
+             ) {
+            keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(keyProjectDTO.getId(),null));
+            keyProjectDTO.setMemberVOList(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null,keyProjectDTO.getId()));
+        }
         return Result.success(list);
     }
 

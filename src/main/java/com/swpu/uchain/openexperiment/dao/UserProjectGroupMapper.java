@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.dao;
 
+import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import com.swpu.uchain.openexperiment.form.user.StuMember;
@@ -37,6 +38,8 @@ public interface UserProjectGroupMapper {
 
     List<String> selectUserCodesByProjectGroupId(Long projectGroupId);
 
+    List<UserMemberVO> selectUserMemberVOListByMemberRoleAndProjectId(@Param("memberRole")Integer memberRole,@Param("projectId")Long projectId);
+
     /**
      * 通过角工号和角色查询项目ID
      * @param userId
@@ -61,4 +64,6 @@ public interface UserProjectGroupMapper {
      * @return
      */
     Integer selectStuCount(@Param("projectId") Long id,@Param("status") Integer status);
+
+    Integer getMemberAmountOfProject(@Param("projectId")Long projectId,@Param("memberRole")Integer memberRole);
 }

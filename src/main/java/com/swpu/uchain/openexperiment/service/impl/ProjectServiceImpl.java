@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
 import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.VO.project.*;
@@ -663,6 +664,11 @@ public class ProjectServiceImpl implements ProjectService {
 
         // TODO 权限验证
         List<ProjectGroup> list = projectGroupMapper.selectHistoricalInfoByUnitAndOperation(info.getOperationUnit(),info.getOperationType());
+        for (ProjectGroup projectGroup:list
+             ) {
+            projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(),null));
+            projectGroup.setMemberVOList(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectGroup.getId()));
+        }
         return Result.success(list);
     }
 
@@ -671,7 +677,13 @@ public class ProjectServiceImpl implements ProjectService {
         if (projectIdList.isEmpty()){
             return Result.success(null);
         }
-        List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(null,projectIdList);
+        List<ProjectGroup> list = projectGroupMapper.selectAllByList(projectIdList);
+        for (ProjectGroup projectGroup:list
+             ) {
+            Long id = projectGroup.getId();
+            projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(id,null));
+            projectGroup.setMemberVOList(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null,id));
+        }
         return Result.success(list);
     }
 
@@ -749,7 +761,12 @@ public class ProjectServiceImpl implements ProjectService {
 
         @Override
         public Result getAllOpenTopic () {
-            return Result.success(projectGroupMapper.getAllOpenTopic());
+            List<OpenTopicInfo> list= projectGroupMapper.getAllOpenTopic();
+            for (OpenTopicInfo info:list
+                 ) {
+                info.setAmountOfSelected(userProjectGroupMapper.getMemberAmountOfProject(info.getId(),null));
+            }
+            return Result.success(list);
         }
 
         @Override
@@ -761,7 +778,7 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
             }
             Integer college = user.getInstitute();
-            List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(college,null);
+            List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(college);
             // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
             XSSFWorkbook wb = new XSSFWorkbook();
             // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
@@ -854,6 +871,7 @@ public class ProjectServiceImpl implements ProjectService {
         public void generateConclusionExcel (HttpServletResponse response){
             User user = getUserService.getCurrentUser();
             Integer college = user.getInstitute();
+            // TODO  区分学院
             // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
             XSSFWorkbook wb = new XSSFWorkbook();
             // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
@@ -872,21 +890,49 @@ public class ProjectServiceImpl implements ProjectService {
             sheet.setColumnWidth(0, 256 * 150);
             title.setHeight((short) (16 * 50));
             title.createCell(index++).setCellValue("西南石油大学第"+getYear()/100+"期（"+getYear()+"-"+(getYear()+1)+"年度）课外开放实验普通项目结题验收一览表");
-            XSSFRow info = sheet.createRow(index++);
 
+
+            XSSFRow info = sheet.createRow(index);
+            sheet.setColumnWidth(0,256*40);
             info.createCell(0).setCellValue("单位：（盖章）");
-            String[] columns = {"序号","学院","开放实验室","项目编号","实验类型","实验时数"
-                    ,"指导教师","教师公号","学生姓名","学生学号","组员职责","专业年级","起止时间","验收时间","验收结果","备注"};
+
 
             // 4.1创建表头行
-            XSSFRow row = sheet.createRow(index);
-            sheet.setColumnWidth(index, 256 * 24);
+            XSSFRow row = sheet.createRow(index++);
+            String[] columns = {"序号","学院","开放实验室","项目编号","实验类型","实验时数"
+                    ,"指导教师","教师公号","学生姓名","学生学号","组员职责","专业年级","起止时间","验收时间","验收结果","备注"};
             //创建行中的列
+            sheet.setColumnWidth(0,256*20);
             for (int i = 0; i < columns.length; i++) {
 
                 // 给列写入数据,创建单元格，写入数据
                 row.setHeight((short) (16*40));
                 row.createCell(i).setCellValue(columns[i]);
+            }
+
+            //写入数据
+            List<ConclusionDTO> list = projectGroupMapper.selectConclusionDTOs(null);
+            for (ConclusionDTO conclusion:list
+                 ) {
+                // 创建行
+                row = sheet.createRow(++index);
+
+                //设置行高
+                row.setHeight((short) (16 * 22));
+                // 序号
+                row.createCell(1).setCellValue(ConvertUtil.getStrCollege(conclusion.getCollege()));
+                row.createCell(2).setCellValue(conclusion.getLabName());
+                row.createCell(3).setCellValue(conclusion.getProjectId());
+                row.createCell(4).setCellValue(ConvertUtil.getStrExperimentType(conclusion.getExperimentType()));
+                row.createCell(5).setCellValue(conclusion.getTotalHours());
+                row.createCell(6).setCellValue(conclusion.getGuideTeacherName());
+                row.createCell(7).setCellValue(conclusion.getGuideTeacherId());
+                row.createCell(8).setCellValue(conclusion.getUserName());
+                row.createCell(9).setCellValue(conclusion.getUserId());
+                row.createCell(10).setCellValue(ConvertUtil.getStrMemberRole(conclusion.getUserRole()));
+                row.createCell(11).setCellValue(conclusion.getMajorAndGrade());
+                row.createCell(12).setCellValue(conclusion.getStartTimeAndEndTime());
+
             }
 
             sheet.createRow(++index).createCell(0).setCellValue("注1：本表由学院（中心）汇总填报。注2：建议评审分组填A-F,数据来源立项申请表");

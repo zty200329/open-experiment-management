@@ -17,7 +17,7 @@ public class ConclusionDTO {
     /**
      * 所属学院  {@link CollegeType#getValue()}
      */
-    private Integer subordinateCollege;
+    private Integer college;
 
     private String labName;
 

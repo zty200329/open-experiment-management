@@ -25,17 +25,33 @@
             key_project_status.project_id AS id,
             key_project_status.`status` AS status,
             key_project_status.create_time AS createTime,
+            project_group.creator_id AS creatorId,
+            project_group.end_time AS endTime,
+            project_group.experiment_condition AS experimentCondition,
+            project_group.suggest_group_type AS suggestGroupType,
+            project_group.experiment_type AS experimentType,
+            project_group.achievement_check AS achievementCheck,
+            project_group.fit_people_num AS fitPeopleNum,
             project_group.apply_funds AS applyFunds,
             project_group.project_name AS projectName,
             project_group.lab_name AS labName,
             project_group.address AS address,
-            project_group.main_Content AS mainContent,
+            project_group.main_content AS mainContent,
+            project_group.serial_number AS serialNumber,
+            project_group.limit_college AS limitCollege,
+            project_group.limit_grade AS limitGrade,
+            project_group.limit_major AS limitMajor,
+            project_group.total_hours AS totalHours,
+            project_group.start_time AS startTime,
+            project_group.is_open_topic AS isOpenTopic,
             `user`.real_name AS creatorName,
-            `user`.`code` AS userId
+            `user`.`code` AS userid,
+            project_file.id AS projectFileId
         FROM
-            key_project_status
-        INNER JOIN project_group ON key_project_status.project_id = project_group.id
-        LEFT JOIN `user` ON key_project_status.creator_id = `user`.`code`
+            openexperiment.key_project_status
+        INNER JOIN openexperiment.project_group ON key_project_status.project_id = project_group.id
+        INNER JOIN openexperiment.`user` ON key_project_status.creator_id = `user`.`code`
+        INNER JOIN openexperiment.project_file ON project_file.project_group_id = key_project_status.project_id
         <where>
             <if test="status!=null">
                 and key_project_status.`status` = #{status}

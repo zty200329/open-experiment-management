@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.dao;
 
+import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
 import com.swpu.uchain.openexperiment.VO.project.CheckProjectVO;
 import com.swpu.uchain.openexperiment.VO.project.OpenTopicInfo;
 import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
@@ -29,7 +30,7 @@ public interface ProjectGroupMapper {
 
     ProjectGroup selectByPrimaryProjectName(@Param("projectName") String projectName);
 
-    List<ProjectGroup> selectAll();
+    List<ProjectGroup> selectAllByList(List<Long> list);
 
     int updateByPrimaryKey(ProjectGroup record);
 
@@ -44,6 +45,8 @@ public interface ProjectGroupMapper {
 
     List<SelectProjectVO> selectByFuzzyName(@Param("name") String name);
 
+    List<ConclusionDTO> selectConclusionDTOs(@Param("college")Integer college);
+
     /**
      * 查询所有的公开选题的项目
      * @return
@@ -57,7 +60,7 @@ public interface ProjectGroupMapper {
      * @param college
      * @return
      */
-    List<ProjectTableInfo> getProjectTableInfoListByCollegeAndList(@Param("college") Integer college,@Param("list") List projectIdList);
+    List<ProjectTableInfo> getProjectTableInfoListByCollegeAndList(@Param("college") Integer college);
 
     int updateProjectStatusOfList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);
 

@@ -17,7 +17,7 @@ import java.util.List;
 public class OpenTopicInfo {
 
     @ApiModelProperty("主键")
-    private Integer id;
+    private Long id;
 
     @ApiModelProperty("项目编号")
     private String serialNumber;
@@ -71,6 +71,11 @@ public class OpenTopicInfo {
 
     @ApiModelProperty("适宜学生数--选填")
     private Integer fitPeopleNum;
+
+    /**
+     * 已选择该项目的学生
+     */
+    private Integer amountOfSelected;
 
     /**
      * 指导老师信息

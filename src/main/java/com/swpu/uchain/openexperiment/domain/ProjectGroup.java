@@ -1,12 +1,14 @@
 package com.swpu.uchain.openexperiment.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.enums.CollegeType;
 import lombok.Data;
 
 import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author panghu
@@ -136,6 +138,11 @@ public class ProjectGroup implements Serializable {
     private String mainContent;
 
     /**
+     * 成员信息
+     */
+    private List<UserMemberVO> memberVOList;
+
+    /**
      * 所属学院  {@link CollegeType#getValue()}
      */
     @JsonIgnore
@@ -144,7 +151,6 @@ public class ProjectGroup implements Serializable {
     /**
      * 已选项目人数
      */
-    @JsonIgnore
     @Null
     private Integer numberOfTheSelected;
 

@@ -20,6 +20,7 @@
         <result column="project_type" jdbcType="INTEGER" property="projectType" />
         <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
         <result column="main_content" jdbcType="LONGVARCHAR" property="mainContent"/>
+        <result column="amount_of_selected" property="amountOfSelected"/>
         <collection property="teachers" ofType="com.swpu.uchain.openexperiment.VO.user.Instructor"
                   javaType="java.util.ArrayList" columnPrefix="t_">
           <id column="real_name" property="realName"/>
@@ -28,6 +29,7 @@
           <id column="email" property="email"/>
           <id column="fix_phone" property="fixPhone"/>
           <id column="sex" property="sex"/>
+          <result column="user_id" property="userId"/>
         </collection>
     </resultMap>
 
@@ -249,30 +251,6 @@
     from openexperiment.project_group
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectAll" resultMap="ProjectGroupResultMap">
-    select id,
-           address,
-           create_time,
-           creator_id,
-           end_time,
-           experiment_condition,
-           suggest_group_type,
-           experiment_type,
-           achievement_check,
-           limit_college,
-           limit_major,
-           limit_grade,
-           fit_people_num,
-           total_hours,
-           lab_name,
-           project_name,
-           project_type,
-           start_time,
-           `status`,
-           update_time,
-           main_Content
-    from openexperiment.project_group
-  </select>
   <select id="selectByName" resultMap="ProjectGroupResultMap">
     select * from openexperiment.project_group where project_name = #{projectName}
   </select>
@@ -365,12 +343,12 @@
              user.qq_num as t_qq_num,
              user.sex as t_sex,
              user.email as t_email,
-             user.real_name as t_real_name
+             user.real_name as t_real_name,
+             user.code as t_user_id
       from openexperiment.project_group
-             left join openexperiment.user_project_group on project_group.id = project_group_id and user_project_group.status = 2  and
-                                             user_project_group.member_role = 1
+             inner join openexperiment.user_project_group on openexperiment.project_group.id = user_project_group.project_group_id <!--and user_project_group.status = 2-->
              inner join openexperiment.user on user_project_group.user_id = user.code
-        where project_group.status = 1<!--1指的是实验室审核通过-->  and project_group.is_open_topic !=2 <!--2是指不开放-->
+        where project_group.status = 1<!--1指的是实验室审核通过-->  and project_group.is_open_topic !=2 and member_role = 1<!--2是指不开放-->
     </select>
     <select id="selectByCollegeIdAndStatus" resultMap="ProjectGroupResultMap" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         select project_group.id,
@@ -485,12 +463,6 @@
             <if test="college!=null">
                 project_group.subordinate_college = #{college} and project_group.status = 5 <!--5指的是立项-->
             </if>
-            <if test="list!=null">
-                and project_group.id in
-                <foreach collection="list" item="id" open="(" separator="," close=")">
-                    #{id}
-                </foreach>
-            </if>
         </where>
     </select>
     <select id="selectSpecifiedProjectList" resultType="java.lang.Integer">
@@ -567,5 +539,51 @@
     </select>
     <select id="getIndexByCollege" resultType="java.lang.Integer">
         select  count(serial_number) from openexperiment.project_group where subordinate_college = #{college}
+    </select>
+    <select id="selectConclusionDTOs" resultType="com.swpu.uchain.openexperiment.DTO.ConclusionDTO">
+        SELECT
+            project_group.subordinate_college AS college,
+            project_group.lab_name AS labName,
+            project_group.serial_number AS projectId,
+            project_group.experiment_type AS experimentType,
+            project_group.total_hours AS totalHours,
+            project_group.creator_id AS guideTeacherId,
+            CONCAT(DATE_FORMAT(project_group.start_time,'%Y.%m.%d'),'-',DATE_FORMAT(project_group.end_time,'%Y.%m.%d')) AS startTimeAndEndTime,
+            `user_project_group`.member_role AS userRole,
+            `user`.real_name AS userName,
+            `user`.`code` AS userId,
+            CONCAT(`user`.class_num ,'-',`user`.grade) AS majorAndGrade
+        FROM
+            openexperiment.project_group
+                INNER JOIN openexperiment.user_project_group ON project_group.id = user_project_group.project_group_id
+                INNER JOIN openexperiment.`user` on user_project_group.user_id = `user`.`code`;
+    </select>
+    <select id="selectAllByList" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
+        select project_group.id as id,
+            project_group.serial_number as serialNumber,
+            project_group.address as address,
+            project_group.create_time as createTime,
+            project_group.creator_id creatorId,
+            project_group.end_time as endTime,
+            project_group.experiment_condition experimentCondition,
+            project_group.suggest_group_type as suggestGroupType,
+            project_group.experiment_type experimentType,
+            project_group.achievement_check as achievementCheck,
+            project_group.limit_college as limitCollege,
+            project_group.limit_major as limitMajor,
+            project_group.limit_grade as limitGrade,
+            project_group.fit_people_num as fitPeopleNum,
+            project_group.total_hours as totalHours,
+            project_group.lab_name labName,
+            project_group.project_name as projectName,
+            project_group.project_type projectType,
+            project_group.start_time as startTime,
+            project_group.`status`,
+            project_group.main_Content mainContent
+        from openexperiment.project_group
+        where id in
+        <foreach collection="list" item="id" close=")" separator="," open="(">
+            #{id}
+        </foreach>
     </select>
 </mapper>

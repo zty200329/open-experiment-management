@@ -55,6 +55,36 @@ public class ConvertUtil {
         return urls;
     }
 
+    public static String getStrMemberRole(Integer memberRole) {
+        switch (memberRole) {
+            case 1:
+                return "指导教师";
+            case 2:
+                return "项目组组长";
+            case 3:
+                return "普通成员";
+            default:
+                return "未知";
+        }
+    }
+
+    public static String getStrExperimentType(Integer experimentType) {
+        switch (experimentType) {
+            case 1:
+                return "科研";
+            case 2:
+                return "科技活动";
+            case 3:
+                return "自选课题";
+            case 4:
+                return "计算机应用";
+            case 5:
+                return "人文素质";
+            default:
+                return "未知";
+        }
+    }
+
     public static Character getCharsuggestGroupType(Integer suggestGroupType){
         switch (suggestGroupType){
             case 1:

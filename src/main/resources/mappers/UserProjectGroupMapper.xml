@@ -130,4 +130,22 @@
             and status = #{status}
         </if>
     </select>
+    <select id="selectUserMemberVOListByMemberRoleAndProjectId"
+            resultType="com.swpu.uchain.openexperiment.VO.user.UserMemberVO">
+        select
+                user_project_group.user_id as userId,
+                user_project_group.member_role as memberRole,
+                user.real_name as userName
+         from openexperiment.user_project_group inner join openexperiment.user on user_project_group.user_id = user.code
+         where user_project_group.project_group_id = #{projectId} and user_project_group.status = 2
+            <if test="memberRole!=null">
+                and user_project_group.member_role = #{memberRole}
+            </if>
+    </select>
+    <select id="getMemberAmountOfProject" resultType="java.lang.Integer">
+        select count(user_id) from openexperiment.user_project_group where project_group_id = #{projectId} and status = 2
+        <if test="memberRole!=null">
+            and member_role = #{memberRole}
+        </if>
+    </select>
 </mapper>

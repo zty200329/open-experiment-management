@@ -22,4 +22,6 @@ public class Instructor {
 
     private String sex;
 
+    private Long userId;
+
 }
