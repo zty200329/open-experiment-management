@@ -52,4 +52,10 @@ public interface KeyProjectService {
     Result rejectKeyProjectByGuideTeacher(List<KeyProjectCheck> list);
 
     Result getHistoricalKeyProjectInfo(HistoryQueryKeyProjectInfo info);
+
+    Result getToBeReportedProjectByLabAdmin();
+
+    Result getToBeReportedProjectBySecondaryUnit();
+
+    Result getKeyProjectDetailById(Long projectId);
 }

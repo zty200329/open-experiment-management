@@ -104,6 +104,11 @@ public class KeyProjectDTO {
     private Integer experimentType;
 
     /**
+     * 项目类型  1.普通,2.重点  {@link com.swpu.uchain.openexperiment.enums.ProjectType}
+     */
+    private Integer projectType;
+
+    /**
      * 成果考核方式
      */
     private String achievementCheck;

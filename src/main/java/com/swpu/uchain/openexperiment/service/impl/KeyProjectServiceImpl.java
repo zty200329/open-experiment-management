@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.DTO.KeyProjectDTO;
 import com.swpu.uchain.openexperiment.DTO.OperationRecord;
+import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.dao.KeyProjectStatusMapper;
 import com.swpu.uchain.openexperiment.dao.OperationRecordMapper;
 import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
@@ -231,6 +232,17 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     @Override
+    public Result getToBeReportedProjectByLabAdmin() {
+        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.LAB_ALLOWED,null);
+    }
+
+    @Override
+    public Result getToBeReportedProjectBySecondaryUnit() {
+        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.SECONDARY_UNIT_ALLOWED,null);
+    }
+
+
+    @Override
     public Result rejectKeyProjectByLabAdministrator(List<KeyProjectCheck> list) {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR,OperationTypeOfKetProject.REJECT,list);
     }
@@ -245,5 +257,9 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT,OperationTypeOfKetProject.REJECT,list);
     }
 
-
+    @Override
+    public Result getKeyProjectDetailById(Long projectId) {
+        List<ProjectHistoryInfo> list = operationRecordMapper.selectAllOfKeyProjectByProjectId(projectId);
+        return Result.success(list);
+    }
 }

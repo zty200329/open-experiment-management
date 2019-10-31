@@ -39,21 +39,40 @@ public class KeyProjectQueryController {
     }
 
     @GetMapping(value = "/getKeyProjectApplyingListBySecondaryUnit")
-    @ApiOperation("实验室主任获取项目待审核的重点项目信息")
+    @ApiOperation("二级单位获取项目待审核的重点项目信息")
     public Result getKeyProjectApplyingListBySecondaryUnit(){
         return keyProjectService.getKeyProjectApplyingListBySecondaryUnit();
     }
 
     @GetMapping(value = "/getKeyProjectApplyingListByFunctionalDepartment")
-    @ApiOperation("实验室主任获取项目待审核的重点项目信息")
+    @ApiOperation("职能部门获取项目待审核的重点项目信息")
     public Result getKeyProjectApplyingListByFunctionalDepartment(){
         return keyProjectService.getKeyProjectApplyingListByFunctionalDepartment();
+    }
+
+
+    @GetMapping(value = "/getToBeReportedKeyProjectByLabAdmin")
+    @ApiOperation("实验室主任获取待上报的项目")
+    public Result getToBeReportedProjectByLabAdmin(){
+        return keyProjectService.getToBeReportedProjectByLabAdmin();
+    }
+
+    @GetMapping(value = "/getToBeReportedKeyProjectBySecondaryUnit")
+    @ApiOperation("二级单位获取待上报的项目")
+    public Result getToBeReportedProjectBySecondaryUnit(){
+        return keyProjectService.getToBeReportedProjectBySecondaryUnit ();
     }
 
     @ApiOperation("重点项目历史查询")
     @PostMapping(value = "/getHistoricalKeyProjectInfo")
     public Result getHistoricalKeyProjectInfo(@Valid @RequestBody HistoryQueryKeyProjectInfo info){
         return keyProjectService.getHistoricalKeyProjectInfo(info);
+    }
+
+    @ApiOperation("通过项目ID查看项目进度信息")
+    @GetMapping("/getKeyProjectDetailById")
+    public Result getKeyProjectDetailById(Long projectId){
+        return keyProjectService.getKeyProjectDetailById(projectId);
     }
 
 

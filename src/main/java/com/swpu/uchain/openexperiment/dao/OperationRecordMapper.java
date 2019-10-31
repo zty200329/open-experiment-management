@@ -43,6 +43,8 @@ public interface OperationRecordMapper {
 
     List<ProjectHistoryInfo> selectAllByProjectId(@Param("projectId") Long projectId);
 
+    List<ProjectHistoryInfo> selectAllOfKeyProjectByProjectId(@Param("projectId") Long projectId);
+
     int updateByPrimaryKey(ProjectHistoryInfo record);
 
     List<ProjectHistoryInfo> selectAllByProjectIdList(@Param("list") List<Long> list);
