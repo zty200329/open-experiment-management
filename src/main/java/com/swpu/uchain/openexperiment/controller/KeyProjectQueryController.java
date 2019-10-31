@@ -1,14 +1,14 @@
 package com.swpu.uchain.openexperiment.controller;
 
+import com.swpu.uchain.openexperiment.form.query.HistoryQueryKeyProjectInfo;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.KeyProjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * @author dengg
@@ -49,5 +49,11 @@ public class KeyProjectQueryController {
     public Result getKeyProjectApplyingListByFunctionalDepartment(){
         return keyProjectService.getKeyProjectApplyingListByFunctionalDepartment();
     }
+
+    @GetMapping(value = "/getHistoricalKeyProjectInfo")
+    public Result getHistoricalKeyProjectInfo(@Valid @RequestBody HistoryQueryKeyProjectInfo info){
+        return keyProjectService.getHistoricalKeyProjectInfo(info);
+    }
+
 
 }

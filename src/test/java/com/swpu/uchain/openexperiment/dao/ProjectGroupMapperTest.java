@@ -1,7 +1,6 @@
 package com.swpu.uchain.openexperiment.dao;
 
-import com.swpu.uchain.openexperiment.enums.CollegeType;
-import com.swpu.uchain.openexperiment.form.project.QueryConditionForm;
+import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

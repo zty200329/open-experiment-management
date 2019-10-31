@@ -1,4 +1,4 @@
-package com.swpu.uchain.openexperiment.form.project;
+package com.swpu.uchain.openexperiment.form.query;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -7,11 +7,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-/**
- * @author dengg
- */
 @Data
-public class HistoryQueryProjectInfo {
+public class HistoryQueryKeyProjectInfo {
 
     /**
      * {@link com.swpu.uchain.openexperiment.enums.RoleType}
@@ -25,8 +22,9 @@ public class HistoryQueryProjectInfo {
     /**
      * {@link com.swpu.uchain.openexperiment.enums.OperationType}
      */
-    @Min(2)
-    @Max(3)
+    @Min(12)
+    @Max(13)
     @ApiModelProperty("历史操作： 2,拒绝|3,上报")
     private Integer operationType;
+
 }

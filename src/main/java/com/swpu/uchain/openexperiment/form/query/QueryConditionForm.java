@@ -1,4 +1,4 @@
-package com.swpu.uchain.openexperiment.form.project;
+package com.swpu.uchain.openexperiment.form.query;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

@@ -2,8 +2,8 @@ package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.member.MemberQueryCondition;
-import com.swpu.uchain.openexperiment.form.project.HistoryQueryProjectInfo;
-import com.swpu.uchain.openexperiment.form.project.QueryConditionForm;
+import com.swpu.uchain.openexperiment.form.query.HistoryQueryProjectInfo;
+import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.ProjectService;
 import io.swagger.annotations.Api;
@@ -36,7 +36,7 @@ public class ProjectQueryController {
     @GetMapping("/getAllOpenTopicByStudent")
     public Result getAllOpenTopic(){
         return projectService.getAllOpenTopic();
-    }
+}
 
     @ApiOperation("获取项目的立项信息--可使用")
     @GetMapping(value = "/getApplyInfo", name = "获取项目的立项信息")
@@ -121,9 +121,9 @@ public class ProjectQueryController {
         return projectService.conditionallyQueryOfCheckedProjectByFunctionalDepartment(form);
     }
 
-    @ApiOperation("所有的单位查看历史的操作--以上报，已驳回")
+    @ApiOperation("所有的单位查看历史的操作--已上报，已驳回")
     @PostMapping("/getHistoricalProjectInfoByUnitAndOperation")
-    public Result getHistoricalProjectInfoByUnitAndOperation(@Valid @RequestBody HistoryQueryProjectInfo info ){
-        return projectService.getHistoricalProjectInfoByUnitAndOperation(info);
+    public Result getMemberAmountOfProject(@Valid @RequestBody HistoryQueryProjectInfo info ){
+        return projectService.getHistoricalProjectInfo(info);
     }
 }

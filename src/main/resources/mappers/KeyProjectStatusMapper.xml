@@ -4,7 +4,7 @@
 
 
     <insert id="insert">
-        insert into key_project_status(project_id,`status`,subordinate_college,creator_id)
+        insert into openexperiment.key_project_status(project_id,`status`,subordinate_college,creator_id)
             values (#{projectId},#{status},#{college},#{creatorId})
     </insert>
         <update id="update">

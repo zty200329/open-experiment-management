@@ -5,7 +5,6 @@ import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.VO.project.*;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
-import com.swpu.uchain.openexperiment.config.CountConfig;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
 import com.swpu.uchain.openexperiment.dao.*;
 import com.swpu.uchain.openexperiment.domain.*;
@@ -13,7 +12,8 @@ import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.member.MemberQueryCondition;
 import com.swpu.uchain.openexperiment.form.project.*;
-import com.swpu.uchain.openexperiment.form.project.QueryConditionForm;
+import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
+import com.swpu.uchain.openexperiment.form.query.HistoryQueryProjectInfo;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -660,9 +660,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result getHistoricalProjectInfoByUnitAndOperation(HistoryQueryProjectInfo info) {
+    public Result getHistoricalProjectInfo(HistoryQueryProjectInfo info) {
 
         // TODO 权限验证
+
         List<ProjectGroup> list = projectGroupMapper.selectHistoricalInfoByUnitAndOperation(info.getOperationUnit(),info.getOperationType());
         for (ProjectGroup projectGroup:list
              ) {

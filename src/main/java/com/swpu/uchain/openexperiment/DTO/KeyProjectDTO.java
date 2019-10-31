@@ -138,6 +138,17 @@ public class KeyProjectDTO {
      */
     private Integer totalHours;
 
+    /**
+     * 所属学院  {@link CollegeType#getValue()}
+     */
+    @JsonIgnore
+    private Integer subordinateCollege;
+
+    /**
+     * 已选项目人数
+     */
+    @Null
+    private Integer numberOfTheSelected;
 
     /**
      * 开始时间
@@ -150,16 +161,6 @@ public class KeyProjectDTO {
      */
     private List<UserMemberVO> memberVOList;
 
-    /**
-     * 所属学院  {@link CollegeType#getValue()}
-     */
-    @JsonIgnore
-    private Integer subordinateCollege;
 
-    /**
-     * 已选项目人数
-     */
-    @Null
-    private Integer numberOfTheSelected;
 
 }

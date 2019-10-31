@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service;
 
+import com.swpu.uchain.openexperiment.form.query.HistoryQueryKeyProjectInfo;
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
 import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -49,4 +50,6 @@ public interface KeyProjectService {
     Result rejectKeyProjectByFunctionalDepartment(List<KeyProjectCheck> list);
 
     Result rejectKeyProjectByGuideTeacher(List<KeyProjectCheck> list);
+
+    Result getHistoricalKeyProjectInfo(HistoryQueryKeyProjectInfo info);
 }

@@ -10,10 +10,10 @@ import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
+import com.swpu.uchain.openexperiment.form.query.HistoryQueryKeyProjectInfo;
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
 import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
 import com.swpu.uchain.openexperiment.form.user.StuMember;
-import com.swpu.uchain.openexperiment.form.user.TeacherMember;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.KeyProjectService;
@@ -65,12 +65,16 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         keyProjectStatusMapper.insert(projectId, KeyProjectStatus.TO_DE_CONFIRMED.getValue(),
                 projectGroup.getSubordinateCollege(), Long.valueOf(user.getCode()));
 
+
         List<StuMember> stuMemberList = form.getMembers();
 
-        for (StuMember stuMember:stuMemberList
-        ) {
-            userProjectGroupMapper.updateUserInfo(stuMember, new Date(), projectId);
+        if (stuMemberList!=null){
+            for (StuMember stuMember:stuMemberList
+            ) {
+                userProjectGroupMapper.updateUserInfo(stuMember, new Date(), projectId);
+            }
         }
+
         return Result.success();
     }
 
@@ -114,9 +118,9 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return Result.success(list);
     }
 
-    private KeyProjectStatus getNextStatusByRoleAndOperation(RoleType roleType,OperationType operationType){
+    private KeyProjectStatus getNextStatusByRoleAndOperation(RoleType roleType,OperationTypeOfKetProject operationType){
         KeyProjectStatus keyProjectStatus;
-        if (operationType == OperationType.REJECT) {
+        if (operationType == OperationTypeOfKetProject.REJECT) {
             keyProjectStatus = KeyProjectStatus.REJECT_MODIFY;
             return keyProjectStatus;
         }
@@ -127,7 +131,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                     break;
             //如果是实验室
             case 4:
-                if (operationType == OperationType.AGREE){
+                if (operationType == OperationTypeOfKetProject.AGREE){
                     keyProjectStatus = KeyProjectStatus.LAB_ALLOWED;
                 }else {
                     keyProjectStatus = KeyProjectStatus.LAB_ALLOWED_AND_REPORTED;
@@ -135,7 +139,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                 break;
                 //如果是二级单位
             case 5:
-                if (operationType == OperationType.AGREE){
+                if (operationType == OperationTypeOfKetProject.AGREE){
                     keyProjectStatus = KeyProjectStatus.SECONDARY_UNIT_ALLOWED;
                 }else {
                     keyProjectStatus = KeyProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED;
@@ -151,7 +155,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return keyProjectStatus;
     }
 
-    private Result operateKeyProjectOfSpecifiedRoleAndOperation(RoleType roleType,OperationType operationType,
+    private Result operateKeyProjectOfSpecifiedRoleAndOperation(RoleType roleType,OperationTypeOfKetProject operationType,
                                                    List<KeyProjectCheck> list){
         User user = getUserService.getCurrentUser();
         if (user == null){
@@ -178,53 +182,67 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result agreeKeyProjectByGuideTeacher(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.MENTOR,OperationType.AGREE,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.MENTOR,OperationTypeOfKetProject.AGREE,list);
     }
 
     @Override
     public Result agreeKeyProjectByLabAdministrator(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR,OperationType.AGREE,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR,OperationTypeOfKetProject.AGREE,list);
     }
 
     @Override
     public Result agreeKeyProjectBySecondaryUnit(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT,OperationType.AGREE,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT,OperationTypeOfKetProject.AGREE,list);
     }
 
     @Override
     public Result agreeKeyProjectByFunctionalDepartment(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT,OperationType.AGREE,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT,OperationTypeOfKetProject.AGREE,list);
     }
 
     @Override
     public Result reportKeyProjectByLabAdministrator(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR,OperationType.REPORT,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR,OperationTypeOfKetProject.REPORT,list);
     }
 
     @Override
     public Result reportKeyProjectBySecondaryUnit(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT,OperationType.REPORT,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT,OperationTypeOfKetProject.REPORT,list);
     }
 
 
     @Override
     public Result rejectKeyProjectByGuideTeacher(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.MENTOR,OperationType.REJECT,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.MENTOR,OperationTypeOfKetProject.REJECT,list);
+    }
+
+    @Override
+    public Result getHistoricalKeyProjectInfo(HistoryQueryKeyProjectInfo info) {
+
+        // TODO 权限验证
+
+        List<ProjectGroup> list = projectGroupMapper.selectHistoricalInfoByUnitAndOperation(info.getOperationUnit(),info.getOperationType());
+        for (ProjectGroup projectGroup:list
+        ) {
+            projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(),null));
+            projectGroup.setMemberVOList(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectGroup.getId()));
+        }
+        return Result.success(list);
     }
 
     @Override
     public Result rejectKeyProjectByLabAdministrator(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR,OperationType.REJECT,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR,OperationTypeOfKetProject.REJECT,list);
     }
 
     @Override
     public Result rejectKeyProjectBySecondaryUnit(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT,OperationType.REJECT,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT,OperationTypeOfKetProject.REJECT,list);
     }
 
     @Override
     public Result rejectKeyProjectByFunctionalDepartment(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT,OperationType.REJECT,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT,OperationTypeOfKetProject.REJECT,list);
     }
 
 

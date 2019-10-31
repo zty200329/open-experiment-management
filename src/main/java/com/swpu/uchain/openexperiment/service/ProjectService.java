@@ -4,7 +4,8 @@ import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.form.member.MemberQueryCondition;
 import com.swpu.uchain.openexperiment.form.project.*;
-import com.swpu.uchain.openexperiment.form.project.QueryConditionForm;
+import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
+import com.swpu.uchain.openexperiment.form.query.HistoryQueryProjectInfo;
 import com.swpu.uchain.openexperiment.result.Result;
 
 import javax.servlet.http.HttpServletResponse;
@@ -248,7 +249,7 @@ public interface ProjectService {
      * @param info
      * @return
      */
-    Result getHistoricalProjectInfoByUnitAndOperation(HistoryQueryProjectInfo info);
+    Result getHistoricalProjectInfo(HistoryQueryProjectInfo info);
 
     Result getApplyingJoinInfoByCondition(MemberQueryCondition condition);
 
