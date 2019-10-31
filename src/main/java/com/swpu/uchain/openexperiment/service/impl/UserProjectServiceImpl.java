@@ -1,7 +1,7 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
-import com.swpu.uchain.openexperiment.dao.UserProjectGroupMapper;
+import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
+import com.swpu.uchain.openexperiment.mapper.UserProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
@@ -10,11 +10,9 @@ import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.project.AimForm;
 import com.swpu.uchain.openexperiment.form.project.JoinProjectApplyForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
-import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.redis.key.UserProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
-import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.service.UserService;
 import com.swpu.uchain.openexperiment.util.CountUtil;

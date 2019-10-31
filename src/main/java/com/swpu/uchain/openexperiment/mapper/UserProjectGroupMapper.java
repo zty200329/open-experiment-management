@@ -1,11 +1,9 @@
-package com.swpu.uchain.openexperiment.dao;
+package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
-import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import com.swpu.uchain.openexperiment.form.user.StuMember;
 import com.swpu.uchain.openexperiment.form.user.TeacherMember;
-import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

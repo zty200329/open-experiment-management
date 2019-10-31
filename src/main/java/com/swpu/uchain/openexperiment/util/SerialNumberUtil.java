@@ -15,10 +15,10 @@ public class SerialNumberUtil {
     /**
      * @param college  学院类型
      * @param projectType  项目类型，重点，普通
-     * @param index 该院的第几个项目
+     * @param maxSerialNumber 最大编号   --防止删除后出现问题
      * @return 完整项目编号
      */
-    public static String getSerialNumberOfProject(Integer college, Integer projectType,Integer index){
+    public static String getSerialNumberOfProject(Integer college, Integer projectType,String maxSerialNumber){
 
         if (projectType == null){
             throw new GlobalException(CodeMsg.PROJECT_TYPE_NULL_ERROR);
@@ -28,7 +28,7 @@ public class SerialNumberUtil {
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
         }
 
-        String serialNumber = null;
+        String serialNumber;
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
 
@@ -40,12 +40,16 @@ public class SerialNumberUtil {
         }else {
             projectTypeValue = "KSP";
         }
+        int index = 1;
+        if (maxSerialNumber != null){
+            index = Integer.parseInt(maxSerialNumber.substring(maxSerialNumber.length()-3)) + 1;
+        }
         serialNumber = year+projectTypeValue+String.format("%02d", college)+String.format("%03d", index);
         return serialNumber;
     }
 
     public static void main(String[] args) {
-        String number = getSerialNumberOfProject(CollegeType.MARXISM_COLLEGE.getValue(),ProjectType.KEY.getValue(),1);
+        String number = getSerialNumberOfProject(CollegeType.MARXISM_COLLEGE.getValue(),ProjectType.KEY.getValue(),"2019KSZ01034");
         System.err.println(number);
     }
 }

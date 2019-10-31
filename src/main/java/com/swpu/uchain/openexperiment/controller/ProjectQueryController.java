@@ -26,7 +26,6 @@ public class ProjectQueryController {
 
     private ProjectService projectService;
 
-
     @Autowired
     public ProjectQueryController(ProjectService projectService) {
         this.projectService = projectService;
@@ -102,7 +101,6 @@ public class ProjectQueryController {
         return projectService.getProjectGroupDetailVOByProjectId(projectId);
     }
 
-
     @ApiOperation("二级单位查看待上报的项目")
     @GetMapping("/getToBeReportedProjectBySecondaryUnit")
     public Result getToBeReportedProjectBySecondaryUnit(){
@@ -116,9 +114,9 @@ public class ProjectQueryController {
     }
 
     @ApiOperation("职能部门根据条件查询项目信息")
-    @PostMapping("/conditionallyQueryOfCheckedProjectByFunctionalDepartment")
-    public Result conditionallyQueryOfCheckedProjectByFunctionalDepartment(@RequestBody QueryConditionForm form){
-        return projectService.conditionallyQueryOfCheckedProjectByFunctionalDepartment(form);
+    @PostMapping("/conditionallyQueryOfProject")
+    public Result conditionallyQueryOfProject(@RequestBody QueryConditionForm form){
+        return projectService.conditionallyQueryOfProject(form);
     }
 
     @ApiOperation("所有的单位查看历史的操作--已上报，已驳回")

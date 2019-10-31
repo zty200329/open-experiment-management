@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.swpu.uchain.openexperiment.dao.ProjectGroupMapper">
+<mapper namespace="com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper">
     <resultMap id="OpenTopicInfoResultMap" type="com.swpu.uchain.openexperiment.VO.project.OpenTopicInfo">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
@@ -109,7 +109,7 @@
 
     <resultMap id="ProjectTableInfoResultMap" type="com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo">
 
-        <id column="id" jdbcType="BIGINT" property="projectId" />
+        <id column="id" jdbcType="BIGINT" property="id" />
         <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
         <result column="address" jdbcType="VARCHAR" property="address" />
         <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
@@ -125,7 +125,7 @@
     </resultMap>
 
     <resultMap id="CheckProjectResultMap" type="com.swpu.uchain.openexperiment.VO.project.CheckProjectVO">
-        <id column="id" jdbcType="BIGINT" property="projectGroupId" />
+        <id column="id" jdbcType="BIGINT" property="id" />
         <result column="address" jdbcType="VARCHAR" property="address" />
         <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
         <result column="limit_college" jdbcType="VARCHAR" property="limitCollege" />
@@ -137,6 +137,7 @@
         <result column="lab_name" jdbcType="VARCHAR" property="labName" />
         <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
         <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
+        <result column="subordinate_college" property="subordinateCollege"/>
         <result column="apply_funds" property="fundsApplyAmount"/>
     </resultMap>
 
@@ -157,7 +158,8 @@
                                  limit_college, limit_major, limit_grade,
                                  fit_people_num, total_hours, lab_name,
                                  project_name, project_type, start_time,
-                                 `status`, update_time, apply_funds, is_open_topic, main_Content,subordinate_college)
+                                 `status`, update_time, apply_funds, is_open_topic
+                                 , main_Content,subordinate_college,serial_number)
       values (
                  #{id,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
                  #{creatorId,jdbcType=BIGINT}, #{endTime,jdbcType=TIMESTAMP}, #{experimentCondition,jdbcType=VARCHAR},
@@ -166,7 +168,7 @@
                  #{fitPeopleNum,jdbcType=INTEGER}, #{totalHours,jdbcType=INTEGER}, #{labName,jdbcType=VARCHAR},
                  #{projectName,jdbcType=VARCHAR}, #{projectType,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP},
                  #{status,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},#{applyFunds,jdbcType=FLOAT},
-                 #{isOpenTopic},#{mainContent},#{subordinateCollege})
+                 #{isOpenTopic},#{mainContent},#{subordinateCollege},#{serialNumber})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
     update openexperiment.project_group
@@ -300,6 +302,7 @@
            openexperiment.project_group.end_time,
            openexperiment.project_group.lab_name,
            openexperiment.project_group.address,
+           openexperiment.project_group.subordinate_college,
            openexperiment.project_group.suggest_group_type,
            openexperiment.project_group.project_type,
            openexperiment.project_group.main_Content,
@@ -537,14 +540,14 @@
         INNER JOIN openexperiment.operation_record ON operation_record.related_id = project_group.id
         WHERE operation_record.operation_unit = #{unit} AND operation_record.operation_type = #{type} AND operation_record.status = 'Y'
     </select>
-    <select id="getIndexByCollege" resultType="java.lang.Integer">
-        select  count(serial_number) from openexperiment.project_group where subordinate_college = #{college}
+    <select id="getIndexByCollege" resultType="java.lang.String">
+        select  max(serial_number) from openexperiment.project_group where subordinate_college = #{college}
     </select>
     <select id="selectConclusionDTOs" resultType="com.swpu.uchain.openexperiment.DTO.ConclusionDTO">
         SELECT
             project_group.subordinate_college AS college,
             project_group.lab_name AS labName,
-            project_group.serial_number AS projectId,
+            project_group.serial_number AS id,
             project_group.experiment_type AS experimentType,
             project_group.total_hours AS totalHours,
             project_group.creator_id AS guideTeacherId,
@@ -585,5 +588,43 @@
         <foreach collection="list" item="id" close=")" separator="," open="(">
             #{id}
         </foreach>
+    </select>
+    <select id="conditionQueryOfKeyProject" resultType="java.lang.Long">
+        select project_group.id
+        from openexperiment.project_group inner join openexperiment.key_project_status
+            on project_group.id = key_project_status.project_id
+        <where>
+            <if test="status!=null">
+                project_group.status = #{status}
+            </if>
+            <if test="college!=null">
+                and project_group.subordinate_college = #{college}
+            </if>
+            <if test="suggestGroupType!=null">
+                and project_group.suggest_group_type = #{suggestGroupType}
+            </if>
+            <if test="experimentType!=null">
+                and project_group.experiment_type = #{experimentType}
+            </if>
+            <if test="startTime!=null" >
+                and project_group.start_time &gt;= #{startTime}
+            </if>
+            <if test="endTime!=null">
+                and project_group.end_time &lt;= #{endTime}
+            </if>
+            <!--locate函数会比like的全局匹配更快-->
+            <if test="limitMajor!=null">
+                and locate(#{limitMajor},project_group.limit_major)
+            </if>
+            <if test="limitCollege!=null">
+                and locate(#{limitCollege},project_group.limit_college)
+            </if>
+            <if test="limitGrade!=null">
+                and locate(#{limitGrade},project_group.limit_grade)
+            </if>
+            <if test="projectName!=null">
+                and locate(#{projectName},project_group.project_name)
+            </if>
+        </where>
     </select>
 </mapper>

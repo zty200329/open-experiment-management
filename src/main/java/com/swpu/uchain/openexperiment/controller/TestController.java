@@ -1,10 +1,8 @@
 package com.swpu.uchain.openexperiment.controller;
 
-import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
-import com.swpu.uchain.openexperiment.domain.ProjectGroup;
+import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.result.Result;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
 /**
  * @author panghu

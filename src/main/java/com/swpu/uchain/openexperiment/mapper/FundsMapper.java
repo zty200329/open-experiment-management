@@ -1,8 +1,6 @@
-package com.swpu.uchain.openexperiment.dao;
+package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.domain.Funds;
-import com.swpu.uchain.openexperiment.form.funds.FundForm;
-import com.swpu.uchain.openexperiment.result.Result;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

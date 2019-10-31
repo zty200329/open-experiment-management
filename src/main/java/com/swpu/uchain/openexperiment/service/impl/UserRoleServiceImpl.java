@@ -1,6 +1,6 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.swpu.uchain.openexperiment.dao.UserRoleMapper;
+import com.swpu.uchain.openexperiment.mapper.UserRoleMapper;
 import com.swpu.uchain.openexperiment.domain.UserRole;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.permission.UserRoleForm;

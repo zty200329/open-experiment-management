@@ -120,6 +120,7 @@ public class ProjectGroup implements Serializable {
     /**
      * 项目开展进度
      */
+    @JsonIgnore
     private Integer status;
 
     /**
@@ -140,7 +141,7 @@ public class ProjectGroup implements Serializable {
     /**
      * 成员信息
      */
-    private List<UserMemberVO> memberVOList;
+    private List<UserMemberVO> guidanceTeachers;
 
     /**
      * 已选项目人数
@@ -151,7 +152,6 @@ public class ProjectGroup implements Serializable {
     /**
      * 所属学院  {@link CollegeType#getValue()}
      */
-    @JsonIgnore
     private Integer subordinateCollege;
 
 

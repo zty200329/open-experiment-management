@@ -11,7 +11,7 @@ import java.util.Date;
 @Data
 public class ConclusionVO {
 
-    private Long projectId;
+    private Long id;
 
 
     /**

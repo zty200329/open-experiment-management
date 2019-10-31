@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.service;
 import com.swpu.uchain.openexperiment.form.query.HistoryQueryKeyProjectInfo;
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
 import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
+import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
 import java.util.List;
@@ -58,4 +59,6 @@ public interface KeyProjectService {
     Result getToBeReportedProjectBySecondaryUnit();
 
     Result getKeyProjectDetailById(Long projectId);
+
+    Result conditionallyQueryOfKeyProject(QueryConditionForm form);
 }

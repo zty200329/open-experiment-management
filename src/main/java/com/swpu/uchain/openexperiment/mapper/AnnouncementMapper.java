@@ -1,4 +1,4 @@
-package com.swpu.uchain.openexperiment.dao;
+package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementListVO;
 import com.swpu.uchain.openexperiment.domain.Announcement;

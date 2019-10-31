@@ -1,15 +1,13 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
-import com.swpu.uchain.openexperiment.VO.MessageVO;
-import com.swpu.uchain.openexperiment.dao.OperationRecordMapper;
-import com.swpu.uchain.openexperiment.dao.UserProjectGroupMapper;
+import com.swpu.uchain.openexperiment.mapper.OperationRecordMapper;
+import com.swpu.uchain.openexperiment.mapper.UserProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.MemberRole;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.MessageService;
-import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

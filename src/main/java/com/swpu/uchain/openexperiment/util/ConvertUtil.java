@@ -1,31 +1,25 @@
 package com.swpu.uchain.openexperiment.util;
 
-import com.alibaba.druid.sql.visitor.functions.Char;
 import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
-import com.swpu.uchain.openexperiment.VO.MessageVO;
 import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
 import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
 import com.swpu.uchain.openexperiment.VO.permission.RoleVO;
 import com.swpu.uchain.openexperiment.VO.project.ApplyGeneralFormInfoVO;
 import com.swpu.uchain.openexperiment.VO.project.ApplyKeyFormInfoVO;
-import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.VO.user.UserDetailVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
 import com.swpu.uchain.openexperiment.VO.user.UserVO;
-import com.swpu.uchain.openexperiment.dao.AclMapper;
-import com.swpu.uchain.openexperiment.dao.RoleMapper;
+import com.swpu.uchain.openexperiment.mapper.AclMapper;
+import com.swpu.uchain.openexperiment.mapper.RoleMapper;
 import com.swpu.uchain.openexperiment.domain.Acl;
-import com.swpu.uchain.openexperiment.domain.Message;
 import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.domain.User;
-import com.swpu.uchain.openexperiment.enums.OperationType;
 import com.swpu.uchain.openexperiment.enums.UserType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**

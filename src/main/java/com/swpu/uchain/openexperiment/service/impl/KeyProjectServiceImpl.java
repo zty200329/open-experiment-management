@@ -3,10 +3,10 @@ package com.swpu.uchain.openexperiment.service.impl;
 import com.swpu.uchain.openexperiment.DTO.KeyProjectDTO;
 import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
-import com.swpu.uchain.openexperiment.dao.KeyProjectStatusMapper;
-import com.swpu.uchain.openexperiment.dao.OperationRecordMapper;
-import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
-import com.swpu.uchain.openexperiment.dao.UserProjectGroupMapper;
+import com.swpu.uchain.openexperiment.mapper.KeyProjectStatusMapper;
+import com.swpu.uchain.openexperiment.mapper.OperationRecordMapper;
+import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
+import com.swpu.uchain.openexperiment.mapper.UserProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.*;
@@ -14,6 +14,7 @@ import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.query.HistoryQueryKeyProjectInfo;
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
 import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
+import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.form.user.StuMember;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
@@ -114,7 +115,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         for (KeyProjectDTO keyProjectDTO :list
              ) {
             keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(keyProjectDTO.getId(),null));
-            keyProjectDTO.setMemberVOList(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null,keyProjectDTO.getId()));
+            keyProjectDTO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId()));
         }
         return Result.success(list);
     }
@@ -226,7 +227,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         for (ProjectGroup projectGroup:list
         ) {
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(),null));
-            projectGroup.setMemberVOList(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectGroup.getId()));
+            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectGroup.getId()));
         }
         return Result.success(list);
     }
@@ -260,6 +261,26 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result getKeyProjectDetailById(Long projectId) {
         List<ProjectHistoryInfo> list = operationRecordMapper.selectAllOfKeyProjectByProjectId(projectId);
+        return Result.success(list);
+    }
+
+    @Override
+    public Result conditionallyQueryOfKeyProject(QueryConditionForm form){
+        return conditionallyQueryOfCheckedProject(form);
+    }
+
+    private Result conditionallyQueryOfCheckedProject(QueryConditionForm form) {
+        List<Long>  projectIdList = projectGroupMapper.conditionQueryOfKeyProject(form);
+        if (projectIdList.isEmpty()){
+            return Result.success(null);
+        }
+        List<ProjectGroup> list = projectGroupMapper.selectAllByList(projectIdList);
+        for (ProjectGroup projectGroup:list
+        ) {
+            Long id = projectGroup.getId();
+            projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(id,null));
+            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null,id));
+        }
         return Result.success(list);
     }
 }

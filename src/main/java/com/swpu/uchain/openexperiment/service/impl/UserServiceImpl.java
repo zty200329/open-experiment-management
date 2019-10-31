@@ -4,7 +4,7 @@ import com.swpu.uchain.openexperiment.DTO.VerifyCode;
 import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
-import com.swpu.uchain.openexperiment.dao.*;
+import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;

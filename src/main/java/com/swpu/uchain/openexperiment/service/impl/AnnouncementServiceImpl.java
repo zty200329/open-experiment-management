@@ -2,13 +2,12 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementListVO;
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementVO;
-import com.swpu.uchain.openexperiment.dao.AnnouncementMapper;
-import com.swpu.uchain.openexperiment.dao.UserMapper;
+import com.swpu.uchain.openexperiment.mapper.AnnouncementMapper;
+import com.swpu.uchain.openexperiment.mapper.UserMapper;
 import com.swpu.uchain.openexperiment.domain.Announcement;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.AnnouncementStatus;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
-import com.swpu.uchain.openexperiment.enums.ProjectStatus;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementPublishForm;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementUpdateForm;

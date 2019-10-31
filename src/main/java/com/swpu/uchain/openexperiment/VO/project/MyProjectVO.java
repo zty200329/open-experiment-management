@@ -16,7 +16,7 @@ public class MyProjectVO implements Serializable {
     /**
      * 项目id
      */
-    private Long projectGroupId;
+    private Long id;
 
     private String serialNumber;
     /**

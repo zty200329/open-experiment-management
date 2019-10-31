@@ -1,4 +1,4 @@
-package com.swpu.uchain.openexperiment.dao;
+package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.VO.permission.RoleVO;
 import com.swpu.uchain.openexperiment.domain.Role;

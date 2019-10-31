@@ -1,8 +1,7 @@
-package com.swpu.uchain.openexperiment.dao;
+package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.domain.Message;
 import com.swpu.uchain.openexperiment.domain.RoleAcl;
-import com.swpu.uchain.openexperiment.domain.UserRole;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.util.Date;
 
@@ -42,7 +43,7 @@ public class QueryConditionForm {
     @ApiModelProperty("限选年级")
     private String limitGrade;
 
-    @Null
-    @ApiModelProperty("项目状态--不填")
+    @NotNull
+    @ApiModelProperty("项目状态  0-7")
     private Integer status;
 }

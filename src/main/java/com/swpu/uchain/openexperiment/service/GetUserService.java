@@ -1,9 +1,7 @@
 package com.swpu.uchain.openexperiment.service;
 
-import com.swpu.uchain.openexperiment.dao.UserMapper;
+import com.swpu.uchain.openexperiment.mapper.UserMapper;
 import com.swpu.uchain.openexperiment.domain.User;
-import com.swpu.uchain.openexperiment.enums.CodeMsg;
-import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.UserKey;
 import org.springframework.security.core.Authentication;

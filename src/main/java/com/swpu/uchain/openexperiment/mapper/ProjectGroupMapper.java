@@ -1,4 +1,4 @@
-package com.swpu.uchain.openexperiment.dao;
+package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
 import com.swpu.uchain.openexperiment.VO.project.CheckProjectVO;
@@ -20,7 +20,7 @@ import java.util.List;
 @Repository
 public interface ProjectGroupMapper {
 
-    int getIndexByCollege(@Param("college")Integer college);
+    String getIndexByCollege(@Param("college")Integer college);
 
     int deleteByPrimaryKey(Long id);
 
@@ -67,6 +67,8 @@ public interface ProjectGroupMapper {
     int selectSpecifiedProjectList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);
 
     List<Long> conditionQuery(QueryConditionForm form);
+
+    List<Long> conditionQueryOfKeyProject(QueryConditionForm form);
 
     List<ProjectGroup> selectHistoricalInfoByUnitAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType);
 }

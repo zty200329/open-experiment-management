@@ -1,7 +1,7 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.swpu.uchain.openexperiment.dao.FundsMapper;
-import com.swpu.uchain.openexperiment.dao.ProjectGroupMapper;
+import com.swpu.uchain.openexperiment.mapper.FundsMapper;
+import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.Funds;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.FundsStatus;

@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @EnableAsync
 @SpringBootApplication
-@MapperScan("com.swpu.uchain.openexperiment.dao")
+@MapperScan("com.swpu.uchain.openexperiment.mapper")
 public class OpenExperimentApplication {
     public static void main(String[] args) {
         SpringApplication.run(OpenExperimentApplication.class, args);

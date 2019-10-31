@@ -1,4 +1,4 @@
-package com.swpu.uchain.openexperiment.dao;
+package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.domain.Message;
 import org.apache.ibatis.annotations.Param;

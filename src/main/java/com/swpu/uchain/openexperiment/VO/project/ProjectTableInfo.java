@@ -18,7 +18,7 @@ public class ProjectTableInfo {
     /**
      * 主键
      */
-    private Long projectId;
+    private Long id;
 
     /**
      * 项目编号

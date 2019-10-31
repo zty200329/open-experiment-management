@@ -1,6 +1,6 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.swpu.uchain.openexperiment.dao.RoleMapper;
+import com.swpu.uchain.openexperiment.mapper.RoleMapper;
 import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.exception.GlobalException;

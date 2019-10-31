@@ -1,8 +1,7 @@
-package com.swpu.uchain.openexperiment.dao;
+package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
-import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

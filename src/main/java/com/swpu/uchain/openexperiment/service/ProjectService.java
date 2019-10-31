@@ -242,7 +242,7 @@ public interface ProjectService {
      * @param form
      * @return
      */
-    Result conditionallyQueryOfCheckedProjectByFunctionalDepartment(QueryConditionForm form);
+    Result conditionallyQueryOfProject(QueryConditionForm form);
 
     /**
      * 查询历史信息

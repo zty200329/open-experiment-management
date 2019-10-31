@@ -6,7 +6,7 @@ import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.VO.project.*;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
-import com.swpu.uchain.openexperiment.dao.*;
+import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
@@ -147,9 +147,9 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
         }
         //获取这是该院第几个项目
-        int index = projectGroupMapper.getIndexByCollege(college);
+        String maxSerialNumber = projectGroupMapper.getIndexByCollege(college);
 
-        String serialNumber = SerialNumberUtil.getSerialNumberOfProject(college,form.getProjectType(),++index);
+        String serialNumber = SerialNumberUtil.getSerialNumberOfProject(college,form.getProjectType(),maxSerialNumber);
 
         //判断用户类型
         if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()) {
@@ -195,7 +195,12 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.LEADING_TEACHER_CONTAINS_ERROR);
         }
         userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
-
+        //记录申请信息
+        OperationRecord operationRecord = new OperationRecord();
+        operationRecord.setRelatedId(projectGroup.getId());
+        operationRecord.setOperationType(OperationType.REPORT.getValue());
+        operationRecord.setOperationUnit(OperationUnit.MENTOR.getValue());
+        operationRecord.setOperationExecutorId(Long.valueOf(currentUser.getCode()));
         return Result.success();
     }
 
@@ -229,7 +234,6 @@ public class ProjectServiceImpl implements ProjectService {
         updateProjectStatus(projectGroup.getId(), ProjectStatus.ESTABLISH.getValue());
 
         //将之前的历史数据设置为不可见
-        //type传入为空则更新所有
         OperationRecord operationRecord = new OperationRecord();
         operationRecord.setOperationType(OperationType.MODIFY.getValue());
         operationRecord.setOperationUnit(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue());
@@ -252,7 +256,7 @@ public class ProjectServiceImpl implements ProjectService {
             Integer numberOfSelectedStu = userProjectGroupMapper.selectStuCount(projectGroup.getId(), null);
             MyProjectVO myProjectVO = new MyProjectVO();
             BeanUtils.copyProperties(projectGroup, myProjectVO);
-            myProjectVO.setProjectGroupId(projectGroup.getId());
+            myProjectVO.setId(projectGroup.getId());
             myProjectVO.setNumberOfTheSelected(numberOfSelectedStu);
             myProjectVO.setProjectDetails(getProjectDetails(projectGroup));
             projectVOS.add(myProjectVO);
@@ -493,7 +497,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus);
         for (CheckProjectVO checkProjectVO : checkProjectVOs) {
-            List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getProjectGroupId());
+            List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
             List<UserMemberVO> guidanceTeachers = new ArrayList<>();
             for (UserProjectGroup userProjectGroup:userProjectGroups
                  ) {
@@ -504,6 +508,7 @@ public class ProjectServiceImpl implements ProjectService {
                 guidanceTeachers.add(userMemberVO);
             }
             checkProjectVO.setGuidanceTeachers(guidanceTeachers);
+            checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(checkProjectVO.getId(),null));
         }
         return Result.success(checkProjectVOs);
     }
@@ -531,7 +536,8 @@ public class ProjectServiceImpl implements ProjectService {
             }
             List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus);
             for (CheckProjectVO checkProjectVO : checkProjectVOs) {
-                List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getProjectGroupId());
+                List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
+                checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(checkProjectVO.getId(),null));
                 List<UserMemberVO> guidanceTeachers = new ArrayList<>();
                 List<UserMemberVO> memberStudents = new ArrayList<>();
                 for (UserProjectGroup userProjectGroup : userProjectGroups) {
@@ -654,8 +660,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result conditionallyQueryOfCheckedProjectByFunctionalDepartment(QueryConditionForm form){
-        form.setStatus(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue());
+    public Result conditionallyQueryOfProject(QueryConditionForm form){
         return conditionallyQueryOfCheckedProject(form);
     }
 
@@ -668,7 +673,7 @@ public class ProjectServiceImpl implements ProjectService {
         for (ProjectGroup projectGroup:list
              ) {
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(),null));
-            projectGroup.setMemberVOList(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectGroup.getId()));
+            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectGroup.getId()));
         }
         return Result.success(list);
     }
@@ -683,7 +688,7 @@ public class ProjectServiceImpl implements ProjectService {
              ) {
             Long id = projectGroup.getId();
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(id,null));
-            projectGroup.setMemberVOList(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null,id));
+            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null,id));
         }
         return Result.success(list);
     }
@@ -833,7 +838,7 @@ public class ProjectServiceImpl implements ProjectService {
                 row.setHeight((short) (16 * 22));
                 // 序号
                 row.createCell(0).setCellValue(ConvertUtil.getStrCollege(projectTableInfo.getCollege()));
-                row.createCell(1).setCellValue(projectTableInfo.getProjectId());
+                row.createCell(1).setCellValue(projectTableInfo.getId());
                 row.createCell(2).setCellValue(projectTableInfo.getProjectName());
                 row.createCell(3).setCellValue(projectTableInfo.getExperimentType());
                 row.createCell(4).setCellValue(projectTableInfo.getTotalHours());
@@ -923,7 +928,7 @@ public class ProjectServiceImpl implements ProjectService {
                 // 序号
                 row.createCell(1).setCellValue(ConvertUtil.getStrCollege(conclusion.getCollege()));
                 row.createCell(2).setCellValue(conclusion.getLabName());
-                row.createCell(3).setCellValue(conclusion.getProjectId());
+                row.createCell(3).setCellValue(conclusion.getId());
                 row.createCell(4).setCellValue(ConvertUtil.getStrExperimentType(conclusion.getExperimentType()));
                 row.createCell(5).setCellValue(conclusion.getTotalHours());
                 row.createCell(6).setCellValue(conclusion.getGuideTeacherName());
@@ -1206,4 +1211,5 @@ public class ProjectServiceImpl implements ProjectService {
             }
             return Result.success(projectGroupMapper.getProjectGroupDetailVOByProjectId(projectId));
         }
+
 }

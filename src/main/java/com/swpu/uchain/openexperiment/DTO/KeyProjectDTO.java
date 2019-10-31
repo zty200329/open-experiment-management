@@ -164,7 +164,7 @@ public class KeyProjectDTO {
     /**
      * 成员信息
      */
-    private List<UserMemberVO> memberVOList;
+    private List<UserMemberVO> guidanceTeachers;
 
 
 

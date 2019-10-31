@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.form.query.HistoryQueryKeyProjectInfo;
+import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.KeyProjectService;
 import io.swagger.annotations.Api;
@@ -50,7 +51,6 @@ public class KeyProjectQueryController {
         return keyProjectService.getKeyProjectApplyingListByFunctionalDepartment();
     }
 
-
     @GetMapping(value = "/getToBeReportedKeyProjectByLabAdmin")
     @ApiOperation("实验室主任获取待上报的项目")
     public Result getToBeReportedProjectByLabAdmin(){
@@ -75,5 +75,9 @@ public class KeyProjectQueryController {
         return keyProjectService.getKeyProjectDetailById(projectId);
     }
 
-
+    @ApiOperation("重点项目条件查询")
+    @PostMapping("/conditionallyQueryOfKeyProject")
+    public Result conditionallyQueryOfKeyProject(@RequestBody QueryConditionForm form){
+        return keyProjectService.conditionallyQueryOfKeyProject(form);
+    }
 }
