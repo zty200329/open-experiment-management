@@ -22,19 +22,19 @@
     <result column="real_name" jdbcType="VARCHAR" property="userName"/>
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from project_file
+    delete from openexperiment.project_file
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile">
-    insert into project_file (id, project_group_id, download_times, 
+    insert into openexperiment.project_file (id, project_group_id, download_times,
       file_name, file_type, `size`, 
-      upload_time, upload_user_id)
+      upload_time, upload_user_id,material_type)
     values (#{id,jdbcType=BIGINT}, #{projectGroupId,jdbcType=BIGINT}, #{downloadTimes,jdbcType=INTEGER}, 
       #{fileName,jdbcType=VARCHAR}, #{fileType,jdbcType=INTEGER}, #{size,jdbcType=VARCHAR}, 
-      #{uploadTime,jdbcType=TIMESTAMP}, #{uploadUserId,jdbcType=BIGINT})
+      #{uploadTime,jdbcType=TIMESTAMP}, #{uploadUserId,jdbcType=BIGINT},#{materialType})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile">
-    update project_file
+    update openexperiment.project_file
     set project_group_id = #{projectGroupId,jdbcType=BIGINT},
       download_times = #{downloadTimes,jdbcType=INTEGER},
       file_name = #{fileName,jdbcType=VARCHAR},
@@ -46,36 +46,40 @@
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select id, project_group_id, download_times, file_name, file_type, `size`, upload_time,
-    upload_user_id
-    from project_file
+    upload_user_id,material_type
+    from openexperiment.project_file
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" resultMap="BaseResultMap">
-    select id, project_group_id, download_times, file_name, file_type, `size`, upload_time, 
-    upload_user_id
-    from project_file
+    select id, project_group_id, download_times, file_name, file_type, `size`, upload_time,
+    upload_user_id,material_type
+    from openexperiment.project_file
   </select>
   <update id="updateFileDownloadTime" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile">
-    update project_file
+    update openexperiment.project_file
     set download_times = download_times+1
     where file_name=#{fileName}
   </update>
   <select id="selectByGroupIdFileName" resultMap="BaseResultMap">
     select id, project_group_id, download_times, file_name, file_type, `size`, upload_time,
-    upload_user_id
-    from project_file
+    upload_user_id,material_type
+    from openexperiment.project_file
     where project_group_id = #{param1}
     and file_name = #{param2}
   </select>
-  <select id="selectByProjectGroupId" resultMap="BaseResultMap">
-    select * from project_file
+  <select id="selectByProjectGroupIdAndMaterialType" resultMap="BaseResultMap">
+    select id, project_group_id, download_times, file_name, file_type, size, upload_time, upload_user_id,material_type
+    from openexperiment.project_file
     where project_group_id = #{projectGroupId}
+    <if test="materialType!=null">
+      and material_type = #{materialType}
+    </if>
   </select>
   <select id="selectAttachmentFiles" resultMap="AttachmentFileDTOMap">
     select project_file.id, project_file.project_group_id, project_file.download_times, project_file.file_name,
     project_file.file_type, project_file.`size`, project_file.upload_time, project_file.upload_user_id, user.real_name
-    from project_file
-    inner join user where user.id = project_file.upload_user_id
-    where project_group_id is null
+    from openexperiment.project_file
+    inner join openexperiment.user where user.id = openexperiment.project_file.upload_user_id
+    and project_group_id is null
   </select>
 </mapper>

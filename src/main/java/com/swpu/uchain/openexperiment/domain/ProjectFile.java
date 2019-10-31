@@ -16,6 +16,8 @@ public class ProjectFile implements Serializable {
 
     private Integer downloadTimes;
 
+    private Integer materialType;
+
     private String fileName;
 
     /**

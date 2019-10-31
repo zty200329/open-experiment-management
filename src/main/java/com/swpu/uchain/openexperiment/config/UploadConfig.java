@@ -16,7 +16,7 @@ public class UploadConfig {
     /**
      * 上传文件夹路径
      */
-    private String uploadDir;
+    private String applyDir;
     /**
      * 上传立项申请正文文件名
      */
@@ -29,6 +29,6 @@ public class UploadConfig {
     /**
      * 证明材料上传位置
      */
-    private String materialDir;
+    private String conclusionDir;
 }
 

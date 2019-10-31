@@ -15,19 +15,6 @@ import java.util.List;
  **/
 public interface ProjectFileService {
 
-    /**
-     * 添加文件
-     * @param projectFile
-     * @return:
-     */
-    boolean insert(ProjectFile projectFile);
-
-    /**
-     * 修改文件
-     * @param projectFile
-     * @return:
-     */
-    boolean update(ProjectFile projectFile);
 
     /**
      * 删除文件
@@ -104,4 +91,6 @@ public interface ProjectFileService {
      * @return
      */
     Result uploadConcludingReport(Long projectId,MultipartFile file);
+
+    void getConclusionDoc(Long fileId, HttpServletResponse response);
 }

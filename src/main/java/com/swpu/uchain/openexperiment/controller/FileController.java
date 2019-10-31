@@ -43,6 +43,12 @@ public class FileController {
         projectFileService.downloadApplyFile(fileId, response);
     }
 
+    @ApiOperation("下载结题正文")
+    @GetMapping(value = "/getConclusionDoc")
+    public void getConclusionDoc(Long fileId, HttpServletResponse response){
+        projectFileService.getConclusionDoc(fileId, response);
+    }
+
     @ApiIgnore
     @ApiOperation("下载立项申请正文的pdf")
     @GetMapping(value = "getApplyPdf", name = "下载立项申请正文的pdf")
@@ -59,6 +65,7 @@ public class FileController {
         }
         return projectFileService.uploadApplyDoc(file, projectGroupId);
     }
+
 
 
     @ApiIgnore("附件上传--6，普通项目结题验收报告；7，重点项目结题验收报告 8，普通项目实验报告")

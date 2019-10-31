@@ -50,7 +50,8 @@ public class KeyProjectQueryController {
         return keyProjectService.getKeyProjectApplyingListByFunctionalDepartment();
     }
 
-    @GetMapping(value = "/getHistoricalKeyProjectInfo")
+    @ApiOperation("重点项目历史查询")
+    @PostMapping(value = "/getHistoricalKeyProjectInfo")
     public Result getHistoricalKeyProjectInfo(@Valid @RequestBody HistoryQueryKeyProjectInfo info){
         return keyProjectService.getHistoricalKeyProjectInfo(info);
     }

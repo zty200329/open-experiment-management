@@ -42,7 +42,10 @@ public enum CodeMsg {
     PROJECT_CURRENT_STATUS_ERROR(1506,"当前项目状态不支持该操作"),
     PROJECT_TYPE_NULL_ERROR(1507,"项目类型不能为空"),
     COLLEGE_TYPE_NULL_ERROR(1508,"学院类型不能为空，请补充用户学院信息"),
-
+    USER_HAD_JOINED_CANT_REJECT(1509, "用户已经加入项目组或已被拒绝，无法进行拒绝操作"),
+    ADD_PROJECT_GROUP_ERROR(1510, "创建项目组异常"),
+    ADD_USER_JOIN_ERROR(1511, "用户加入项目异常"),
+    STUDENT_CANT_APPLY(1512, "学生无法申请立项"),
 
     /**
      * 文件相关异常 1601-1700
@@ -78,10 +81,7 @@ public enum CodeMsg {
     FUNDS_APPLY_ERROR(528, "资金申请异常"),
     FUNDS_AGREE_CANT_CHANGE(529, "资金已经同意无法进行修改"),
     PAGE_NUM_ERROR(530, "分页数目异常"),
-    USER_HAD_JOINED_CANT_REJECT(531, "用户已经加入项目组或已被拒绝，无法进行拒绝操作"),
-    ADD_PROJECT_GROUP_ERROR(533, "创建项目组异常"),
-    ADD_USER_JOIN_ERROR(534, "用户加入项目异常"),
-    STUDENT_CANT_APPLY(535, "学生无法申请立项"),
+
     ALREADY_APPLY(536, "已经进行申请操作,无法再次操作,请勿重复操作"),
 
     TIME_DEFINE_ERROR(610,"时间设置错误"),

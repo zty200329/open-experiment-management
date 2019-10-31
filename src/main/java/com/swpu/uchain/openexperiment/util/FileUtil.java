@@ -206,7 +206,7 @@ public class FileUtil {
     }
 
     /**
-     * 解决IE edge 文件上传 文件名却出现了全路径+文件名的形式
+     * 获取文件后缀名
      * @param fileName 文件名
      * @return
      */

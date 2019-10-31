@@ -24,7 +24,7 @@ public class HistoryQueryKeyProjectInfo {
      */
     @Min(12)
     @Max(13)
-    @ApiModelProperty("历史操作： 2,拒绝|3,上报")
+    @ApiModelProperty("历史操作： 12,拒绝|13,上报")
     private Integer operationType;
 
 }

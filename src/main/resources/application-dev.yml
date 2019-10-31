@@ -16,7 +16,8 @@ spring:
 upload:
   apply-file-name: "立项申请主要内容"
   concluding-file-name: "结题报告"
-  upload-dir: "E:/IdeaProjects/OpenExperiment/src/main/resources/testFile"
+  apply-dir: "E:/IdeaProjects/OpenExperiment/src/main/resources/apply_dir"
+  material-dir: "E:/IdeaProjects/OpenExperiment/src/main/resources/conclusion_dir"
 
 
 

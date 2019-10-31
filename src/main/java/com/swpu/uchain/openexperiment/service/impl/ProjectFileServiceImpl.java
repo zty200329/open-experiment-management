@@ -10,6 +10,7 @@ import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.FileType;
+import com.swpu.uchain.openexperiment.enums.MaterialType;
 import com.swpu.uchain.openexperiment.enums.ProjectStatus;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.redis.RedisService;
@@ -60,8 +61,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     private ProjectGroupMapper projectGroupMapper;
 
 
-    @Override
     public boolean insert(ProjectFile projectFile) {
+        if (projectFileMapper.selectByProjectGroupIdAndMaterialType(projectFile.getProjectGroupId(),projectFile.getMaterialType())!=null){
+            return update(projectFile);
+        }
         if (projectFileMapper.insert(projectFile) == 1) {
             redisService.set(FileKey.getById, projectFile.getId() + "", projectFile);
             return true;
@@ -69,7 +72,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         return false;
     }
 
-    @Override
     public boolean update(ProjectFile projectFile) {
         if (projectFileMapper.updateByPrimaryKey(projectFile) == 1) {
             redisService.set(FileKey.getById, projectFile.getId() + "", projectFile);
@@ -87,7 +89,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         redisService.delete(FileKey.getById, id + "");
         if (FileUtil.deleteFile(FileUtil.getFileRealPath(
                 projectFile.getId(),
-                uploadConfig.getUploadDir(),
+                uploadConfig.getApplyDir(),
                 projectFile.getFileName()))) {
             projectFileMapper.deleteByPrimaryKey(id);
         }
@@ -116,7 +118,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             //如果存在则
             File dest = new File(
                     FileUtil.getFileRealPath(mark.getId(),
-                            uploadConfig.getUploadDir(),
+                            uploadConfig.getApplyDir(),
                             uploadConfig.getApplyFileName()));
             dest.delete();
         }
@@ -132,6 +134,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
         projectFile.setUploadTime(new Date());
         projectFile.setDownloadTimes(0);
+        projectFile.setMaterialType(MaterialType.APPLY_MATERIAL.getValue());
         projectFile.setProjectGroupId(projectGroupId);
         if (!insert(projectFile)) {
             return Result.error(CodeMsg.ADD_ERROR);
@@ -140,12 +143,13 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 file,
                 FileUtil.getFileRealPath(
                     projectFile.getId(),
-                    uploadConfig.getUploadDir(),
+                    uploadConfig.getApplyDir(),
                     uploadConfig.getApplyFileName() + FileUtil.getMultipartFileSuffix(file)))) {
             return Result.success();
         }
         return Result.error(CodeMsg.UPLOAD_ERROR);
     }
+
 
     @Override
     public void downloadApplyFile(Long fileId, HttpServletResponse response) {
@@ -153,10 +157,26 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (projectFile == null){
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
-        String realPath = FileUtil.getFileRealPath(fileId, uploadConfig.getUploadDir(), projectFile.getFileName());
+        String realPath = FileUtil.getFileRealPath(fileId, uploadConfig.getApplyDir(), projectFile.getFileName());
         if (FileUtil.downloadFile(response, realPath)){
             throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
+        }
+        projectFile.setDownloadTimes(projectFile.getDownloadTimes() + 1);
+        if (!update(projectFile)) {
+            throw new GlobalException(CodeMsg.UPDATE_ERROR);
+        }
     }
+
+    @Override
+    public void getConclusionDoc(Long fileId, HttpServletResponse response) {
+        ProjectFile projectFile = projectFileMapper.selectByPrimaryKey(fileId);
+        if (projectFile == null){
+            throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
+        }
+        String realPath = FileUtil.getFileRealPath(fileId, uploadConfig.getConclusionDir(), projectFile.getFileName());
+        if (FileUtil.downloadFile(response, realPath)){
+            throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
+        }
         projectFile.setDownloadTimes(projectFile.getDownloadTimes() + 1);
         if (!update(projectFile)) {
             throw new GlobalException(CodeMsg.UPDATE_ERROR);
@@ -171,7 +191,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         }
         String realPath = FileUtil.getFileRealPath(
                 projectFile.getId(),
-                uploadConfig.getUploadDir(),
+                uploadConfig.getApplyDir(),
                 FileUtil.getFileNameWithoutSuffix(projectFile.getFileName()) + ".pdf");
         File file = new File(realPath);
         if (file.exists()){
@@ -181,7 +201,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         }
         try {
             xDocService.run(
-                    FileUtil.getFileRealPath(projectFile.getId(), uploadConfig.getUploadDir(), projectFile.getFileName())
+                    FileUtil.getFileRealPath(projectFile.getId(), uploadConfig.getApplyDir(), projectFile.getFileName())
                     ,new File(realPath));
         } catch (IOException e) {
             e.printStackTrace();
@@ -194,7 +214,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public List<ProjectFile> getProjectAllFiles(Long projectGroupId) {
-        return projectFileMapper.selectByProjectGroupId(projectGroupId);
+        return projectFileMapper.selectByProjectGroupIdAndMaterialType(projectGroupId,null);
     }
 
     @Override
@@ -209,6 +229,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(multipartFile)));
         projectFile.setSize(FileUtil.FormatFileSize(multipartFile.getSize()));
         projectFile.setUploadTime(new Date());
+        projectFile.setMaterialType(MaterialType.APPLY_MATERIAL.getValue());
         projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
         if (!insert(projectFile)) {
             return Result.error(CodeMsg.ADD_ERROR);
@@ -217,7 +238,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 multipartFile,
                 FileUtil.getFileRealPath(
                         projectFile.getId(),
-                        uploadConfig.getUploadDir(),
+                        uploadConfig.getApplyDir(),
                         projectFile.getFileName()))) {
             return Result.error(CodeMsg.UPLOAD_ERROR);
         }
@@ -230,7 +251,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (projectFile == null){
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
-        if (FileUtil.downloadFile(response, FileUtil.getFileRealPath(fileId, uploadConfig.getUploadDir(), projectFile.getFileName()))) {
+        if (FileUtil.downloadFile(response, FileUtil.getFileRealPath(fileId, uploadConfig.getApplyDir(), projectFile.getFileName()))) {
             throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
         }
     }
@@ -265,7 +286,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                     file,
                     FileUtil.getFileRealPath(
                             projectFile.getId(),
-                            uploadConfig.getUploadDir(),
+                            uploadConfig.getConclusionDir(),
                             uploadConfig.getConcludingFileName()));
         }
         User currentUser = getUserService.getCurrentUser();
@@ -275,8 +296,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
         projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
-        projectFile.setFileName(uploadConfig.getConcludingFileName());
+        projectFile.setFileName(uploadConfig.getConcludingFileName()+getRealFilename(file.getOriginalFilename()));
         projectFile.setUploadTime(new Date());
+        projectFile.setMaterialType(MaterialType.CONCLUSION_MATERIAL.getValue());
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
         projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(file)));
         projectFile.setDownloadTimes(0);
@@ -287,7 +309,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 file,
                 FileUtil.getFileRealPath(
                         projectFile.getId(),
-                        uploadConfig.getUploadDir(),
+                        uploadConfig.getConclusionDir(),
                         uploadConfig.getConcludingFileName()))) {
             return Result.error(CodeMsg.UPLOAD_ERROR);
         }
