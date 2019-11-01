@@ -11,6 +11,6 @@ public interface TimeLimitService {
 
     Result delete(Integer type);
 
-    Result getTimeLimit(Integer type);
+    Result getTimeLimitByType(Integer type);
 
 }

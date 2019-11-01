@@ -84,6 +84,7 @@ public enum CodeMsg {
 
     ALREADY_APPLY(536, "已经进行申请操作,无法再次操作,请勿重复操作"),
 
+    NOT_IN_VALID_TIME(609,"操作不在允许的时间之内"),
     TIME_DEFINE_ERROR(610,"时间设置错误"),
     PROJECT_HAS_BEEN_REJECTED(611,"项目已经被驳回"),
     PROJECT_NOT_MODIFY_BY_FUNCTION_DEPARTMENT(614,"项目未被职能部门修改"),
