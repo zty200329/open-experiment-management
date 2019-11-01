@@ -57,6 +57,9 @@ public class TimeLimitServiceImpl implements TimeLimitService {
 
     @Override
     public Result delete(Integer type) {
+        if (type == null){
+            throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
+        }
         redisService.delete(TimeLimitKey.getTimeLimitType,type.toString());
         timeLimitMapper.delete(type);
         return Result.success();
@@ -68,6 +71,9 @@ public class TimeLimitServiceImpl implements TimeLimitService {
     }
 
     public TimeLimit getTimeLimit(Integer type) {
+        if (type == null){
+            throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
+        }
         TimeLimit timeLimit = redisService.get(TimeLimitKey.getTimeLimitType,type.toString(),TimeLimit.class);
         if (timeLimit == null){
             timeLimit = timeLimitMapper.getTimeLimitById(type);
@@ -83,9 +89,14 @@ public class TimeLimitServiceImpl implements TimeLimitService {
     public void validTime(TimeLimitType timeLimitType){
         Integer type = timeLimitType.getValue();
         TimeLimit timeLimit = getTimeLimit(type);
+        //如果不存在验证直接退出
+        if (timeLimit == null){
+            return;
+        }
         Date startTime = timeLimit.getStartTime();
         Date endTime = timeLimit.getEndTime();
         Date currentTime = new Date();
+        //验证不通过，抛出自定义异常并捕捉
         if (startTime.after(currentTime) || endTime.before(currentTime)){
             throw new GlobalException(CodeMsg.NOT_IN_VALID_TIME);
         }
