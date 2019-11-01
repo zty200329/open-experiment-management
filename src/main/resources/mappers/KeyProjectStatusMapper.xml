@@ -8,17 +8,17 @@
             values (#{projectId},#{status},#{college},#{creatorId})
     </insert>
         <update id="update">
-        update key_project_status set `status` = #{status} where project_id = #{projectId}
+        update openexperiment.key_project_status set `status` = #{status} where project_id = #{projectId}
     </update>
     <update id="updateList">
-        update key_project_status set `status` = #{status}
+        update openexperiment.key_project_status set `status` = #{status}
             where project_id in
                   <foreach collection="list" item="projectId" open="(" close=")" separator=",">
                       #{projectId}
                   </foreach>
     </update>
     <select id="getStatusByProjectId" resultType="java.lang.Integer">
-        select status from key_project_status where project_id = #{projectId}
+        select status from openexperiment.key_project_status where project_id = #{projectId}
     </select>
     <select id="getKeyProjectDTOListByStatusAndCollege" resultType="com.swpu.uchain.openexperiment.DTO.KeyProjectDTO">
         SELECT

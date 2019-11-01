@@ -13,6 +13,8 @@ public enum ProjectStatus {
     /**
      *
      */
+    KEY_PROJECT_APPLY(-4,"重点项目申请"),
+
     ESTABLISH_FAILED(-3,"立项失败"),
 
     REJECT_MODIFY(-2,"驳回修改"),

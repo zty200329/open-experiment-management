@@ -101,11 +101,11 @@
     select * from openexperiment.user_project_group where project_group_id = #{param1} and user_id = #{param2} limit 1
   </select>
   <select id="selectByProjectGroupId" resultMap="BaseResultMap">
-    select * from openexperiment.user_project_group where project_group_id = #{projectGroupId}
+    select id, project_group_id, user_id, technical_role, work_division, status, member_role, personal_judge, update_time, join_time from openexperiment.user_project_group where project_group_id = #{projectGroupId}
   </select>
   <select id="selectByProjectGroupIdAndJoinStatus" resultMap="BaseResultMap">
-    select * from openexperiment.user_project_group
-    where status = 1 and member_role = 3
+    select id, project_group_id, user_id, technical_role, work_division, status, member_role, personal_judge, update_time, join_time from openexperiment.user_project_group
+    where  member_role = 3
         <if test="param1!=null">
             and project_group_id = #{param1}
         </if>

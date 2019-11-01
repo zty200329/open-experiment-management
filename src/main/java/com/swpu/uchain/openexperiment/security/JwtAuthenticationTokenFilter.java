@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,7 +45,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             return;
         }else {
             String requestURI = request.getRequestURI();
-            log.info("requestURI:{}",requestURI);
+            log.debug("requestURI:{}",requestURI);
             String authToken = request.getHeader(this.tokenHeader);
 
             String username = jwtTokenUtil.getUsernameFromToken(authToken);

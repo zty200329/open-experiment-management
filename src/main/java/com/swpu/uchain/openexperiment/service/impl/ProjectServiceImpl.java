@@ -185,6 +185,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         String[] teacherCodes = form.getTeacherCodes();
         String[] stuCodes = form.getStuCodes();
+        System.err.println(Arrays.toString(stuCodes));
         boolean isTeacherExist = false;
         for (String teacherCode : teacherCodes) {
             if (teacherCode.equals(currentUser.getCode())) {
@@ -982,10 +983,12 @@ public class ProjectServiceImpl implements ProjectService {
             List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), ProjectStatus.LAB_ALLOWED.getValue());
             for (int i = 0; i < projectGroups.size(); i++) {
                 if (projectGroups.get(i) == null) {
-                    break;
-                }
-                while (projectGroups.get(i).getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue())) {
                     i++;
+                }
+                if (projectGroups.get(i).getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue())) {
+                    if (i != projectGroups.size()-1) {
+                        i++;
+                    }
                 }
                 ProjectGroup projectGroup = projectGroups.get(i);
                 List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(),null);
@@ -1014,7 +1017,7 @@ public class ProjectServiceImpl implements ProjectService {
                     if (projectGroups.get(i) == null) {
                         break;
                     }
-                    while (projectGroups.get(i).getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue())) {
+                    if (projectGroups.get(i).getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue())) {
                         i++;
                     }
                     ProjectGroup projectGroup = projectGroups.get(i);
@@ -1044,12 +1047,20 @@ public class ProjectServiceImpl implements ProjectService {
         if (userProjectGroupOfCurrentUser == null || !userProjectGroupOfCurrentUser.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())){
             throw new GlobalException(CodeMsg.USER_NOT_IN_GROUP);
         }
-        if (userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(),joinForm.getUserId()) != null){
+
+        if (userMapper.selectByUserCode(String.valueOf(joinForm.getUserId())) == null){
+            throw new GlobalException(CodeMsg.USER_NO_EXIST);
+        }
+
+        if (userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(),joinForm.getUserId())!=null){
             throw new GlobalException(CodeMsg.USER_HAD_JOINED);
         }
+
         UserProjectGroup userProjectGroup = new UserProjectGroup();
         userProjectGroup.setUserId(joinForm.getUserId());
         userProjectGroup.setProjectGroupId(joinForm.getProjectGroupId());
+        userProjectGroup.setMemberRole(MemberRole.NORMAL_MEMBER.getValue());
+        userProjectGroup.setStatus(JoinStatus.JOINED.getValue());
         userProjectGroupMapper.insert(userProjectGroup);
         return Result.success();
     }

@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,6 +69,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             throw new GlobalException(CodeMsg.PROJECT_IS_NOT_LAB_ALLOWED);
         }
         //创建重点项目状态
+        if (keyProjectStatusMapper.getStatusByProjectId(projectGroup.getId())!=null) {
+            throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+        }
+        //将项目组表中的项目状态变为重点项目申请  （之后的状态查询都在重点项目状态表中查询）
+        projectGroupMapper.updateProjectStatusOfList(new ArrayList<>(),ProjectStatus.KEY_PROJECT_APPLY.getValue());
         keyProjectStatusMapper.insert(projectId, KeyProjectStatus.TO_DE_CONFIRMED.getValue(),
                 projectGroup.getSubordinateCollege(), Long.valueOf(user.getCode()));
 
