@@ -12,9 +12,9 @@ public enum  TimeLimitType {
     AGREE_JOIN_LIMIT(3,"审批学生申请时间限制"),
     LAB_CHECK_LIMIT(4,"实验室审核时间限制"),
     KEY_DECLARE_LIMIT(5,"重点项目申报时间限制"),
-    LAB_REPORT_LIMIT(6,"重点项目申报时间限制"),
-    SECONDARY_UNIT_CHECK_LIMIT(7,"重点项目申报时间限制"),
-    SECONDARY_UNIT_REPORT_LIMIT(8,"重点项目申报时间限制");
+    LAB_REPORT_LIMIT(6,"实验室上报时间限制"),
+    SECONDARY_UNIT_CHECK_LIMIT(7,"二级单位审核时间限制"),
+    SECONDARY_UNIT_REPORT_LIMIT(8,"二级单位上报时间限制");
 
 
     private Integer value;

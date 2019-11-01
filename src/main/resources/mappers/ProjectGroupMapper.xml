@@ -57,6 +57,8 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
         <result column="main_content" jdbcType="LONGVARCHAR" property="mainContent"/>
         <result column="is_open_topic" jdbcType="INTEGER" property="isOpenTopic"/>
+        <result column="apply_funds" property="applyFunds"/>
+        <result column="whether_commit_key_apply" property="whetherCommitKeyApply"/>
         <collection property="list" ofType="com.swpu.uchain.openexperiment.VO.user.ProjectUserVO"
                     javaType="java.util.ArrayList" columnPrefix="u_">
             <id column="real_name" property="realName"/>
@@ -231,8 +233,8 @@
     select id,
            address,
            serial_number,
-           create_time,
-           creator_id,
+           project_group.create_time,
+           project_group.creator_id,
            end_time,
            experiment_condition,
            suggest_group_type,
@@ -247,11 +249,12 @@
            project_name,
            project_type,
            start_time,
-           `status`,
+           project_group.`status`,
+           key_project_status.project_id as whetherCommitKeyApply,
            update_time,
            main_Content
-    from openexperiment.project_group
-    where id = #{id,jdbcType=BIGINT}
+    from openexperiment.project_group left join openexperiment.key_project_status  on key_project_status.project_id = project_group.id
+    where project_group.id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectByName" resultMap="ProjectGroupResultMap">
     select * from openexperiment.project_group where project_name = #{projectName}
@@ -405,6 +408,8 @@
                project_group.`status`,
                project_group.update_time,
                project_group.main_Content,
+               project_group.apply_funds,
+               key_project_status.project_id as whether_commit_key_apply,
                user_project_group.user_id        as u_code,
                user_project_group.technical_role as u_technical_role,
                user_project_group.work_division  as u_work_division,
@@ -424,6 +429,7 @@
         from openexperiment.project_group
                  inner join openexperiment.user_project_group on user_project_group.project_group_id = project_group.id
                  inner join openexperiment.user on user_project_group.user_id = user.code
+                 left join openexperiment.key_project_status on key_project_status.project_id = project_group_id
         where project_group.id = #{projectId};
     </select>
     <select id="getProjectTableInfoListByCollegeAndList" resultMap="ProjectTableInfoResultMap"

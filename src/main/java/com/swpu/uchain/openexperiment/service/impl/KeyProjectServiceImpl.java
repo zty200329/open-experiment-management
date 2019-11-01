@@ -58,6 +58,10 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         if (projectGroup == null){
             throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
+
+        //验证项目状态合法性
+        validProjectStatus(ProjectStatus.LAB_ALLOWED.getValue(),projectGroup.getStatus());
+
         User user = getUserService.getCurrentUser();
         Long projectId = projectGroup.getId();
         if (projectGroup.getStatus() < ProjectStatus.LAB_ALLOWED.getValue()){
@@ -67,6 +71,13 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         keyProjectStatusMapper.insert(projectId, KeyProjectStatus.TO_DE_CONFIRMED.getValue(),
                 projectGroup.getSubordinateCollege(), Long.valueOf(user.getCode()));
 
+
+        //将重点项目上报的操作存入历史
+        OperationRecord operationRecord = new OperationRecord();
+        operationRecord.setOperationUnit(RoleType.PROJECT_LEADER.getValue());
+        operationRecord.setOperationType(OperationType.REPORT.getValue());
+        operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
+        operationRecord.setRelatedId(projectGroup.getId());
 
         List<StuMember> stuMemberList = form.getMembers();
 
@@ -88,6 +99,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         }
         Long userId = Long.valueOf(user.getCode());
         List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectListByUserId(userId,KeyProjectStatus.TO_DE_CONFIRMED.getValue());
+        for (KeyProjectDTO keyProjectDTO :list
+        ) {
+            keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(keyProjectDTO.getId(),null));
+            keyProjectDTO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId()));
+        }
         return Result.success(list);
     }
 
@@ -282,5 +298,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null,id));
         }
         return Result.success(list);
+    }
+
+    private void validProjectStatus(Integer currentStatus,Integer rightStatus){
+        if (!rightStatus.equals(currentStatus)){
+            throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+        }
     }
 }

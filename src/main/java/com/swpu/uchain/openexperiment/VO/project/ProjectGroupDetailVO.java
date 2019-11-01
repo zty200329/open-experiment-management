@@ -109,6 +109,11 @@ public class ProjectGroupDetailVO {
     private Integer projectType;
 
     /**
+     * 是否提交重点项目申请书
+     */
+    private Integer whetherCommitKeyApply;
+
+    /**
      * 开始时间
      */
     private Date startTime;

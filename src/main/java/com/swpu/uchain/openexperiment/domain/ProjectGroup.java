@@ -149,6 +149,9 @@ public class ProjectGroup implements Serializable {
     @Null
     private Integer numberOfTheSelected;
 
+    @Null
+    private Integer whetherCommitKeyApply;
+
     /**
      * 所属学院  {@link CollegeType#getValue()}
      */

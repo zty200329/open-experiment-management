@@ -107,6 +107,8 @@ public class ApplyGeneralFormInfoVO implements Serializable {
      */
     private String creatorName;
 
+    private Integer whetherCommitKeyApply;
+
     /**
      * 指导教师
      */
