@@ -50,23 +50,16 @@ public class UpdateProjectApplyForm{
     @NotNull(message = "建议评审分组必选")
     private Character suggestGroupType;
 
-    @Min(2000)
-    @Max(2090)
-    @NotNull
     @ApiModelProperty("限选年级")
-    private Integer limitGrade;
+    private String limitGrade;
 
-    @NotNull
     @ApiModelProperty("限选专业")
     private String limitMajor;
 
-    @NotNull
     @ApiModelProperty("限选学院")
     private String limitCollege;
 
-
     @ApiModelProperty("适宜学生数")
-    @NotNull(message = "适宜学生数不能为空")
     private Integer fitPeopleNum;
 
     @ApiModelProperty("成果考核方式")
@@ -88,10 +81,10 @@ public class UpdateProjectApplyForm{
     private Float applyFunds;
 
     @ApiModelProperty("指导老师编号--选填")
-    private String[] teacherCodes;
+    private Integer[] teacherCodes;
 
     @ApiModelProperty("学生编号--选填")
-    private String[] stuCodes;
+    private Integer[] stuCodes;
 
 
 }

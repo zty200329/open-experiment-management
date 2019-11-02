@@ -38,7 +38,7 @@ public class ProjectQueryController {
 }
 
     @ApiOperation("获取项目的立项信息--可使用")
-    @GetMapping(value = "/getApplyInfo", name = "获取项目的立项信息")
+    @GetMapping(value = "/getApplyInfo2", name = "获取项目的立项信息")
     public Result getApplyInfo(Long projectGroupId){
         return projectService.getApplyForm(projectGroupId);
     }
@@ -96,7 +96,7 @@ public class ProjectQueryController {
     }
 
     @ApiOperation("通过项目ID查看项目详情--成员和项目信息")
-    @GetMapping("/getProjectGroupDetailVOByProjectId")
+    @GetMapping("/getApplyInfo")
     public Result getProjectGroupDetailByProjectId(Long projectId){
         return projectService.getProjectGroupDetailVOByProjectId(projectId);
     }

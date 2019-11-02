@@ -208,6 +208,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm) {
+
         //TODO 时间限制
 
         ProjectGroup projectGroup = selectByProjectGroupId(updateProjectApplyForm.getProjectGroupId());
@@ -220,16 +221,22 @@ public class ProjectServiceImpl implements ProjectService {
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
         //状态不允许修改
-        if (projectGroup.getStatus() != ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue().intValue()
-                || projectGroup.getStatus() != ProjectStatus.REJECT_MODIFY.getValue().intValue()) {
+        if (projectGroup.getStatus() != ProjectStatus.DECLARE.getValue().intValue()) {
             return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
         }
         //更新项目组基本信息
         BeanUtils.copyProperties(updateProjectApplyForm, projectGroup);
         update(projectGroup);
         userProjectService.deleteByProjectGroupId(projectGroup.getId());
-        String[] stuCodes = updateProjectApplyForm.getStuCodes();
-        String[] teacherCodes = updateProjectApplyForm.getTeacherCodes();
+        String[] stuCodes = new String[updateProjectApplyForm.getStuCodes().length];
+        String[] teacherCodes = new String[updateProjectApplyForm.getStuCodes().length];
+        for (int i = 0; i < updateProjectApplyForm.getStuCodes().length; i++) {
+            stuCodes[i] = updateProjectApplyForm.getStuCodes()[i].toString();
+        }
+        for (int i = 0; i < updateProjectApplyForm.getTeacherCodes().length; i++) {
+            teacherCodes[i] = updateProjectApplyForm.getTeacherCodes()[i].toString();
+        }
+
         userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
         //修改项目状态,重新开始申报
         updateProjectStatus(projectGroup.getId(), ProjectStatus.ESTABLISH.getValue());
@@ -237,7 +244,7 @@ public class ProjectServiceImpl implements ProjectService {
         //将之前的历史数据设置为不可见
         OperationRecord operationRecord = new OperationRecord();
         operationRecord.setOperationType(OperationType.MODIFY.getValue());
-        operationRecord.setOperationUnit(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue());
+        operationRecord.setOperationUnit(OperationUnit.MENTOR.getValue());
         //设置执行人
         setOperationExecutor(operationRecord);
         recordMapper.insert(operationRecord);
@@ -398,12 +405,12 @@ public class ProjectServiceImpl implements ProjectService {
             applyKeyFormInfoVO.setFundsDetails(fundsService.getFundsDetails(projectGroupId));
             applyKeyFormInfoVO.setCreatorName(userMapper.selectByUserCode(String.valueOf(projectGroup.getCreatorId())).getRealName());
             BeanUtils.copyProperties(projectGroup, applyKeyFormInfoVO);
-            applyKeyFormInfoVO.setProjectGroupId(projectGroup.getId());
+            applyKeyFormInfoVO.setId(projectGroup.getId());
             return Result.success(applyKeyFormInfoVO);
         } else {
             ApplyGeneralFormInfoVO applyGeneralFormInfoVO = convertUtil.addUserDetailVO(users, ApplyGeneralFormInfoVO.class);
             BeanUtils.copyProperties(projectGroup, applyGeneralFormInfoVO);
-            applyGeneralFormInfoVO.setProjectGroupId(projectGroup.getId());
+            applyGeneralFormInfoVO.setId(projectGroup.getId());
             applyGeneralFormInfoVO.setCreatorName(userMapper.selectByUserCode(String.valueOf(projectGroup.getCreatorId())).getRealName());
             return Result.success(applyGeneralFormInfoVO);
         }

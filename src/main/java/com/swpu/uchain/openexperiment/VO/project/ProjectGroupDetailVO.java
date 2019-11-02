@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.VO.project;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swpu.uchain.openexperiment.VO.user.ProjectUserVO;
 import lombok.Data;
 
@@ -36,6 +37,11 @@ public class ProjectGroupDetailVO {
      * 申报者ID
      */
     private Long creatorId;
+
+    /**
+     * 开始时间
+     */
+    private Date startTime;
 
     /**
      * 实验截止时间
@@ -113,10 +119,7 @@ public class ProjectGroupDetailVO {
      */
     private Integer whetherCommitKeyApply;
 
-    /**
-     * 开始时间
-     */
-    private Date startTime;
+
 
     /**
      * 项目开展进度
@@ -126,6 +129,7 @@ public class ProjectGroupDetailVO {
     /**
      * 更新时间
      */
+    @JsonIgnore
     private Date updateTime;
 
     /**

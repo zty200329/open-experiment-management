@@ -49,6 +49,7 @@ public class ProjectInvokeController {
     @ApiOperation("修改立项申请")
     @PostMapping(value = "/updateApply", name = "修改立项申请")
     public Result updateApply(@Valid @RequestBody UpdateProjectApplyForm updateProjectApplyForm){
+        System.err.println(updateProjectApplyForm.toString());
         return projectService.applyUpdateProject(updateProjectApplyForm);
     }
 

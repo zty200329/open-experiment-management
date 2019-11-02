@@ -22,11 +22,22 @@ public class ApplyGeneralFormInfoVO implements Serializable {
     /**
      * 项目组id
      */
-    private Long projectGroupId;
+    private Long id;
     /**
      * 项目名称
      */
     private String projectName;
+
+    /**
+     * 是否开放选题
+     */
+    private Integer isOpenTopic;
+
+    /**
+     * 所需经费支持
+     */
+    private Float applyFunds;
+
     /**
      * 项目分类类型
      */
@@ -86,6 +97,9 @@ public class ApplyGeneralFormInfoVO implements Serializable {
      * 开始时间
      */
     private Date startTime;
+
+
+    private Date endTime;
 
     /**
      * 项目开展进度

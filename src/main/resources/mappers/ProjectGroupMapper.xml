@@ -106,6 +106,7 @@
         <result column="status" jdbcType="INTEGER" property="status" />
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
         <result column="main_content" jdbcType="LONGVARCHAR" property="mainContent"/>
+        <result column="apply_funds" property="applyFunds"/>
         <result column="is_open_topic" jdbcType="INTEGER" property="isOpenTopic"/>
     </resultMap>
 
@@ -249,10 +250,12 @@
            project_name,
            project_type,
            start_time,
+           is_open_topic,
            project_group.`status`,
            key_project_status.project_id as whetherCommitKeyApply,
            update_time,
-           main_Content
+           main_Content,
+           apply_funds
     from openexperiment.project_group left join openexperiment.key_project_status  on key_project_status.project_id = project_group.id
     where project_group.id = #{id,jdbcType=BIGINT}
   </select>

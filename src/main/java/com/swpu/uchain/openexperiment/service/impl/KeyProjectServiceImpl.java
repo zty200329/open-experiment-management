@@ -142,9 +142,9 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return Result.success(list);
     }
 
-    private KeyProjectStatus getNextStatusByRoleAndOperation(RoleType roleType,OperationTypeOfKetProject operationType){
+    private KeyProjectStatus getNextStatusByRoleAndOperation(RoleType roleType, OperationTypeOfKeyProject operationType){
         KeyProjectStatus keyProjectStatus;
-        if (operationType == OperationTypeOfKetProject.REJECT) {
+        if (operationType == OperationTypeOfKeyProject.REJECT) {
             keyProjectStatus = KeyProjectStatus.REJECT_MODIFY;
             return keyProjectStatus;
         }
@@ -155,7 +155,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                     break;
             //如果是实验室
             case 4:
-                if (operationType == OperationTypeOfKetProject.AGREE){
+                if (operationType == OperationTypeOfKeyProject.AGREE){
                     keyProjectStatus = KeyProjectStatus.LAB_ALLOWED;
                 }else {
                     keyProjectStatus = KeyProjectStatus.LAB_ALLOWED_AND_REPORTED;
@@ -163,7 +163,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                 break;
                 //如果是二级单位
             case 5:
-                if (operationType == OperationTypeOfKetProject.AGREE){
+                if (operationType == OperationTypeOfKeyProject.AGREE){
                     keyProjectStatus = KeyProjectStatus.SECONDARY_UNIT_ALLOWED;
                 }else {
                     keyProjectStatus = KeyProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED;
@@ -179,8 +179,8 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return keyProjectStatus;
     }
 
-    private Result operateKeyProjectOfSpecifiedRoleAndOperation(RoleType roleType,OperationTypeOfKetProject operationType,
-                                                   List<KeyProjectCheck> list){
+    private Result operateKeyProjectOfSpecifiedRoleAndOperation(RoleType roleType, OperationTypeOfKeyProject operationType,
+                                                                List<KeyProjectCheck> list){
         User user = getUserService.getCurrentUser();
         if (user == null){
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
@@ -206,38 +206,38 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result agreeKeyProjectByGuideTeacher(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.MENTOR,OperationTypeOfKetProject.AGREE,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.MENTOR, OperationTypeOfKeyProject.AGREE,list);
     }
 
     @Override
     public Result agreeKeyProjectByLabAdministrator(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR,OperationTypeOfKetProject.AGREE,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR, OperationTypeOfKeyProject.AGREE,list);
     }
 
     @Override
     public Result agreeKeyProjectBySecondaryUnit(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT,OperationTypeOfKetProject.AGREE,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT, OperationTypeOfKeyProject.AGREE,list);
     }
 
     @Override
     public Result agreeKeyProjectByFunctionalDepartment(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT,OperationTypeOfKetProject.AGREE,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationTypeOfKeyProject.AGREE,list);
     }
 
     @Override
     public Result reportKeyProjectByLabAdministrator(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR,OperationTypeOfKetProject.REPORT,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR, OperationTypeOfKeyProject.REPORT,list);
     }
 
     @Override
     public Result reportKeyProjectBySecondaryUnit(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT,OperationTypeOfKetProject.REPORT,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT, OperationTypeOfKeyProject.REPORT,list);
     }
 
 
     @Override
     public Result rejectKeyProjectByGuideTeacher(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.MENTOR,OperationTypeOfKetProject.REJECT,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.MENTOR, OperationTypeOfKeyProject.REJECT,list);
     }
 
     @Override
@@ -267,17 +267,17 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result rejectKeyProjectByLabAdministrator(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR,OperationTypeOfKetProject.REJECT,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR, OperationTypeOfKeyProject.REJECT,list);
     }
 
     @Override
     public Result rejectKeyProjectBySecondaryUnit(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT,OperationTypeOfKetProject.REJECT,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT, OperationTypeOfKeyProject.REJECT,list);
     }
 
     @Override
     public Result rejectKeyProjectByFunctionalDepartment(List<KeyProjectCheck> list) {
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT,OperationTypeOfKetProject.REJECT,list);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationTypeOfKeyProject.REJECT,list);
     }
 
     @Override

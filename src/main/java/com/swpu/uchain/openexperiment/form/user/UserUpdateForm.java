@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 /**
  * @Author: clf
@@ -15,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class UserUpdateForm {
 
-    @NotNull(message = "用户id不能为空")
+    @Null(message = "用户id不能为空")
     @ApiModelProperty("用户id")
     private Long userId;
 

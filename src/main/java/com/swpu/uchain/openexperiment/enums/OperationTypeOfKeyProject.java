@@ -7,7 +7,7 @@ import lombok.Getter;
  * @author panghu
  */
 @Getter
-public enum OperationTypeOfKetProject {
+public enum OperationTypeOfKeyProject {
     /**
      *审核操作对应的类型  value:对应的传输值  tips 提示
      */
@@ -21,7 +21,7 @@ public enum OperationTypeOfKetProject {
 
     private String tips;
 
-    OperationTypeOfKetProject(Integer value, String tips) {
+    OperationTypeOfKeyProject(Integer value, String tips) {
         this.value = value;
         this.tips = tips;
     }
