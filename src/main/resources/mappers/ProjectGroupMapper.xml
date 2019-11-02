@@ -412,6 +412,7 @@
                project_group.update_time,
                project_group.main_Content,
                project_group.apply_funds,
+               project_group.is_open_topic,
                key_project_status.project_id as whether_commit_key_apply,
                user_project_group.user_id        as u_code,
                user_project_group.technical_role as u_technical_role,

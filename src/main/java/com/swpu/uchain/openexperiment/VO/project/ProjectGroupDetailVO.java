@@ -120,7 +120,6 @@ public class ProjectGroupDetailVO {
     private Integer whetherCommitKeyApply;
 
 
-
     /**
      * 项目开展进度
      */

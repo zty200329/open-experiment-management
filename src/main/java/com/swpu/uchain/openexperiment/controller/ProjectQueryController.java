@@ -97,7 +97,7 @@ public class ProjectQueryController {
 
     @ApiOperation("通过项目ID查看项目详情--成员和项目信息")
     @GetMapping("/getApplyInfo")
-    public Result getProjectGroupDetailByProjectId(Long projectId){
+    public Result getProjectGroupDetailByProjectId(@RequestParam("id") Long projectId){
         return projectService.getProjectGroupDetailVOByProjectId(projectId);
     }
 

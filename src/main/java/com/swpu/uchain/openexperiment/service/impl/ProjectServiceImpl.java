@@ -1225,7 +1225,7 @@ public class ProjectServiceImpl implements ProjectService {
         @Override
         public Result getProjectGroupDetailVOByProjectId (Long projectId){
             if (projectId == null) {
-                throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+                throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
             }
             return Result.success(projectGroupMapper.getProjectGroupDetailVOByProjectId(projectId));
         }
