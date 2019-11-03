@@ -14,8 +14,14 @@ public class AmountLimit {
 
     private Integer minAmount;
 
+    /**
+     * 限制学院
+     */
     private Integer limitCollege;
 
+    /**
+     * 限制单位
+     */
     private Integer limitUnit;
 
 }

@@ -29,6 +29,11 @@ public enum CodeMsg {
     ROLE_NOT_EXIST(1414, "当前角色不存在" ),
     NOT_FOUND(1415,"url错误,请求路径未找到" ),
     ILLEGAL_MEMBER_ROLE(1416, "非法角色,系统不存在当前角色值"),
+    USER_INFORMATION_MATCH_ERROR(1417,"用户信息匹配错误"),
+    ALREADY_APPLY(1417, "已经进行申请操作,无法再次操作,请勿重复操作"),
+    ROLE_ACL_HAD_EXIST(1418, "当前角色已拥有该权限,不能重复添加" ),
+
+
 
 
     /**
@@ -46,6 +51,13 @@ public enum CodeMsg {
     ADD_PROJECT_GROUP_ERROR(1510, "创建项目组异常"),
     ADD_USER_JOIN_ERROR(1511, "用户加入项目异常"),
     STUDENT_CANT_APPLY(1512, "学生无法申请立项"),
+    CURRENT_PROJECT_STATUS_ERROR(1513,"当前项目不支持该操作"),
+    PROJECT_NOT_MODIFY_BY_FUNCTION_DEPARTMENT(1514,"项目未被职能部门修改"),
+    LEADING_TEACHER_CONTAINS_ERROR(1515,"指导教师必须包含项目申请人"),
+    TOPIC_IS_NOT_OPEN(1516,"选题选择开放,无法在申请立项时指定学生"),
+    PROJECT_HAS_BEEN_REJECTED(1517,"项目已经被驳回"),
+    PROJECT_GROUP_HAD_EXIST(1518,"该项目已存在,请修改项目名" ),
+    PROJECT_GROUP_NOT_EXIST(1519, "项目组不存在" ),
 
     /**
      * 文件相关异常 1601-1700
@@ -61,15 +73,9 @@ public enum CodeMsg {
     DELETE_FILE_ERROR(1609, "删除文件异常"),
     FILE_NAME_EMPTY_ERROR(1610,"文件名不能为空"),
 
-    REQUEST_METHOD_ERROR(550,"不支持%s的请求方式" ),
-    SERVER_ERROR(500,"服务器未知错误:%s" ),
-    BIND_ERROR(511,"参数校验错误:%s"),
-    UPDATE_ERROR(508, "更新数据库失败"),
 
-    ROLE_ACL_HAD_EXIST(515, "当前角色已拥有该权限,不能重复添加" ),
-    PROJECT_GROUP_NOT_EXIST(516, "项目组不存在" ),
+
     NOT_MATCH_LIMIT(517, "不符合条件,无法参与项目" ),
-    PROJECT_GROUP_HAD_EXIST(519,"该项目已存在,请修改项目名" ),
     USER_HAD_JOINED(520,"用户已经加入该项目,不需要重复添加" ),
     USER_HAD_BEEN_REJECTED(520,"用户曾已经被拒绝,无法再次加入"),
     USER_NOT_APPLYING(521,"用户未申请,无法进行操作" ),
@@ -80,25 +86,22 @@ public enum CodeMsg {
     USER_NOT_IN_GROUP(526, "非法操作,不能操作非自己的项目组"),
     FUNDS_APPLY_ERROR(528, "资金申请异常"),
     FUNDS_AGREE_CANT_CHANGE(529, "资金已经同意无法进行修改"),
-    PAGE_NUM_ERROR(530, "分页数目异常"),
 
-    ALREADY_APPLY(536, "已经进行申请操作,无法再次操作,请勿重复操作"),
-
-    NOT_IN_VALID_TIME(609,"操作不在允许的时间之内"),
-    TIME_DEFINE_ERROR(610,"时间设置错误"),
-    PROJECT_HAS_BEEN_REJECTED(611,"项目已经被驳回"),
-    PROJECT_NOT_MODIFY_BY_FUNCTION_DEPARTMENT(614,"项目未被职能部门修改"),
-    LEADING_TEACHER_CONTAINS_ERROR(615,"指导教师必须包含项目申请人"),
-    TOPIC_IS_NOT_OPEN(616,"选题选择开放,无法在申请立项时指定学生"),
-    CURRENT_PROJECT_STATUS_ERROR(617,"当前项目不支持该操作"),
-    USER_INFORMATION_MATCH_ERROR(618,"用户信息匹配错误"),
 
     /**
      * 其他异常 1801-1900
      */
     PARAM_CANT_BE_NULL(1801, "参数不能为空" ),
     ADD_ERROR(1802, "添加失败" ),
-    UNKNOWN_ROLE_TYPE_AND_OPERATION_TYPE(1803,"未知角色类型和操作类型");
+    UNKNOWN_ROLE_TYPE_AND_OPERATION_TYPE(1803,"未知角色类型和操作类型"),
+    REQUEST_METHOD_ERROR(1804,"不支持%s的请求方式" ),
+    SERVER_ERROR(1805,"服务器未知错误:%s" ),
+    BIND_ERROR(1806,"参数校验错误:%s"),
+    NOT_IN_VALID_TIME(1807,"操作不在允许的时间之内"),
+    TIME_DEFINE_ERROR(1808,"时间设置错误"),
+    PAGE_NUM_ERROR(1809, "分页数目异常"),
+    INPUT_INFO_HAS_EXISTED(1810,"该信息已经存在"),
+    UPDATE_ERROR(1807, "更新数据库失败");
 
     private Integer code;
     private String msg;

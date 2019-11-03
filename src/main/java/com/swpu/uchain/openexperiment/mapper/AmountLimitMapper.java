@@ -3,10 +3,12 @@ package com.swpu.uchain.openexperiment.mapper;
 import com.swpu.uchain.openexperiment.VO.TimeLimitVO;
 import com.swpu.uchain.openexperiment.domain.AmountLimit;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author dengg
  */
+@Repository
 public interface AmountLimitMapper {
 
     int insertOne(AmountLimit amountLimit);

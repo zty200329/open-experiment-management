@@ -23,3 +23,10 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+src/main/resources/conclusion_dir/
+src/main/resources/key-final-report/
+src/main/resources/ordinary-experiment-report/
+src/main/resources/ordinary-final-report/
+src/test/java/com/swpu/uchain/openexperiment/ScoreCount.java
+src/test/java/com/swpu/uchain/openexperiment/homework/
+/src/test/
