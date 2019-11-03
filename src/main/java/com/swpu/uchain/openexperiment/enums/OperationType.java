@@ -14,7 +14,9 @@ public enum OperationType {
     AGREE(1,"同意"),
     REJECT(2,"拒绝"),
     REPORT(3,"上报"),
-    MODIFY(4,"修改")
+    MODIFY(4,"修改"),
+    OFFLINE_CHECK(5,"线下检查通过"),
+    CONCLUSION(6,"立项")
     ;
 
     private Integer value;

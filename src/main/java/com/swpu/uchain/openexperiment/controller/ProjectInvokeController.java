@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.RoleType;
+import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
 import com.swpu.uchain.openexperiment.form.funds.FundsUpdateForm;
 import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -97,10 +98,22 @@ public class ProjectInvokeController {
     }
 
 
-    @ApiOperation("职能部门批准操作")
+    @ApiOperation("职能部门批准立项操作")
     @PostMapping(value = "/agreeEstablish", name = "同意立项")
     public Result agreeEstablish(@Valid @RequestBody List<ProjectCheckForm> projectGroupIdList){
         return projectService.agreeEstablish(projectGroupIdList);
+    }
+
+    @ApiOperation("职能部门同意中期检查项目")
+    @PostMapping(value = "/agreeIntermediateInspectionProject")
+    public Result agreeIntermediateInspectionProject(@Valid @RequestBody List<ProjectCheckForm> list){
+        return projectService.agreeIntermediateInspectionProject(list);
+    }
+
+    @ApiOperation("职能部门同意结题")
+    @PostMapping(value = "/agreeToBeConcludingProject")
+    public Result agreeToBeConcludingProject(@Valid @RequestBody List<ProjectCheckForm> list){
+        return projectService.agreeToBeConcludingProject(list);
     }
 
     @ApiOperation("实验室批准操作")

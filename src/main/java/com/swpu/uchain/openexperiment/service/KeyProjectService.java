@@ -65,4 +65,8 @@ public interface KeyProjectService {
     Result getIntermediateInspectionKeyProject(Integer college);
 
     Result getToBeConcludingKeyProject(Integer college);
+
+    Result agreeIntermediateInspectionKeyProject(List<KeyProjectCheck> list);
+
+    Result agreeToBeConcludingKeyProject(List<KeyProjectCheck> list);
 }

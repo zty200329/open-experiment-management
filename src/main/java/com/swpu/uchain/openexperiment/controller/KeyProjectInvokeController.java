@@ -53,11 +53,25 @@ public class KeyProjectInvokeController {
         return keyProjectService.agreeKeyProjectBySecondaryUnit(list);
     }
 
-    @ApiOperation("职能部门同意带审核项目")
+    @ApiOperation("职能部门同意立项")
     @PostMapping(value = "/agreeKeyProjectByFunctionalDepartment")
     public Result agreeKeyProjectByFunctionalDepartment(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.agreeKeyProjectByFunctionalDepartment(list);
     }
+
+    @ApiOperation("职能部门同意中期检查项目")
+    @PostMapping(value = "/agreeIntermediateInspectionKeyProject")
+    public Result agreeIntermediateInspectionKeyProject(@Valid @RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.agreeIntermediateInspectionKeyProject(list);
+    }
+
+    @ApiOperation("职能部门同意结题")
+    @PostMapping(value = "/agreeToBeConcludingKeyProject")
+    public Result agreeToBeConcludingKeyProject(@Valid @RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.agreeToBeConcludingKeyProject(list);
+    }
+
+
 
     @ApiOperation("实验室主任上报已审核项目")
     @PostMapping(value = "/reportKeyProjectByLabAdministrator")

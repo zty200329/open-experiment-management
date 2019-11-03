@@ -6,6 +6,7 @@ import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.VO.project.*;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
+import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
 import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
@@ -379,17 +380,31 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result agreeEstablish(List<ProjectCheckForm> projectGroupIdList) {
+    public Result agreeEstablish(List<ProjectCheckForm> list) {
+        return setProjectStatusAndRecord(list,OperationType.AGREE,OperationUnit.FUNCTIONAL_DEPARTMENT);
+    }
+
+    @Override
+    public Result agreeIntermediateInspectionProject(List<ProjectCheckForm> list) {
+        return setProjectStatusAndRecord(list,OperationType.OFFLINE_CHECK,OperationUnit.FUNCTIONAL_DEPARTMENT);
+    }
+
+    @Override
+    public Result agreeToBeConcludingProject(List<ProjectCheckForm> list) {
+        return setProjectStatusAndRecord(list,OperationType.CONCLUSION,OperationUnit.FUNCTIONAL_DEPARTMENT);
+    }
+
+    private Result setProjectStatusAndRecord(List<ProjectCheckForm> list,OperationType operationType,OperationUnit operationUnit){
         List<OperationRecord> operationRecordS = new LinkedList<>();
-        for (ProjectCheckForm projectCheckForm : projectGroupIdList) {
+        for (ProjectCheckForm projectCheckForm : list) {
             Result result = updateProjectStatus(projectCheckForm.getProjectId(), ProjectStatus.ESTABLISH.getValue());
             if (result.getCode() != 0) {
                 throw new GlobalException(CodeMsg.UPDATE_ERROR);
             }
 
             OperationRecord operationRecord = new OperationRecord();
-            operationRecord.setOperationType(OperationType.AGREE.getValue());
-            operationRecord.setOperationUnit(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue());
+            operationRecord.setOperationType(operationType.getValue());
+            operationRecord.setOperationUnit(operationUnit.getValue());
             operationRecord.setOperationReason(projectCheckForm.getReason());
             operationRecord.setRelatedId(projectCheckForm.getProjectId());
             operationRecordS.add(operationRecord);

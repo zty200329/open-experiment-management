@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
+import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
 import com.swpu.uchain.openexperiment.form.member.MemberQueryCondition;
 import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
@@ -260,4 +261,8 @@ public interface ProjectService {
     Result getToBeConcludingProject();
 
     Result getIntermediateInspectionProject();
+
+    Result agreeIntermediateInspectionProject(List<ProjectCheckForm> list);
+
+    Result agreeToBeConcludingProject(List<ProjectCheckForm> list);
 }
