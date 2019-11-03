@@ -51,6 +51,18 @@ public class KeyProjectQueryController {
         return keyProjectService.getKeyProjectApplyingListByFunctionalDepartment();
     }
 
+    @ApiOperation("职能部门获取待中期检查的项目 -- 参数可不传")
+    @GetMapping(value = "getIntermediateInspectionKeyProject")
+    public Result getIntermediateInspectionKeyProject (Integer college){
+        return keyProjectService.getIntermediateInspectionKeyProject(college);
+    }
+
+    @ApiOperation("职能部门获取待结题检查的项目 -- 参数可不传")
+    @GetMapping(value = "getToBeConcludingKeyProject")
+    public Result getToBeConcludingKeyProject (Integer college){
+        return keyProjectService.getToBeConcludingKeyProject(college);
+    }
+
     @GetMapping(value = "/getToBeReportedKeyProjectByLabAdmin")
     @ApiOperation("实验室主任获取待上报的项目")
     public Result getToBeReportedProjectByLabAdmin(){

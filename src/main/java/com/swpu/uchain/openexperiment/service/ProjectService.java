@@ -256,4 +256,8 @@ public interface ProjectService {
     Result addStudentToProject(JoinForm joinForm);
 
     Result removeStudentFromProject(JoinForm joinForm);
+
+    Result getToBeConcludingProject();
+
+    Result getIntermediateInspectionProject();
 }

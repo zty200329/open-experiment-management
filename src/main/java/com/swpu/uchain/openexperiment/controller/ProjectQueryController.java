@@ -82,8 +82,19 @@ public class ProjectQueryController {
     @ApiOperation("职能部门获取待立项审核的项目")
     @GetMapping(value = "getPendingApprovalProjectByFunctionalDepartment")
     public Result getPendingApprovalProjectByFunctionalDepartment (){
-
         return projectService.getPendingApprovalProjectByFunctionalDepartment();
+    }
+
+    @ApiOperation("职能部门获取待中期检查的项目")
+    @GetMapping(value = "getIntermediateInspectionProject")
+    public Result getIntermediateInspectionProject (){
+        return projectService.getIntermediateInspectionProject();
+    }
+
+    @ApiOperation("职能部门获取待结题检查的项目")
+    @GetMapping(value = "getToBeConcludingProject")
+    public Result getToBeConcludingProject (){
+        return projectService.getToBeConcludingProject();
     }
 
     @ApiOperation("根据项目名模糊查询项目--可使用")
@@ -124,4 +135,6 @@ public class ProjectQueryController {
     public Result getMemberAmountOfProject(@Valid @RequestBody HistoryQueryProjectInfo info ){
         return projectService.getHistoricalProjectInfo(info);
     }
+
+
 }

@@ -61,4 +61,8 @@ public interface KeyProjectService {
     Result getKeyProjectDetailById(Long projectId);
 
     Result conditionallyQueryOfKeyProject(QueryConditionForm form);
+
+    Result getIntermediateInspectionKeyProject(Integer college);
+
+    Result getToBeConcludingKeyProject(Integer college);
 }

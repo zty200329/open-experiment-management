@@ -57,6 +57,7 @@ public class ProjectServiceImpl implements ProjectService {
     private OperationRecordMapper recordMapper;
     private MessageRecordMapper messageRecordMapper;
     private UserMapper userMapper;
+    private KeyProjectStatusMapper keyProjectStatusMapper;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -66,7 +67,8 @@ public class ProjectServiceImpl implements ProjectService {
                               ConvertUtil convertUtil, GetUserService getUserService,
                               OperationRecordMapper recordMapper,
                               MessageRecordMapper messageRecordMapper, RoleMapper roleMapper,
-                              UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper) {
+                              UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper,
+                              KeyProjectStatusMapper keyProjectStatusMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -81,6 +83,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.messageRecordMapper = messageRecordMapper;
         this.roleMapper = roleMapper;
         this.userMapper = userMapper;
+        this.keyProjectStatusMapper = keyProjectStatusMapper;
     }
 
     @Override
@@ -263,6 +266,10 @@ public class ProjectServiceImpl implements ProjectService {
         for (ProjectGroup projectGroup : projectGroups) {
             Integer numberOfSelectedStu = userProjectGroupMapper.selectStuCount(projectGroup.getId(), null);
             MyProjectVO myProjectVO = new MyProjectVO();
+            Integer status = keyProjectStatusMapper.getStatusByProjectId(projectGroup.getId());
+            if (status != null){
+                myProjectVO.setStatus(status);
+            }
             BeanUtils.copyProperties(projectGroup, myProjectVO);
             myProjectVO.setId(projectGroup.getId());
             myProjectVO.setNumberOfTheSelected(numberOfSelectedStu);
@@ -472,21 +479,32 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result getPendingApprovalProjectByLabAdministrator() {
         //TODO 身份验证
-        return getCheckInfo(RoleType.LAB_ADMINISTRATOR.getValue());
+        return getCheckInfo(ProjectStatus.DECLARE);
     }
 
     @Override
     public Result getPendingApprovalProjectBySecondaryUnit() {
         //TODO 身份验证
 
-        return getCheckInfo(RoleType.SECONDARY_UNIT.getValue());
+        return getCheckInfo(ProjectStatus.LAB_ALLOWED_AND_REPORTED);
     }
 
     @Override
     public Result getPendingApprovalProjectByFunctionalDepartment() {
         //TODO 身份验证
+        return getCheckInfo(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED);
+    }
 
-        return getCheckInfo(RoleType.FUNCTIONAL_DEPARTMENT.getValue());
+    @Override
+    public Result getToBeConcludingProject() {
+        //TODO 身份验证
+        return getCheckInfo(ProjectStatus.ESTABLISH);
+    }
+
+    @Override
+    public Result getIntermediateInspectionProject() {
+        //TODO 身份验证
+        return getCheckInfo(ProjectStatus.MID_TERM_INSPECTION);
     }
 
     private Result getReportInfo(Integer role) {
@@ -521,28 +539,9 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success(checkProjectVOs);
     }
 
-        private Result getCheckInfo (Integer role){
-            //获取工号,并通过工号获取角色,再通过角色判定操作类型(只针对于审核这一步)
-            Integer projectStatus;
-            //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
-            switch (role) {
-                //职能部门
-                case 6:
-                    projectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
-                    break;
-                //二级部门(学院领导)
-                case 5:
-                    projectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
-                    break;
-                //实验室主任
-                case 4:
-                    projectStatus = ProjectStatus.DECLARE.getValue();
-                    break;
-                default:
-                    //超管执行操作
-                    projectStatus = -3;
-            }
-            List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus);
+        private Result getCheckInfo (ProjectStatus projectStatus){
+        Integer status = projectStatus.getValue();
+            List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(status);
             for (CheckProjectVO checkProjectVO : checkProjectVOs) {
                 List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
                 checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(checkProjectVO.getId(),null));

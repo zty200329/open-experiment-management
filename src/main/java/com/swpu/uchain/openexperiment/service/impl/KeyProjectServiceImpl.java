@@ -128,12 +128,18 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED,null);
     }
 
-    private Result getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus status,CollegeType college){
-        Integer collegeOfInteger = null;
-        if (college!=null){
-            collegeOfInteger = college.getValue();
-        }
-        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(status.getValue(),collegeOfInteger);
+    @Override
+    public Result getIntermediateInspectionKeyProject(Integer college) {
+        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.ESTABLISH,college);
+    }
+
+    @Override
+    public Result getToBeConcludingKeyProject(Integer college) {
+        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.MID_TERM_INSPECTION,college);
+    }
+
+    private Result getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus status, Integer college){
+        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(status.getValue(),college);
         for (KeyProjectDTO keyProjectDTO :list
              ) {
             keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(keyProjectDTO.getId(),null));
