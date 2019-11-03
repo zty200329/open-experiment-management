@@ -111,6 +111,18 @@ public class ProjectInvokeController {
     }
 
     @ApiOperation("职能部门同意结题")
+    @PostMapping(value = "/rejectToBeConcludingProject")
+    public Result rejectToBeConcludingProject(@Valid @RequestBody List<ProjectCheckForm> list){
+        return projectService.rejectToBeConcludingProject(list);
+    }
+
+    @ApiOperation("职能部门不同意中期检查项目")
+    @PostMapping(value = "/rejectIntermediateInspectionProject")
+    public Result rejectIntermediateInspectionProject(@Valid @RequestBody List<ProjectCheckForm> list){
+        return projectService.rejectIntermediateInspectionProject(list);
+    }
+
+    @ApiOperation("职能部门不同意结题")
     @PostMapping(value = "/agreeToBeConcludingProject")
     public Result agreeToBeConcludingProject(@Valid @RequestBody List<ProjectCheckForm> list){
         return projectService.agreeToBeConcludingProject(list);

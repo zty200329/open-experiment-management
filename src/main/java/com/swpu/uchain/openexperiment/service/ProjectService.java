@@ -265,4 +265,8 @@ public interface ProjectService {
     Result agreeIntermediateInspectionProject(List<ProjectCheckForm> list);
 
     Result agreeToBeConcludingProject(List<ProjectCheckForm> list);
+
+    Result rejectIntermediateInspectionProject(List<ProjectCheckForm> list);
+
+    Result rejectToBeConcludingProject(List<ProjectCheckForm> list);
 }

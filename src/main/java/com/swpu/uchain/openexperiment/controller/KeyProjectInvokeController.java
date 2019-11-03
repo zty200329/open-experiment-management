@@ -72,7 +72,6 @@ public class KeyProjectInvokeController {
     }
 
 
-
     @ApiOperation("实验室主任上报已审核项目")
     @PostMapping(value = "/reportKeyProjectByLabAdministrator")
     public Result reportKeyProjectByLabAdministrator(@Valid @RequestBody List<KeyProjectCheck> list){
@@ -91,22 +90,34 @@ public class KeyProjectInvokeController {
         return keyProjectService.rejectKeyProjectByGuideTeacher(list);
     }
 
-    @ApiOperation("实验室主任拒绝带审核项目")
+    @ApiOperation("实验室主任拒绝待审核项目")
     @PostMapping(value = "/rejectKeyProjectByLabAdministrator")
     public Result rejectKeyProjectByLabAdministrator(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.rejectKeyProjectByLabAdministrator(list);
     }
 
-    @ApiOperation("二级单位主任拒绝带审核项目")
+    @ApiOperation("二级单位主任拒绝待审核项目")
     @PostMapping(value = "/rejectKeyProjectBySecondaryUnit")
     public Result rejectKeyProjectBySecondaryUnit(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.rejectKeyProjectBySecondaryUnit(list);
     }
 
-    @ApiOperation("职能部门拒绝带审核项目")
+    @ApiOperation("职能部门拒绝待审核项目")
     @PostMapping(value = "/rejectKeyProjectByFunctionalDepartment")
     public Result rejectKeyProjectByFunctionalDepartment(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.rejectKeyProjectByFunctionalDepartment(list);
+    }
+
+    @ApiOperation("职能部门拒绝中期检查项目")
+    @PostMapping(value = "/rejectIntermediateInspectionKeyProject")
+    public Result rejectIntermediateInspectionKeyProject(@Valid @RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.rejectIntermediateInspectionKeyProject(list);
+    }
+
+    @ApiOperation("职能部门拒绝结题")
+    @PostMapping(value = "/rejectToBeConcludingKeyProject")
+    public Result rejectToBeConcludingKeyProject(@Valid @RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.rejectToBeConcludingKeyProject(list);
     }
 
 }

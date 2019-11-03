@@ -401,7 +401,6 @@ public class ProjectServiceImpl implements ProjectService {
             if (result.getCode() != 0) {
                 throw new GlobalException(CodeMsg.UPDATE_ERROR);
             }
-
             OperationRecord operationRecord = new OperationRecord();
             operationRecord.setOperationType(operationType.getValue());
             operationRecord.setOperationUnit(operationUnit.getValue());
@@ -1120,97 +1119,83 @@ public class ProjectServiceImpl implements ProjectService {
             return joinUnCheckVO;
         }
 
-        @Override
-        public Result rejectJoin (JoinForm[]joinForm){
-            for (JoinForm form : joinForm) {
-                UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(form.getProjectGroupId(), form.getUserId());
-                if (userProjectGroup == null) {
-                    return Result.error(CodeMsg.USER_NOT_APPLYING);
-                }
-                if (userProjectGroup.getStatus() != JoinStatus.APPLYING.getValue().intValue()) {
-                    return Result.error(CodeMsg.USER_HAD_JOINED_CANT_REJECT);
-                }
-                userProjectGroup.setStatus(JoinStatus.UN_PASS.getValue());
-                if (!userProjectService.update(userProjectGroup)) {
-                    return Result.error(CodeMsg.UPDATE_ERROR);
-                }
+    @Override
+    public Result rejectJoin (JoinForm[]joinForm){
+        for (JoinForm form : joinForm) {
+            UserProjectGroup userProjectGroup = userProjectService.selectByProjectGroupIdAndUserId(form.getProjectGroupId(), form.getUserId());
+            if (userProjectGroup == null) {
+                return Result.error(CodeMsg.USER_NOT_APPLYING);
             }
-            return Result.success();
-        }
-
-        @Override
-        public List<SelectProjectVO> selectByProjectName (String name){
-            List<SelectProjectVO> list = (List<SelectProjectVO>) redisService.getList(ProjectGroupKey.getByFuzzyName, name);
-            if (list == null || list.size() == 0) {
-                list = projectGroupMapper.selectByFuzzyName(name);
-                if (list != null) {
-                    redisService.setList(ProjectGroupKey.getByFuzzyName, name, list);
-                }
+            if (userProjectGroup.getStatus() != JoinStatus.APPLYING.getValue().intValue()) {
+                return Result.error(CodeMsg.USER_HAD_JOINED_CANT_REJECT);
             }
-            return list;
+            userProjectGroup.setStatus(JoinStatus.UN_PASS.getValue());
+            if (!userProjectService.update(userProjectGroup)) {
+                return Result.error(CodeMsg.UPDATE_ERROR);
+            }
         }
+        return Result.success();
+    }
 
-        @Override
-        public Result rejectProjectApplyByLabAdministrator (List < ProjectCheckForm > formList) {
-            //TODO 身份验证
-
-            return rejectProjectApply(formList, RoleType.LAB_ADMINISTRATOR.getValue());
+    @Override
+    public List<SelectProjectVO> selectByProjectName (String name){
+        List<SelectProjectVO> list = (List<SelectProjectVO>) redisService.getList(ProjectGroupKey.getByFuzzyName, name);
+        if (list == null || list.size() == 0) {
+            list = projectGroupMapper.selectByFuzzyName(name);
+            if (list != null) {
+                redisService.setList(ProjectGroupKey.getByFuzzyName, name, list);
+            }
         }
+        return list;
+    }
 
-        @Override
-        public Result rejectProjectApplyBySecondaryUnit (List < ProjectCheckForm > formList) {
-            //TODO 身份验证
+    @Override
+    public Result rejectProjectApplyByLabAdministrator (List < ProjectCheckForm > formList) {
+        //TODO 身份验证
 
-            return rejectProjectApply(formList, RoleType.SECONDARY_UNIT.getValue());
-        }
+        return rejectProjectApply(formList, OperationUnit.LAB_ADMINISTRATOR,OperationType.REJECT);
+    }
 
-        @Override
-        public Result rejectProjectApplyByFunctionalDepartment (List < ProjectCheckForm > formList) {
-            //TODO 身份验证
+    @Override
+    public Result rejectProjectApplyBySecondaryUnit (List < ProjectCheckForm > formList) {
+        //TODO 身份验证
 
-            return rejectProjectApply(formList, RoleType.FUNCTIONAL_DEPARTMENT.getValue());
-        }
+        return rejectProjectApply(formList,OperationUnit.SECONDARY_UNIT,OperationType.REJECT);
+    }
 
-        /**
+    @Override
+    public Result rejectProjectApplyByFunctionalDepartment (List < ProjectCheckForm > formList) {
+        //TODO 身份验证
+
+        return rejectProjectApply(formList,OperationUnit.FUNCTIONAL_DEPARTMENT,OperationType.REJECT);
+    }
+
+    @Override
+    public Result rejectIntermediateInspectionProject(List<ProjectCheckForm> list) {
+        return rejectProjectApply(list, OperationUnit.FUNCTIONAL_DEPARTMENT,OperationType.CONCLUSION_REJECT);
+    }
+
+    @Override
+    public Result rejectToBeConcludingProject(List<ProjectCheckForm> list) {
+        return rejectProjectApply(list, OperationUnit.FUNCTIONAL_DEPARTMENT,OperationType.CONCLUSION_REJECT);
+    }
+
+    /**
          *  因为是批量操作  所以就最好将拒绝和同意分开
          * @param formList 项目拒绝信息集合
          * @return
          */
         @Transactional(rollbackFor = Exception.class)
-        public Result rejectProjectApply (List < ProjectCheckForm > formList, Integer role){
+        public Result rejectProjectApply (List < ProjectCheckForm > formList,OperationUnit operationUnit,OperationType operationType){
             User user = getUserService.getCurrentUser();
-            Integer operationUnit;
-            Integer rightProjectStatus;
-            //这里强制转化不会出现什么问题,问题在于前期将RoleID设置为Long
-            switch (role) {
-                //如果是实验室主任
-                case 4:
-                    operationUnit = OperationUnit.LAB_ADMINISTRATOR.getValue();
-                    rightProjectStatus = ProjectStatus.DECLARE.getValue();
-                    break;
-                //二级单位
-                case 5:
-                    operationUnit = OperationUnit.SECONDARY_UNIT.getValue();
-                    rightProjectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
-                    break;
-                //职能部门
-                case 6:
-                    operationUnit = OperationUnit.FUNCTIONAL_DEPARTMENT.getValue();
-                    rightProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
-                    break;
-                default:
-                    //超管执行操作
-                    operationUnit = -5;
-                    rightProjectStatus = ProjectStatus.REJECT_MODIFY.getValue();
-            }
             List<OperationRecord> list = new LinkedList<>();
             OperationRecord operationRecord = new OperationRecord();
             for (ProjectCheckForm form : formList
             ) {
                 operationRecord.setRelatedId(form.getProjectId());
                 operationRecord.setOperationReason(form.getReason());
-                operationRecord.setOperationUnit(OperationType.REJECT.getValue());
-                operationRecord.setOperationType(operationUnit);
+                operationRecord.setOperationUnit(operationType.getValue());
+                operationRecord.setOperationType(operationUnit.getValue());
                 operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
                 //修改状态
                 ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());

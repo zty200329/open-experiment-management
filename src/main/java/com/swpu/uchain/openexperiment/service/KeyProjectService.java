@@ -69,4 +69,8 @@ public interface KeyProjectService {
     Result agreeIntermediateInspectionKeyProject(List<KeyProjectCheck> list);
 
     Result agreeToBeConcludingKeyProject(List<KeyProjectCheck> list);
+
+    Result rejectIntermediateInspectionKeyProject(List<KeyProjectCheck> list);
+
+    Result rejectToBeConcludingKeyProject(List<KeyProjectCheck> list);
 }

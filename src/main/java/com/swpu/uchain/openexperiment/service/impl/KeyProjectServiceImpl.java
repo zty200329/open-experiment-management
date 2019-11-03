@@ -255,6 +255,16 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     @Override
+    public Result rejectIntermediateInspectionKeyProject(List<KeyProjectCheck> list) {
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.OFFLINE_CHECK_REJECT,list);
+    }
+
+    @Override
+    public Result rejectToBeConcludingKeyProject(List<KeyProjectCheck> list) {
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.CONCLUSION_REJECT,list);
+    }
+
+    @Override
     public Result reportKeyProjectBySecondaryUnit(List<KeyProjectCheck> list) {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT, OperationType.REPORT,list);
     }
