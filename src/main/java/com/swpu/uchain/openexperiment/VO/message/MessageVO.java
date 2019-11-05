@@ -1,4 +1,4 @@
-package com.swpu.uchain.openexperiment.VO;
+package com.swpu.uchain.openexperiment.VO.message;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

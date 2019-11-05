@@ -1,4 +1,4 @@
-package com.swpu.uchain.openexperiment.VO;
+package com.swpu.uchain.openexperiment.VO.limit;
 
 import lombok.Data;
 

@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.VO.announcement;
 
 import com.swpu.uchain.openexperiment.domain.Announcement;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
@@ -12,6 +13,7 @@ import java.io.Serializable;
  * 公告VO
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class AnnouncementVO extends Announcement implements Serializable {
     /**
      * 点击次数

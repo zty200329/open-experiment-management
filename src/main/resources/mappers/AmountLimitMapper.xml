@@ -12,7 +12,7 @@
     <delete id="deleteLimit">
         delete from openexperiment.amount_limit where id = #{id}
     </delete>
-    <select id="getTimeLimitVOByCollegeAndUnit" resultType="com.swpu.uchain.openexperiment.VO.TimeLimitVO">
+    <select id="getTimeLimitVOByCollegeAndUnit" resultType="com.swpu.uchain.openexperiment.VO.limit.TimeLimitVO">
         select
                 max_amount as maxAmount,
                 min_amount as minAmount
