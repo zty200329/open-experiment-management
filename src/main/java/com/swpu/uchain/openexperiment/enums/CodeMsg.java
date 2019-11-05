@@ -72,6 +72,7 @@ public enum CodeMsg {
     DOWNLOAD_ERROR(1608,"下载失败" ),
     DELETE_FILE_ERROR(1609, "删除文件异常"),
     FILE_NAME_EMPTY_ERROR(1610,"文件名不能为空"),
+    FILE_EMPTY_ERROR(1610,"文件不能为空"),
 
 
 

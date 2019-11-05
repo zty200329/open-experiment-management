@@ -22,8 +22,10 @@ import com.swpu.uchain.openexperiment.service.ProjectFileService;
 import com.swpu.uchain.openexperiment.service.xdoc.XDocService;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.FileUtil;
+import com.swpu.uchain.openexperiment.util.PDFConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -114,23 +116,28 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
 
-        if (mark != null) {
-            //如果存在则
-            File dest = new File(
-                    FileUtil.getFileRealPath(mark.getId(),
-                            uploadConfig.getApplyDir(),
-                            uploadConfig.getApplyFileName()));
-            dest.delete();
-        }
+        String docName = FileUtil.getFileRealPath(mark.getId(),
+                uploadConfig.getApplyDir(),
+                uploadConfig.getApplyFileName());
+        String pdfName = FileUtil.getFileRealPath(mark.getId(),
+                uploadConfig.getApplyDir(),
+                ".pdf");
+        //如果存在则覆盖
+        File dest = new File(docName);
+        //转换为PDF
+        convertDocToPDF(docName,pdfName);
+
+        dest.delete();
         if (!checkFileFormat(file, FileType.WORD.getValue())) {
             return Result.error(CodeMsg.FORMAT_UNSUPPORTED);
         }
         User user = getUserService.getCurrentUser();
+
         //TODO,校验当前用户是否有权进行上传
         ProjectFile projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(user.getCode()));
         projectFile.setFileType(FileType.WORD.getValue());
-        projectFile.setFileName(uploadConfig.getApplyFileName()+getRealFilename(file.getOriginalFilename()));
+        projectFile.setFileName(pdfName);
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
         projectFile.setUploadTime(new Date());
         projectFile.setDownloadTimes(0);
@@ -272,6 +279,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 redisService.set(ProjectGroupKey.getByProjectGroupId, projectId + "", projectGroup);
             }
         }
+        if (file == null) {
+            throw new GlobalException(CodeMsg.FILE_EMPTY_ERROR);
+        }
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
@@ -296,7 +306,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
         projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
-        projectFile.setFileName(uploadConfig.getConcludingFileName()+getRealFilename(file.getOriginalFilename()));
+        //数据库存储为pdf名称
+        projectFile.setFileName(uploadConfig.getConcludingFileName()+".pdf");
         projectFile.setUploadTime(new Date());
         projectFile.setMaterialType(MaterialType.CONCLUSION_MATERIAL.getValue());
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
@@ -323,5 +334,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return false;
         }
         return true;
+    }
+
+    @Async
+    public void convertDocToPDF(String fileNameOfDoc,String fileNameOfPDF){
+        PDFConvertUtil.convert(fileNameOfDoc,fileNameOfPDF);
     }
 }

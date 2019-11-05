@@ -10,9 +10,9 @@ import java.io.File;
 /**
  * @author dengg
  */
-public class Word2PDF {
+public class PDFConvertUtil {
 
-    public void convert(String input, String output){
+    public static void convert(String input, String output){
         File inputFile = new File(input);
         File outputFile = new File(output);
         OpenOfficeConnection connection = new SocketOpenOfficeConnection(8100);
@@ -27,13 +27,6 @@ public class Word2PDF {
             }
             }catch(Exception e){}
         }
-    }
-
-    public static void main(String[] args) {
-        String file1 = "E:\\IdeaProjects\\OpenExperiment\\src\\main\\resources\\apply_dir\\实验7+RHEL运行系统配置及管理.doc";
-        String file2 = "E:\\IdeaProjects\\OpenExperiment\\src\\main\\resources\\apply_dir\\实验7+RHEL运行系统配置及管理.pdf";
-        Word2PDF word2PDF = new Word2PDF();
-        word2PDF.convert(file1,file2);
     }
 
 }

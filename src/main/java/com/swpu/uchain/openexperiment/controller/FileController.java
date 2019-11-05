@@ -37,8 +37,8 @@ public class FileController {
     @Autowired
     private ProjectService projectService;
 
-    @ApiOperation("下载立项申请正文doc")
-    @GetMapping(value = "/getApplyDoc", name = "下载立项申请正文doc")
+    @ApiOperation("下载重点立项申请正文pdf")
+    @GetMapping(value = "/getApplyDoc", name = "下载重点立项申请正文pdf")
     public void getApplyDoc(Long fileId, HttpServletResponse response){
         projectFileService.downloadApplyFile(fileId, response);
     }
