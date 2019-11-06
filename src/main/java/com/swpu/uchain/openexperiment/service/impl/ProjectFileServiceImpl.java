@@ -108,14 +108,14 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (file.isEmpty()) {
             return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
-        String docName = FileUtil.getFileRealPath(projectGroupId,
+        String docPath = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir(),
                 uploadConfig.getApplyFileName()+getFileSuffix(file.getOriginalFilename()));
-        String pdfName = FileUtil.getFileRealPath(projectGroupId,
+        String pdfPath = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir(),
                 uploadConfig.getApplyFileName()+".pdf");
         //如果存在则覆盖
-        File dest = new File(docName);
+        File dest = new File(docPath);
 
         dest.delete();
         if (!checkFileFormat(file, FileType.WORD.getValue())) {
@@ -143,7 +143,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                     uploadConfig.getApplyDir(),
                     uploadConfig.getApplyFileName() + FileUtil.getMultipartFileSuffix(file)))) {
             //转换为PDF
-            convertDocToPDF(docName,pdfName);
+            convertDocToPDF(docPath,pdfPath);
             return Result.success();
         }
         return Result.error(CodeMsg.UPLOAD_ERROR);
@@ -156,7 +156,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (projectFile == null){
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
-        String realPath = FileUtil.getFileRealPath(fileId, uploadConfig.getApplyDir(), projectFile.getFileName());
+        String realPath = uploadConfig.getApplyDir()+'/'+projectFile.getFileName();
         if (FileUtil.downloadFile(response, realPath)){
             throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
         }
@@ -189,9 +189,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
         String realPath = FileUtil.getFileRealPath(
-                projectFile.getId(),
+                projectFile.getProjectGroupId(),
                 uploadConfig.getApplyDir(),
-                FileUtil.getFileNameWithoutSuffix(projectFile.getFileName()) + ".pdf");
+                FileUtil.getFileNameWithoutSuffix(projectFile.getFileName()));
         File file = new File(realPath);
         if (file.exists()){
             if (FileUtil.downloadFile(response, realPath)) {
@@ -265,25 +265,20 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public Result uploadConcludingReport(Long projectId,MultipartFile file) {
-        ProjectGroup projectGroup = redisService.get(ProjectGroupKey.getByProjectGroupId, projectId + "", ProjectGroup.class);
-        if (projectGroup == null) {
-            projectGroup = projectGroupMapper.selectByPrimaryKey(projectId);
-            if (projectGroup != null) {
-                redisService.set(ProjectGroupKey.getByProjectGroupId, projectId + "", projectGroup);
-            }
-        }
+        ProjectGroup projectGroup =  projectGroupMapper.selectByPrimaryKey(projectId);
         if (file == null) {
             throw new GlobalException(CodeMsg.FILE_EMPTY_ERROR);
         }
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
-        if (!projectGroup.getStatus().equals(ProjectStatus.CONCLUDED.getValue())){
-            throw new GlobalException(CodeMsg.PROJECT_STATUS_IS_NOT_CONCLUDED);
-        }
+//        if (!projectGroup.getStatus().equals(ProjectStatus.CONCLUDED.getValue())){
+//            throw new GlobalException(CodeMsg.PROJECT_STATUS_IS_NOT_CONCLUDED);
+//        }
 
         //判断是否存在该文件,若存在则进行覆盖
-        ProjectFile projectFile = getAimNameProjectFile(projectGroup.getId(), uploadConfig.getConcludingFileName());
+        ProjectFile projectFile = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId,MaterialType.CONCLUSION_MATERIAL.getValue());
+
         if (projectFile != null){
             FileUtil.uploadFile(
                     file,
@@ -300,7 +295,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
         //数据库存储为pdf名称
-        projectFile.setFileName(uploadConfig.getConcludingFileName()+".pdf");
+        projectFile.setFileName(projectId+uploadConfig.getConcludingFileName()+".pdf");
         projectFile.setUploadTime(new Date());
         projectFile.setMaterialType(MaterialType.CONCLUSION_MATERIAL.getValue());
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
@@ -309,14 +304,19 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (!insert(projectFile)) {
             return Result.error(CodeMsg.ADD_ERROR);
         }
+        String docPath = FileUtil.getFileRealPath(projectId,
+                uploadConfig.getConclusionDir(),
+                uploadConfig.getConcludingFileName()+getFileSuffix(file.getOriginalFilename()));
+        String pdfPath = FileUtil.getFileRealPath(projectId,
+                uploadConfig.getConclusionDir(),
+                uploadConfig.getConcludingFileName()+".pdf");
         if (!FileUtil.uploadFile(
                 file,
-                FileUtil.getFileRealPath(
-                        projectFile.getId(),
-                        uploadConfig.getConclusionDir(),
-                        uploadConfig.getConcludingFileName()))) {
+                docPath)) {
             return Result.error(CodeMsg.UPLOAD_ERROR);
         }
+        // 异步转换成PDF
+        convertDocToPDF(docPath,pdfPath);
         return Result.success();
     }
 

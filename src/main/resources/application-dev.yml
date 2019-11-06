@@ -17,7 +17,7 @@ upload:
   apply-file-name: "立项申请主要内容"
   concluding-file-name: "结题报告"
   apply-dir: "E:/IdeaProjects/OpenExperiment/src/main/resources/apply_dir"
-  material-dir: "E:/IdeaProjects/OpenExperiment/src/main/resources/conclusion_dir"
+  conclusion-dir: "E:/IdeaProjects/OpenExperiment/src/main/resources/conclusion_dir"
 
 
 

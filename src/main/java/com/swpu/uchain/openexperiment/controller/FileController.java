@@ -56,7 +56,7 @@ public class FileController {
         projectFileService.downloadApplyPdf(fileId, response);
     }
 
-    @ApiOperation("上传立项申请正文")
+    @ApiOperation("上传立项申请正文--（只兼容doc）")
     @PostMapping(value = "/reloadApplyDoc", name = "上传立项申请正文")
     public Object reloadApplyDoc(Long projectGroupId,MultipartFile file){
         User currentUser = getUserService.getCurrentUser();
@@ -65,7 +65,6 @@ public class FileController {
         }
         return projectFileService.uploadApplyDoc(file, projectGroupId);
     }
-
 
 
     @ApiIgnore("附件上传--6，普通项目结题验收报告；7，重点项目结题验收报告 8，普通项目实验报告")
@@ -77,8 +76,8 @@ public class FileController {
 
     @ApiOperation("上传结题报告--重点项目和普通项目")
     @PostMapping(value = "/uploadConcludingReport", name = "上传结题报告")
-    public Result uploadConcludingReport(Long projectId,MultipartFile file){
-        return projectFileService.uploadConcludingReport(projectId,file);
+    public Result uploadConcludingReport(Long projectGroupId,MultipartFile file){
+        return projectFileService.uploadConcludingReport(projectGroupId,file);
     }
 
     @ApiIgnore

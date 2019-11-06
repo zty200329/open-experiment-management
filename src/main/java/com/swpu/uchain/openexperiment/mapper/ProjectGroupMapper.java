@@ -26,7 +26,7 @@ public interface ProjectGroupMapper {
 
     int insert(ProjectGroup record);
 
-    ProjectGroup selectByPrimaryKey(Long id);
+    ProjectGroup selectByPrimaryKey(@Param("id") Long id);
 
     ProjectGroup selectByPrimaryProjectName(@Param("projectName") String projectName);
 
