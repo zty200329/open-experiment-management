@@ -18,13 +18,17 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.omg.CORBA.Context;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.Map;
@@ -54,12 +58,14 @@ public class PermissionController implements InitializingBean {
     @Autowired
     private RedisService redisService;
 
+    @ApiIgnore
     @ApiOperation("获取所有Acl")
     @GetMapping(value = "/allAcl", name = "获取所有Acl")
     public Object allAcl(){
         return aclService.selectAll();
     }
 
+    @ApiIgnore
     @ApiOperation("按关键字查找")
     @PostMapping(value = "/selectAclByRandom", name = "按关键字查找")
     public Object selectAclByRandom(String info){
@@ -70,23 +76,27 @@ public class PermissionController implements InitializingBean {
     }
 
     @ApiOperation("根据id获取角色信息")
+    @ApiIgnore
     @GetMapping(value = "/selectRole", name = "根据id获取角色信息")
     public Object selectRole(Long id){
         return Result.success(roleService.selectRoleInfo(id));
     }
 
+    @ApiIgnore
     @ApiOperation("更新接口描述")
     @PostMapping(value = "/updateAclDescription", name = "更新接口描述")
     public Object updateAclDescription(@Valid @RequestBody AclUpdateForm aclUpdateForm){
         return aclService.updateAcl(aclUpdateForm);
     }
 
+    @ApiIgnore
     @ApiOperation("添加角色的权限")
     @PostMapping(value = "/addRoleAcl",name = "添加角色的权限")
     public Object addRoleAcl(@Valid @RequestBody RoleAclForm roleAclForm){
         return roleAclService.addRoleAcl(roleAclForm);
     }
 
+    @ApiIgnore
     @ApiOperation("移除角色的权限")
     @PostMapping(value = "/deleteRoleAcl", name = "移除角色的权限")
     public Object deleteRoleAcl(Long roleId, Long aclId){
@@ -97,6 +107,7 @@ public class PermissionController implements InitializingBean {
         return Result.success();
     }
 
+    @ApiIgnore
     @ApiOperation("添加角色")
     @PostMapping(value = "/addRole", name = "添加角色")
     public Object addRole(String roleName){
@@ -106,6 +117,7 @@ public class PermissionController implements InitializingBean {
         return roleService.addRole(roleName);
     }
 
+    @ApiIgnore
     @ApiOperation("删除角色")
     @PostMapping(value = "/deleteRole", name = "删除角色")
     public Object deleteRole(Long roleId){
@@ -116,12 +128,14 @@ public class PermissionController implements InitializingBean {
         return Result.success();
     }
 
+    @ApiIgnore
     @ApiOperation("更新角色名")
     @PostMapping(value = "/updateRoleName", name = "更新角色名")
     public Object updateRoleName(@Valid @RequestBody RoleForm roleForm){
         return roleService.updateRoleName(roleForm);
     }
 
+    @ApiIgnore
     @ApiOperation("获取所有角色以及权限访问路径")
     @GetMapping(value = "/allRole", name = "获取所有角色")
     public Object allRole(){
@@ -136,11 +150,8 @@ public class PermissionController implements InitializingBean {
 
     @ApiOperation("移除用户的角色")
     @PostMapping(value = "/deleteUserRole", name = "移除用户的角色")
-    public Object deleteUserRole(Long userId, Long roleId){
-        if (userId == 0 || roleId == 0){
-            return Result.error(CodeMsg.PARAM_CANT_BE_NULL);
-        }
-        userRoleService.deleteByUserIdRoleId(userId, roleId);
+    public Object deleteUserRole(@Valid @RequestBody UserRoleForm userRoleForm){
+        userRoleService.deleteByUserIdRoleId(userRoleForm.getUserId(),userRoleForm.getRoleId());
         return Result.success();
     }
 

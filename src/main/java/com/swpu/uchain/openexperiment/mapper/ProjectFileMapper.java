@@ -24,7 +24,7 @@ public interface ProjectFileMapper {
 
     ProjectFile selectByGroupIdFileName(Long projectGroupId, String fileName);
 
-    List<ProjectFile> selectByProjectGroupIdAndMaterialType(@Param("projectGroupId") Long projectGroupId,@Param("materialType") Integer materialType);
+    ProjectFile selectByProjectGroupIdAndMaterialType(@Param("projectGroupId") Long projectGroupId,@Param("materialType") Integer materialType);
 
     List<AttachmentFileDTO> selectAttachmentFiles();
 }

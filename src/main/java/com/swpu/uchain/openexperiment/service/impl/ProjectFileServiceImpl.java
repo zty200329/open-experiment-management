@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import static com.swpu.uchain.openexperiment.util.FileUtil.getRealFilename;
+import static com.swpu.uchain.openexperiment.util.FileUtil.getFileSuffix;
 
 /**
  * @Description
@@ -64,22 +64,16 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
 
     public boolean insert(ProjectFile projectFile) {
-        if (projectFileMapper.selectByProjectGroupIdAndMaterialType(projectFile.getProjectGroupId(),projectFile.getMaterialType())!=null){
+        ProjectFile projectFile1 = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectFile.getProjectGroupId(),projectFile.getMaterialType());
+        if (projectFile1!=null){
+            projectFile.setId(projectFile1.getId());
             return update(projectFile);
         }
-        if (projectFileMapper.insert(projectFile) == 1) {
-            redisService.set(FileKey.getById, projectFile.getId() + "", projectFile);
-            return true;
-        }
-        return false;
+        return projectFileMapper.insert(projectFile) == 1;
     }
 
     public boolean update(ProjectFile projectFile) {
-        if (projectFileMapper.updateByPrimaryKey(projectFile) == 1) {
-            redisService.set(FileKey.getById, projectFile.getId() + "", projectFile);
-            return true;
-        }
-        return false;
+        return projectFileMapper.updateByPrimaryKey(projectFile) == 1;
     }
 
     @Override
@@ -114,18 +108,14 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (file.isEmpty()) {
             return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
-
-        ProjectFile mark = getAimNameProjectFile(projectGroupId,"");
-        String docName = FileUtil.getFileRealPath(mark.getId(),
+        String docName = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir(),
-                uploadConfig.getApplyFileName());
-        String pdfName = FileUtil.getFileRealPath(mark.getId(),
+                uploadConfig.getApplyFileName()+getFileSuffix(file.getOriginalFilename()));
+        String pdfName = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir(),
-                ".pdf");
+                uploadConfig.getApplyFileName()+".pdf");
         //如果存在则覆盖
         File dest = new File(docName);
-        //转换为PDF
-        convertDocToPDF(docName,pdfName);
 
         dest.delete();
         if (!checkFileFormat(file, FileType.WORD.getValue())) {
@@ -137,7 +127,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         ProjectFile projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(user.getCode()));
         projectFile.setFileType(FileType.WORD.getValue());
-        projectFile.setFileName(pdfName);
+        projectFile.setFileName(projectGroupId+"_"+uploadConfig.getApplyFileName()+".pdf");
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
         projectFile.setUploadTime(new Date());
         projectFile.setDownloadTimes(0);
@@ -149,9 +139,11 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (FileUtil.uploadFile(
                 file,
                 FileUtil.getFileRealPath(
-                    projectFile.getId(),
+                    projectGroupId,
                     uploadConfig.getApplyDir(),
                     uploadConfig.getApplyFileName() + FileUtil.getMultipartFileSuffix(file)))) {
+            //转换为PDF
+            convertDocToPDF(docName,pdfName);
             return Result.success();
         }
         return Result.error(CodeMsg.UPLOAD_ERROR);
@@ -221,7 +213,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public List<ProjectFile> getProjectAllFiles(Long projectGroupId) {
-        return projectFileMapper.selectByProjectGroupIdAndMaterialType(projectGroupId,null);
+//        return projectFileMapper.selectByProjectGroupIdAndMaterialType(projectGroupId,null);
+        return null;
     }
 
     @Override
@@ -340,4 +333,19 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     public void convertDocToPDF(String fileNameOfDoc,String fileNameOfPDF){
         PDFConvertUtil.convert(fileNameOfDoc,fileNameOfPDF);
     }
+
+    /**
+     * 解决IE edge 文件上传 文件名却出现了全路径+文件名的形式
+     * @param fileName 文件名
+     * @return
+     */
+    private static String getFileSuffix(String fileName){
+        if (fileName == null){
+            throw new GlobalException(CodeMsg.FILE_NAME_EMPTY_ERROR);
+        }
+        //最后一位  注意是"\\",主要针对于微软的浏览器
+        int lastIndexOfSlash = fileName.lastIndexOf(".");
+        return fileName.substring(lastIndexOfSlash);
+    }
+
 }

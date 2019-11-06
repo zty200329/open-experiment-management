@@ -210,7 +210,7 @@ public class FileUtil {
      * @param fileName 文件名
      * @return
      */
-    public static String getRealFilename(String fileName){
+    public static String getFileSuffix(String fileName){
         if (fileName == null){
             throw new GlobalException(CodeMsg.FILE_NAME_EMPTY_ERROR);
         }

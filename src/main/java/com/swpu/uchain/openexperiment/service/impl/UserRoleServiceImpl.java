@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.mapper.UserRoleMapper;
 import com.swpu.uchain.openexperiment.domain.UserRole;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
@@ -28,6 +29,9 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public void deleteByUserIdRoleId(Long userId, Long roleId) {
+        if (userRoleMapper.selectByUserId(userId) == null){
+            throw new GlobalException(CodeMsg.USER_NO_EXIST);
+        }
         userRoleMapper.deleteByUserIdAndRoleId(userId, roleId);
     }
 
