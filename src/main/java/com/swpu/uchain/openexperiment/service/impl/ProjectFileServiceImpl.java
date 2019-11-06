@@ -110,12 +110,12 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public Result uploadApplyDoc(MultipartFile file, Long projectGroupId) {
-        ProjectFile mark = getAimNameProjectFile(projectGroupId, uploadConfig.getApplyFileName());
         //先检查文件是否为空
         if (file.isEmpty()) {
             return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
 
+        ProjectFile mark = getAimNameProjectFile(projectGroupId,"");
         String docName = FileUtil.getFileRealPath(mark.getId(),
                 uploadConfig.getApplyDir(),
                 uploadConfig.getApplyFileName());
