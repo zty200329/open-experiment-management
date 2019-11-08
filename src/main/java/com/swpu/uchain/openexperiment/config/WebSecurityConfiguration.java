@@ -86,9 +86,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/info/**",
                         "/user/**",
                         "/test/**",
-                        "/druid/**"
+                        "/druid/**",
+                        "/static/**",
+                        "/apply/**",
+                        "/material/**"
                 ).permitAll()
                 //配置swagger界面的匿名访问
+                .antMatchers(" /static/**").permitAll()
                 .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
                 .antMatchers("/images/**").permitAll()
@@ -108,5 +112,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         // disable page caching
         httpSecurity.headers().cacheControl();
+
+        //关闭 X-Frame-Options
+        httpSecurity.headers().frameOptions().disable();
     }
 }

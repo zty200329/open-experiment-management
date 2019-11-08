@@ -20,6 +20,7 @@ import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
+import com.swpu.uchain.openexperiment.util.IPUtil;
 import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -59,6 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
     private MessageRecordMapper messageRecordMapper;
     private UserMapper userMapper;
     private KeyProjectStatusMapper keyProjectStatusMapper;
+    private ProjectFileMapper projectFileMapper;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -69,7 +71,7 @@ public class ProjectServiceImpl implements ProjectService {
                               OperationRecordMapper recordMapper,
                               MessageRecordMapper messageRecordMapper, RoleMapper roleMapper,
                               UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper,
-                              KeyProjectStatusMapper keyProjectStatusMapper) {
+                              KeyProjectStatusMapper keyProjectStatusMapper,ProjectFileMapper projectFileMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -85,6 +87,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.roleMapper = roleMapper;
         this.userMapper = userMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
+        this.projectFileMapper = projectFileMapper;
     }
 
     @Override
@@ -1226,7 +1229,16 @@ public class ProjectServiceImpl implements ProjectService {
             if (projectId == null) {
                 throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
             }
-            return Result.success(projectGroupMapper.getProjectGroupDetailVOByProjectId(projectId));
+            ProjectGroupDetailVO detail = projectGroupMapper.getProjectGroupDetailVOByProjectId(projectId);
+            ProjectFile file = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId,MaterialType.APPLY_MATERIAL.getValue());
+            if (file == null){
+                detail.setApplyurl(null);
+            }else {
+                String fileName = file.getFileName();
+                String url  = "10.20.0.78:8083/"+"apply/"+fileName;
+                detail.setApplyurl(url);
+            }
+            return Result.success(detail);
         }
 
 }

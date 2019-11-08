@@ -172,7 +172,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (projectFile == null){
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
-        String realPath = FileUtil.getFileRealPath(fileId, uploadConfig.getConclusionDir(), projectFile.getFileName());
+        String realPath = uploadConfig.getConclusionDir() + "/" + projectFile.getFileName();
         if (FileUtil.downloadFile(response, realPath)){
             throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
         }
@@ -295,12 +295,14 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
         //数据库存储为pdf名称
-        projectFile.setFileName(projectId+uploadConfig.getConcludingFileName()+".pdf");
+        projectFile.setFileName(projectId+"_"+uploadConfig.getConcludingFileName()+".pdf");
         projectFile.setUploadTime(new Date());
         projectFile.setMaterialType(MaterialType.CONCLUSION_MATERIAL.getValue());
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
         projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(file)));
         projectFile.setDownloadTimes(0);
+        projectFile.setProjectGroupId(projectId);
+
         if (!insert(projectFile)) {
             return Result.error(CodeMsg.ADD_ERROR);
         }

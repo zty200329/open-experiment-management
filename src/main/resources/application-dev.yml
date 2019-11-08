@@ -18,8 +18,7 @@ upload:
   concluding-file-name: "结题报告"
   apply-dir: "E:/IdeaProjects/OpenExperiment/src/main/resources/apply_dir"
   conclusion-dir: "E:/IdeaProjects/OpenExperiment/src/main/resources/conclusion_dir"
-
-
+  material_sample: "E:/IdeaProjects/OpenExperiment/src/main/resources/material_sample"
 
 mybatis:
   configuration:

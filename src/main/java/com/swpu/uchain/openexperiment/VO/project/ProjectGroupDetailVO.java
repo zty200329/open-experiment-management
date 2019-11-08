@@ -142,6 +142,11 @@ public class ProjectGroupDetailVO {
     private String mainContent;
 
     /**
+     * 重点项目申请书PDF
+     */
+    private String applyurl;
+
+    /**
      * 项目成员详情
      */
     private List<ProjectUserVO> list;
