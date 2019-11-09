@@ -90,7 +90,14 @@ public class AmountLimitServiceImpl implements AmountLimitService {
             AmountLimit amountLimit = new AmountLimit();
             BeanUtils.copyProperties(amountAndType,amountAndType);
             amountLimit.setLimitCollege(form.getCollege());
-            int result = amountLimitMapper.updateTimeLimit(amountLimit.getId(),amountLimit.getMaxAmount());
+
+            int result;
+            //不存在则创建
+            if (amountLimit.getId() == null) {
+                result = amountLimitMapper.insertOne(amountLimit);
+            }else {
+                result = amountLimitMapper.updateTimeLimit(amountLimit.getId(),amountLimit.getMaxAmount());
+            }
             if (result != 1) {
                 throw new GlobalException(CodeMsg.UPDATE_ERROR);
             }

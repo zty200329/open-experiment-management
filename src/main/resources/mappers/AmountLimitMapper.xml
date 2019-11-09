@@ -15,6 +15,16 @@
                 )
             </foreach>
     </insert>
+    <insert id="insertOne">
+        insert into openexperiment.amount_limit( max_amount, min_amount, limit_college, project_type)
+        values
+            (
+                #{maxAmount},
+                #{minAmount},
+                #{limitCollege},
+                #{projectType}
+            )
+    </insert>
     <update id="updateTimeLimit">
         update openexperiment.amount_limit set max_amount = #{maxAmount} where id = #{id}
     </update>

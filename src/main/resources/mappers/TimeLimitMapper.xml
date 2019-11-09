@@ -6,7 +6,7 @@
             value
         <foreach collection="list" separator="," item="timeLimit">
             (
-                #{timeLimit.limitType},
+                #{timeLimit.timeLimitType},
                 #{timeLimit.startTime},
                 #{timeLimit.endTime},
                 #{timeLimit.limitCollege}

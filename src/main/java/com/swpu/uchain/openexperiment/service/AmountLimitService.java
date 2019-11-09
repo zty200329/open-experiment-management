@@ -15,5 +15,5 @@ public interface AmountLimitService {
 
     Result getAmountLimitList();
 
-    Result updateAmountLimit(AmountUpdateForm form);
+    Result  updateAmountLimit(AmountUpdateForm form);
 }

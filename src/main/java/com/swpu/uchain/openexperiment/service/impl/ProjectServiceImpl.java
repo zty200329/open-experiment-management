@@ -154,9 +154,9 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
         }
         //获取这是该院第几个项目
-        String maxSerialNumber = projectGroupMapper.getIndexByCollege(college);
+//        String maxSerialNumber = projectGroupMapper.getIndexByCollege(college);
 
-        String serialNumber = SerialNumberUtil.getSerialNumberOfProject(college,form.getProjectType(),maxSerialNumber);
+//        String serialNumber = SerialNumberUtil.getSerialNumberOfProject(college,form.getProjectType(),maxSerialNumber);
 
         //判断用户类型
         if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()) {
@@ -183,7 +183,6 @@ public class ProjectServiceImpl implements ProjectService {
         //设置申请人
         projectGroup.setCreatorId(Long.valueOf(currentUser.getCode()));
         projectGroup.setSubordinateCollege(college);
-        projectGroup.setSerialNumber(serialNumber);
         //插入数据
         Result result = addProjectGroup(projectGroup);
         if (result.getCode() != 0) {
@@ -678,8 +677,16 @@ public class ProjectServiceImpl implements ProjectService {
         return approveProjectApply(list, RoleType.LAB_ADMINISTRATOR.getValue());
     }
 
+    private void generateSerialNumberOfProject(){
+        User user = getUserService.getCurrentUser();
+        Integer college = user.getInstitute();
+        String maxSerialNumber = projectGroupMapper.getIndexByCollege(college);
+        SerialNumberUtil.getSerialNumberOfProject(college,ProjectType.GENERAL.getValue(),maxSerialNumber);
+    }
+
     @Override
     public Result approveProjectApplyBySecondaryUnit (List < ProjectCheckForm > list) {
+        //
         return approveProjectApply(list, RoleType.SECONDARY_UNIT.getValue());
     }
 
