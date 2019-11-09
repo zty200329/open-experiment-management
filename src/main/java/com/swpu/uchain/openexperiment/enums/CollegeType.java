@@ -24,7 +24,7 @@ public enum  CollegeType {
     CIVIL_ENGINEERING_AND_ARCHITECTURE_COLLEGE(12,"外国语学院"),
     LAW_COLLEGE(13,"体育学院"),
     FOREIGN_LANGUAGES_COLLEGE(14,"艺术学院"),
-    COMPUTER_SCIENCE_COLLEGE(15,"计算机科学学院");
+    COMPUTER_SCIENCE_COLLEGE(15,"马克思主义学院");
 
     CollegeType(Integer value, String tips) {
         this.value = value;

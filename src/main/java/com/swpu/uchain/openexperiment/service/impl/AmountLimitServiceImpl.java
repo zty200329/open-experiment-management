@@ -17,6 +17,7 @@ import com.swpu.uchain.openexperiment.service.AmountLimitService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -44,6 +45,7 @@ public class AmountLimitServiceImpl implements AmountLimitService {
     }
 
     @Override
+    @Transactional(rollbackFor = GlobalException.class)
     public Result setAmount(List<AmountLimitForm> limitForms) {
 
         List<TimeLimit> timeLimitList = new LinkedList<>();
@@ -59,6 +61,9 @@ public class AmountLimitServiceImpl implements AmountLimitService {
 
             for (AmountAndType amountAndType:form.getList()
                  ) {
+                if (amountLimitMapper.getAmountLimitVOByCollegeAndProjectType(form.getLimitCollege(),amountAndType.getProjectType()).size() != 0){
+                    throw new GlobalException(CodeMsg.INPUT_INFO_HAS_EXISTED);
+                }
                 AmountLimit amountLimit = new AmountLimit();
                 amountLimit.setLimitCollege(form.getLimitCollege());
                 amountLimit.setMaxAmount(amountAndType.getMaxAmount());
@@ -84,11 +89,12 @@ public class AmountLimitServiceImpl implements AmountLimitService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = GlobalException.class)
     public Result updateAmountLimit(AmountUpdateForm form) {
         for (AmountAndType amountAndType:form.getList()
              ) {
             AmountLimit amountLimit = new AmountLimit();
-            BeanUtils.copyProperties(amountAndType,amountAndType);
+            BeanUtils.copyProperties(amountAndType,amountLimit);
             amountLimit.setLimitCollege(form.getCollege());
 
             int result;

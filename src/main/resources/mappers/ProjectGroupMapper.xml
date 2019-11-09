@@ -203,6 +203,9 @@
             #{id}
         </foreach>
     </update>
+    <update id="setSerialNumberById">
+        update  openexperiment.project_group set serial_number = #{number} where id = #{id}
+    </update>
     <select id="selectByPrimaryProjectName" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         select id,
                address,

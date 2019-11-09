@@ -34,6 +34,8 @@ public interface ProjectGroupMapper {
 
     int updateByPrimaryKey(ProjectGroup record);
 
+    int setSerialNumberById(@Param("id") Long id,@Param("number")String serialNumber);
+
     ProjectGroup selectByName(String projectName);
 
     List<ProjectGroup> selectByUserIdAndStatus(@Param("userId") Long userId,@Param("projectStatus") Integer projectStatus);

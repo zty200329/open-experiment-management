@@ -677,16 +677,27 @@ public class ProjectServiceImpl implements ProjectService {
         return approveProjectApply(list, RoleType.LAB_ADMINISTRATOR.getValue());
     }
 
-    private void generateSerialNumberOfProject(){
-        User user = getUserService.getCurrentUser();
-        Integer college = user.getInstitute();
+    private void generateSerialNumberOfProject(Integer college){
         String maxSerialNumber = projectGroupMapper.getIndexByCollege(college);
         SerialNumberUtil.getSerialNumberOfProject(college,ProjectType.GENERAL.getValue(),maxSerialNumber);
     }
 
     @Override
     public Result approveProjectApplyBySecondaryUnit (List < ProjectCheckForm > list) {
-        //
+        User user = getUserService.getCurrentUser();
+        Integer college = user.getInstitute();
+        if (college == null){
+            throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
+        }
+        // 生成项目编号
+        for (ProjectCheckForm form:list
+             ) {
+            String serialNumber = projectGroupMapper.getIndexByCollege(college);
+            int result = projectGroupMapper.setSerialNumberById(form.getProjectId(),serialNumber);
+            if (result != 1){
+                throw new GlobalException(CodeMsg.UPDATE_ERROR);
+            }
+        }
         return approveProjectApply(list, RoleType.SECONDARY_UNIT.getValue());
     }
 

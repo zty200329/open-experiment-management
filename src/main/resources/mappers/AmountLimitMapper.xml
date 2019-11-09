@@ -58,10 +58,10 @@
 
         <where>
             <if test="college!=null">
-                limit_college = #{college}
+                amount_limit.limit_college = #{college}
             </if>
             <if test="type!=null">
-                and project_type = #{type]
+                and project_type = #{type}
             </if>
         </where>
     </select>
