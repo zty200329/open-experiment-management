@@ -30,7 +30,7 @@ public class AmountLimitServiceImpl implements AmountLimitService {
     }
 
     @Override
-    public Result getAmountByCollegeAndUnit(AmountSearchForm form) {
+    public Result getAmountLimitVOByCollegeAndProjectType(AmountSearchForm form) {
         return Result.success(amountLimitMapper.getAmountLimitVOByCollegeAndProjectType(form.getCollege(),form.getProjectType()));
     }
 

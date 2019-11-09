@@ -7,7 +7,7 @@ import com.swpu.uchain.openexperiment.result.Result;
 
 public interface AmountLimitService {
 
-    Result getAmountByCollegeAndUnit(AmountSearchForm form);
+    Result getAmountLimitVOByCollegeAndProjectType(AmountSearchForm form);
 
     Result setAmount(AmountLimitForm form);
 
