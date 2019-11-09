@@ -41,4 +41,21 @@
   <select id="selectByUserId" resultType="com.swpu.uchain.openexperiment.domain.UserRole">
     select id, user_id as userId, role_id as roleId from user_role where user_id = #{userId}
   </select>
+    <select id="getUserInfoByRole" resultType="com.swpu.uchain.openexperiment.VO.user.RoleUserVO">
+      SELECT
+        `user`.id AS id,
+        `code` AS `code`,
+        email,
+        real_name AS realName,
+        mobile_phone AS mobilePhone,
+        work_unit AS workUnit,
+        role_id AS role
+      FROM
+        openexperiment.`user`
+          INNER JOIN openexperiment.user_role ON `user`.`code` = user_role.user_id
+      WHERE
+        user_role.role_id &gt; #{role}
+      ORDER BY
+        user_role.role_id DESC
+    </select>
 </mapper>

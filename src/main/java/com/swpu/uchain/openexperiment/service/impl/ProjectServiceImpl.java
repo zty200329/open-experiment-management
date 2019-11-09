@@ -1235,7 +1235,7 @@ public class ProjectServiceImpl implements ProjectService {
                 detail.setApplyurl(null);
             }else {
                 String fileName = file.getFileName();
-                String url  = "10.20.0.78:8083/"+"apply/"+fileName;
+                String url  = "http://10.20.0.78:8083/apply/"+fileName;
                 detail.setApplyurl(url);
             }
             return Result.success(detail);

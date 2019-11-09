@@ -40,4 +40,6 @@ public interface UserRoleService {
      * @return
      */
     List<UserRole> selectUsersByRoleId(Long roleId);
+
+    Result getUserInfoByRole();
 }

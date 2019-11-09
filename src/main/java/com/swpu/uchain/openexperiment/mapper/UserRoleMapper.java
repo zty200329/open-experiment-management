@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.mapper;
 
+import com.swpu.uchain.openexperiment.VO.user.RoleUserVO;
 import com.swpu.uchain.openexperiment.domain.UserRole;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -31,4 +32,5 @@ public interface UserRoleMapper {
     List<UserRole> selectByRoleId(Long roleId);
 
 
+    List<RoleUserVO> getUserInfoByRole(@Param("role") Integer value);
 }

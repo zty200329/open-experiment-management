@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.swpu.uchain.openexperiment.enums.RoleType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.mapper.UserRoleMapper;
 import com.swpu.uchain.openexperiment.domain.UserRole;
@@ -53,5 +54,10 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Override
     public List<UserRole> selectUsersByRoleId(Long roleId) {
         return userRoleMapper.selectByRoleId(roleId);
+    }
+
+    @Override
+    public Result getUserInfoByRole() {
+        return Result.success(userRoleMapper.getUserInfoByRole(RoleType.MENTOR.getValue()));
     }
 }

@@ -96,6 +96,12 @@ public class PermissionController implements InitializingBean {
         return roleAclService.addRoleAcl(roleAclForm);
     }
 
+    @ApiOperation("获取拥有实验室主任，学院领导，职能部门角色的用户信息")
+    @GetMapping("/getUserInfoByRole")
+    public Result getUserInfoByRole(){
+        return userRoleService.getUserInfoByRole();
+    }
+
     @ApiIgnore
     @ApiOperation("移除角色的权限")
     @PostMapping(value = "/deleteRoleAcl", name = "移除角色的权限")

@@ -11,11 +11,9 @@ import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.FileType;
 import com.swpu.uchain.openexperiment.enums.MaterialType;
-import com.swpu.uchain.openexperiment.enums.ProjectStatus;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.FileKey;
-import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.ProjectFileService;
@@ -34,9 +32,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-
-import static com.swpu.uchain.openexperiment.util.FileUtil.getFileSuffix;
+import java.util.Map;
 
 /**
  * @Description
@@ -127,7 +125,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         ProjectFile projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(user.getCode()));
         projectFile.setFileType(FileType.WORD.getValue());
-        projectFile.setFileName(projectGroupId+"_"+uploadConfig.getApplyFileName()+".pdf");
+        String fileName = projectGroupId+"_"+uploadConfig.getApplyFileName()+".pdf";
+        projectFile.setFileName(fileName);
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
         projectFile.setUploadTime(new Date());
         projectFile.setDownloadTimes(0);
@@ -144,7 +143,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                     uploadConfig.getApplyFileName() + FileUtil.getMultipartFileSuffix(file)))) {
             //转换为PDF
             convertDocToPDF(docPath,pdfPath);
-            return Result.success();
+            Map<String, String> map = new HashMap<>();
+            map.put("url","http://10.20.0.78:8083/apply/"+fileName);
+            return Result.success(map);
         }
         return Result.error(CodeMsg.UPLOAD_ERROR);
     }
