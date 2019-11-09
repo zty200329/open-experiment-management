@@ -21,5 +21,5 @@ public class AmountLimitForm {
     private Integer limitCollege;
 
     @NotNull
-    private Integer limitUnit;
+    private Integer projectType;
 }

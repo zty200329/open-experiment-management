@@ -22,6 +22,6 @@ public class AmountLimit {
     /**
      * 限制单位
      */
-    private Integer limitUnit;
+    private Integer projectType;
 
 }

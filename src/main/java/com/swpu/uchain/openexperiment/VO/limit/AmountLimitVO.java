@@ -6,7 +6,13 @@ import lombok.Data;
  * @author dengg
  */
 @Data
-public class TimeLimitVO {
+public class AmountLimitVO {
+
+    private Integer id;
+
+    private Integer college;
+
+    private Integer projectType;
 
     private Integer maxAmount;
 

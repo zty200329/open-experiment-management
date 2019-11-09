@@ -1,9 +1,11 @@
 package com.swpu.uchain.openexperiment.mapper;
 
-import com.swpu.uchain.openexperiment.VO.limit.TimeLimitVO;
+import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
 import com.swpu.uchain.openexperiment.domain.AmountLimit;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author dengg
@@ -13,7 +15,7 @@ public interface AmountLimitMapper {
 
     int insertOne(AmountLimit amountLimit);
 
-    TimeLimitVO getTimeLimitVOByCollegeAndUnit(Integer college,Integer unit);
+    List<AmountLimitVO> getAmountLimitVOByCollegeAndProjectType(@Param("college") Integer college, @Param("type") Integer projectType);
 
     int updateTimeLimit(@Param("id") Integer id,@Param("maxAmount") Integer maxAmount,@Param("minAmount") Integer minAmount);
 

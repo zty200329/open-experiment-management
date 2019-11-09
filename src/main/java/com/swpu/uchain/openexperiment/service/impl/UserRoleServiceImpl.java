@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.enums.RoleType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
+import com.swpu.uchain.openexperiment.mapper.UserMapper;
 import com.swpu.uchain.openexperiment.mapper.UserRoleMapper;
 import com.swpu.uchain.openexperiment.domain.UserRole;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
@@ -22,6 +23,8 @@ import java.util.List;
 @Service
 public class UserRoleServiceImpl implements UserRoleService {
     @Autowired
+    private UserMapper userMapper;
+    @Autowired
     private UserRoleMapper userRoleMapper;
     @Override
     public boolean insert(UserRole userRole) {
@@ -29,15 +32,22 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public void deleteByUserIdRoleId(Long userId, Long roleId) {
+    public Result deleteByUserIdRoleId(Long userId, Long roleId) {
         if (userRoleMapper.selectByUserId(userId) == null){
             throw new GlobalException(CodeMsg.USER_NO_EXIST);
         }
-        userRoleMapper.deleteByUserIdAndRoleId(userId, roleId);
+        int result = userRoleMapper.deleteByUserIdAndRoleId(userId, roleId);
+        if (result != 1){
+            throw new GlobalException(CodeMsg.USER_INFORMATION_MATCH_ERROR);
+        }
+        return Result.success();
     }
 
     @Override
     public Result addUserRole(UserRoleForm userRoleForm) {
+        if (userMapper.selectByUserCode(userRoleForm.getUserId().toString()) == null){
+            throw new GlobalException(CodeMsg.USER_NO_EXIST);
+        }
         UserRole userRole = userRoleMapper.selectByUserIdAndRoleId(userRoleForm.getUserId(), userRoleForm.getRoleId());
         if (userRole != null){
             return Result.error(CodeMsg.USER_ROLE_HAD_EXIST);

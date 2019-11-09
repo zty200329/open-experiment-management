@@ -156,9 +156,9 @@ public class PermissionController implements InitializingBean {
 
     @ApiOperation("移除用户的角色")
     @PostMapping(value = "/deleteUserRole", name = "移除用户的角色")
-    public Object deleteUserRole(@Valid @RequestBody UserRoleForm userRoleForm){
-        userRoleService.deleteByUserIdRoleId(userRoleForm.getUserId(),userRoleForm.getRoleId());
-        return Result.success();
+    public Result deleteUserRole(@Valid @RequestBody UserRoleForm userRoleForm){
+
+        return userRoleService.deleteByUserIdRoleId(userRoleForm.getUserId(),userRoleForm.getRoleId());
     }
 
     @Override

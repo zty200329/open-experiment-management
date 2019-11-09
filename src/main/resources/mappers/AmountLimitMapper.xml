@@ -3,8 +3,8 @@
 <mapper namespace="com.swpu.uchain.openexperiment.mapper.AmountLimitMapper">
 
     <insert id="insertOne" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.TimeLimit">
-        insert into openexperiment.amount_limit(id, max_amount, min_amount, limit_college, limit_unit)
-        values (#{id},#{maxAmount},#{minAmount},#{limitCollege},#{limitUnit})
+        insert into openexperiment.amount_limit(id, max_amount, min_amount, limit_college, project_type)
+        values (#{id},#{maxAmount},#{minAmount},#{limitCollege},#{projectType})
     </insert>
     <update id="updateTimeLimit">
         update openexperiment.amount_limit set min_amount = #{minAmount},max_amount = #{maxAmount} where id = #{id}
@@ -12,10 +12,21 @@
     <delete id="deleteLimit">
         delete from openexperiment.amount_limit where id = #{id}
     </delete>
-    <select id="getTimeLimitVOByCollegeAndUnit" resultType="com.swpu.uchain.openexperiment.VO.limit.TimeLimitVO">
+    <select id="getAmountLimitVOByCollegeAndProjectType" resultType="com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO">
         select
+                id,
                 max_amount as maxAmount,
-                min_amount as minAmount
+                min_amount as minAmount,
+                limit_college as college,
+               project_type as projectType
          from openexperiment.amount_limit
+        <where>
+            <if test="college!=null">
+                limit_college = #{college}
+            </if>
+            <if test="type!=null">
+                and project_type = #{type]
+            </if>
+        </where>
     </select>
 </mapper>
