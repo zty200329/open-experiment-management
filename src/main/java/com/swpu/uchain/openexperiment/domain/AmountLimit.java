@@ -10,7 +10,7 @@ import javax.validation.constraints.Null;
 @Data
 public class AmountLimit {
 
-    private Long id;
+    private Integer id;
 
     private Integer maxAmount;
 

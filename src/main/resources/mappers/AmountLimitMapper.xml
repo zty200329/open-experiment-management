@@ -16,20 +16,33 @@
             </foreach>
     </insert>
     <update id="updateTimeLimit">
-        update openexperiment.amount_limit set min_amount = #{minAmount},max_amount = #{maxAmount} where id = #{id}
+        update openexperiment.amount_limit set max_amount = #{maxAmount} where id = #{id}
     </update>
     <delete id="deleteLimit">
         delete from openexperiment.amount_limit where id = #{id}
     </delete>
-    <select id="getAmountLimitVOByCollegeAndProjectType" resultType="com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO">
+    <resultMap id="AmountLimitVOMap" type="com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO">
+        <result column="limit_college" property="college"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <collection property="list" ofType="com.swpu.uchain.openexperiment.VO.limit.AmountAndTypeVO"
+                    javaType="java.util.ArrayList" columnPrefix="v_">
+            <id column="id" property="id"/>
+            <result column="project_type" property="projectType"/>
+            <result column="max_amount" property="maxAmount"/>
+            <result column="min_amount" property="minAmount"/>
+        </collection>
+    </resultMap>
+    <select id="getAmountLimitVOByCollegeAndProjectType" resultMap="AmountLimitVOMap"
+            resultType="com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO">
         select
-                id,
-                max_amount as maxAmount,
-                min_amount as minAmount,
-                amount_limit.limit_college as college,
-               project_type as projectType,
-               time_limit.start_time as startTime,
-               time_limit.end_time as endTime
+                id as v_id,
+                max_amount as v_max_amount,
+                min_amount as v_min_amount,
+                project_type as v_project_type,
+                amount_limit.limit_college,
+               time_limit.start_time,
+               time_limit.end_time
          from openexperiment.amount_limit left join openexperiment.time_limit
                 on amount_limit.limit_college = time_limit.limit_college and  time_limit.limit_type = 8 <!--8是指二级部门上报时间-->
 

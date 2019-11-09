@@ -58,9 +58,10 @@ public class TimeLimitServiceImpl implements TimeLimitService {
 
     @Override
     public Result update(TimeLimitForm form) {
-        int result = timeLimitMapper.update(form);
         TimeLimit timeLimit = new TimeLimit();
         BeanUtils.copyProperties(form,timeLimit);
+        timeLimit.setLimitCollege(getUserService.getCurrentUser().getInstitute()); // TODO 判断用户
+        int result = timeLimitMapper.update(timeLimit);
         redisService.set(TimeLimitKey.getTimeLimitType,form.getTimeLimitType().toString(),timeLimit);
         if (result!=1){
             throw new GlobalException(CodeMsg.UPDATE_ERROR );

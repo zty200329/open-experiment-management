@@ -1,9 +1,9 @@
 package com.swpu.uchain.openexperiment.VO.limit;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author dengg
@@ -11,19 +11,12 @@ import java.util.Date;
 @Data
 public class AmountLimitVO {
 
-    private Integer id;
-
     private Integer college;
-
-    private Integer projectType;
-
-    private Integer maxAmount;
 
     private Date startTime;
 
     private Date endTime;
 
-    @JsonIgnore
-    private Integer minAmount;
+    List<AmountAndTypeVO> list;
 
 }

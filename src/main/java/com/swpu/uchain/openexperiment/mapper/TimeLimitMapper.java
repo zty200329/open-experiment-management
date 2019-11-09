@@ -14,7 +14,7 @@ public interface TimeLimitMapper {
 
     int multiInsert(List<TimeLimit> list);
 
-    int update(TimeLimitForm form);
+    int update(TimeLimit timeLimit);
 
     int delete(Integer type);
 

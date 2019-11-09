@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -77,9 +78,28 @@ public class AmountLimitServiceImpl implements AmountLimitService {
         return Result.success(limitList);
     }
 
+    /**
+     * 更新项目数量限制
+     * @param form
+     * @return
+     */
     @Override
     public Result updateAmountLimit(AmountUpdateForm form) {
-        int result = amountLimitMapper.updateTimeLimit(form.getId(),form.getMaxAmount(),form.getMinAmount());
+        for (AmountAndType amountAndType:form.getList()
+             ) {
+            AmountLimit amountLimit = new AmountLimit();
+            BeanUtils.copyProperties(amountAndType,amountAndType);
+            amountLimit.setLimitCollege(form.getCollege());
+            int result = amountLimitMapper.updateTimeLimit(amountLimit.getId(),amountLimit.getMaxAmount());
+            if (result != 1) {
+                throw new GlobalException(CodeMsg.UPDATE_ERROR);
+            }
+        }
+        TimeLimit timeLimit = new TimeLimit();
+        BeanUtils.copyProperties(form,timeLimit);
+        timeLimit.setLimitCollege(form.getCollege());
+        timeLimit.setTimeLimitType(TimeLimitType.SECONDARY_UNIT_REPORT_LIMIT.getValue());
+        int result = timeLimitMapper.update(timeLimit);
         if (result != 1){
             throw new GlobalException(CodeMsg.UPDATE_ERROR);
         }

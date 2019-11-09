@@ -15,7 +15,7 @@
     </insert>
     <update id="update">
         update openexperiment.time_limit set start_time = #{startTime}, end_time = #{endTime}
-            where limit_type = #{limitType}
+            where limit_type = #{limitType} and limit_college = #{limitCollege}
     </update>
     <delete id="delete">
         delete from openexperiment.time_limit where limit_type =#{limitType}

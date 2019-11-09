@@ -1,9 +1,9 @@
 package com.swpu.uchain.openexperiment.form.amount;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author dengg
@@ -11,14 +11,12 @@ import javax.validation.constraints.NotNull;
 @Data
 public class AmountUpdateForm {
 
-    @NotNull
-    private Integer maxAmount;
+    private Integer college;
 
-    @NotNull
-    private Integer minAmount;
+    private Date startTime;
 
-    @NotNull
-    @ApiModelProperty("id,查询中返回的ID")
-    private Integer id;
+    private Date endTime;
+
+    List<AmountAndType> list;
 
 }
