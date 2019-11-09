@@ -20,4 +20,7 @@ public class TimeLimit {
     @ApiModelProperty("截止时间")
     private Date endTime;
 
+    @ApiModelProperty("限制学院")
+    private Integer limitCollege;
+
 }

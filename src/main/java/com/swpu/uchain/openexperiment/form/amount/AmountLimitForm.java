@@ -3,6 +3,8 @@ package com.swpu.uchain.openexperiment.form.amount;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: panghu
@@ -12,14 +14,14 @@ import javax.validation.constraints.NotNull;
 public class AmountLimitForm {
 
     @NotNull
-    private Integer maxAmount;
-
-    @NotNull
-    private Integer minAmount;
-
-    @NotNull
     private Integer limitCollege;
 
+    private Date startTime;
+
+    private Date endTime;
+
     @NotNull
-    private Integer projectType;
+    List<AmountAndType> list;
+
+
 }

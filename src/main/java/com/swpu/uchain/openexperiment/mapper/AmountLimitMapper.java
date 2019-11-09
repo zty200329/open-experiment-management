@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface AmountLimitMapper {
 
-    int insertOne(AmountLimit amountLimit);
+    int multiInsert(List<AmountLimit> list);
 
     List<AmountLimitVO> getAmountLimitVOByCollegeAndProjectType(@Param("college") Integer college, @Param("type") Integer projectType);
 

@@ -2,18 +2,23 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
 import com.swpu.uchain.openexperiment.domain.AmountLimit;
+import com.swpu.uchain.openexperiment.domain.TimeLimit;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.enums.TimeLimitType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
+import com.swpu.uchain.openexperiment.form.amount.AmountAndType;
 import com.swpu.uchain.openexperiment.form.amount.AmountLimitForm;
 import com.swpu.uchain.openexperiment.form.amount.AmountSearchForm;
 import com.swpu.uchain.openexperiment.form.amount.AmountUpdateForm;
 import com.swpu.uchain.openexperiment.mapper.AmountLimitMapper;
+import com.swpu.uchain.openexperiment.mapper.TimeLimitMapper;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AmountLimitService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -24,9 +29,12 @@ public class AmountLimitServiceImpl implements AmountLimitService {
 
     private AmountLimitMapper amountLimitMapper;
 
+    private TimeLimitMapper timeLimitMapper;
+
     @Autowired
-    public AmountLimitServiceImpl(AmountLimitMapper amountLimitMapper) {
+    public AmountLimitServiceImpl(AmountLimitMapper amountLimitMapper,TimeLimitMapper timeLimitMapper) {
         this.amountLimitMapper = amountLimitMapper;
+        this.timeLimitMapper = timeLimitMapper;
     }
 
     @Override
@@ -35,13 +43,31 @@ public class AmountLimitServiceImpl implements AmountLimitService {
     }
 
     @Override
-    public Result setAmount(AmountLimitForm form) {
-        if (amountLimitMapper.getAmountLimitVOByCollegeAndProjectType(form.getLimitCollege(),form.getProjectType()) != null){
-            throw new GlobalException(CodeMsg.INPUT_INFO_HAS_EXISTED);
+    public Result setAmount(List<AmountLimitForm> limitForms) {
+
+        List<TimeLimit> timeLimitList = new LinkedList<>();
+        List<AmountLimit> amountLimitList = new LinkedList<>();
+
+        for (AmountLimitForm form:limitForms
+             ) {
+            TimeLimit timeLimit = new TimeLimit();
+            BeanUtils.copyProperties(form,timeLimit);
+            timeLimit.setTimeLimitType(TimeLimitType.SECONDARY_UNIT_REPORT_LIMIT.getValue());
+            timeLimitList.add(timeLimit);
+
+
+            for (AmountAndType amountAndType:form.getList()
+                 ) {
+                AmountLimit amountLimit = new AmountLimit();
+                amountLimit.setLimitCollege(form.getLimitCollege());
+                amountLimit.setMaxAmount(amountAndType.getMaxAmount());
+                amountLimit.setProjectType(amountAndType.getProjectType());
+                amountLimitList.add(amountLimit);
+            }
+
         }
-        AmountLimit amountLimit = new AmountLimit();
-        BeanUtils.copyProperties(form,amountLimit);
-        amountLimitMapper.insertOne(amountLimit);
+        amountLimitMapper.multiInsert(amountLimitList);
+        timeLimitMapper.multiInsert(timeLimitList);
         return Result.success();
     }
 

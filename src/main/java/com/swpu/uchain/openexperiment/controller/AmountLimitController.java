@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author dengg
@@ -30,8 +31,8 @@ public class AmountLimitController {
 
     @PostMapping("/setAmount")
     @ApiOperation("设置项目数量")
-    public Result setAmount(@Valid @RequestBody AmountLimitForm form){
-        return amountLimitService.setAmount(form);
+    public Result setAmount(@Valid @RequestBody List<AmountLimitForm> limitForms){
+        return amountLimitService.setAmount(limitForms);
     }
 
     @GetMapping("getAmountLimitVOByCollegeAndProjectType")

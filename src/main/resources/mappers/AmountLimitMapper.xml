@@ -2,9 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.swpu.uchain.openexperiment.mapper.AmountLimitMapper">
 
-    <insert id="insertOne" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.TimeLimit">
+    <insert id="multiInsert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.TimeLimit">
         insert into openexperiment.amount_limit(id, max_amount, min_amount, limit_college, project_type)
-        values (#{id},#{maxAmount},#{minAmount},#{limitCollege},#{projectType})
+        value
+            <foreach collection="list" item="amountLimit" separator=",">
+                (
+                    #{amountLimit.id},
+                    #{amountLimit.maxAmount},
+                    #{amountLimit.minAmount},
+                    #{amountLimit.limitCollege},
+                    #{amountLimit.projectType}
+                )
+            </foreach>
     </insert>
     <update id="updateTimeLimit">
         update openexperiment.amount_limit set min_amount = #{minAmount},max_amount = #{maxAmount} where id = #{id}
@@ -17,9 +26,13 @@
                 id,
                 max_amount as maxAmount,
                 min_amount as minAmount,
-                limit_college as college,
-               project_type as projectType
-         from openexperiment.amount_limit
+                amount_limit.limit_college as college,
+               project_type as projectType,
+               time_limit.start_time as startTime,
+               time_limit.end_time as endTime
+         from openexperiment.amount_limit left join openexperiment.time_limit
+                on amount_limit.limit_college = time_limit.limit_college and  time_limit.limit_type = 8 <!--8是指二级部门上报时间-->
+
         <where>
             <if test="college!=null">
                 limit_college = #{college}

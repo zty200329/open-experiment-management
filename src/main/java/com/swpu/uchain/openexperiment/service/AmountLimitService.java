@@ -5,11 +5,13 @@ import com.swpu.uchain.openexperiment.form.amount.AmountSearchForm;
 import com.swpu.uchain.openexperiment.form.amount.AmountUpdateForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
+import java.util.List;
+
 public interface AmountLimitService {
 
     Result getAmountLimitVOByCollegeAndProjectType(AmountSearchForm form);
 
-    Result setAmount(AmountLimitForm form);
+    Result setAmount(List<AmountLimitForm> limitForms);
 
     Result getAmountLimitList();
 

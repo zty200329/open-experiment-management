@@ -2,6 +2,8 @@ package com.swpu.uchain.openexperiment.domain;
 
 import lombok.Data;
 
+import javax.validation.constraints.Null;
+
 /**
  * @author dengg
  */
@@ -12,6 +14,7 @@ public class AmountLimit {
 
     private Integer maxAmount;
 
+    @Null
     private Integer minAmount;
 
     /**

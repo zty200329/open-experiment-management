@@ -4,10 +4,15 @@ import com.swpu.uchain.openexperiment.domain.TimeLimit;
 import com.swpu.uchain.openexperiment.form.time.TimeLimitForm;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+/**
+ * @author dengg
+ */
 @Repository
 public interface TimeLimitMapper {
 
-    int insert(TimeLimitForm form);
+    int multiInsert(List<TimeLimit> list);
 
     int update(TimeLimitForm form);
 
