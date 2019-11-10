@@ -13,6 +13,7 @@ import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.UserProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
+import com.swpu.uchain.openexperiment.service.TimeLimitService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.service.UserService;
 import com.swpu.uchain.openexperiment.util.CountUtil;
@@ -39,6 +40,8 @@ public class UserProjectServiceImpl implements UserProjectService {
     private GetUserService getUserService;
     @Autowired
     private ProjectGroupMapper projectGroupMapper;
+    @Autowired
+    private TimeLimitService timeLimitService;
 
     @Override
     public boolean insert(UserProjectGroup userProjectGroup) {
@@ -93,15 +96,16 @@ public class UserProjectServiceImpl implements UserProjectService {
 
     @Override
     public Result applyJoinProject(JoinProjectApplyForm joinProjectApplyForm) {
+
+        //时间验证
+        timeLimitService.validTime(TimeLimitType.JOIN_APPLY_LIMIT);
+
         User user = getUserService.getCurrentUser();
-        if (user == null){
-            return Result.error(CodeMsg.AUTHENTICATION_ERROR);
-        }
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(joinProjectApplyForm.getProjectGroupId());
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
-        //项目还未审核的话
+        //验证项目状态
         if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue())){
             return Result.error(CodeMsg.PROJECT_IS_NOT_LAB_ALLOWED);
         }
@@ -155,6 +159,7 @@ public class UserProjectServiceImpl implements UserProjectService {
 
     @Override
     public Result aimUserMemberRole(AimForm aimForm) {
+
         //判断当前操作用户是否存在项目组
         User currentUser = getUserService.getCurrentUser();
         UserProjectGroup group = selectByProjectGroupIdAndUserId(aimForm.getProjectGroupId(), Long.valueOf(currentUser.getCode()));
@@ -172,6 +177,14 @@ public class UserProjectServiceImpl implements UserProjectService {
         if (userProjectGroup.getMemberRole().intValue() == MemberRole.GUIDANCE_TEACHER.getValue()){
             return Result.error(CodeMsg.CANT_AIM_TEACHER);
         }
+
+        //验证项目状态
+        Integer status = projectGroupMapper.selectByPrimaryKey(aimForm.getProjectGroupId()).getStatus();
+        if (status > ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue()){
+            throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+        }
+
+
         if (aimForm.getMemberRole().intValue() == MemberRole.PROJECT_GROUP_LEADER.getValue()){
             //判断项目组是已否存在组长
             User user = userService.selectGroupLeader(aimForm.getProjectGroupId());

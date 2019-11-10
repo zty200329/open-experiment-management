@@ -31,4 +31,8 @@ public class TimeLimitForm {
     @ApiModelProperty("截止时间")
     private Date endTime;
 
+    @NotNull
+    @ApiModelProperty
+    private Integer college;
+
 }

@@ -35,15 +35,7 @@ public class GetUserService {
     }
 
     public User selectByUserCode(String userCode) {
-        User user = redisService.get(UserKey.getUserByUserCode, userCode, User.class);
-        if (user != null){
-            return user;
-        }
-        user = userMapper.selectByUserCode(userCode);
-        if (user != null){
-            redisService.set(UserKey.getUserByUserCode, userCode, user);
-        }
-        return user;
+        return userMapper.selectByUserCode(userCode);
     }
 
 }

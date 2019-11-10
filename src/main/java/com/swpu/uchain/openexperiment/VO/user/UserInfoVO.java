@@ -42,6 +42,4 @@ public class UserInfoVO implements Serializable {
     private String workUnit;
 
     private Integer classNum;
-
-    private RoleInfoVO roleInfoVO;
 }

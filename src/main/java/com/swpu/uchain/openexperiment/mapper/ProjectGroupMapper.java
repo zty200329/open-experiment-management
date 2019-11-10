@@ -64,6 +64,8 @@ public interface ProjectGroupMapper {
      */
     List<ProjectTableInfo> getProjectTableInfoListByCollegeAndList(@Param("college") Integer college);
 
+    int updateProjectStatus(@Param("id") Long projectId,@Param("status")Integer status);
+
     int updateProjectStatusOfList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);
 
     int selectSpecifiedProjectList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);
@@ -73,4 +75,6 @@ public interface ProjectGroupMapper {
     List<Long> conditionQueryOfKeyProject(QueryConditionForm form);
 
     List<ProjectGroup> selectHistoricalInfoByUnitAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType);
+
+    List<ProjectGroup> selectKeyHistoricalInfoByUnitAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType);
 }

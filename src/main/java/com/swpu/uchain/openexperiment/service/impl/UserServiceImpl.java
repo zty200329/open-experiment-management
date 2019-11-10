@@ -148,6 +148,8 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> map = new HashMap<>(8);
         map.put("token",realToken);
         map.put("roles",role);
+        map.put("userId",user.getCode());
+        map.put("name",user.getRealName());
         redisService.delete(VerifyCodeKey.getByClientIp, clientIp);
         return Result.success(map);
     }
@@ -285,13 +287,8 @@ public class UserServiceImpl implements UserService {
         if (currentUser == null){
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
-        UserInfoVO userInfoVO = new UserInfoVO();
-        BeanUtils.copyProperties(currentUser, userInfoVO);
-        Role role = roleService.getUserRoles(Long.valueOf(currentUser.getCode()));
-        //获取Role信息
-        RoleInfoVO roleInfoVO = convertUtil.convertRole(role);
-        userInfoVO.setRoleInfoVO(roleInfoVO);
-        return Result.success(userInfoVO);
+
+        return Result.success(userMapper.selectByUserCode(currentUser.getCode()));
     }
 
     @Override

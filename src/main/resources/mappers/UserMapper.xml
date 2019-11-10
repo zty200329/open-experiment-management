@@ -13,7 +13,7 @@
     <result column="real_name" jdbcType="VARCHAR" property="realName" />
     <result column="sex" jdbcType="VARCHAR" property="sex" />
     <result column="user_type" jdbcType="INTEGER" property="userType" />
-    <result column="institute" jdbcType="VARCHAR" property="institute" />
+    <result column="institute" jdbcType="INTEGER" property="institute" />
     <result column="major" jdbcType="VARCHAR" property="major" />
     <result column="grade" jdbcType="INTEGER" property="grade" />
     <result column="work_unit" jdbcType="VARCHAR" property="workUnit" />
@@ -68,7 +68,23 @@
     from user
   </select>
   <select id="selectByUserCode" resultMap="BaseResultMap">
-    select * from openexperiment.user where code = #{userCode}
+    select
+          user.id,
+          user.code,
+          user.email,
+          user.fix_phone,
+          user.id_card,
+          user.mobile_phone,
+          user.`password`,
+          user.qq_num,
+          user.real_name,
+          user.sex,
+          user.user_type,
+          user.institute,
+          user.major,
+          user.grade,
+          user.class_num
+    from openexperiment.user where code = #{userCode}
   </select>
   <select id="selectProjectJoinedUsers" resultMap="BaseResultMap">
     select user.id,

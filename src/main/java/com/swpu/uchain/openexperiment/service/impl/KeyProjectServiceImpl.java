@@ -19,6 +19,7 @@ import com.swpu.uchain.openexperiment.form.user.StuMember;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.KeyProjectService;
+import com.swpu.uchain.openexperiment.service.TimeLimitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,25 +41,30 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private KeyProjectStatusMapper keyProjectStatusMapper;
     private GetUserService getUserService;
     private OperationRecordMapper operationRecordMapper;
+    private TimeLimitService timeLimitService;
 
     @Autowired
     public KeyProjectServiceImpl(ProjectGroupMapper projectGroupMapper, UserProjectGroupMapper userProjectGroupMapper,
                                  KeyProjectStatusMapper keyProjectStatusMapper,GetUserService getUserService,
-                                 OperationRecordMapper operationRecordMapper) {
+                                 OperationRecordMapper operationRecordMapper,TimeLimitService timeLimitService) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
         this.getUserService = getUserService;
         this.operationRecordMapper = operationRecordMapper;
+        this.timeLimitService = timeLimitService;
     }
 
     @Transactional(rollbackFor = GlobalException.class)
     @Override
     public Result createKeyApply(KeyProjectApplyForm form) {
+        // TODO 判断时候为重点项目
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(form.getProjectId());
         if (projectGroup == null){
             throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
+        //验证时间的合法性
+        timeLimitService.validTime(TimeLimitType.KEY_DECLARE_LIMIT);
 
         //验证项目状态合法性
         validProjectStatus(ProjectStatus.LAB_ALLOWED.getValue(),projectGroup.getStatus());
@@ -73,7 +79,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
         }
         //将项目组表中的项目状态变为重点项目申请  （之后的状态查询都在重点项目状态表中查询）
-        projectGroupMapper.updateProjectStatusOfList(new ArrayList<>(),ProjectStatus.KEY_PROJECT_APPLY.getValue());
+        projectGroupMapper.updateProjectStatus(form.getProjectId(),ProjectStatus.KEY_PROJECT_APPLY.getValue());
         keyProjectStatusMapper.insert(projectId, KeyProjectStatus.TO_DE_CONFIRMED.getValue(),
                 projectGroup.getSubordinateCollege(), Long.valueOf(user.getCode()));
 
@@ -115,35 +121,26 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result getKeyProjectApplyingListByLabAdmin() {
-          // TODO 权限验证
          return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.GUIDE_TEACHER_ALLOWED,null);
     }
 
     @Override
     public Result getKeyProjectApplyingListBySecondaryUnit() {
-        // TODO 权限验证
-
         return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.LAB_ALLOWED_AND_REPORTED,null);
     }
 
     @Override
     public Result getKeyProjectApplyingListByFunctionalDepartment() {
-        // TODO 权限验证
-
         return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED,null);
     }
 
     @Override
     public Result getIntermediateInspectionKeyProject(Integer college) {
-        // TODO 权限验证
-
         return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.ESTABLISH,college);
     }
 
     @Override
     public Result getToBeConcludingKeyProject(Integer college) {
-        // TODO 权限验证
-
         return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.MID_TERM_INSPECTION,college);
     }
 
@@ -221,11 +218,15 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result agreeKeyProjectByGuideTeacher(List<KeyProjectCheck> list) {
+        //验证时间的合法性
+        timeLimitService.validTime(TimeLimitType.TEACHER_KEY_CHECK_LIMIT);
+
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.MENTOR, OperationType.AGREE,list);
     }
 
     @Override
     public Result agreeKeyProjectByLabAdministrator(List<KeyProjectCheck> list) {
+
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR, OperationType.AGREE,list);
     }
 
@@ -280,7 +281,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
         // TODO 权限验证
 
-        List<ProjectGroup> list = projectGroupMapper.selectHistoricalInfoByUnitAndOperation(info.getOperationUnit(),info.getOperationType());
+        List<ProjectGroup> list = projectGroupMapper.selectKeyHistoricalInfoByUnitAndOperation(info.getOperationUnit(),info.getOperationType());
         for (ProjectGroup projectGroup:list
         ) {
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(),null));

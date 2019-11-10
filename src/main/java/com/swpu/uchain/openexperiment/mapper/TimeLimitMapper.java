@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.domain.TimeLimit;
 import com.swpu.uchain.openexperiment.form.time.TimeLimitForm;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public interface TimeLimitMapper {
 
     int delete(Integer type);
 
-    TimeLimit getTimeLimitById(Integer type);
+    TimeLimit getTimeLimitByTypeAndCollege(@Param("type") Integer type,@Param("college") Integer college);
 
+    List<TimeLimit> getAll();
 }

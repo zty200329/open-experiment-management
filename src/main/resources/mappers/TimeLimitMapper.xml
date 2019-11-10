@@ -21,10 +21,19 @@
         delete from openexperiment.time_limit where limit_type =#{limitType}
     </delete>
 
-    <select id="getTimeLimitById" resultType="com.swpu.uchain.openexperiment.domain.TimeLimit">
-        select limit_type as limitType,
+    <select id="getTimeLimitByTypeAndCollege" resultType="com.swpu.uchain.openexperiment.domain.TimeLimit">
+        select limit_type as timeLimitType,
                start_time as startTime,
-               end_time as endTime
+               end_time as endTime,
+               limit_college as  limitCollege
+        from openexperiment.time_limit
+        where  limit_type = #{type} and limit_college = #{college}
+    </select>
+    <select id="getAll" resultType="com.swpu.uchain.openexperiment.domain.TimeLimit">
+        select limit_type as timeLimitType,
+               start_time as startTime,
+               end_time as endTime,
+               limit_college as  limitCollege
         from openexperiment.time_limit
     </select>
 </mapper>

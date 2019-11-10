@@ -54,7 +54,7 @@
                time_limit.start_time,
                time_limit.end_time
          from openexperiment.amount_limit left join openexperiment.time_limit
-                on amount_limit.limit_college = time_limit.limit_college and  time_limit.limit_type = 8 <!--8是指二级部门上报时间-->
+                on amount_limit.limit_college = time_limit.limit_college and  time_limit.limit_type = 20 <!--20是指二级部门上报时间-->
 
         <where>
             <if test="college!=null">

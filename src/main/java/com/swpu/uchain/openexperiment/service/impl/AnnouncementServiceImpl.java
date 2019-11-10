@@ -165,11 +165,10 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     private Announcement convertFormToModel(AnnouncementPublishForm publishForm,AnnouncementStatus status){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long id  = Long.valueOf(authentication.getName());
-        User user = userMapper.selectByPrimaryKey(id);
         Announcement announcement = new Announcement();
         announcement.setTitle(publishForm.getTitle());
         announcement.setContent(publishForm.getContent());
-        announcement.setPublisherId(Long.valueOf(user.getCode()));
+        announcement.setPublisherId(id);
         announcement.setPublishTime(new Date());
         announcement.setUpdateTime(new Date());
         announcement.setStatus(status.getValue());

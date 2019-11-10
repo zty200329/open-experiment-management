@@ -16,7 +16,7 @@ public enum MemberRole {
      * 指导教师
      */
     GUIDANCE_TEACHER(1),
-    /**
+    /**`
      * 项目组组长
      */
     PROJECT_GROUP_LEADER(2),

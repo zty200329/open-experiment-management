@@ -46,8 +46,8 @@ public class TimeLimitController {
 
     @GetMapping("/getTimeLimit")
     @ApiOperation("获取时间限制")
-    public Result getTimeLimit(Integer type){
-        return timeLimitService.getTimeLimitByType(type);
+    public Result getTimeLimit(){
+        return timeLimitService.getTimeLimitList();
     }
 
 }

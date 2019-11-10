@@ -22,9 +22,9 @@ public class HistoryQueryKeyProjectInfo {
     /**
      * {@link com.swpu.uchain.openexperiment.enums.OperationType}
      */
-    @Min(12)
-    @Max(13)
-    @ApiModelProperty("历史操作： 12,拒绝|13,上报")
+    @Min(2)
+    @Max(3)
+    @ApiModelProperty("历史操作： 2,拒绝|3,上报")
     private Integer operationType;
 
 }

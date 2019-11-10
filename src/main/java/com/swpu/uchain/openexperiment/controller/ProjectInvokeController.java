@@ -54,8 +54,8 @@ public class ProjectInvokeController {
         return projectService.applyUpdateProject(updateProjectApplyForm);
     }
 
-    @ApiIgnore("指导教师确认或者否认职能部门修改立项申请的结果(指导老师进行确认)1,确认(立项成功)  2.否认(立项失败)")
-    @PostMapping(value = "/ensureOrNotModify", name = "修改立项申请")
+    @ApiIgnore
+    @PostMapping(value = "/ensureOrNotModify")
     public Result ensureOrNotModify(@Valid @RequestBody ConfirmForm confirmForm){
         return projectService.ensureOrNotModify(confirmForm);
     }
@@ -166,7 +166,6 @@ public class ProjectInvokeController {
         }
         return projectService.reportToFunctionalDepartment(projectGroupIdList);
     }
-
 
     @ApiOperation(" 实验室驳回项目立项申请")
     @PostMapping(value = "/rejectProjectApplyByLabAdministrator")

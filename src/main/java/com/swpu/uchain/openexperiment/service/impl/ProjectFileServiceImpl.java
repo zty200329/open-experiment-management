@@ -106,6 +106,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (file.isEmpty()) {
             return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
+        if (!getFileSuffix(file.getOriginalFilename()).equals(".doc")){
+            throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
+        }
         String docPath = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir(),
                 uploadConfig.getApplyFileName()+getFileSuffix(file.getOriginalFilename()));
@@ -144,7 +147,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             //转换为PDF
             convertDocToPDF(docPath,pdfPath);
             Map<String, String> map = new HashMap<>();
-            map.put("url","http://10.20.0.78:8083/apply/"+fileName);
+            map.put("url","http://10.20.0.65:8083/apply/"+fileName);
             return Result.success(map);
         }
         return Result.error(CodeMsg.UPLOAD_ERROR);

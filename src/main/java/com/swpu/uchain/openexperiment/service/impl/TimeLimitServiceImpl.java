@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.domain.TimeLimit;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.enums.CollegeType;
 import com.swpu.uchain.openexperiment.enums.TimeLimitType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.time.TimeLimitForm;
@@ -49,7 +50,6 @@ public class TimeLimitServiceImpl implements TimeLimitService {
         timeLimitList.add(timeLimit);
         int result = timeLimitMapper.multiInsert(timeLimitList);
         BeanUtils.copyProperties(form,timeLimit);
-        redisService.set(TimeLimitKey.getTimeLimitType,form.getTimeLimitType().toString(),timeLimit);
         if (result!=1){
             throw new GlobalException(CodeMsg.ADD_ERROR);
         }
@@ -60,7 +60,7 @@ public class TimeLimitServiceImpl implements TimeLimitService {
     public Result update(TimeLimitForm form) {
         TimeLimit timeLimit = new TimeLimit();
         BeanUtils.copyProperties(form,timeLimit);
-        timeLimit.setLimitCollege(getUserService.getCurrentUser().getInstitute()); // TODO 判断用户
+        timeLimit.setLimitCollege(getUserService.getCurrentUser().getInstitute());
         int result = timeLimitMapper.update(timeLimit);
         redisService.set(TimeLimitKey.getTimeLimitType,form.getTimeLimitType().toString(),timeLimit);
         if (result!=1){
@@ -80,29 +80,25 @@ public class TimeLimitServiceImpl implements TimeLimitService {
     }
 
     @Override
-    public Result getTimeLimitByType(Integer type) {
-        return Result.success(getTimeLimit(type));
+    public Result getTimeLimitList() {
+        return Result.success(timeLimitMapper.getAll());
     }
 
-    public TimeLimit getTimeLimit(Integer type) {
-        if (type == null){
+    public TimeLimit getTimeLimitByType(Integer type, Integer college) {
+        if (type == null || college == null) {
             throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
         }
-        TimeLimit timeLimit = redisService.get(TimeLimitKey.getTimeLimitType,type.toString(),TimeLimit.class);
-        if (timeLimit == null){
-            timeLimit = timeLimitMapper.getTimeLimitById(type);
-            if (timeLimit == null){
-                return null;
-            }else {
-                redisService.set(TimeLimitKey.getTimeLimitType,type.toString(),timeLimit);
-            }
-        }
-        return timeLimit;
+        return timeLimitMapper.getTimeLimitByTypeAndCollege(type,college);
     }
 
+    @Override
     public void validTime(TimeLimitType timeLimitType){
         Integer type = timeLimitType.getValue();
-        TimeLimit timeLimit = getTimeLimit(type);
+        Integer college = getUserService.getCurrentUser().getInstitute();
+        if (college == null){
+            throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
+        }
+        TimeLimit timeLimit = getTimeLimitByType(type,college);
         //如果不存在验证直接退出
         if (timeLimit == null){
             return;

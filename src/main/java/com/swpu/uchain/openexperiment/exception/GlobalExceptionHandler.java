@@ -7,6 +7,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Author: clf
@@ -33,6 +35,13 @@ public class GlobalExceptionHandler {
     public Result handleSelfException(GlobalException exception){
         log.error(EXCEPTION_MSG_KEY+exception.getMessage());
         return Result.error(exception);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Result handleValidException(MethodArgumentNotValidException e){
+        log.error(Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage());
+        return Result.error(103,e.getBindingResult().getFieldError().getDefaultMessage());
     }
 
     @ExceptionHandler(value = Exception.class)

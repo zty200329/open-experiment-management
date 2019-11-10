@@ -59,7 +59,7 @@ public class AnnouncementController {
     }
 
     @ApiOperation("删除公告")
-    @GetMapping(value = "/delete", name = "删除公告")
+    @PostMapping(value = "/delete", name = "删除公告")
     public Result<Long> delete(Long announcementId){
         announcementService.delete(announcementId);
         return Result.success(announcementId);
