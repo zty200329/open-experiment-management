@@ -20,14 +20,11 @@ public class StaticResourceConfig implements WebMvcConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        //定义到新文件夹
+        //定义到硬盘
         registry.addResourceHandler("/apply/**")
                 .addResourceLocations("file:"+uploadConfig.getApplyDir()+"/").resourceChain(false);
+        //定义到相对路径
         registry.addResourceHandler("/material/**")
                 .addResourceLocations("classpath:/material_sample/").resourceChain(false);
-//        //定义到硬盘
-//        registry.addResourceHandler("/picture/**")
-//                .addResourceLocations("file:D:/picture/");
-//        super.addResourceHandlers(registry);
     }
 }

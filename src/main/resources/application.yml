@@ -2,7 +2,7 @@ spring:
 #  resources:
 #    chain:
 #      cache: false
-#    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/apply_dir/,classpath:/material_sample/
+#    static-locations:
   profiles:
     active: dev
   datasource:

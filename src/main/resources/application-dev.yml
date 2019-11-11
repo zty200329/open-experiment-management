@@ -20,6 +20,9 @@ upload:
   conclusion-dir: "E:/IdeaProjects/OpenExperiment/src/main/resources/conclusion_dir"
   material_sample: "E:/IdeaProjects/OpenExperiment/src/main/resources/material_sample"
 
+file:
+  ip-addrss: "http://10.20.0.65:8083"
+
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

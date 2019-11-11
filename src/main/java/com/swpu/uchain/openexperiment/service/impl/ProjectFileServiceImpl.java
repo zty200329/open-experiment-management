@@ -23,6 +23,7 @@ import com.swpu.uchain.openexperiment.util.FileUtil;
 import com.swpu.uchain.openexperiment.util.PDFConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Autowired
     private ProjectGroupMapper projectGroupMapper;
 
+    @Value("${file.ip-address}")
+    private String ipAddress;
 
     public boolean insert(ProjectFile projectFile) {
         ProjectFile projectFile1 = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectFile.getProjectGroupId(),projectFile.getMaterialType());
@@ -147,7 +150,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             //转换为PDF
             convertDocToPDF(docPath,pdfPath);
             Map<String, String> map = new HashMap<>();
-            map.put("url","http://10.20.0.65:8083/apply/"+fileName);
+            map.put("url",ipAddress+"/apply/"+fileName);
             return Result.success(map);
         }
         return Result.error(CodeMsg.UPLOAD_ERROR);

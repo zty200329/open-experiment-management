@@ -29,6 +29,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1265,6 +1266,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 
 
+    @Value("${file.ip-address}")
+    private String ipAddress;
 
     @Override
     public Result getProjectGroupDetailVOByProjectId (Long projectId){
@@ -1277,7 +1280,7 @@ public class ProjectServiceImpl implements ProjectService {
             detail.setApplyurl(null);
         }else {
             String fileName = file.getFileName();
-            String url  = "http://10.20.0.65:8083/apply/"+fileName;
+            String url  = ipAddress+"/apply/"+fileName;
             detail.setApplyurl(url);
         }
         return Result.success(detail);
