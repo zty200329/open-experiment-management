@@ -157,15 +157,12 @@ public class ProjectServiceImpl implements ProjectService {
         if (college == null){
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
         }
-        //获取这是该院第几个项目
-//        String maxSerialNumber = projectGroupMapper.getIndexByCollege(college);
 
-//        String serialNumber = SerialNumberUtil.getSerialNumberOfProject(college,form.getProjectType(),maxSerialNumber);
 
         //判断用户类型
-        if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()) {
-            Result.error(CodeMsg.STUDENT_CANT_APPLY);
-        }
+//        if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()) {
+//            Result.error(CodeMsg.STUDENT_CANT_APPLY);
+//        }
         ProjectGroup projectGroup = projectGroupMapper.selectByName(form.getProjectName());
         if (projectGroup != null) {
             return Result.error(CodeMsg.PROJECT_GROUP_HAD_EXIST);
@@ -606,7 +603,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
 
-        @Transactional(rollbackFor = Exception.class)
+        @Transactional(rollbackFor = GlobalException.class)
         public Result reportToHigherUnit (List < Long > projectGroupIdList, ProjectStatus
             rightProjectStatus, OperationUnit operationUnit){
             List<OperationRecord> list = new LinkedList<>();
@@ -802,8 +799,14 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new GlobalException("项目编号为"+projectGroup.getId()+"的项目非申报状态",CodeMsg.PROJECT_STATUS_IS_NOT_DECLARE.getCode());
             }
             //如果不是实验室上报状态,抛出异常
-            if (role == 5 && !projectGroup.getStatus().equals(projectStatus)){
-                throw new GlobalException("项目编号为"+projectGroup.getId()+"的项目非实验室上报状态",CodeMsg.PROJECT_CURRENT_STATUS_ERROR.getCode());
+            if (role.equals(RoleType.SECONDARY_UNIT.getValue())){
+                if (!projectGroup.getStatus().equals(projectStatus)){
+                    throw new GlobalException("项目编号为"+projectGroup.getId()+"的项目非实验室上报状态",CodeMsg.PROJECT_CURRENT_STATUS_ERROR.getCode());
+                }
+                //设置项目编号
+                String serialNumber = projectGroupMapper.selectByPrimaryKey(form.getProjectId()).getSerialNumber();
+                //计算编号并在数据库中插入编号
+                projectGroupMapper.updateProjectSerialNumber(form.getProjectId(),SerialNumberUtil.getSerialNumberOfProject(user.getInstitute(),ProjectType.KEY.getValue(),serialNumber));
             }
             //根据不同角色设置不同的项目状态
             updateProjectStatus(form.getProjectId(), updateProjectStatus);
@@ -1266,7 +1269,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 
 
-    @Value("${file.ip-address}")
+    @Value(value = "${file.ip-address}")
     private String ipAddress;
 
     @Override

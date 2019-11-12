@@ -20,6 +20,7 @@ import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.KeyProjectService;
 import com.swpu.uchain.openexperiment.service.TimeLimitService;
+import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -197,6 +198,12 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         if (user == null){
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
+        //需要生成编号，通过操作人来判断学院信息
+        Integer college = getUserService.getCurrentUser().getInstitute();
+        if (college == null){
+            throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
+        }
+
         List<OperationRecord> operationRecordList = new LinkedList<>();
         List<Long> idList = new LinkedList<>();
         for (KeyProjectCheck check:list
@@ -208,6 +215,13 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
             operationRecord.setRelatedId(check.getProjectId());
             operationRecordList.add(operationRecord);
+
+            //如果是二级单位同意立项
+            if (roleType == RoleType.SECONDARY_UNIT && operationType == OperationType.AGREE){
+                String serialNumber = projectGroupMapper.selectByPrimaryKey(check.getProjectId()).getSerialNumber();
+                //计算编号并在数据库中插入编号
+                projectGroupMapper.updateProjectSerialNumber(check.getProjectId(),SerialNumberUtil.getSerialNumberOfProject(college,ProjectType.KEY.getValue(),serialNumber));
+            }
 
             idList.add(check.getProjectId());
         }

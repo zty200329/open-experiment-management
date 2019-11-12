@@ -66,6 +66,8 @@ public interface ProjectGroupMapper {
 
     int updateProjectStatus(@Param("id") Long projectId,@Param("status")Integer status);
 
+    int updateProjectSerialNumber(@Param("id") Long projectId,@Param("serialNumber")String serialNumber);
+
     int updateProjectStatusOfList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);
 
     int selectSpecifiedProjectList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);
@@ -77,4 +79,5 @@ public interface ProjectGroupMapper {
     List<ProjectGroup> selectHistoricalInfoByUnitAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType);
 
     List<ProjectGroup> selectKeyHistoricalInfoByUnitAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType);
+
 }

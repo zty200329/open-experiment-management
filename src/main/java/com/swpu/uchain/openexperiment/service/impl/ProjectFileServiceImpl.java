@@ -61,7 +61,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Autowired
     private ProjectGroupMapper projectGroupMapper;
 
-    @Value("${file.ip-address}")
+    @Value(value = "${file.ip-address}")
     private String ipAddress;
 
     public boolean insert(ProjectFile projectFile) {
