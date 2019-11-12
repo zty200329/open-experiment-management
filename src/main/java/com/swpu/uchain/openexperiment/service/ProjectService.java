@@ -134,16 +134,6 @@ public interface ProjectService {
     Result reportToCollegeLeader(List<Long> projectGroupIdList);
 
     /**
-     * 生成立项总览表
-     */
-    void generateEstablishExcel(HttpServletResponse response);
-
-    /**
-     * 生成结题总览表
-     */
-    void generateConclusionExcel(HttpServletResponse response);
-
-    /**
      * 获取当前指导老师的项目成员审批列表
      *
      * @return

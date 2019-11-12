@@ -92,5 +92,16 @@ public interface ProjectFileService {
      */
     Result uploadConcludingReport(Long projectId,MultipartFile file);
 
+
+    /**
+     * 生成立项总览表
+     */
+    void generateEstablishExcel(HttpServletResponse response);
+
+    /**
+     * 生成结题总览表
+     */
+    void generateConclusionExcel(HttpServletResponse response);
+
     void getConclusionDoc(Long fileId, HttpServletResponse response);
 }

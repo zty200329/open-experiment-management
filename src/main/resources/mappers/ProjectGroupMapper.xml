@@ -647,7 +647,7 @@
     </update>
 
     <update id="updateProjectSerialNumber">
-        update openexperiment.project_group set `serial_number`` = #{serialNumber} where id =
+        update openexperiment.project_group set `serial_number` = #{serialNumber} where id =
         #{id}
     </update>
     <select id="selectKeyHistoricalInfoByUnitAndOperation" resultMap="ProjectGroupResultMap">

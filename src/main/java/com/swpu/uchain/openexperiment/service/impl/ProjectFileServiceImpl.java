@@ -1,7 +1,9 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
+import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
 import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
+import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
 import com.swpu.uchain.openexperiment.mapper.ProjectFileMapper;
 import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
@@ -22,6 +24,11 @@ import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.FileUtil;
 import com.swpu.uchain.openexperiment.util.PDFConvertUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -32,10 +39,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.OutputStream;
+import java.util.*;
 
 /**
  * @Description
@@ -336,6 +341,199 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return false;
         }
         return true;
+    }
+
+    private int getYear(){
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.YEAR);
+    }
+
+    @Override
+    public void generateEstablishExcel (HttpServletResponse response){
+
+        User user = getUserService.getCurrentUser();
+        //获取管理人员所管理的学院
+        if (user == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        Integer college = user.getInstitute();
+        if (college == null){
+            throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
+        }
+        List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(college);
+        // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
+        XSSFWorkbook wb = new XSSFWorkbook();
+        // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
+        XSSFSheet sheet = wb.createSheet("workSheet");
+
+        sheet.setPrintGridlines(true);
+        //3.1设置字体居中
+        XSSFCellStyle cellStyle = wb.createCellStyle();
+        //自动换行
+        cellStyle.setWrapText(true);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        //当前行的位置
+        int index = 0;
+
+        //序号
+        XSSFRow title = sheet.createRow(index);
+        sheet.setColumnWidth(0, 256 * 150);
+        title.setHeight((short) (16 * 50));
+        title.createCell(index++).setCellValue("西南石油大学第"+getYear()/100+"期("+getYear()+"-"+(getYear()+1)+"年度)课外开放实验项目立项一览表");
+
+        XSSFRow info = sheet.createRow(index);
+        info.createCell(0).setCellValue("单位：（盖章）");
+        sheet.setColumnWidth(0, 256 * 20);
+        info.createCell(3).setCellValue("填报时间");
+        sheet.setColumnWidth(index, 256 * 20);
+        index++;
+
+        // 4.设置表头，即每个列的列名
+        String[] head = {"院/中心", "序号", "项目名称", "实验类型", "实验时数", "指导教师", "负责学生"
+                , "专业年级", "开始时间", "结束时间", "开放\r\n实验室", "实验室地点", "负责学生\r\n电话", "申请经费（元）", "建议\r\n评审分组"};
+        // 4.1创建表头行
+        XSSFRow row = sheet.createRow(index++);
+
+        //创建行中的列
+        for (int i = 0; i < head.length; i++) {
+
+            // 给列写入数据,创建单元格，写入数据
+            row.setHeight((short) (16*40));
+            row.createCell(i).setCellValue(head[i]);
+
+        }
+
+        //写入数据
+        for (ProjectTableInfo projectTableInfo : list) {
+            //创建行
+            // 创建行
+
+            row = sheet.createRow(index++);
+
+            //设置行高
+            row.setHeight((short) (16 * 22));
+            // 序号
+            row.createCell(0).setCellValue(ConvertUtil.getStrCollege(projectTableInfo.getCollege()));
+            row.createCell(1).setCellValue(projectTableInfo.getId());
+            row.createCell(2).setCellValue(projectTableInfo.getProjectName());
+            row.createCell(3).setCellValue(projectTableInfo.getExperimentType());
+            row.createCell(4).setCellValue(projectTableInfo.getTotalHours());
+            row.createCell(5).setCellValue(projectTableInfo.getLeadTeacher());
+            row.createCell(6).setCellValue(projectTableInfo.getLeadStudent());
+            row.createCell(7).setCellValue(projectTableInfo.getGradeAndMajor());
+            row.createCell(8).setCellValue(projectTableInfo.getStartTime());
+            row.createCell(9).setCellValue(projectTableInfo.getEndTime());
+            row.createCell(10).setCellValue(projectTableInfo.getLabName());
+            row.createCell(11).setCellValue(projectTableInfo.getAddress());
+            row.createCell(12).setCellValue(projectTableInfo.getLeadStudentPhone());
+            row.createCell(13).setCellValue(projectTableInfo.getApplyFunds());
+            row.createCell(14).setCellValue(projectTableInfo.getSuggestGroupType());
+
+        }
+
+        sheet.createRow(index++).createCell(0).setCellValue("注1：本表由学院（中心）汇总填报。注2：建议评审分组填A-F,数据来源立项申请表");
+        index++;
+
+        XSSFRow end = sheet.createRow(index);
+        end.createCell(0).setCellValue("主管院长签字:");
+        end.createCell(3).setCellValue("经办人");
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Content-disposition", "attachment;filename=" + "test" + ".xlsx");
+        try {
+            OutputStream os = response.getOutputStream();
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (IOException e) {
+            throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
+        }
+    }
+
+    @Override
+    public void generateConclusionExcel (HttpServletResponse response){
+        User user = getUserService.getCurrentUser();
+        Integer college = user.getInstitute();
+        // TODO  区分学院
+        // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
+        XSSFWorkbook wb = new XSSFWorkbook();
+        // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
+        XSSFSheet sheet = wb.createSheet("workSheet");
+
+        sheet.setPrintGridlines(true);
+        //3.1设置字体居中
+        XSSFCellStyle cellStyle = wb.createCellStyle();
+        //自动换行
+        cellStyle.setWrapText(true);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        //当前行的位置
+        int index = 0;
+        //序号
+        XSSFRow title = sheet.createRow(index);
+        sheet.setColumnWidth(0, 256 * 150);
+        title.setHeight((short) (16 * 50));
+        title.createCell(index++).setCellValue("西南石油大学第"+getYear()/100+"期（"+getYear()+"-"+(getYear()+1)+"年度）课外开放实验普通项目结题验收一览表");
+
+
+        XSSFRow info = sheet.createRow(index);
+        sheet.setColumnWidth(0,256*40);
+        info.createCell(0).setCellValue("单位：（盖章）");
+
+
+        // 4.1创建表头行
+        XSSFRow row = sheet.createRow(index++);
+        String[] columns = {"序号","学院","开放实验室","项目编号","实验类型","实验时数"
+                ,"指导教师","教师公号","学生姓名","学生学号","组员职责","专业年级","起止时间","验收时间","验收结果","备注"};
+        //创建行中的列
+        sheet.setColumnWidth(0,256*20);
+        for (int i = 0; i < columns.length; i++) {
+
+            // 给列写入数据,创建单元格，写入数据
+            row.setHeight((short) (16*40));
+            row.createCell(i).setCellValue(columns[i]);
+        }
+
+        //写入数据
+        List<ConclusionDTO> list = projectGroupMapper.selectConclusionDTOs(null);
+        for (ConclusionDTO conclusion:list
+        ) {
+            // 创建行
+            row = sheet.createRow(++index);
+
+            //设置行高
+            row.setHeight((short) (16 * 22));
+            // 序号
+            row.createCell(1).setCellValue(ConvertUtil.getStrCollege(conclusion.getCollege()));
+            row.createCell(2).setCellValue(conclusion.getLabName());
+            row.createCell(3).setCellValue(conclusion.getId());
+            row.createCell(4).setCellValue(ConvertUtil.getStrExperimentType(conclusion.getExperimentType()));
+            row.createCell(5).setCellValue(conclusion.getTotalHours());
+            row.createCell(6).setCellValue(conclusion.getGuideTeacherName());
+            row.createCell(7).setCellValue(conclusion.getGuideTeacherId());
+            row.createCell(8).setCellValue(conclusion.getUserName());
+            row.createCell(9).setCellValue(conclusion.getUserId());
+            row.createCell(10).setCellValue(ConvertUtil.getStrMemberRole(conclusion.getUserRole()));
+            row.createCell(11).setCellValue(conclusion.getMajorAndGrade());
+            row.createCell(12).setCellValue(conclusion.getStartTimeAndEndTime());
+
+        }
+
+        sheet.createRow(++index).createCell(0).setCellValue("注1：本表由学院（中心）汇总填报。注2：建议评审分组填A-F,数据来源立项申请表");
+        index++;
+
+        XSSFRow end = sheet.createRow(index);
+        end.createCell(0).setCellValue("主管院长签字:");
+        end.createCell(3).setCellValue("经办人");
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Content-disposition", "attachment;filename=" + "Conclusion" + ".xlsx");
+        try {
+            OutputStream os = response.getOutputStream();
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (IOException e) {
+            throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
+        }
+
     }
 
     @Async

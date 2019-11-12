@@ -104,12 +104,12 @@ public class FileController {
     @ApiOperation("生成结题总览表")
     @PostMapping(value = "generateConclusionExcel", name = "生成结题总览表")
     public void generateConclusionExcel(HttpServletResponse response){
-         projectService.generateConclusionExcel(response);
+        projectFileService.generateConclusionExcel(response);
     }
 
     @ApiOperation("生成立项总览表")
     @PostMapping(value = "/generateEstablishExcel", name = "生成立项总览表")
     public void generateEstablishExcel(HttpServletResponse response){
-        projectService.generateEstablishExcel(response);
+        projectFileService.generateEstablishExcel(response);
     }
 }
