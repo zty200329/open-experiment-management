@@ -125,10 +125,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         String docPath = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir(),
                 uploadConfig.getApplyFileName()+getFileSuffix(file.getOriginalFilename()));
-        //生成PDF的文件地址，该PDF信息是最终存入数据库的PDF名称
-        String pdfPath = FileUtil.getFileRealPath(projectGroupId,
-                uploadConfig.getApplyDir(),
-                uploadConfig.getApplyFileName()+".pdf");
         //项目基本信息文档
         String headDocPath = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir2(),
@@ -159,8 +155,23 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         //上传文件并转化成PDF
         if (FileUtil.uploadFile(file,docPath) && FileUtil.uploadFile(headFile,headDocPath)) {
 
+            //临时的PDF
+            String pdfHeadPath = FileUtil.getFileRealPath(projectGroupId,
+                    uploadConfig.getPdfTempDir(),
+                    uploadConfig.getApplyFileName()+"head"+".pdf");
+            String pdfBodyPath = FileUtil.getFileRealPath(projectGroupId,
+                    uploadConfig.getPdfTempDir(),
+                    uploadConfig.getApplyFileName()+"body"+".pdf");
+
+
             //转换为PDF
+            //生成PDF的文件地址，该PDF信息是最终存入数据库的PDF名称
+            String pdfPath = FileUtil.getFileRealPath(projectGroupId,
+                    uploadConfig.getApplyDir(),
+                    uploadConfig.getApplyFileName()+".pdf");
+
             convertDocToPDF(docPath,pdfPath);
+            mergePdf(pdfHeadPath,pdfBodyPath,pdfPath);
 
             Map<String, String> map = new HashMap<>();
             map.put("url",ipAddress+"/apply/"+fileName);
@@ -546,13 +557,12 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Async
-    private void convertDocToPDF(String fileNameOfDoc,String fileNameOfPDF){
+    public void convertDocToPDF(String fileNameOfDoc,String fileNameOfPDF){
         PDFConvertUtil.convert(fileNameOfDoc,fileNameOfPDF);
     }
 
     @Async
-    private void mergePdf(String headDocPath,String docPath,String pdfName){
-//        String tempPDF
+    public void mergePdf(String headDocPath,String docPath,String pdfName){
 
 
         String[] docs = new String[2];
