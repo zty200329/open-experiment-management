@@ -816,53 +816,53 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success();
     }
 
-        @Override
-        public Result getAllOpenTopic () {
-            List<OpenTopicInfo> list= projectGroupMapper.getAllOpenTopic();
-            for (OpenTopicInfo info:list
-                 ) {
-                info.setAmountOfSelected(userProjectGroupMapper.getMemberAmountOfProject(info.getId(),null));
-            }
-            return Result.success(list);
+    @Override
+    public Result getAllOpenTopic () {
+        List<OpenTopicInfo> list= projectGroupMapper.getAllOpenTopic();
+        for (OpenTopicInfo info:list
+             ) {
+            info.setAmountOfSelected(userProjectGroupMapper.getMemberAmountOfProject(info.getId(),null));
+        }
+        return Result.success(list);
+    }
+
+    @Override
+    public List getJoinInfo () {
+        User currentUser = getUserService.getCurrentUser();
+        //检测用户是不是老师--后期可省略
+        if (currentUser == null) {
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
 
-        @Override
-        public List getJoinInfo () {
-            User currentUser = getUserService.getCurrentUser();
-            //检测用户是不是老师--后期可省略
-            if (currentUser == null) {
-                throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
-            }
+        Role role = roleMapper.selectByUserId(Long.valueOf(currentUser.getCode()));
+        if (role.getId() < (RoleType.MENTOR.getValue()).longValue()) {
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
+        List<JoinUnCheckVO> joinUnCheckVOS = new ArrayList<>();
 
-            Role role = roleMapper.selectByUserId(Long.valueOf(currentUser.getCode()));
-            if (role.getId() < (RoleType.MENTOR.getValue()).longValue()) {
-                throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        //获取当前教师参与申报的项目组
+        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), ProjectStatus.LAB_ALLOWED.getValue());
+        for (int i = 0; i < projectGroups.size(); i++) {
+            if (projectGroups.get(i) == null) {
+                i++;
             }
-            List<JoinUnCheckVO> joinUnCheckVOS = new ArrayList<>();
-
-            //获取当前教师参与申报的项目组
-            List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), ProjectStatus.LAB_ALLOWED.getValue());
-            for (int i = 0; i < projectGroups.size(); i++) {
-                if (projectGroups.get(i) == null) {
+            if (projectGroups.get(i).getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue())) {
+                if (i != projectGroups.size()-1) {
                     i++;
                 }
-                if (projectGroups.get(i).getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue())) {
-                    if (i != projectGroups.size()-1) {
-                        i++;
-                    }
-                }
-                ProjectGroup projectGroup = projectGroups.get(i);
-                List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(),null);
-                for (UserProjectGroup userProjectGroup : userProjectGroups) {
-                    JoinUnCheckVO joinUnCheckVO = getJoinUnCheckVO(userProjectGroup,projectGroup);
-                    joinUnCheckVOS.add(joinUnCheckVO);
-                }
             }
-            return joinUnCheckVOS;
+            ProjectGroup projectGroup = projectGroups.get(i);
+            List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(),null);
+            for (UserProjectGroup userProjectGroup : userProjectGroups) {
+                JoinUnCheckVO joinUnCheckVO = getJoinUnCheckVO(userProjectGroup,projectGroup);
+                joinUnCheckVOS.add(joinUnCheckVO);
+            }
         }
+        return joinUnCheckVOS;
+    }
 
-        @Override
-        public Result getApplyingJoinInfoByCondition(MemberQueryCondition condition){
+    @Override
+    public Result getApplyingJoinInfoByCondition(MemberQueryCondition condition){
             User currentUser = getUserService.getCurrentUser();
             //检测用户
             if (currentUser == null) {

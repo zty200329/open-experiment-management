@@ -33,7 +33,7 @@ public class UserController {
 
     @ApiOperation("完善个人信息")
     @PostMapping(value = "updateUserInfo", name = "完善个人信息")
-    public Object updateUserInfo(@Valid UserUpdateForm userUpdateForm){
+    public Object updateUserInfo(@Valid @RequestBody UserUpdateForm userUpdateForm){
         return userService.updateUserInfo(userUpdateForm);
     }
 

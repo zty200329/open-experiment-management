@@ -2,10 +2,11 @@ package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
-import com.swpu.uchain.openexperiment.form.file.ConcludingReportForm;
-import com.swpu.uchain.openexperiment.form.file.ReloadApplyForm;
 import com.swpu.uchain.openexperiment.result.Result;
-import com.swpu.uchain.openexperiment.service.*;
+import com.swpu.uchain.openexperiment.service.GetUserService;
+import com.swpu.uchain.openexperiment.service.ProjectFileService;
+import com.swpu.uchain.openexperiment.service.ProjectService;
+import com.swpu.uchain.openexperiment.service.UserProjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 /**
- * @Author: clf
- * @Date: 19-1-28
- * @Description:
- * 项目文件管理模块
+ * 文件相关模块
+ *
+ *
  */
 @CrossOrigin
 @RestController
@@ -56,14 +55,20 @@ public class FileController {
         projectFileService.downloadApplyPdf(fileId, response);
     }
 
+    /**
+     * @param projectGroupId
+     * @param file  重点项目申请书头部
+     * @param headFile 预览PDF的头部，由前端生成
+     * @return
+     */
     @ApiOperation("上传立项申请正文--（只兼容doc）")
     @PostMapping(value = "/reloadApplyDoc", name = "上传立项申请正文")
-    public Object reloadApplyDoc(Long projectGroupId,MultipartFile file){
+    public Object reloadApplyDoc(Long projectGroupId,MultipartFile file,MultipartFile headFile){
         User currentUser = getUserService.getCurrentUser();
         if (userProjectService.selectByProjectGroupIdAndUserId(projectGroupId,Long.valueOf(currentUser.getCode())) == null) {
             return Result.error(CodeMsg.PERMISSION_DENNY);
         }
-        return projectFileService.uploadApplyDoc(file, projectGroupId);
+        return projectFileService.uploadApplyDoc(headFile,file, projectGroupId);
     }
 
 

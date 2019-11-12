@@ -23,6 +23,7 @@ import com.swpu.uchain.openexperiment.service.xdoc.XDocService;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.FileUtil;
 import com.swpu.uchain.openexperiment.util.PDFConvertUtil;
+import com.swpu.uchain.openexperiment.util.PDFMerge;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -109,24 +110,33 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public Result uploadApplyDoc(MultipartFile file, Long projectGroupId) {
+    public Result uploadApplyDoc(MultipartFile headFile,MultipartFile file, Long projectGroupId) {
         //先检查文件是否为空
         if (file.isEmpty()) {
-            return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
+            throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
+        }
+        if (headFile.isEmpty()){
+            throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
         if (!getFileSuffix(file.getOriginalFilename()).equals(".doc")){
             throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
         }
+        //重点项目申请正文
         String docPath = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir(),
                 uploadConfig.getApplyFileName()+getFileSuffix(file.getOriginalFilename()));
+        //生成PDF的文件地址，该PDF信息是最终存入数据库的PDF名称
         String pdfPath = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir(),
                 uploadConfig.getApplyFileName()+".pdf");
+        //项目基本信息文档
+        String headDocPath = FileUtil.getFileRealPath(projectGroupId,
+                uploadConfig.getApplyDir2(),
+                uploadConfig.getApplyFileName()+getFileSuffix(file.getOriginalFilename()));
         //如果存在则覆盖
         File dest = new File(docPath);
-
         dest.delete();
+
         if (!checkFileFormat(file, FileType.WORD.getValue())) {
             return Result.error(CodeMsg.FORMAT_UNSUPPORTED);
         }
@@ -146,14 +156,12 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (!insert(projectFile)) {
             return Result.error(CodeMsg.ADD_ERROR);
         }
-        if (FileUtil.uploadFile(
-                file,
-                FileUtil.getFileRealPath(
-                    projectGroupId,
-                    uploadConfig.getApplyDir(),
-                    uploadConfig.getApplyFileName() + FileUtil.getMultipartFileSuffix(file)))) {
+        //上传文件并转化成PDF
+        if (FileUtil.uploadFile(file,docPath) && FileUtil.uploadFile(headFile,headDocPath)) {
+
             //转换为PDF
             convertDocToPDF(docPath,pdfPath);
+
             Map<String, String> map = new HashMap<>();
             map.put("url",ipAddress+"/apply/"+fileName);
             return Result.success(map);
@@ -200,6 +208,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (projectFile == null){
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
+
         String realPath = FileUtil.getFileRealPath(
                 projectFile.getProjectGroupId(),
                 uploadConfig.getApplyDir(),
@@ -414,9 +423,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             row.setHeight((short) (16 * 22));
             // 序号
             row.createCell(0).setCellValue(ConvertUtil.getStrCollege(projectTableInfo.getCollege()));
-            row.createCell(1).setCellValue(projectTableInfo.getId());
+            row.createCell(1).setCellValue(projectTableInfo.getSerialNumber());
             row.createCell(2).setCellValue(projectTableInfo.getProjectName());
-            row.createCell(3).setCellValue(projectTableInfo.getExperimentType());
+            row.createCell(3).setCellValue(ConvertUtil.getStrExperimentType(projectTableInfo.getExperimentType()));
             row.createCell(4).setCellValue(projectTableInfo.getTotalHours());
             row.createCell(5).setCellValue(projectTableInfo.getLeadTeacher());
             row.createCell(6).setCellValue(projectTableInfo.getLeadStudent());
@@ -438,7 +447,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         end.createCell(0).setCellValue("主管院长签字:");
         end.createCell(3).setCellValue("经办人");
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
-        response.setHeader("Content-disposition", "attachment;filename=" + "test" + ".xlsx");
+        response.setHeader("Content-disposition", "attachment;filename=" + "EstablishExcel" + ".xlsx");
         try {
             OutputStream os = response.getOutputStream();
             wb.write(os);
@@ -493,7 +502,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         }
 
         //写入数据
-        List<ConclusionDTO> list = projectGroupMapper.selectConclusionDTOs(null);
+        List<ConclusionDTO> list = projectGroupMapper.selectConclusionDTOs(college);
         for (ConclusionDTO conclusion:list
         ) {
             // 创建行
@@ -537,8 +546,19 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Async
-    public void convertDocToPDF(String fileNameOfDoc,String fileNameOfPDF){
+    private void convertDocToPDF(String fileNameOfDoc,String fileNameOfPDF){
         PDFConvertUtil.convert(fileNameOfDoc,fileNameOfPDF);
+    }
+
+    @Async
+    private void mergePdf(String headDocPath,String docPath,String pdfName){
+//        String tempPDF
+
+
+        String[] docs = new String[2];
+        docs[0] = headDocPath;
+        docs[1] = docPath;
+        PDFMerge.mergePdfFiles(docs,pdfName);
     }
 
     /**

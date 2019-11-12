@@ -43,7 +43,7 @@ public interface ProjectFileService {
      * @param projectGroupId
      * @return:
      */
-    Result uploadApplyDoc(MultipartFile file, Long projectGroupId);
+    Result uploadApplyDoc(MultipartFile headFile,MultipartFile file, Long projectGroupId);
 
     /**
      * 下载立项申请正文文件

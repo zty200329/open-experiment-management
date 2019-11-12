@@ -9,6 +9,7 @@ import com.swpu.uchain.openexperiment.VO.project.ApplyKeyFormInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserDetailVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
 import com.swpu.uchain.openexperiment.VO.user.UserVO;
+import com.swpu.uchain.openexperiment.enums.ExperimentType;
 import com.swpu.uchain.openexperiment.mapper.AclMapper;
 import com.swpu.uchain.openexperiment.mapper.RoleMapper;
 import com.swpu.uchain.openexperiment.domain.Acl;
@@ -79,7 +80,7 @@ public class ConvertUtil {
         }
     }
 
-    public static Character getCharsuggestGroupType(Integer suggestGroupType){
+    public static Character getCharSuggestGroupType(Integer suggestGroupType){
         switch (suggestGroupType){
             case 1:
                 return  'A';
@@ -201,65 +202,6 @@ public class ConvertUtil {
         }
         return ids;
     }
-//
-//    public static List<ProjectHistoryInfo> getConvertedProjectHistoryInfo(List<ProjectHistoryInfo> list){
-//        for (ProjectHistoryInfo info:list
-//             ) {
-//            //将具体操作转化成文字
-//            String operationUnit = operationUnitToWord(info.getOperationContent());
-//            info.setOperationContent(operationUnit);
-//
-//            String operationType = operationTypeToWord(info.getOperationType());
-//            info.setOperationType(operationType);
-//
-//        }
-//        return list;
-//    }
-
-//    public static List<MessageVO> projectHistoryInfoListToMessageList(List<ProjectHistoryInfo> list){
-//        List<MessageVO> voList = new LinkedList<>();
-//        for (ProjectHistoryInfo info:list
-//             ) {
-//            MessageVO messageVO = new MessageVO();
-//            messageVO.setSendTime(info.getOperationTime());
-//            messageVO.setReadStatus(info.getReadStatus());
-//            messageVO.setContent(info.getReason());
-//            messageVO.setId(info.getId());
-//            //将具体操作转化成文字
-//            String operationUnit =  operationUnitToWord(info.getOperationContent());
-//
-//
-//            String operationType = operationTypeToWord(info.getOperationType());
-//            messageVO.setTitle("项目编号为"+info.getProjectId()+" 的项目"+operationType+" : "+operationUnit);
-//            voList.add(messageVO);
-//        }
-//        return voList;
-//    }
-//
-//    private static String operationTypeToWord(String operationType){
-//        switch (operationType){
-//            case "1":
-//                operationType = OperationType.PROJECT_OPERATION_TYPE1.getTips();
-//                break;
-//            case "2":
-//                operationType = OperationType.PROJECT_OPERATION_TYPE2.getTips();
-//                break;
-//            case "3":
-//                operationType = OperationType.PROJECT_OPERATION_TYPE3.getTips();
-//                break;
-//            case "11":
-//                operationType = OperationType.PROJECT_MODIFY_TYPE1.getTips();
-//                break;
-//            case "21":
-//                operationType = OperationType.PROJECT_REPORT_TYPE1.getTips();
-//                break;
-//            case "22":
-//                operationType = OperationType.PROJECT_REPORT_TYPE2.getTips();
-//                break;
-//            default:
-//        }
-//        return operationType;
-//    }
 
     private static String operationUnitToWord(String operationUnit){
         switch (operationUnit){
@@ -332,49 +274,49 @@ public class ConvertUtil {
         String result;
         switch (intCollege){
             case 1:
-                result = "马克思主义学院";
-                break;
-            case 2:
-                result = "艺术学院";
-                break;
-            case 3:
-                result = "化学化工学院";
-                break;
-            case 4:
-                result = "地球科学与技术学院";
-                break;
-            case 5:
                 result = "石油与天然气工程学院";
                 break;
-            case 6:
-                result = "电气信息学院";
+            case 2:
+                result = "地球科学与技术学院";
                 break;
-            case 7:
-                result = "经济管理学院";
-                break;
-            case 8:
-                result = "体育学院";
-                break;
-            case 9:
+            case 3:
                 result = "机电工程学院";
                 break;
-            case 10:
+            case 4:
+                result = "化学化工学院";
+                break;
+            case 5:
                 result = "材料科学与工程学院";
                 break;
-            case 11:
-                result = "理学院";
+            case 6:
+                result = "计算机科学学院";
                 break;
-            case 12:
+            case 7:
+                result = "电气信息学院";
+                break;
+            case 8:
                 result = "土木工程与建筑学院";
                 break;
-            case 13:
+            case 9:
+                result = "理学院";
+                break;
+            case 10:
+                result = "经济管理学院";
+                break;
+            case 11:
                 result = "法学院";
                 break;
-            case 14:
+            case 12:
                 result = "外国语学院";
                 break;
+            case 13:
+                result = "体育学院";
+                break;
+            case 14:
+                result = "艺术学院";
+                break;
             case 15:
-                result = "计算机科学学院";
+                result = "马克思主义学院";
                 break;
             default:
                 result = "无";
@@ -382,5 +324,11 @@ public class ConvertUtil {
         return result;
     }
 
-
+    public static String getStrProjectType(Integer type) {
+        if (type == 1){
+            return "重点";
+        }else {
+            return "普通";
+        }
+    }
 }
