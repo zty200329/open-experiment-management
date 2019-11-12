@@ -68,7 +68,7 @@ public class FileController {
         if (userProjectService.selectByProjectGroupIdAndUserId(projectGroupId,Long.valueOf(currentUser.getCode())) == null) {
             return Result.error(CodeMsg.PERMISSION_DENNY);
         }
-        return projectFileService.uploadApplyDoc(headFile,file, projectGroupId);
+        return projectFileService.uploadApplyDoc(file, projectGroupId);
     }
 
 
