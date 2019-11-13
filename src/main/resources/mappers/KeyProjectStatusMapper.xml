@@ -104,6 +104,9 @@
             and key_project_status.`status` = #{status}
         </if>
     </select>
+    <select id="getCountOfSpecifiedStatusAndProjectProject" resultType="java.lang.Integer">
+        select count(project_id) from openexperiment.key_project_status where `status` = #{status} and  subordinate_college = #{college}
+    </select>
 
 
 </mapper>

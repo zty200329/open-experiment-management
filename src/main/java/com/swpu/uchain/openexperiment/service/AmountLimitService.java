@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface AmountLimitService {
 
-    Result getAmountLimitVOByCollegeAndProjectType(AmountSearchForm form);
+    Result getAmountLimitVOListByCollegeAndProjectType(AmountSearchForm form);
 
     Result setAmount(List<AmountLimitForm> limitForms);
 

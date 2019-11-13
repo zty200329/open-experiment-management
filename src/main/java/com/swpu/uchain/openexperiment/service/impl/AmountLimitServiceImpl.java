@@ -40,8 +40,8 @@ public class AmountLimitServiceImpl implements AmountLimitService {
     }
 
     @Override
-    public Result getAmountLimitVOByCollegeAndProjectType(AmountSearchForm form) {
-        return Result.success(amountLimitMapper.getAmountLimitVOByCollegeAndProjectType(form.getCollege(),form.getProjectType()));
+    public Result getAmountLimitVOListByCollegeAndProjectType(AmountSearchForm form) {
+        return Result.success(amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(form.getCollege(),form.getProjectType()));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class AmountLimitServiceImpl implements AmountLimitService {
 
             for (AmountAndType amountAndType:form.getList()
                  ) {
-                if (amountLimitMapper.getAmountLimitVOByCollegeAndProjectType(form.getLimitCollege(),amountAndType.getProjectType()).size() != 0){
+                if (amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(form.getLimitCollege(),amountAndType.getProjectType()).size() != 0){
                     throw new GlobalException(CodeMsg.INPUT_INFO_HAS_EXISTED);
                 }
                 AmountLimit amountLimit = new AmountLimit();
@@ -79,7 +79,7 @@ public class AmountLimitServiceImpl implements AmountLimitService {
 
     @Override
     public Result getAmountLimitList() {
-        List<AmountLimitVO> limitList = amountLimitMapper.getAmountLimitVOByCollegeAndProjectType(null,null);
+        List<AmountLimitVO> limitList = amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(null,null);
         return Result.success(limitList);
     }
 

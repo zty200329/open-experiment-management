@@ -3,10 +3,12 @@ package com.swpu.uchain.openexperiment.service.impl;
 import com.swpu.uchain.openexperiment.DTO.KeyProjectDTO;
 import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
-import com.swpu.uchain.openexperiment.mapper.KeyProjectStatusMapper;
-import com.swpu.uchain.openexperiment.mapper.OperationRecordMapper;
-import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
-import com.swpu.uchain.openexperiment.mapper.UserProjectGroupMapper;
+import com.swpu.uchain.openexperiment.VO.limit.AmountAndTypeVO;
+import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
+import com.swpu.uchain.openexperiment.domain.AmountLimit;
+import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
+import com.swpu.uchain.openexperiment.form.amount.AmountAndType;
+import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.*;
@@ -21,6 +23,7 @@ import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.KeyProjectService;
 import com.swpu.uchain.openexperiment.service.TimeLimitService;
 import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,34 +46,44 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private GetUserService getUserService;
     private OperationRecordMapper operationRecordMapper;
     private TimeLimitService timeLimitService;
+    private AmountLimitMapper amountLimitMapper;
 
     @Autowired
     public KeyProjectServiceImpl(ProjectGroupMapper projectGroupMapper, UserProjectGroupMapper userProjectGroupMapper,
                                  KeyProjectStatusMapper keyProjectStatusMapper,GetUserService getUserService,
-                                 OperationRecordMapper operationRecordMapper,TimeLimitService timeLimitService) {
+                                 OperationRecordMapper operationRecordMapper,TimeLimitService timeLimitService,
+                                 AmountLimitMapper amountLimitMapper) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
         this.getUserService = getUserService;
         this.operationRecordMapper = operationRecordMapper;
         this.timeLimitService = timeLimitService;
+        this.amountLimitMapper = amountLimitMapper;
     }
 
     @Transactional(rollbackFor = GlobalException.class)
     @Override
     public Result createKeyApply(KeyProjectApplyForm form) {
-        // TODO 判断时候为重点项目
+        //验证项目是否存在
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(form.getProjectId());
         if (projectGroup == null){
             throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
+        User user = getUserService.getCurrentUser();
+
+        //验证用户是否有权限操作该项目组
+        UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(form.getProjectId(), Long.valueOf(user.getCode()));
+        if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.PROJECT_GROUP_LEADER.getValue())){
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
+
         //验证时间的合法性
         timeLimitService.validTime(TimeLimitType.KEY_DECLARE_LIMIT);
 
         //验证项目状态合法性
         validProjectStatus(ProjectStatus.LAB_ALLOWED.getValue(),projectGroup.getStatus());
 
-        User user = getUserService.getCurrentUser();
         Long projectId = projectGroup.getId();
         if (projectGroup.getStatus() < ProjectStatus.LAB_ALLOWED.getValue()){
             throw new GlobalException(CodeMsg.PROJECT_IS_NOT_LAB_ALLOWED);
@@ -281,6 +294,19 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result reportKeyProjectBySecondaryUnit(List<KeyProjectCheck> list) {
+        //验证数量
+        User user = getUserService.getCurrentUser();
+        Integer college = user.getInstitute();
+        if (college == null){
+            throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
+        }
+
+        AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(college,ProjectType.KEY.getValue());
+        Integer currentAmount = keyProjectStatusMapper.getCountOfSpecifiedStatusAndProjectProject(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue(),college);
+        if (currentAmount + list.size() < amountAndTypeVO.getMaxAmount()) {
+            throw new GlobalException(CodeMsg.KEY_PROJECT_AMOUNT_LIMIT);
+        }
+
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT, OperationType.REPORT,list);
     }
 

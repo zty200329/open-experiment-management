@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.service.impl;
 import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
 import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
+import com.swpu.uchain.openexperiment.VO.limit.AmountAndTypeVO;
 import com.swpu.uchain.openexperiment.VO.project.*;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
@@ -58,11 +59,11 @@ public class ProjectServiceImpl implements ProjectService {
     private UserProjectGroupMapper userProjectGroupMapper;
     private RoleMapper roleMapper;
     private OperationRecordMapper recordMapper;
-    private MessageRecordMapper messageRecordMapper;
     private UserMapper userMapper;
     private KeyProjectStatusMapper keyProjectStatusMapper;
     private ProjectFileMapper projectFileMapper;
     private TimeLimitService timeLimitService;
+    private AmountLimitMapper amountLimitMapper;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -71,9 +72,9 @@ public class ProjectServiceImpl implements ProjectService {
                               UploadConfig uploadConfig,
                               ConvertUtil convertUtil, GetUserService getUserService,
                               OperationRecordMapper recordMapper,
-                              MessageRecordMapper messageRecordMapper, RoleMapper roleMapper,
+                              RoleMapper roleMapper,AmountLimitMapper amountLimitMapper,
                               UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper,
-                              KeyProjectStatusMapper keyProjectStatusMapper,ProjectFileMapper projectFileMapper,
+                              KeyProjectStatusMapper keyProjectStatusMapper, ProjectFileMapper projectFileMapper,
                               TimeLimitService timeLimitService) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
@@ -86,12 +87,12 @@ public class ProjectServiceImpl implements ProjectService {
         this.getUserService = getUserService;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.recordMapper = recordMapper;
-        this.messageRecordMapper = messageRecordMapper;
         this.roleMapper = roleMapper;
         this.userMapper = userMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
         this.projectFileMapper = projectFileMapper;
         this.timeLimitService = timeLimitService;
+        this.amountLimitMapper = amountLimitMapper;
     }
 
     @Override
@@ -644,6 +645,20 @@ public class ProjectServiceImpl implements ProjectService {
         @Override
         @Transactional(rollbackFor = Exception.class)
         public Result reportToFunctionalDepartment (List < Long > projectGroupIdList) {
+            //数量限制
+            User user = getUserService.getCurrentUser();
+            Integer college = user.getInstitute();
+            if (college == null){
+                throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
+            }
+
+            AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(college,ProjectType.GENERAL.getValue());
+            Integer currentAmount = projectGroupMapper.getCountOfSpecifiedStatusAndProjectProject(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue(),college);
+            if (currentAmount + projectGroupIdList.size() < amountAndTypeVO.getMaxAmount()) {
+                throw new GlobalException(CodeMsg.PROJECT_AMOUNT_LIMIT);
+            }
+
+            //时间限制
             timeLimitService.validTime(TimeLimitType.SECONDARY_UNIT_REPORT_LIMIT);
             return reportToHigherUnit(projectGroupIdList, ProjectStatus.SECONDARY_UNIT_ALLOWED, OperationUnit.SECONDARY_UNIT);
         }

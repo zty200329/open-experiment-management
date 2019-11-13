@@ -35,10 +35,10 @@ public class AmountLimitController {
         return amountLimitService.setAmount(limitForms);
     }
 
-    @GetMapping("getAmountLimitVOByCollegeAndProjectType")
+    @GetMapping("getAmountLimitVOListByCollegeAndProjectType")
     @ApiOperation("获取项目数量限制")
-    public Result getAmountLimitVOByCollegeAndProjectType(AmountSearchForm form){
-        return amountLimitService.getAmountLimitVOByCollegeAndProjectType(form);
+    public Result getAmountLimitVOListByCollegeAndProjectType(AmountSearchForm form){
+        return amountLimitService.getAmountLimitVOListByCollegeAndProjectType(form);
     }
 
     @ApiOperation("更新项目数量限制")

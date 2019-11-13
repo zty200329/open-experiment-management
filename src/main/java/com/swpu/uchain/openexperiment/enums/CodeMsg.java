@@ -58,6 +58,9 @@ public enum CodeMsg {
     PROJECT_HAS_BEEN_REJECTED(1517,"项目已经被驳回"),
     PROJECT_GROUP_HAD_EXIST(1518,"该项目已存在,请修改项目名" ),
     PROJECT_GROUP_NOT_EXIST(1519, "项目组不存在" ),
+    KEY_PROJECT_AMOUNT_LIMIT(1520,"重点项目上报数量超过最大限制"),
+    PROJECT_AMOUNT_LIMIT(1521,"普通项目上报数量超过最大限制"),
+
 
     /**
      * 文件相关异常 1601-1700

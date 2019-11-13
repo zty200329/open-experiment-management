@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.mapper;
 
+import com.swpu.uchain.openexperiment.VO.limit.AmountAndTypeVO;
 import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
 import com.swpu.uchain.openexperiment.domain.AmountLimit;
 import org.apache.ibatis.annotations.Param;
@@ -17,7 +18,9 @@ public interface AmountLimitMapper {
 
     int insertOne(AmountLimit amountLimit);
 
-    List<AmountLimitVO> getAmountLimitVOByCollegeAndProjectType(@Param("college") Integer college, @Param("type") Integer projectType);
+    List<AmountLimitVO> getAmountLimitVOListByCollegeAndProjectType(@Param("college") Integer college, @Param("type") Integer projectType);
+
+    AmountAndTypeVO getAmountAndTypeVOByCollegeAndProjectType(@Param("college") Integer college, @Param("type") Integer projectType);
 
     int updateTimeLimit(@Param("id") Integer id,@Param("maxAmount") Integer maxAmount);
 

@@ -43,7 +43,7 @@
             <result column="min_amount" property="minAmount"/>
         </collection>
     </resultMap>
-    <select id="getAmountLimitVOByCollegeAndProjectType" resultMap="AmountLimitVOMap"
+    <select id="getAmountLimitVOListByCollegeAndProjectType" resultMap="AmountLimitVOMap"
             resultType="com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO">
         select
                 id as v_id,
@@ -64,5 +64,17 @@
                 and project_type = #{type}
             </if>
         </where>
+    </select>
+    <select id="getAmountAndTypeVOByCollegeAndProjectType"
+            resultType="com.swpu.uchain.openexperiment.VO.limit.AmountAndTypeVO">
+        select
+               id,
+               max_amount as maxAmount,
+               min_amount as minAmount,
+               limit_college as limitCollege,
+               project_type as projectType
+        from openexperiment.amount_limit
+        where  amount_limit.limit_college = #{college} and project_type = #{type}
+
     </select>
 </mapper>
