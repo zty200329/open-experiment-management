@@ -290,7 +290,7 @@
           openexperiment.project_group.main_Content,
           openexperiment.project_group.is_open_topic
     from openexperiment.project_group inner join openexperiment.user_project_group on user_project_group.project_group_id = openexperiment.project_group.id
-            and user_project_group.status = #{status}
+            and user_project_group.`status` = #{status}
     <where>
     <if test="userId!=null">
         user_project_group.user_id = #{userId}

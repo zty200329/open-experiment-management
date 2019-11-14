@@ -260,9 +260,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result getCurrentUserProjects(Integer projectStatus,Integer joinStatus) {
         User currentUser = getUserService.getCurrentUser();
-        if (currentUser == null) {
-            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
-        }
+
+
         List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), projectStatus,joinStatus);
         //设置当前用户的所有项目VO
         List<MyProjectVO> projectVOS = new ArrayList<>();
