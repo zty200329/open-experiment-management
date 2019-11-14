@@ -57,7 +57,7 @@ public interface ProjectService {
      * @param projectStatus
      * @return
      */
-    List<ProjectGroup> selectByUserIdAndProjectStatus(Long userId, Integer projectStatus);
+    List<ProjectGroup> selectByUserIdAndProjectStatus(Long userId, Integer projectStatus,Integer joinStatus);
 
     /**
      * 立项申请接口
@@ -81,7 +81,7 @@ public interface ProjectService {
      * @param projectStatus
      * @return
      */
-    Result getCurrentUserProjects(Integer projectStatus);
+    Result getCurrentUserProjects(Integer projectStatus,Integer joinStatus);
 
     /**
      * 同意用户加入项目

@@ -137,9 +137,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectGroup> selectByUserIdAndProjectStatus(Long userId, Integer projectStatus) {
+    public List<ProjectGroup> selectByUserIdAndProjectStatus(Long userId, Integer projectStatus,Integer joinStatus) {
         //获取当前用户参与的所有项目
-        return projectGroupMapper.selectByUserIdAndStatus(userId, projectStatus,JoinStatus.JOINED.getValue());
+        return projectGroupMapper.selectByUserIdAndStatus(userId, projectStatus,joinStatus);
     }
 
     /**
@@ -258,12 +258,12 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result getCurrentUserProjects(Integer projectStatus) {
+    public Result getCurrentUserProjects(Integer projectStatus,Integer joinStatus) {
         User currentUser = getUserService.getCurrentUser();
         if (currentUser == null) {
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
-        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), projectStatus);
+        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), projectStatus,joinStatus);
         //设置当前用户的所有项目VO
         List<MyProjectVO> projectVOS = new ArrayList<>();
         for (ProjectGroup projectGroup : projectGroups) {
@@ -857,7 +857,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<JoinUnCheckVO> joinUnCheckVOS = new ArrayList<>();
 
         //获取当前教师参与申报的项目组
-        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), ProjectStatus.LAB_ALLOWED.getValue());
+        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), ProjectStatus.LAB_ALLOWED.getValue(),JoinStatus.JOINED.getValue());
         for (int i = 0; i < projectGroups.size(); i++) {
             if (projectGroups.get(i) == null) {
                 i++;
@@ -889,7 +889,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
             List<JoinUnCheckVO> joinUnCheckVOS = new ArrayList<>();
             if (condition.getId() == null){
-                List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), ProjectStatus.LAB_ALLOWED.getValue());
+                List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), ProjectStatus.LAB_ALLOWED.getValue(),JoinStatus.JOINED.getValue());
                 for (int i = 0; i < projectGroups.size(); i++) {
                     if (projectGroups.get(i) == null) {
                         break;
