@@ -139,7 +139,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectGroup> selectByUserIdAndProjectStatus(Long userId, Integer projectStatus) {
         //获取当前用户参与的所有项目
-        return projectGroupMapper.selectByUserIdAndStatus(userId, projectStatus);
+        return projectGroupMapper.selectByUserIdAndStatus(userId, projectStatus,JoinStatus.JOINED.getValue());
     }
 
     /**

@@ -24,7 +24,7 @@ public class ProjectGroupMapperTest {
 
     @Test
     public void selectByUserIdAndStatus(){
-        System.err.println(projectGroupMapper.selectByUserIdAndStatus(21L,0));
+        System.err.println(projectGroupMapper.selectByUserIdAndStatus(21L,0,null));
     }
 
     @Test
