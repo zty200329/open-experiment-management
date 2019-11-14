@@ -5,6 +5,7 @@ import com.swpu.uchain.openexperiment.form.announcement.AnnouncementPublishForm;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementUpdateForm;
 import com.swpu.uchain.openexperiment.form.announcement.QueryCondition;
 import com.swpu.uchain.openexperiment.result.Result;
+import io.swagger.models.auth.In;
 
 /**
  * @Author: clf
@@ -31,7 +32,7 @@ public interface AnnouncementService {
      * 删除公告
      * @param id
      */
-    void delete(Long id);
+    Integer delete(Long id);
 
     /**
      * 发布公告

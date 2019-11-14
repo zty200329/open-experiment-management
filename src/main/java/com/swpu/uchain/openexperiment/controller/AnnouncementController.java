@@ -59,10 +59,13 @@ public class AnnouncementController {
     }
 
     @ApiOperation("删除公告")
-    @PostMapping(value = "/delete", name = "删除公告")
-    public Result<Long> delete(Long announcementId){
-        announcementService.delete(announcementId);
-        return Result.success(announcementId);
+    @GetMapping(value = "/delete", name = "删除公告")
+    public Result delete(Long announcementId){
+        Integer result = announcementService.delete(announcementId);
+        if (result != 1){
+            throw new GlobalException(CodeMsg.DELETE_ERROR);
+        }
+        return Result.success();
     }
 
     @ApiOperation("修改公告")

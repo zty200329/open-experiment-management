@@ -26,6 +26,7 @@ import java.util.Objects;
  */
 @ResponseBody
 @Slf4j
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
     private final static String EXCEPTION_MSG_KEY = "Exception message : ";

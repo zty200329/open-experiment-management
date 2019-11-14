@@ -32,6 +32,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
 
+
     @Qualifier("jwtUserDetailsServiceImpl")
     @Autowired
     private UserDetailsService userDetailsService;
@@ -51,7 +52,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     @Bean
-    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
+    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() {
         return new JwtAuthenticationTokenFilter();
     }
 

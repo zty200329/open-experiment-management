@@ -16,6 +16,7 @@ import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.AnnouncementKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AnnouncementService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -63,10 +64,10 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public void delete(Long id) {
+    public Integer delete(Long id) {
         redisService.delete(AnnouncementKey.getById, id + "");
         redisService.delete(AnnouncementKey.getClickTimesById, id + "");
-        announcementMapper.deleteByPrimaryKey(id);
+        return announcementMapper.deleteByPrimaryKey(id);
     }
 
     private Announcement selectByIdAndStatus(Long announcementId,Integer status) {

@@ -1,6 +1,5 @@
 package com.swpu.uchain.openexperiment.controller;
 
-import com.swpu.uchain.openexperiment.enums.UserType;
 import com.swpu.uchain.openexperiment.form.user.UserUpdateForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.UserService;

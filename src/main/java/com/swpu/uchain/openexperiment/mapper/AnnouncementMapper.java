@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface AnnouncementMapper {
 
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(@Param("id") Long id);
 
     int insert(Announcement record);
 

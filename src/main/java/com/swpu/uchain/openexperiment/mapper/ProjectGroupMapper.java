@@ -34,8 +34,6 @@ public interface ProjectGroupMapper {
 
     int updateByPrimaryKey(ProjectGroup record);
 
-    int setSerialNumberById(@Param("id") Long id,@Param("number")String serialNumber);
-
     ProjectGroup selectByName(String projectName);
 
     List<ProjectGroup> selectByUserIdAndStatus(@Param("userId") Long userId,@Param("projectStatus") Integer projectStatus);
@@ -43,7 +41,7 @@ public interface ProjectGroupMapper {
     List<ProjectGroup> selectByCollegeIdAndStatus(@Param("college") String college,@Param("projectStatus") Integer projectStatus);
 
 
-    List<CheckProjectVO> selectApplyOrderByTime(int projectStatus);
+    List<CheckProjectVO> selectApplyOrderByTime(@Param("projectStatus") int projectStatus,@Param("projectType") Integer projectType);
 
     List<SelectProjectVO> selectByFuzzyName(@Param("name") String name);
 

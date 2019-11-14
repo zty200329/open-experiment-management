@@ -130,6 +130,7 @@
     <resultMap id="CheckProjectResultMap" type="com.swpu.uchain.openexperiment.VO.project.CheckProjectVO">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="is_open_topic" property="isOpenTopic"/>
         <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
         <result column="limit_college" jdbcType="VARCHAR" property="limitCollege" />
         <result column="project_name" jdbcType="VARCHAR" property="projectName" />
@@ -141,7 +142,7 @@
         <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
         <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
         <result column="subordinate_college" property="subordinateCollege"/>
-        <result column="apply_funds" property="fundsApplyAmount"/>
+        <result column="apply_funds" property="applyFunds"/>
     </resultMap>
 
     <resultMap id="SelectProjectMap" type="com.swpu.uchain.openexperiment.VO.project.SelectProjectVO">
@@ -203,9 +204,7 @@
             #{id}
         </foreach>
     </update>
-    <update id="setSerialNumberById">
-        update  openexperiment.project_group set serial_number = #{number} where id = #{id}
-    </update>
+
     <select id="selectByPrimaryProjectName" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         select id,
                address,
@@ -302,6 +301,7 @@
   </select>
   <select id="selectApplyOrderByTime" resultMap="CheckProjectResultMap">
     select openexperiment.project_group.limit_college,
+           openexperiment.project_group.is_open_topic,
            openexperiment.project_group.serial_number,
            openexperiment.project_group.id,
            openexperiment.project_group.project_name,
@@ -318,6 +318,9 @@
            openexperiment.project_group.apply_funds
     from openexperiment.project_group
     where status = #{projectStatus}
+    <if test="projectType!=null">
+        and project_type = #{projectType}
+    </if>
     order by create_time desc
   </select>
   <select id="selectByFuzzyName" resultMap="SelectProjectMap">
@@ -477,7 +480,7 @@
             ) AS t_lead_stu ON project_group.id = related_project_id
         <where>
             <if test="college!=null">
-                project_group.subordinate_college = #{college} and project_group.status = 5 <!--5指的是立项-->
+                project_group.subordinate_college = #{college} and project_group.status = 3 <!--3二级单位指的是立项-->
             </if>
         </where>
     </select>

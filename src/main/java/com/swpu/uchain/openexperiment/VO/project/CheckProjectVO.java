@@ -29,10 +29,12 @@ public class CheckProjectVO{
     private String labName;
     private String address;
     private String groupLeaderPhone;
-    private Integer fundsApplyAmount;
+    private Integer applyFunds;
     private Integer suggestGroupType;
     private Integer projectType;
     private Long applyFileId;
+    //项目是否开放
+    private Integer isOpenTopic;
     /**
      * 已选项目人数
      */

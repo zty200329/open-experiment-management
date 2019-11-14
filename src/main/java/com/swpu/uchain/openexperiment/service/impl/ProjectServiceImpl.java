@@ -537,7 +537,7 @@ public class ProjectServiceImpl implements ProjectService {
             default:
                 throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
         }
-        List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus);
+        List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus,ProjectType.GENERAL.getValue());
         for (CheckProjectVO checkProjectVO : checkProjectVOs) {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
             List<UserMemberVO> guidanceTeachers = new ArrayList<>();
@@ -556,8 +556,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
         private Result getCheckInfo (ProjectStatus projectStatus){
-        Integer status = projectStatus.getValue();
-            List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(status);
+            Integer status = projectStatus.getValue();
+            Integer projectType = ProjectType.GENERAL.getValue();
+            //如果是实验室进行审批，则返回所有项目
+            if (projectStatus == ProjectStatus.DECLARE){
+                projectType = null;
+            }
+            List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(status,projectType);
             for (CheckProjectVO checkProjectVO : checkProjectVOs) {
                 List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
                 checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(checkProjectVO.getId(),null));
@@ -707,15 +712,6 @@ public class ProjectServiceImpl implements ProjectService {
         if (college == null){
             throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
         }
-        // 生成项目编号
-        for (ProjectCheckForm form:list
-             ) {
-            String serialNumber = projectGroupMapper.getIndexByCollege(college);
-            int result = projectGroupMapper.setSerialNumberById(form.getProjectId(),serialNumber);
-            if (result != 1){
-                throw new GlobalException(CodeMsg.UPDATE_ERROR);
-            }
-        }
         return approveProjectApply(list, RoleType.SECONDARY_UNIT.getValue());
     }
 
@@ -790,6 +786,7 @@ public class ProjectServiceImpl implements ProjectService {
                 projectStatus = ProjectStatus.DECLARE.getValue();
                 updateProjectStatus = ProjectStatus.LAB_ALLOWED.getValue();
                 break;
+            //如果是二级单位
             case 5:
                 operationUnit = OperationUnit.SECONDARY_UNIT.getValue();
                 projectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
@@ -800,14 +797,16 @@ public class ProjectServiceImpl implements ProjectService {
                 operationUnit = -5;
         }
         List<OperationRecord> list = new LinkedList<>();
-        OperationRecord operationRecord = new OperationRecord();
         for (ProjectCheckForm form : formList
         ) {
+            OperationRecord operationRecord = new OperationRecord();
+
             operationRecord.setRelatedId(form.getProjectId());
             operationRecord.setOperationReason(form.getReason());
             operationRecord.setOperationType(OperationType.AGREE.getValue());
             operationRecord.setOperationUnit(operationUnit);
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
+            list.add(operationRecord);
             //当角色是实验室主任的时候,项目状态不是
             ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
             if (role == 4 && !projectGroup.getStatus().equals(projectStatus)){
@@ -819,13 +818,15 @@ public class ProjectServiceImpl implements ProjectService {
                     throw new GlobalException("项目编号为"+projectGroup.getId()+"的项目非实验室上报状态",CodeMsg.PROJECT_CURRENT_STATUS_ERROR.getCode());
                 }
                 //设置项目编号
-                String serialNumber = projectGroupMapper.selectByPrimaryKey(form.getProjectId()).getSerialNumber();
+
+                //获取最大的项目编号
+                String serialNumber = projectGroupMapper.getIndexByCollege(user.getInstitute());
                 //计算编号并在数据库中插入编号
                 projectGroupMapper.updateProjectSerialNumber(form.getProjectId(),SerialNumberUtil.getSerialNumberOfProject(user.getInstitute(),ProjectType.GENERAL.getValue(),serialNumber));
             }
             //根据不同角色设置不同的项目状态
             updateProjectStatus(form.getProjectId(), updateProjectStatus);
-            list.add(operationRecord);
+
         }
         recordMapper.multiInsert(list);
         return Result.success();
@@ -1048,10 +1049,9 @@ public class ProjectServiceImpl implements ProjectService {
          * @return
          */
     @Transactional(rollbackFor = Exception.class)
-    private Result rejectProjectApply(List<ProjectCheckForm> formList, OperationUnit operationUnit, OperationType operationType){
+    Result rejectProjectApply(List<ProjectCheckForm> formList, OperationUnit operationUnit, OperationType operationType){
         User user = getUserService.getCurrentUser();
         List<OperationRecord> list = new LinkedList<>();
-        OperationRecord operationRecord = new OperationRecord();
         Integer rightProjectStatus = null;
         switch (operationUnit.getValue()){
             case 4:
@@ -1073,6 +1073,8 @@ public class ProjectServiceImpl implements ProjectService {
             if (!rightProjectStatus.equals(status)) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
+            OperationRecord operationRecord = new OperationRecord();
+
             operationRecord.setRelatedId(form.getProjectId());
             operationRecord.setOperationReason(form.getReason());
             operationRecord.setOperationUnit(operationUnit.getValue());

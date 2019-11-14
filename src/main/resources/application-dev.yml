@@ -23,7 +23,7 @@ upload:
   material_sample: "E:/IdeaProjects/OpenExperiment/src/main/resources/material_sample"
 
 file:
-  ip-address: "http://10.20.0.56:8083"
+  ip-address: "http://192.168.43.153:8083"
 
 mybatis:
   configuration:

@@ -15,7 +15,7 @@ public enum CodeMsg {
      */
     AUTHENTICATION_ERROR(1401,"用户认证失败,请重新登录" ),
     PASSWORD_ERROR(1402, "密码错误"),
-    PERMISSION_DENNY(1403,"权限不足" ),
+    PERMISSION_DENNY(1403,"无权进行该操作" ),
     VERIFY_CODE_ERROR(1404, "验证码错误"),
     SEND_CODE_ERROR(1405, "发送验证码失败"),
     ROLE_NAME_CANT_BE_NULL(1406, "角色名称不能名称为空" ),
@@ -106,7 +106,8 @@ public enum CodeMsg {
     TIME_DEFINE_ERROR(1808,"时间设置错误"),
     PAGE_NUM_ERROR(1809, "分页数目异常"),
     INPUT_INFO_HAS_EXISTED(1810,"该信息已经存在"),
-    UPDATE_ERROR(1807, "更新数据库失败");
+    UPDATE_ERROR(1807, "更新数据库失败"),
+    DELETE_ERROR(1808,"信息不存在，删除失败");
 
     private Integer code;
     private String msg;

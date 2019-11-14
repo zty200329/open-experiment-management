@@ -70,6 +70,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         if (projectGroup == null){
             throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
+        //判断项目是否为重点项目
+        if (ProjectType.GENERAL.getValue().equals(projectGroup.getProjectType())){
+            throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+        }
+
         User user = getUserService.getCurrentUser();
 
         //验证用户是否有权限操作该项目组
@@ -135,12 +140,14 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result getKeyProjectApplyingListByLabAdmin() {
-         return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.GUIDE_TEACHER_ALLOWED,null);
+         User user  = getUserService.getCurrentUser();
+         return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.GUIDE_TEACHER_ALLOWED,user.getInstitute());
     }
 
     @Override
     public Result getKeyProjectApplyingListBySecondaryUnit() {
-        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.LAB_ALLOWED_AND_REPORTED,null);
+        User user  = getUserService.getCurrentUser();
+        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.LAB_ALLOWED_AND_REPORTED,user.getInstitute());
     }
 
     @Override

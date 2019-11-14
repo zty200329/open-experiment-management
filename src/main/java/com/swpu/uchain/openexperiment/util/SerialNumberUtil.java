@@ -41,7 +41,8 @@ public class SerialNumberUtil {
             projectTypeValue = "KSP";
         }
         int index = 1;
-        if (maxSerialNumber != null){
+        //验证非空
+        if (maxSerialNumber != null && !"".equals(maxSerialNumber)){
             index = Integer.parseInt(maxSerialNumber.substring(maxSerialNumber.length()-3)) + 1;
         }
         serialNumber = year+projectTypeValue+String.format("%02d", college)+String.format("%03d", index);

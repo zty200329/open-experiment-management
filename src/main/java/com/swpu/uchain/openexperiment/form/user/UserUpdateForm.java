@@ -16,7 +16,7 @@ import javax.validation.constraints.Null;
 @Data
 public class UserUpdateForm {
 
-    @Null(message = "用户id不能为空")
+    @NotNull(message = "用户id为空")
     @ApiModelProperty("用户id")
     private Long userId;
 

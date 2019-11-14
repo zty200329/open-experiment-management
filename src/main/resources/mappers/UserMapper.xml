@@ -38,7 +38,7 @@
       #{classNum,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.User">
-    update user
+    update openexperiment.user
     set code = #{code,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
       fix_phone = #{fixPhone,jdbcType=VARCHAR},
@@ -54,7 +54,7 @@
       grade = #{grade,jdbcType=INTEGER},
       work_unit = #{workUnit,jdbcType=VARCHAR},
       class_num = #{classNum,jdbcType=INTEGER}
-    where id = #{id,jdbcType=BIGINT}
+    where code = #{code,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select id, code, email, fix_phone, id_card, mobile_phone, `password`, qq_num, real_name, 
