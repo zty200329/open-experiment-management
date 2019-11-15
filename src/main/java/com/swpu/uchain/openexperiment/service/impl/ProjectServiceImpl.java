@@ -536,6 +536,7 @@ public class ProjectServiceImpl implements ProjectService {
             default:
                 throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
         }
+        //获取待上报的普通项目
         List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus,ProjectType.GENERAL.getValue());
         for (CheckProjectVO checkProjectVO : checkProjectVOs) {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
@@ -615,6 +616,8 @@ public class ProjectServiceImpl implements ProjectService {
             if (!checkProjectStatus(projectGroupIdList, rightProjectStatus.getValue())) {
                 throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
             }
+
+            //存入操作历史
             for (Long projectId : projectGroupIdList
             ) {
                 OperationRecord operationRecord = new OperationRecord();
@@ -658,7 +661,7 @@ public class ProjectServiceImpl implements ProjectService {
 
             AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(college,ProjectType.GENERAL.getValue());
             Integer currentAmount = projectGroupMapper.getCountOfSpecifiedStatusAndProjectProject(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue(),college);
-            if (currentAmount + projectGroupIdList.size() < amountAndTypeVO.getMaxAmount()) {
+            if (currentAmount + projectGroupIdList.size() > amountAndTypeVO.getMaxAmount()) {
                 throw new GlobalException(CodeMsg.PROJECT_AMOUNT_LIMIT);
             }
 

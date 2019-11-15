@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.exception;
 
+import com.sun.deploy.net.HttpResponse;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.result.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +34,12 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler(GlobalException.class)
-    public Result handleSelfException(GlobalException exception){
+    public Result handleSelfException(GlobalException exception, HttpServletResponse response){
         log.error(EXCEPTION_MSG_KEY+exception.getMessage());
+        if (exception.getCode().equals(CodeMsg.PERMISSION_DENNY.getCode())) {
+            response.setStatus(403);
+            System.err.println(response.getStatus());
+        }
         return Result.error(exception);
     }
 
@@ -46,9 +51,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = Exception.class)
-    public Result exceptionHandler(HttpServletRequest request
-            , HttpServletResponse response
-            , Exception e){
+    public Result exceptionHandler(HttpServletRequest request,
+                                   Exception e){
         if(e instanceof BadCredentialsException){
             return Result.error(CodeMsg.PASSWORD_ERROR);
         }

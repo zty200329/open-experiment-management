@@ -310,7 +310,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
         AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(college,ProjectType.KEY.getValue());
         Integer currentAmount = keyProjectStatusMapper.getCountOfSpecifiedStatusAndProjectProject(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue(),college);
-        if (currentAmount + list.size() < amountAndTypeVO.getMaxAmount()) {
+        if (currentAmount + list.size() > amountAndTypeVO.getMaxAmount()) {
             throw new GlobalException(CodeMsg.KEY_PROJECT_AMOUNT_LIMIT);
         }
 
