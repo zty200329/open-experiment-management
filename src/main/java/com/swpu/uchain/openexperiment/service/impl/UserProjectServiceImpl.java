@@ -94,6 +94,13 @@ public class UserProjectServiceImpl implements UserProjectService {
         return userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, userId);
     }
 
+    private  String[] strToStrArr(String str){
+        if (str == null) {
+            return null;
+        }
+        return str.replace("[","").replace("]","").split(",");
+    }
+
     @Override
     public Result applyJoinProject(JoinProjectApplyForm joinProjectApplyForm) {
 
@@ -102,9 +109,57 @@ public class UserProjectServiceImpl implements UserProjectService {
 
         User user = getUserService.getCurrentUser();
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(joinProjectApplyForm.getProjectGroupId());
+
         if (projectGroup == null){
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
+
+        //学生是否可以加入判断
+        int allowed = 0;
+
+        String limitGrade = projectGroup.getLimitGrade();
+        String[] limitGradeArr = strToStrArr(limitGrade);
+        if (limitGradeArr == null){
+            allowed += 1;
+        }else {
+            for (String grade:limitGradeArr
+            ) {
+                if (grade.equals(user.getGrade().toString())) {
+                    allowed += 1;
+                }
+            }
+        }
+
+        String limitCollege = projectGroup.getLimitCollege();
+        String[] limitCollegeArr = strToStrArr(limitCollege);
+        if (limitCollegeArr == null){
+            allowed += 1;
+        }else {
+            for (String grade:limitCollegeArr
+            ) {
+                if (grade.equals(user.getInstitute().toString())) {
+                    allowed += 1;
+                }
+            }
+        }
+
+        String limitMajor = projectGroup.getLimitMajor();
+        String[] limitMajorArr = strToStrArr(limitMajor);
+        if (limitMajorArr == null){
+            allowed += 1;
+        }else {
+            for (String grade:limitMajorArr
+            ) {
+                if (grade.equals(user.getGrade().toString())) {
+                    allowed += 1;
+                }
+            }
+        }
+        if (allowed != 3) {
+            throw new GlobalException(CodeMsg.NOT_MATCH_LIMIT);
+        }
+
+
         //验证项目状态
         if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue())){
             return Result.error(CodeMsg.PROJECT_IS_NOT_LAB_ALLOWED);

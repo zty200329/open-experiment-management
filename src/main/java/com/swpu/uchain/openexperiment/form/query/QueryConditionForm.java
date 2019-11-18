@@ -17,9 +17,6 @@ public class QueryConditionForm {
     @ApiModelProperty("项目名称")
     private String projectName;
 
-    @ApiModelProperty("学院")
-    private Integer college;
-
     @ApiModelProperty("建议分组")
     private Integer suggestGroupType;
 
@@ -43,7 +40,6 @@ public class QueryConditionForm {
     @ApiModelProperty("限选年级")
     private String limitGrade;
 
-    @NotNull
     @ApiModelProperty("项目状态  0-7")
     private Integer status;
 }

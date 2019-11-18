@@ -259,4 +259,6 @@ public interface ProjectService {
     Result rejectIntermediateInspectionProject(List<ProjectCheckForm> list);
 
     Result rejectToBeConcludingProject(List<ProjectCheckForm> list);
+
+    Result getAllOpenTopicByCondition(QueryConditionForm queryConditionForm);
 }

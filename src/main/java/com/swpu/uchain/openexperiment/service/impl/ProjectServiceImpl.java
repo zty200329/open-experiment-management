@@ -736,6 +736,12 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success(list);
     }
 
+    @Override
+    public Result getAllOpenTopicByCondition(QueryConditionForm queryConditionForm) {
+        queryConditionForm.setStatus(ProjectStatus.LAB_ALLOWED.getValue());
+        return Result.success(conditionallyQueryOfProject(queryConditionForm));
+    }
+
     private Result conditionallyQueryOfCheckedProject(QueryConditionForm form) {
         List<Long>  projectIdList = projectGroupMapper.conditionQuery(form);
         if (projectIdList.isEmpty()){

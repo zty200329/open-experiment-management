@@ -31,11 +31,17 @@ public class ProjectQueryController {
         this.projectService = projectService;
     }
 
+    @ApiOperation("学生根据条件查询可加入的项目信息")
+    @PostMapping("/getAllOpenTopicByStudentByCondition")
+    public Result getAllOpenTopicByCondition(QueryConditionForm queryConditionForm){
+        return projectService.getAllOpenTopicByCondition(queryConditionForm);
+    }
+
     @ApiOperation("学生获取可参与的开放性选题")
     @GetMapping("/getAllOpenTopicByStudent")
     public Result getAllOpenTopic(){
         return projectService.getAllOpenTopic();
-}
+    }
 
     @ApiOperation("获取项目的立项信息--可使用")
     @GetMapping(value = "/getApplyInfo2", name = "获取项目的立项信息")

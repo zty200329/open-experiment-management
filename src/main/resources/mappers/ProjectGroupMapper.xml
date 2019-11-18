@@ -499,9 +499,6 @@
             <if test="status!=null">
                 project_group.status = #{status}
             </if>
-            <if test="college!=null">
-                and project_group.subordinate_college = #{college}
-            </if>
             <if test="suggestGroupType!=null">
                 and project_group.suggest_group_type = #{suggestGroupType}
             </if>
