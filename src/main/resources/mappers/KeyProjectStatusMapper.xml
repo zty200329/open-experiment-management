@@ -51,8 +51,8 @@
         FROM
             openexperiment.key_project_status
         INNER JOIN openexperiment.project_group ON key_project_status.project_id = project_group.id
-        INNER JOIN openexperiment.`user` ON key_project_status.creator_id = `user`.`code`
-        INNER JOIN openexperiment.project_file ON project_file.project_group_id = key_project_status.project_id
+        left join openexperiment.`user` ON key_project_status.creator_id = `user`.`code`
+        left join openexperiment.project_file ON project_file.project_group_id = key_project_status.project_id
         <where>
             <if test="status!=null">
                 and key_project_status.`status` = #{status}

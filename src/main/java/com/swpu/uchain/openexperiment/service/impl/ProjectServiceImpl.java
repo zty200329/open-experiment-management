@@ -659,6 +659,14 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
             }
 
+            //生成项目编号
+            for (Long id : projectGroupIdList) {
+                String serialNumber = projectGroupMapper.selectByPrimaryKey(id).getSerialNumber();
+                //计算编号并在数据库中插入编号
+                projectGroupMapper.updateProjectSerialNumber(id, SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), serialNumber));
+            }
+
+
             AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(college,ProjectType.GENERAL.getValue());
             Integer currentAmount = projectGroupMapper.getCountOfSpecifiedStatusAndProjectProject(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue(),college);
             if (currentAmount + projectGroupIdList.size() > amountAndTypeVO.getMaxAmount()) {

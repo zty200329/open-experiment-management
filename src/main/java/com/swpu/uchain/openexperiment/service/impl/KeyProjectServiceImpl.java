@@ -236,13 +236,6 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             operationRecord.setRelatedId(check.getProjectId());
             operationRecordList.add(operationRecord);
 
-            //如果是二级单位同意立项
-            if (roleType == RoleType.SECONDARY_UNIT && operationType == OperationType.AGREE){
-                String serialNumber = projectGroupMapper.selectByPrimaryKey(check.getProjectId()).getSerialNumber();
-                //计算编号并在数据库中插入编号
-                projectGroupMapper.updateProjectSerialNumber(check.getProjectId(),SerialNumberUtil.getSerialNumberOfProject(college,ProjectType.KEY.getValue(),serialNumber));
-            }
-
             idList.add(check.getProjectId());
         }
         keyProjectStatusMapper.updateList(idList,getNextStatusByRoleAndOperation(roleType, operationType).getValue());
@@ -306,6 +299,13 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         Integer college = user.getInstitute();
         if (college == null){
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
+        }
+
+        //生成项目编号
+        for (KeyProjectCheck check : list) {
+            String serialNumber = projectGroupMapper.selectByPrimaryKey(check.getProjectId()).getSerialNumber();
+            //计算编号并在数据库中插入编号
+            projectGroupMapper.updateProjectSerialNumber(check.getProjectId(), SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), serialNumber));
         }
 
         AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(college,ProjectType.KEY.getValue());
