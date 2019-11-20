@@ -5,12 +5,9 @@ import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.VO.limit.AmountAndTypeVO;
 import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
-import com.swpu.uchain.openexperiment.domain.AmountLimit;
-import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
+import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.form.amount.AmountAndType;
 import com.swpu.uchain.openexperiment.mapper.*;
-import com.swpu.uchain.openexperiment.domain.ProjectGroup;
-import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.query.HistoryQueryKeyProjectInfo;
@@ -47,12 +44,13 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private OperationRecordMapper operationRecordMapper;
     private TimeLimitService timeLimitService;
     private AmountLimitMapper amountLimitMapper;
+    private ProjectFileMapper projectFileMapper;
 
     @Autowired
     public KeyProjectServiceImpl(ProjectGroupMapper projectGroupMapper, UserProjectGroupMapper userProjectGroupMapper,
                                  KeyProjectStatusMapper keyProjectStatusMapper,GetUserService getUserService,
                                  OperationRecordMapper operationRecordMapper,TimeLimitService timeLimitService,
-                                 AmountLimitMapper amountLimitMapper) {
+                                 AmountLimitMapper amountLimitMapper,ProjectFileMapper projectFileMapper) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
@@ -60,6 +58,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         this.operationRecordMapper = operationRecordMapper;
         this.timeLimitService = timeLimitService;
         this.amountLimitMapper = amountLimitMapper;
+        this.projectFileMapper = projectFileMapper;
     }
 
     @Transactional(rollbackFor = GlobalException.class)
@@ -72,7 +71,13 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         }
         //判断项目是否为重点项目
         if (ProjectType.GENERAL.getValue().equals(projectGroup.getProjectType())){
-            throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+            throw new GlobalException(CodeMsg.GENERAL_PROJECT_CANT_APPLY);
+        }
+
+        //文件上传验证，没有进行证明材料上传不得申请重点项目
+        ProjectFile projectFile = projectFileMapper.selectByProjectGroupIdAndMaterialType(form.getProjectId(),MaterialType.APPLY_MATERIAL.getValue());
+        if (projectFile == null) {
+            throw new GlobalException(CodeMsg.KEY_PROJECT_APPLY_MATERIAL_EMPTY);
         }
 
         User user = getUserService.getCurrentUser();

@@ -60,6 +60,9 @@ public enum CodeMsg {
     PROJECT_GROUP_NOT_EXIST(1519, "项目组不存在" ),
     KEY_PROJECT_AMOUNT_LIMIT(1520,"重点项目上报数量超过最大限制"),
     PROJECT_AMOUNT_LIMIT(1521,"普通项目上报数量超过最大限制"),
+    GENERAL_PROJECT_CANT_APPLY(1522,"普通项目不得进行重点项目申请"),
+    KEY_PROJECT_APPLY_MATERIAL_EMPTY(1523,"证明材料为空"),
+
 
 
     /**
