@@ -19,4 +19,6 @@ public interface AmountLimitService {
     Result  updateAmountLimit(AmountUpdateForm form);
 
     Result setApplyLimitAmount(ProjectApplyAmountLimitForm form);
+
+    Result updateApplyLimitAmount(ProjectApplyAmountLimitForm form);
 }

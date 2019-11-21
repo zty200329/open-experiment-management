@@ -36,6 +36,12 @@ public class AmountLimitController {
         return amountLimitService.setApplyLimitAmount(form);
     }
 
+    @ApiOperation("更新教师项目申请数量限制")
+    @GetMapping("/updateApplyLimitAmount")
+    public Result updateApplyLimitAmount(@RequestBody @Valid ProjectApplyAmountLimitForm form) {
+        return amountLimitService.updateApplyLimitAmount(form);
+    }
+
 
     @PostMapping("/setAmount")
     @ApiOperation("设置项目数量")

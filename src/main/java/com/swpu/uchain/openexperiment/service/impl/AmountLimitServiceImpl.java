@@ -126,4 +126,13 @@ public class AmountLimitServiceImpl implements AmountLimitService {
         amountLimitMapper.insertOne(amountLimit);
         return Result.success();
     }
+
+    @Override
+    public Result updateApplyLimitAmount(ProjectApplyAmountLimitForm form) {
+        int result = amountLimitMapper.updateTimeLimit(form.getId(),form.getMaxAmount());
+        if (result != 0) {
+            throw new GlobalException(CodeMsg.UPDATE_ERROR);
+        }
+        return Result.success();
+    }
 }
