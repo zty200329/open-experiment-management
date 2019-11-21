@@ -23,8 +23,14 @@ public class AmountLimit {
     private Integer limitCollege;
 
     /**
-     * 限制单位
+     * 项目类型
      */
     private Integer projectType;
+
+    /**
+     * 限制单位
+     */
+    private Integer limitUnit;
+
 
 }

@@ -4,12 +4,10 @@ import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
 import com.swpu.uchain.openexperiment.domain.AmountLimit;
 import com.swpu.uchain.openexperiment.domain.TimeLimit;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.enums.RoleType;
 import com.swpu.uchain.openexperiment.enums.TimeLimitType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
-import com.swpu.uchain.openexperiment.form.amount.AmountAndType;
-import com.swpu.uchain.openexperiment.form.amount.AmountLimitForm;
-import com.swpu.uchain.openexperiment.form.amount.AmountSearchForm;
-import com.swpu.uchain.openexperiment.form.amount.AmountUpdateForm;
+import com.swpu.uchain.openexperiment.form.amount.*;
 import com.swpu.uchain.openexperiment.mapper.AmountLimitMapper;
 import com.swpu.uchain.openexperiment.mapper.TimeLimitMapper;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -41,7 +39,7 @@ public class AmountLimitServiceImpl implements AmountLimitService {
 
     @Override
     public Result getAmountLimitVOListByCollegeAndProjectType(AmountSearchForm form) {
-        return Result.success(amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(form.getCollege(),form.getProjectType()));
+        return Result.success(amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(form.getCollege(),form.getProjectType(),RoleType.SECONDARY_UNIT.getValue()));
     }
 
     @Override
@@ -61,13 +59,14 @@ public class AmountLimitServiceImpl implements AmountLimitService {
 
             for (AmountAndType amountAndType:form.getList()
                  ) {
-                if (amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(form.getLimitCollege(),amountAndType.getProjectType()).size() != 0){
+                if (amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(form.getLimitCollege(),amountAndType.getProjectType(),RoleType.SECONDARY_UNIT.getValue()).size() != 0){
                     throw new GlobalException(CodeMsg.INPUT_INFO_HAS_EXISTED);
                 }
                 AmountLimit amountLimit = new AmountLimit();
                 amountLimit.setLimitCollege(form.getLimitCollege());
                 amountLimit.setMaxAmount(amountAndType.getMaxAmount());
                 amountLimit.setProjectType(amountAndType.getProjectType());
+                amountLimit.setLimitUnit(RoleType.SECONDARY_UNIT.getValue());
                 amountLimitList.add(amountLimit);
             }
 
@@ -79,7 +78,7 @@ public class AmountLimitServiceImpl implements AmountLimitService {
 
     @Override
     public Result getAmountLimitList() {
-        List<AmountLimitVO> limitList = amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(null,null);
+        List<AmountLimitVO> limitList = amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(null,null,RoleType.SECONDARY_UNIT.getValue());
         return Result.success(limitList);
     }
 
@@ -116,6 +115,15 @@ public class AmountLimitServiceImpl implements AmountLimitService {
         if (result != 1){
             throw new GlobalException(CodeMsg.UPDATE_ERROR);
         }
+        return Result.success();
+    }
+
+    @Override
+    public Result setApplyLimitAmount(ProjectApplyAmountLimitForm form) {
+        AmountLimit amountLimit = new AmountLimit();
+        BeanUtils.copyProperties(form,amountLimit);
+        amountLimit.setLimitUnit(RoleType.MENTOR.getValue());
+        amountLimitMapper.insertOne(amountLimit);
         return Result.success();
     }
 }

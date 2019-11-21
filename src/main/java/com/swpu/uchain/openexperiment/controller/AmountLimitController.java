@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.controller;
 import com.swpu.uchain.openexperiment.form.amount.AmountLimitForm;
 import com.swpu.uchain.openexperiment.form.amount.AmountSearchForm;
 import com.swpu.uchain.openexperiment.form.amount.AmountUpdateForm;
+import com.swpu.uchain.openexperiment.form.amount.ProjectApplyAmountLimitForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AmountLimitService;
 import io.swagger.annotations.Api;
@@ -28,6 +29,13 @@ public class AmountLimitController {
     public AmountLimitController(AmountLimitService amountLimitService) {
         this.amountLimitService = amountLimitService;
     }
+
+    @ApiOperation("设置项目申请数量限制")
+    @GetMapping("/setApplyLimitAmount")
+    public Result setApplyLimitAmount(@RequestBody @Valid ProjectApplyAmountLimitForm form) {
+        return amountLimitService.setApplyLimitAmount(form);
+    }
+
 
     @PostMapping("/setAmount")
     @ApiOperation("设置项目数量")

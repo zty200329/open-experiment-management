@@ -16,13 +16,14 @@
             </foreach>
     </insert>
     <insert id="insertOne">
-        insert into openexperiment.amount_limit( max_amount, min_amount, limit_college, project_type)
+        insert into openexperiment.amount_limit( max_amount, min_amount, limit_college, project_type,limit_unit)
         values
             (
                 #{maxAmount},
                 #{minAmount},
                 #{limitCollege},
-                #{projectType}
+                #{projectType},
+                #{limitUnit}
             )
     </insert>
     <update id="updateTimeLimit">
@@ -57,9 +58,13 @@
                 on amount_limit.limit_college = time_limit.limit_college and  time_limit.limit_type = 20 <!--20是指二级部门上报时间-->
 
         <where>
+            <if test="unit!=null">
+                amount_limit.limit_unit = #{unit}
+            </if>
             <if test="college!=null">
                 amount_limit.limit_college = #{college}
             </if>
+
             <if test="type!=null">
                 and project_type = #{type}
             </if>
@@ -75,6 +80,8 @@
                project_type as projectType
         from openexperiment.amount_limit
         where  amount_limit.limit_college = #{college} and project_type = #{type}
-
+        <if test="unit!=null">
+            and amount_limit.limit_unit = #{unit}
+        </if>
     </select>
 </mapper>

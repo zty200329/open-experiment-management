@@ -18,9 +18,11 @@ public interface AmountLimitMapper {
 
     int insertOne(AmountLimit amountLimit);
 
-    List<AmountLimitVO> getAmountLimitVOListByCollegeAndProjectType(@Param("college") Integer college, @Param("type") Integer projectType);
+    List<AmountLimitVO> getAmountLimitVOListByCollegeAndProjectType(@Param("college") Integer college, @Param("type") Integer projectType,
+                                                                    @Param("unit")Integer unit);
 
-    AmountAndTypeVO getAmountAndTypeVOByCollegeAndProjectType(@Param("college") Integer college, @Param("type") Integer projectType);
+    AmountAndTypeVO getAmountAndTypeVOByCollegeAndProjectType(@Param("college") Integer college, @Param("type") Integer projectType,
+                                                              @Param("unit")Integer unit);
 
     int updateTimeLimit(@Param("id") Integer id,@Param("maxAmount") Integer maxAmount);
 
