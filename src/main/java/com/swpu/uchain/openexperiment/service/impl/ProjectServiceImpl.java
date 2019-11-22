@@ -164,7 +164,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (amountAndTypeVO != null) {
             Integer maxAmount = amountAndTypeVO.getMaxAmount();
             Integer currentCount = userProjectGroupMapper.geCountOfAppliedProject(Long.valueOf(currentUser.getCode()),form.getProjectType());
-            if (maxAmount.equals(currentCount)) {
+            if (maxAmount >= currentCount) {
                 return Result.error(CodeMsg.MAXIMUM_APPLICATION);
             }
         }
@@ -240,7 +240,7 @@ public class ProjectServiceImpl implements ProjectService {
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
         //状态不允许修改
-        if (projectGroup.getStatus() != ProjectStatus.DECLARE.getValue().intValue()) {
+        if (projectGroup.getStatus() != ProjectStatus.DECLARE.getValue().intValue() || projectGroup.getStatus() != ProjectStatus.REJECT_MODIFY.getValue().intValue()) {
             return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
         }
         //更新项目组基本信息

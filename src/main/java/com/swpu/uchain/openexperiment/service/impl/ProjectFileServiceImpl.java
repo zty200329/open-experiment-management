@@ -68,8 +68,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     private String ipAddress;
 
     public boolean insert(ProjectFile projectFile) {
-        ProjectFile projectFile1 = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectFile.getProjectGroupId(),projectFile.getMaterialType());
-        if (projectFile1!=null){
+        ProjectFile projectFile1 = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectFile.getProjectGroupId(), projectFile.getMaterialType());
+        if (projectFile1 != null) {
             projectFile.setId(projectFile1.getId());
             return update(projectFile);
         }
@@ -83,7 +83,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Override
     public void delete(Long id) {
         ProjectFile projectFile = selectById(id);
-        if (projectFile == null){
+        if (projectFile == null) {
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
         redisService.delete(FileKey.getById, id + "");
@@ -102,32 +102,32 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public ProjectFile getAimNameProjectFile(Long projectGroupId, String aimFileName){
+    public ProjectFile getAimNameProjectFile(Long projectGroupId, String aimFileName) {
         return projectFileMapper.selectByGroupIdFileName(projectGroupId, aimFileName);
     }
 
     @Override
-    public Result uploadApplyDoc(MultipartFile headFile,MultipartFile file, Long projectGroupId) {
+    public Result uploadApplyDoc(MultipartFile headFile, MultipartFile file, Long projectGroupId) {
         //先检查文件是否为空
         if (file.isEmpty()) {
             throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
-        if (headFile.isEmpty()){
+        if (headFile.isEmpty()) {
             throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
-        if (!getFileSuffix(file.getOriginalFilename()).equals(".doc")){
+        if (!getFileSuffix(file.getOriginalFilename()).equals(".doc")) {
             throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
         }
         //重点项目申请正文
-        String docPath = FileUtil.getFileRealPath(projectGroupId,
+        String bodyDocPath = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir(),
-                uploadConfig.getApplyFileName()+getFileSuffix(file.getOriginalFilename()));
+                uploadConfig.getApplyFileName() + getFileSuffix(file.getOriginalFilename()));
         //项目基本信息文档
         String headDocPath = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir2(),
-                uploadConfig.getApplyFileName()+getFileSuffix(file.getOriginalFilename()));
+                uploadConfig.getApplyFileName() + getFileSuffix(file.getOriginalFilename()));
         //如果存在则覆盖
-        File dest = new File(docPath);
+        File dest = new File(bodyDocPath);
         dest.delete();
 
         if (!checkFileFormat(file, FileType.WORD.getValue())) {
@@ -139,7 +139,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         ProjectFile projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(user.getCode()));
         projectFile.setFileType(FileType.WORD.getValue());
-        String fileName = projectGroupId+"_"+uploadConfig.getApplyFileName()+".pdf";
+        String fileName = projectGroupId + "_" + uploadConfig.getApplyFileName() + ".pdf";
         projectFile.setFileName(fileName);
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
         projectFile.setUploadTime(new Date());
@@ -150,28 +150,31 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return Result.error(CodeMsg.ADD_ERROR);
         }
         //上传文件并转化成PDF
-        if (FileUtil.uploadFile(file,docPath) && FileUtil.uploadFile(headFile,headDocPath)) {
+        if (FileUtil.uploadFile(file, bodyDocPath) && FileUtil.uploadFile(headFile, headDocPath)) {
 
             //临时的PDF
             String pdfHeadPath = FileUtil.getFileRealPath(projectGroupId,
                     uploadConfig.getPdfTempDir(),
-                    uploadConfig.getApplyFileName()+"head"+".pdf");
+                    uploadConfig.getApplyFileName() + "head" + ".pdf");
             String pdfBodyPath = FileUtil.getFileRealPath(projectGroupId,
                     uploadConfig.getPdfTempDir(),
-                    uploadConfig.getApplyFileName()+"body"+".pdf");
+                    uploadConfig.getApplyFileName() + "body" + ".pdf");
 
 
             //转换为PDF
             //生成PDF的文件地址，该PDF信息是最终存入数据库的PDF名称
             String pdfPath = FileUtil.getFileRealPath(projectGroupId,
                     uploadConfig.getApplyDir(),
-                    uploadConfig.getApplyFileName()+".pdf");
+                    uploadConfig.getApplyFileName() + ".pdf");
 
-            convertDocToPDF(docPath,pdfPath);
-            mergePdf(pdfHeadPath,pdfBodyPath,pdfPath);
+            convertDocToPDF(bodyDocPath, pdfBodyPath);
+
+            convertDocToPDF(headDocPath, pdfHeadPath);
+
+            mergePdf(pdfHeadPath, pdfBodyPath, pdfPath);
 
             Map<String, String> map = new HashMap<>();
-            map.put("url",ipAddress+"/apply/"+fileName);
+            map.put("url", ipAddress + "/apply/" + fileName);
             return Result.success(map);
         }
         return Result.error(CodeMsg.UPLOAD_ERROR);
@@ -180,11 +183,11 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Override
     public void downloadApplyFile(Long fileId, HttpServletResponse response) {
         ProjectFile projectFile = projectFileMapper.selectByPrimaryKey(fileId);
-        if (projectFile == null){
+        if (projectFile == null) {
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
-        String realPath = uploadConfig.getApplyDir()+'/'+projectFile.getFileName();
-        if (FileUtil.downloadFile(response, realPath)){
+        String realPath = uploadConfig.getApplyDir() + '/' + projectFile.getFileName();
+        if (FileUtil.downloadFile(response, realPath)) {
             throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
         }
         projectFile.setDownloadTimes(projectFile.getDownloadTimes() + 1);
@@ -196,11 +199,11 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Override
     public void getConclusionDoc(Long fileId, HttpServletResponse response) {
         ProjectFile projectFile = projectFileMapper.selectByPrimaryKey(fileId);
-        if (projectFile == null){
+        if (projectFile == null) {
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
         String realPath = uploadConfig.getConclusionDir() + "/" + projectFile.getFileName();
-        if (FileUtil.downloadFile(response, realPath)){
+        if (FileUtil.downloadFile(response, realPath)) {
             throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
         }
         projectFile.setDownloadTimes(projectFile.getDownloadTimes() + 1);
@@ -212,7 +215,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Override
     public void downloadApplyPdf(Long fileId, HttpServletResponse response) {
         ProjectFile projectFile = projectFileMapper.selectByPrimaryKey(fileId);
-        if (projectFile == null){
+        if (projectFile == null) {
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
 
@@ -221,7 +224,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 uploadConfig.getApplyDir(),
                 FileUtil.getFileNameWithoutSuffix(projectFile.getFileName()));
         File file = new File(realPath);
-        if (file.exists()){
+        if (file.exists()) {
             if (FileUtil.downloadFile(response, realPath)) {
                 throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
             }
@@ -238,8 +241,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public Result uploadAttachmentFile(MultipartFile multipartFile,Integer attachmentType) {
-        if (multipartFile == null || multipartFile.isEmpty()){
+    public Result uploadAttachmentFile(MultipartFile multipartFile, Integer attachmentType) {
+        if (multipartFile == null || multipartFile.isEmpty()) {
             return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
         User currentUser = getUserService.getCurrentUser();
@@ -268,7 +271,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Override
     public void downloadAttachmentFile(long fileId, HttpServletResponse response) {
         ProjectFile projectFile = selectById(fileId);
-        if (projectFile == null){
+        if (projectFile == null) {
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
         if (FileUtil.downloadFile(response, FileUtil.getFileRealPath(fileId, uploadConfig.getApplyDir(), projectFile.getFileName()))) {
@@ -284,12 +287,12 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public Result uploadConcludingReport(Long projectId,MultipartFile file) {
-        ProjectGroup projectGroup =  projectGroupMapper.selectByPrimaryKey(projectId);
+    public Result uploadConcludingReport(Long projectId, MultipartFile file) {
+        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectId);
         if (file == null) {
             throw new GlobalException(CodeMsg.FILE_EMPTY_ERROR);
         }
-        if (projectGroup == null){
+        if (projectGroup == null) {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
 //        if (!projectGroup.getStatus().equals(ProjectStatus.CONCLUDED.getValue())){
@@ -297,9 +300,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 //        }
 
         //判断是否存在该文件,若存在则进行覆盖
-        ProjectFile projectFile = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId,MaterialType.CONCLUSION_MATERIAL.getValue());
+        ProjectFile projectFile = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.CONCLUSION_MATERIAL.getValue());
 
-        if (projectFile != null){
+        if (projectFile != null) {
             FileUtil.uploadFile(
                     file,
                     FileUtil.getFileRealPath(
@@ -315,7 +318,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
         //数据库存储为pdf名称
-        projectFile.setFileName(projectId+"_"+uploadConfig.getConcludingFileName()+".pdf");
+        projectFile.setFileName(projectId + "_" + uploadConfig.getConcludingFileName() + ".pdf");
         projectFile.setUploadTime(new Date());
         projectFile.setMaterialType(MaterialType.CONCLUSION_MATERIAL.getValue());
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
@@ -328,21 +331,21 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         }
         String docPath = FileUtil.getFileRealPath(projectId,
                 uploadConfig.getConclusionDir(),
-                uploadConfig.getConcludingFileName()+getFileSuffix(file.getOriginalFilename()));
+                uploadConfig.getConcludingFileName() + getFileSuffix(file.getOriginalFilename()));
         String pdfPath = FileUtil.getFileRealPath(projectId,
                 uploadConfig.getConclusionDir(),
-                uploadConfig.getConcludingFileName()+".pdf");
+                uploadConfig.getConcludingFileName() + ".pdf");
         if (!FileUtil.uploadFile(
                 file,
                 docPath)) {
             return Result.error(CodeMsg.UPLOAD_ERROR);
         }
         // 异步转换成PDF
-        convertDocToPDF(docPath,pdfPath);
+        convertDocToPDF(docPath, pdfPath);
         return Result.success();
     }
 
-    public boolean checkFileFormat(MultipartFile multipartFile, Integer aimType){
+    public boolean checkFileFormat(MultipartFile multipartFile, Integer aimType) {
         String suffix = FileUtil.getMultipartFileSuffix(multipartFile);
         int type = FileUtil.getType(suffix);
         if (type != aimType) {
@@ -351,21 +354,21 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         return true;
     }
 
-    private int getYear(){
+    private int getYear() {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.YEAR);
     }
 
     @Override
-    public void generateEstablishExcel (HttpServletResponse response){
+    public void generateEstablishExcel(HttpServletResponse response) {
 
         User user = getUserService.getCurrentUser();
         //获取管理人员所管理的学院
-        if (user == null){
+        if (user == null) {
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
         Integer college = user.getInstitute();
-        if (college == null){
+        if (college == null) {
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
         }
         List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(college);
@@ -387,7 +390,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         XSSFRow title = sheet.createRow(index);
         sheet.setColumnWidth(0, 256 * 150);
         title.setHeight((short) (16 * 50));
-        title.createCell(index++).setCellValue("西南石油大学第"+getYear()/100+"期("+getYear()+"-"+(getYear()+1)+"年度)课外开放实验项目立项一览表");
+        title.createCell(index++).setCellValue("西南石油大学第" + getYear() / 100 + "期(" + getYear() + "-" + (getYear() + 1) + "年度)课外开放实验项目立项一览表");
 
         XSSFRow info = sheet.createRow(index);
         info.createCell(0).setCellValue("单位：（盖章）");
@@ -406,7 +409,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         for (int i = 0; i < head.length; i++) {
 
             // 给列写入数据,创建单元格，写入数据
-            row.setHeight((short) (16*40));
+            row.setHeight((short) (16 * 40));
             row.createCell(i).setCellValue(head[i]);
 
         }
@@ -458,7 +461,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public void generateConclusionExcel (HttpServletResponse response){
+    public void generateConclusionExcel(HttpServletResponse response) {
         User user = getUserService.getCurrentUser();
         Integer college = user.getInstitute();
         // TODO  区分学院
@@ -479,30 +482,30 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         XSSFRow title = sheet.createRow(index);
         sheet.setColumnWidth(0, 256 * 150);
         title.setHeight((short) (16 * 50));
-        title.createCell(index++).setCellValue("西南石油大学第"+getYear()/100+"期（"+getYear()+"-"+(getYear()+1)+"年度）课外开放实验普通项目结题验收一览表");
+        title.createCell(index++).setCellValue("西南石油大学第" + getYear() / 100 + "期（" + getYear() + "-" + (getYear() + 1) + "年度）课外开放实验普通项目结题验收一览表");
 
 
         XSSFRow info = sheet.createRow(index);
-        sheet.setColumnWidth(0,256*40);
+        sheet.setColumnWidth(0, 256 * 40);
         info.createCell(0).setCellValue("单位：（盖章）");
 
 
         // 4.1创建表头行
         XSSFRow row = sheet.createRow(index++);
-        String[] columns = {"序号","学院","开放实验室","项目编号","实验类型","实验时数"
-                ,"指导教师","教师公号","学生姓名","学生学号","组员职责","专业年级","起止时间","验收时间","验收结果","备注"};
+        String[] columns = {"序号", "学院", "开放实验室", "项目编号", "实验类型", "实验时数"
+                , "指导教师", "教师公号", "学生姓名", "学生学号", "组员职责", "专业年级", "起止时间", "验收时间", "验收结果", "备注"};
         //创建行中的列
-        sheet.setColumnWidth(0,256*20);
+        sheet.setColumnWidth(0, 256 * 20);
         for (int i = 0; i < columns.length; i++) {
 
             // 给列写入数据,创建单元格，写入数据
-            row.setHeight((short) (16*40));
+            row.setHeight((short) (16 * 40));
             row.createCell(i).setCellValue(columns[i]);
         }
 
         //写入数据
         List<ConclusionDTO> list = projectGroupMapper.selectConclusionDTOs(college);
-        for (ConclusionDTO conclusion:list
+        for (ConclusionDTO conclusion : list
         ) {
             // 创建行
             row = sheet.createRow(++index);
@@ -544,26 +547,27 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     }
 
-    public void convertDocToPDF(String fileNameOfDoc,String fileNameOfPDF){
-        PDFConvertUtil.convert(fileNameOfDoc,fileNameOfPDF);
+    private void convertDocToPDF(String fileNameOfDoc, String fileNameOfPDF) {
+        PDFConvertUtil.convert(fileNameOfDoc, fileNameOfPDF);
     }
 
-    public void mergePdf(String headDocPath,String docPath,String pdfName){
+    private void mergePdf(String headDocPath, String docPath, String pdfName) {
 
 
         String[] docs = new String[2];
         docs[0] = headDocPath;
         docs[1] = docPath;
-        PDFMerge.mergePdfFiles(docs,pdfName);
+        PDFMerge.mergePdfFiles(docs, pdfName);
     }
 
     /**
      * 解决IE edge 文件上传 文件名却出现了全路径+文件名的形式
+     *
      * @param fileName 文件名
      * @return
      */
-    private static String getFileSuffix(String fileName){
-        if (fileName == null){
+    private static String getFileSuffix(String fileName) {
+        if (fileName == null) {
             throw new GlobalException(CodeMsg.FILE_NAME_EMPTY_ERROR);
         }
         //最后一位  注意是"\\",主要针对于微软的浏览器

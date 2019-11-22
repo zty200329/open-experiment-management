@@ -94,13 +94,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         timeLimitService.validTime(TimeLimitType.KEY_DECLARE_LIMIT);
 
         //验证项目状态合法性
-        validProjectStatus(ProjectStatus.LAB_ALLOWED.getValue(),projectGroup.getStatus());
-
         Long projectId = projectGroup.getId();
         if (projectGroup.getStatus() < ProjectStatus.LAB_ALLOWED.getValue()){
             throw new GlobalException(CodeMsg.PROJECT_IS_NOT_LAB_ALLOWED);
         }
-        //创建重点项目状态
+        //验证是否已经进行了重点项目申请
         if (keyProjectStatusMapper.getStatusByProjectId(projectGroup.getId())!=null) {
             throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
         }
