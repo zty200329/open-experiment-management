@@ -31,15 +31,21 @@ public class AmountLimitController {
     }
 
     @ApiOperation("设置项目申请数量限制")
-    @GetMapping("/setApplyLimitAmount")
+    @PostMapping("/setApplyLimitAmount")
     public Result setApplyLimitAmount(@RequestBody @Valid ProjectApplyAmountLimitForm form) {
         return amountLimitService.setApplyLimitAmount(form);
     }
 
     @ApiOperation("更新教师项目申请数量限制")
-    @GetMapping("/updateApplyLimitAmount")
+    @PostMapping("/updateApplyLimitAmount")
     public Result updateApplyLimitAmount(@RequestBody @Valid ProjectApplyAmountLimitForm form) {
         return amountLimitService.updateApplyLimitAmount(form);
+    }
+
+    @ApiOperation("获取教师项目申请数量限制")
+    @GetMapping("/getProjectApplyAmountLimit")
+    public Result getProjectApplyAmountLimit() {
+        return amountLimitService.getProjectApplyAmountLimit();
     }
 
 

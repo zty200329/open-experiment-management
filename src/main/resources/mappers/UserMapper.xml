@@ -109,11 +109,11 @@
       and user_project_group.status = 2
   </select>
   <select id="selectByRandom" resultMap="BaseResultMap">
-    select * from openexperiment.user
+    select id, code, real_name, institute, major, email, fix_phone, id_card, mobile_phone, password, qq_num, sex, user_type, grade, work_unit, class_num from openexperiment.user
     where (code like '%${keyWord}%'
     or real_name like '%${keyWord}%')
     <choose>
-      <when test="param2 == false">
+      <when test="isTeacher == false">
         and user_type=1
       </when>
       <otherwise>

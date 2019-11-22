@@ -63,7 +63,7 @@ public class ProjectQueryController {
 
     @ApiOperation("获取当前用户参与的某状态的项目信息, 项目状态: 不传(所有), 0(申报), 1(立项), 2(驳回修改),3(已上报学院领导), 4(中期检查), 5(结项)")
     @GetMapping(value = "/getOwnProjects", name = "获取自己相关的项目信息")
-    public Result getOwnProjects(@RequestParam(required = false) Integer projectStatus,@RequestParam("joinStatus") Integer joinStatus){
+    public Result getOwnProjects(@RequestParam(required = false) Integer projectStatus,@RequestParam(required = false,value = "joinStatus") Integer joinStatus){
         return projectService.getCurrentUserProjects(projectStatus,joinStatus);
     }
 

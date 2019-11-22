@@ -22,7 +22,7 @@ public interface UserMapper {
 
     List<User> selectProjectJoinedUsers(Long projectId);
 
-    List<User> selectByRandom(@Param("keyWord") String keyWord, boolean isTeacher);
+    List<User> selectByRandom(@Param("keyWord") String keyWord,@Param("isTeacher") boolean isTeacher);
 
     User selectGroupLeader(Long projectGroupId);
 

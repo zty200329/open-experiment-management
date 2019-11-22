@@ -308,13 +308,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> selectByKeyWord(String keyWord, boolean isTeacher) {
-        List<User> users = (List<User>) redisService.getList(UserKey.getByKeyWord, keyWord + isTeacher);
-        if (users == null || users.size() == 0){
-            users = userMapper.selectByRandom(keyWord, isTeacher);
-            if (users != null && users.size() != 0){
-                redisService.setList(UserKey.getByKeyWord, keyWord + isTeacher, users);
-            }
-        }
-        return users;
+        return userMapper.selectByRandom(keyWord, isTeacher);
     }
 }

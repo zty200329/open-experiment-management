@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.service.impl;
 import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
 import com.swpu.uchain.openexperiment.domain.AmountLimit;
 import com.swpu.uchain.openexperiment.domain.TimeLimit;
+import com.swpu.uchain.openexperiment.domain.UserRole;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.RoleType;
 import com.swpu.uchain.openexperiment.enums.TimeLimitType;
@@ -134,5 +135,11 @@ public class AmountLimitServiceImpl implements AmountLimitService {
             throw new GlobalException(CodeMsg.UPDATE_ERROR);
         }
         return Result.success();
+    }
+
+    @Override
+    public Result getProjectApplyAmountLimit() {
+        List<AmountLimitVO> limitVOS = amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(null,null,RoleType.MENTOR.getValue());
+        return Result.success(limitVOS);
     }
 }
