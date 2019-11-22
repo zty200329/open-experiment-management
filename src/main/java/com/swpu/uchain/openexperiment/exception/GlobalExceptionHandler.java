@@ -1,6 +1,5 @@
 package com.swpu.uchain.openexperiment.exception;
 
-import com.sun.deploy.net.HttpResponse;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.result.Result;
 import lombok.extern.slf4j.Slf4j;
