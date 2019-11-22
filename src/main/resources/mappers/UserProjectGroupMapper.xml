@@ -148,4 +148,11 @@
             and member_role = #{memberRole}
         </if>
     </select>
+    <select id="geCountOfAppliedProject" resultType="java.lang.Integer">
+        select count(project_group.id) from openexperiment.project_group
+            inner join openexperiment.user_project_group on user_project_group.project_group_id = project_group.id
+                and user_project_group.user_id = #{userId}
+        where project_group.project_type = #{projectType}
+
+    </select>
 </mapper>

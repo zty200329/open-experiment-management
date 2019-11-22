@@ -159,11 +159,23 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
         }
 
+        //验证项目是否达到申请上限
+        AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(null,form.getProjectType(),RoleType.MENTOR.getValue());
+        if (amountAndTypeVO != null) {
+            Integer maxAmount = amountAndTypeVO.getMaxAmount();
+            Integer currentCount = userProjectGroupMapper.geCountOfAppliedProject(Long.valueOf(currentUser.getCode()),form.getProjectType());
+            if (maxAmount.equals(currentCount)) {
+                return Result.error(CodeMsg.MAXIMUM_APPLICATION);
+            }
+        }
+
 
         //判断用户类型
-//        if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()) {
-//            Result.error(CodeMsg.STUDENT_CANT_APPLY);
-//        }
+        if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()) {
+            Result.error(CodeMsg.STUDENT_CANT_APPLY);
+        }
+
+
         ProjectGroup projectGroup = projectGroupMapper.selectByName(form.getProjectName());
         if (projectGroup != null) {
             return Result.error(CodeMsg.PROJECT_GROUP_HAD_EXIST);

@@ -64,11 +64,15 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Transactional(rollbackFor = GlobalException.class)
     @Override
     public Result createKeyApply(KeyProjectApplyForm form) {
+
+        User user = getUserService.getCurrentUser();
+
         //验证项目是否存在
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(form.getProjectId());
         if (projectGroup == null){
             throw new GlobalException(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
+
         //判断项目是否为重点项目
         if (ProjectType.GENERAL.getValue().equals(projectGroup.getProjectType())){
             throw new GlobalException(CodeMsg.GENERAL_PROJECT_CANT_APPLY);
@@ -79,8 +83,6 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         if (projectFile == null) {
             throw new GlobalException(CodeMsg.KEY_PROJECT_APPLY_MATERIAL_EMPTY);
         }
-
-        User user = getUserService.getCurrentUser();
 
         //验证用户是否有权限操作该项目组
         UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(form.getProjectId(), Long.valueOf(user.getCode()));

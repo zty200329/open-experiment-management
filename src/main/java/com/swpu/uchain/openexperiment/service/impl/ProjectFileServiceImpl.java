@@ -19,7 +19,6 @@ import com.swpu.uchain.openexperiment.redis.key.FileKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.ProjectFileService;
-import com.swpu.uchain.openexperiment.service.xdoc.XDocService;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.FileUtil;
 import com.swpu.uchain.openexperiment.util.PDFConvertUtil;
@@ -60,8 +59,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     private GetUserService getUserService;
     @Autowired
     private RedisService redisService;
-    @Autowired
-    private XDocService xDocService;
     @Autowired
     private ConvertUtil convertUtil;
     @Autowired
@@ -228,14 +225,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             if (FileUtil.downloadFile(response, realPath)) {
                 throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
             }
-        }
-        try {
-            xDocService.run(
-                    FileUtil.getFileRealPath(projectFile.getId(), uploadConfig.getApplyDir(), projectFile.getFileName())
-                    ,new File(realPath));
-        } catch (IOException e) {
-            e.printStackTrace();
-            log.error("======================XDoc文件类型转换异常=========================");
         }
         if (FileUtil.downloadFile(response, realPath)) {
             throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);

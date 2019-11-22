@@ -32,6 +32,7 @@ public enum CodeMsg {
     USER_INFORMATION_MATCH_ERROR(1417,"用户信息匹配错误"),
     ALREADY_APPLY(1417, "已经进行申请操作,无法再次操作,请勿重复操作"),
     ROLE_ACL_HAD_EXIST(1418, "当前角色已拥有该权限,不能重复添加" ),
+    MAXIMUM_APPLICATION(1419,"该类型项目申请达到上限"),
 
 
 
