@@ -4,7 +4,7 @@ spring:
 #      cache: false
 #    static-locations:
   profiles:
-    active: dev
+    active: dev2
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1/openexperiment?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
