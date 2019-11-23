@@ -107,15 +107,14 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public Result uploadApplyDoc(MultipartFile headFile, MultipartFile file, Long projectGroupId) {
+    public Result uploadApplyDoc(MultipartFile file,MultipartFile headFile, Long projectGroupId) {
         //先检查文件是否为空
-        if (file.isEmpty()) {
+        if (file == null || headFile == null) {
             throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
-        if (headFile.isEmpty()) {
-            throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
-        }
-        if (!getFileSuffix(file.getOriginalFilename()).equals(".doc")) {
+        System.err.println(headFile.getContentType());
+        System.err.println(file.getContentType());
+        if (!getFileSuffix(file.getOriginalFilename()).equals(".doc") || !getFileSuffix(headFile.getOriginalFilename()).equals(".doc")) {
             throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
         }
         //重点项目申请正文
@@ -125,7 +124,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         //项目基本信息文档
         String headDocPath = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir2(),
-                uploadConfig.getApplyFileName() + getFileSuffix(file.getOriginalFilename()));
+                uploadConfig.getApplyFileName() + getFileSuffix(headFile.getOriginalFilename()));
         //如果存在则覆盖
         File dest = new File(bodyDocPath);
         dest.delete();

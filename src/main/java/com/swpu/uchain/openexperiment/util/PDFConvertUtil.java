@@ -5,6 +5,7 @@ import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
 import com.artofsolving.jodconverter.openoffice.converter.StreamOpenOfficeDocumentConverter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.io.IOException;
 /**
  * @author dengg
  */
+@Slf4j
 public class PDFConvertUtil {
 
     public static void convert(String input, String output){
@@ -73,7 +75,9 @@ public class PDFConvertUtil {
         // 转换word到pdf
         DocumentConverter converter = new StreamOpenOfficeDocumentConverter(
                 connection);
+        log.info("开始转换头文件----------------");
         converter.convert(inputFile, outputFile);
+        log.info("开始内容头文件----------------");
         converter.convert(inputFile2, outputFile2);
 
 
