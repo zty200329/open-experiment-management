@@ -167,9 +167,11 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                     uploadConfig.getApplyDir(),
                     uploadConfig.getApplyFileName() + ".pdf");
 
-            convertDocToPDF(bodyDocPath, pdfBodyPath);
-
-            convertDocToPDF(headDocPath, pdfHeadPath);
+            try {
+                PDFConvertUtil.Word2Pdf(headDocPath,pdfHeadPath,bodyDocPath,pdfBodyPath);
+            } catch (IOException e) {
+                throw new GlobalException(CodeMsg.PDF_CONVERT_ERROR);
+            }
 
             mergePdf(pdfHeadPath, pdfBodyPath, pdfPath);
 

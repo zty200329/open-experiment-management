@@ -81,6 +81,7 @@ public enum CodeMsg {
     FILE_NAME_EMPTY_ERROR(1610,"文件名不能为空"),
     FILE_EMPTY_ERROR(1610,"文件不能为空"),
     FOREWORD_DOC_EMPTY_ERROR(1611,"前端文件生成失败"),
+    PDF_CONVERT_ERROR(1612,"PDF生成失败"),
 
 
 
