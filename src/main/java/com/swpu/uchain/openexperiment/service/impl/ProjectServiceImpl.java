@@ -285,6 +285,7 @@ public class ProjectServiceImpl implements ProjectService {
                 myProjectVO.setStatus(status);
             }
             BeanUtils.copyProperties(projectGroup, myProjectVO);
+            myProjectVO.setMemberRole(userProjectGroupMapper.selectByProjectIdAndUserId(projectGroup.getId(), Long.valueOf(currentUser.getCode())).getMemberRole());
             myProjectVO.setId(projectGroup.getId());
             myProjectVO.setNumberOfTheSelected(numberOfSelectedStu);
             myProjectVO.setProjectDetails(getProjectDetails(projectGroup));

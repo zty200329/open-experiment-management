@@ -6,6 +6,7 @@ import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConne
 import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
 import com.artofsolving.jodconverter.openoffice.converter.StreamOpenOfficeDocumentConverter;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +16,10 @@ import java.io.IOException;
  */
 @Slf4j
 public class PDFConvertUtil {
+
+    public static void main(String[] args) {
+        convert("/home/panghu/Desktop/83_立项申请主要内容(复件).doc","/home/panghu/Desktop/83_立项申请主要内容(复件).pdf");
+    }
 
     public static void convert(String input, String output){
         File inputFile = new File(input);

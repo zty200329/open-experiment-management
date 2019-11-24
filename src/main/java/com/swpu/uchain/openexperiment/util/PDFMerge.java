@@ -11,8 +11,8 @@ import java.io.FileOutputStream;
  */
 public class PDFMerge {
     public static void main(String[] args) {
-        String[] files = { "E:\\IdeaProjects\\OpenExperiment\\src\\main\\resources\\pdf\\100题系列by_July.pdf", "E:\\IdeaProjects\\OpenExperiment\\src\\main\\resources\\pdf\\MySQLDBA修炼之道.pdf" };
-        String savepath = "E:\\IdeaProjects\\OpenExperiment\\src\\main\\resources\\pdf\\temp.pdf";
+        String[] files = { "/home/panghu/Desktop/phantomjs-2.1.1-linux-x86_64/bin/HT_157457233400073775.pdf", "/home/panghu/Desktop/83_立项申请主要内容(复件).pdf" };
+        String savepath = "/home/panghu/Desktop/temp.pdf";
         mergePdfFiles(files, savepath);
     } /*
      * * 合並pdf文件 * * @param files 要合並文件數組(絕對路徑如{ "e:\\1.pdf", "e:\\2.pdf" ,

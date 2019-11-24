@@ -20,6 +20,8 @@ public interface UserProjectGroupMapper {
 
     int insert(UserProjectGroup record);
 
+    UserProjectGroup selectByProjectIdAndUserId(@Param("projectId") Long projectId,@Param("userId")Long userId);
+
     UserProjectGroup selectByPrimaryKey(Long id);
 
     List<UserProjectGroup> selectAllByUserId(@Param("userId")Long userId);

@@ -246,6 +246,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (multipartFile == null || multipartFile.isEmpty()) {
             return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
+
+
         User currentUser = getUserService.getCurrentUser();
         ProjectFile projectFile = new ProjectFile();
         projectFile.setFileName(multipartFile.getOriginalFilename());

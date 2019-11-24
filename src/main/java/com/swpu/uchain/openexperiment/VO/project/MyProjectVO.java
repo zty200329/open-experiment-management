@@ -13,6 +13,11 @@ import java.util.Date;
  */
 @Data
 public class MyProjectVO implements Serializable {
+
+    /**
+     * 成员所担任的角色
+     */
+    private Integer memberRole;
     /**
      * 项目id
      */
