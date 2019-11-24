@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.util;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hwpf.HWPFDocument;
@@ -26,9 +27,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.StringJoiner;
 
+@Slf4j
 public class DocumentTransformUtil {
 
-    private  static Logger logger = LoggerFactory.getLogger(DocumentTransformUtil.class);
     /**
      * doc--->html
      * @param docFile  doc文件
@@ -40,7 +41,7 @@ public class DocumentTransformUtil {
         String result = "";
         File htmlFile = new File(htmlPath);
         if(!docFile.exists()){
-            logger.error("{}.doc不存在",docFile.getName());
+            log.error("{}.doc不存在",docFile.getName());
         }
         try{
             HWPFDocument wordDocument = new HWPFDocument(new POIFSFileSystem(docFile));
@@ -70,7 +71,7 @@ public class DocumentTransformUtil {
             result =  processUeditorStyle(result);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("doc--->html出错:{}",e.getMessage());
+            log.error("doc--->html出错:{}",e.getMessage());
         }finally {
             htmlFile.delete();
         }
@@ -135,7 +136,7 @@ public class DocumentTransformUtil {
      * @throws Exception
      */
     public static void html2doc(File file, String html)  {
-        logger.info("开始html--->doc");
+        log.info("开始html--->doc");
         try {
             WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.createPackage();
             String table = "<style type=\"text/css\"> table td{border:1px solid #000000} </style>";
@@ -147,9 +148,9 @@ public class DocumentTransformUtil {
 //            String url =  FileUploadUtil.upload(fileByte, name, true);
         } catch (Docx4JException e) {
             e.printStackTrace();
-            logger.error("html转doc出错:{}",e.getMessage());
+            log.error("html转doc出错:{}",e.getMessage());
         }
-        logger.info("转换完成html--->doc");
+        log.info("转换完成html--->doc");
 
     }
 

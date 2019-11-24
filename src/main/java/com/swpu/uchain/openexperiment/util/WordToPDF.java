@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 
 
 /**
- * 存在合适问题
+ * 存在格式问题
  */
 public class WordToPDF {
 

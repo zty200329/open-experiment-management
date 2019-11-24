@@ -19,11 +19,9 @@ import com.swpu.uchain.openexperiment.redis.key.FileKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.ProjectFileService;
-import com.swpu.uchain.openexperiment.util.ConvertUtil;
-import com.swpu.uchain.openexperiment.util.FileUtil;
-import com.swpu.uchain.openexperiment.util.PDFConvertUtil;
-import com.swpu.uchain.openexperiment.util.PDFMerge;
+import com.swpu.uchain.openexperiment.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -112,22 +110,28 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (file == null || headFile == null) {
             throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
-        System.err.println(headFile.getContentType());
-        System.err.println(file.getContentType());
-        if (!getFileSuffix(file.getOriginalFilename()).equals(".doc") || !getFileSuffix(headFile.getOriginalFilename()).equals(".doc")) {
+
+        if (!getFileSuffix(file.getOriginalFilename()).equals(".doc") || !getFileSuffix(headFile.getOriginalFilename()).equals(".html")) {
             throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
         }
         //重点项目申请正文
         String bodyDocPath = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir(),
                 uploadConfig.getApplyFileName() + getFileSuffix(file.getOriginalFilename()));
-        //项目基本信息文档
-        String headDocPath = FileUtil.getFileRealPath(projectGroupId,
+        //项目基本信息html
+        String headHtmlPath = FileUtil.getFileRealPath(projectGroupId,
                 uploadConfig.getApplyDir2(),
                 uploadConfig.getApplyFileName() + getFileSuffix(headFile.getOriginalFilename()));
+
+        //项目基本信息doc路径
+        String headDocPath = FileUtil.getFileRealPath(projectGroupId,
+                uploadConfig.getApplyDir2(),
+                uploadConfig.getApplyFileName() + ".doc");
         //如果存在则覆盖
         File dest = new File(bodyDocPath);
         dest.delete();
+
+
 
         if (!checkFileFormat(file, FileType.WORD.getValue())) {
             return Result.error(CodeMsg.FORMAT_UNSUPPORTED);
@@ -149,8 +153,13 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return Result.error(CodeMsg.ADD_ERROR);
         }
         //上传文件并转化成PDF
-        if (FileUtil.uploadFile(file, bodyDocPath) && FileUtil.uploadFile(headFile, headDocPath)) {
+        if (FileUtil.uploadFile(file, bodyDocPath) && FileUtil.uploadFile(headFile, headHtmlPath)) {
 
+            try {
+                DocumentTransformUtil.html2doc(new File(headDocPath), FileUtils.readFileToString(new File(headHtmlPath),"UTF-8"));
+            } catch (IOException e) {
+                throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
+            }
             //临时的PDF
             String pdfHeadPath = FileUtil.getFileRealPath(projectGroupId,
                     uploadConfig.getPdfTempDir(),
@@ -298,9 +307,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (projectGroup == null) {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
-//        if (!projectGroup.getStatus().equals(ProjectStatus.CONCLUDED.getValue())){
-//            throw new GlobalException(CodeMsg.PROJECT_STATUS_IS_NOT_CONCLUDED);
-//        }
+
 
         //判断是否存在该文件,若存在则进行覆盖
         ProjectFile projectFile = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.CONCLUSION_MATERIAL.getValue());

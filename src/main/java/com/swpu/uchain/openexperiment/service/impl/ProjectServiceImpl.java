@@ -568,7 +568,7 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success(checkProjectVOs);
     }
 
-        private Result getCheckInfo (ProjectStatus projectStatus){
+    private Result getCheckInfo (ProjectStatus projectStatus){
             Integer status = projectStatus.getValue();
             Integer projectType = ProjectType.GENERAL.getValue();
             //如果是实验室进行审批，则返回所有项目
@@ -616,85 +616,85 @@ public class ProjectServiceImpl implements ProjectService {
             return Result.success(checkProjectVOs);
         }
 
-        private boolean checkProjectStatus (List < Long > projectIdList, Integer status){
-            int count = projectGroupMapper.selectSpecifiedProjectList(projectIdList, status);
-            return count == projectIdList.size();
+    private boolean checkProjectStatus (List < Long > projectIdList, Integer status){
+        int count = projectGroupMapper.selectSpecifiedProjectList(projectIdList, status);
+        return count == projectIdList.size();
+    }
+
+
+    @Transactional(rollbackFor = GlobalException.class)
+    public Result reportToHigherUnit (List < Long > projectGroupIdList, ProjectStatus
+        rightProjectStatus, OperationUnit operationUnit){
+        List<OperationRecord> list = new LinkedList<>();
+        if (!checkProjectStatus(projectGroupIdList, rightProjectStatus.getValue())) {
+            throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+        }
+
+        //存入操作历史
+        for (Long projectId : projectGroupIdList
+        ) {
+            OperationRecord operationRecord = new OperationRecord();
+            operationRecord.setRelatedId(projectId);
+            operationRecord.setOperationUnit(operationUnit.getValue());
+            operationRecord.setOperationType(OperationType.REPORT.getValue());
+            setOperationExecutor(operationRecord);
+
+            list.add(operationRecord);
+        }
+
+        recordMapper.multiInsert(list);
+        ProjectStatus newProjectStatus;
+        if (rightProjectStatus == ProjectStatus.LAB_ALLOWED){
+            newProjectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED;
+        //如果是二级单位操作
+        }else {
+            newProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED;
+        }
+        projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, newProjectStatus.getValue());
+        return Result.success();
+    }
+
+    @Override
+    @Transactional(rollbackFor = GlobalException.class)
+    public Result reportToCollegeLeader (List < Long > projectGroupIdList) {
+        //时间限制验证
+        timeLimitService.validTime(TimeLimitType.LAB_REPORT_LIMIT);
+        return reportToHigherUnit(projectGroupIdList, ProjectStatus.LAB_ALLOWED, OperationUnit.LAB_ADMINISTRATOR);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result reportToFunctionalDepartment (List < Long > projectGroupIdList) {
+        //数量限制
+        User user = getUserService.getCurrentUser();
+        Integer college = user.getInstitute();
+        if (college == null){
+            throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
+        }
+
+        //生成项目编号
+        for (Long id : projectGroupIdList) {
+            String serialNumber = projectGroupMapper.selectByPrimaryKey(id).getSerialNumber();
+            //计算编号并在数据库中插入编号
+            projectGroupMapper.updateProjectSerialNumber(id, SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), serialNumber));
         }
 
 
-        @Transactional(rollbackFor = GlobalException.class)
-        public Result reportToHigherUnit (List < Long > projectGroupIdList, ProjectStatus
-            rightProjectStatus, OperationUnit operationUnit){
-            List<OperationRecord> list = new LinkedList<>();
-            if (!checkProjectStatus(projectGroupIdList, rightProjectStatus.getValue())) {
-                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
-            }
-
-            //存入操作历史
-            for (Long projectId : projectGroupIdList
-            ) {
-                OperationRecord operationRecord = new OperationRecord();
-                operationRecord.setRelatedId(projectId);
-                operationRecord.setOperationUnit(operationUnit.getValue());
-                operationRecord.setOperationType(OperationType.REPORT.getValue());
-                setOperationExecutor(operationRecord);
-
-                list.add(operationRecord);
-            }
-
-            recordMapper.multiInsert(list);
-            ProjectStatus newProjectStatus;
-            if (rightProjectStatus == ProjectStatus.LAB_ALLOWED){
-                newProjectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED;
-            //如果是二级单位操作
-            }else {
-                newProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED;
-            }
-            projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, newProjectStatus.getValue());
-            return Result.success();
+        AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(college,ProjectType.GENERAL.getValue(),RoleType.SECONDARY_UNIT.getValue());
+        Integer currentAmount = projectGroupMapper.getCountOfSpecifiedStatusAndProjectProject(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue(),college);
+        if (currentAmount + projectGroupIdList.size() > amountAndTypeVO.getMaxAmount()) {
+            throw new GlobalException(CodeMsg.PROJECT_AMOUNT_LIMIT);
         }
 
-        @Override
-        @Transactional(rollbackFor = GlobalException.class)
-        public Result reportToCollegeLeader (List < Long > projectGroupIdList) {
-            //时间限制验证
-            timeLimitService.validTime(TimeLimitType.LAB_REPORT_LIMIT);
-            return reportToHigherUnit(projectGroupIdList, ProjectStatus.LAB_ALLOWED, OperationUnit.LAB_ADMINISTRATOR);
-        }
-
-        @Override
-        @Transactional(rollbackFor = Exception.class)
-        public Result reportToFunctionalDepartment (List < Long > projectGroupIdList) {
-            //数量限制
-            User user = getUserService.getCurrentUser();
-            Integer college = user.getInstitute();
-            if (college == null){
-                throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
-            }
-
-            //生成项目编号
-            for (Long id : projectGroupIdList) {
-                String serialNumber = projectGroupMapper.selectByPrimaryKey(id).getSerialNumber();
-                //计算编号并在数据库中插入编号
-                projectGroupMapper.updateProjectSerialNumber(id, SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), serialNumber));
-            }
+        //时间限制
+        timeLimitService.validTime(TimeLimitType.SECONDARY_UNIT_REPORT_LIMIT);
+        return reportToHigherUnit(projectGroupIdList, ProjectStatus.SECONDARY_UNIT_ALLOWED, OperationUnit.SECONDARY_UNIT);
+    }
 
 
-            AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(college,ProjectType.GENERAL.getValue(),RoleType.SECONDARY_UNIT.getValue());
-            Integer currentAmount = projectGroupMapper.getCountOfSpecifiedStatusAndProjectProject(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue(),college);
-            if (currentAmount + projectGroupIdList.size() > amountAndTypeVO.getMaxAmount()) {
-                throw new GlobalException(CodeMsg.PROJECT_AMOUNT_LIMIT);
-            }
-
-            //时间限制
-            timeLimitService.validTime(TimeLimitType.SECONDARY_UNIT_REPORT_LIMIT);
-            return reportToHigherUnit(projectGroupIdList, ProjectStatus.SECONDARY_UNIT_ALLOWED, OperationUnit.SECONDARY_UNIT);
-        }
-
-
-        @Override
-        @Transactional(rollbackFor = Exception.class)
-        public Result ensureOrNotModify (ConfirmForm confirmForm){
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result ensureOrNotModify (ConfirmForm confirmForm){
             Integer result = confirmForm.getResult();
             Long projectId = confirmForm.getProjectId();
             //确认修改
