@@ -18,7 +18,7 @@ import java.io.IOException;
 public class PDFConvertUtil {
 
     public static void main(String[] args) {
-        convert("/home/panghu/Desktop/83_立项申请主要内容(复件).doc","/home/panghu/Desktop/83_立项申请主要内容(复件).pdf");
+        convert("/home/panghu/Desktop/87_立项申请主要内容.doc","/home/panghu/Desktop/87_立项申请主要内容(复件).pdf");
     }
 
     public static void convert(String input, String output){
