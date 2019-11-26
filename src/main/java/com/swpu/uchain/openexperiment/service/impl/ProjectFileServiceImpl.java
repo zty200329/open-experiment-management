@@ -5,6 +5,8 @@ import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
 import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
 import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
+import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
+import com.swpu.uchain.openexperiment.enums.MemberRole;
 import com.swpu.uchain.openexperiment.mapper.ProjectFileMapper;
 import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
@@ -14,6 +16,7 @@ import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.FileType;
 import com.swpu.uchain.openexperiment.enums.MaterialType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
+import com.swpu.uchain.openexperiment.mapper.UserProjectGroupMapper;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.FileKey;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -61,6 +64,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     private ConvertUtil convertUtil;
     @Autowired
     private ProjectGroupMapper projectGroupMapper;
+
+    @Autowired
+    private UserProjectGroupMapper userProjectGroupMapper;
 
     @Value(value = "${file.ip-address}")
     private String ipAddress;
@@ -138,7 +144,11 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         }
         User user = getUserService.getCurrentUser();
 
-        //TODO,校验当前用户是否有权进行上传
+        //校验当前用户是否有权进行上传
+        UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, Long.valueOf(user.getCode()));
+        if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.PROJECT_GROUP_LEADER.getValue())) {
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
         ProjectFile projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(user.getCode()));
         projectFile.setFileType(FileType.WORD.getValue());

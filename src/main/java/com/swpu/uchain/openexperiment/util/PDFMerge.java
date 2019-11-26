@@ -11,7 +11,8 @@ import java.io.FileOutputStream;
  */
 public class PDFMerge {
     public static void main(String[] args) {
-        String[] files = { "/home/panghu/Desktop/phantomjs-2.1.1-linux-x86_64/bin/HT_157457233400073775.pdf", "/home/panghu/Desktop/83_立项申请主要内容(复件).pdf" };
+        String[] files = { "/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/apply_dir_2/94_立项申请主要内容.pdf",
+                "/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/apply_dir_2/装换测试文档.pdf" };
         String savepath = "/home/panghu/Desktop/temp.pdf";
         mergePdfFiles(files, savepath);
     } /*
