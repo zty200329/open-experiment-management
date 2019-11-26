@@ -21,6 +21,8 @@ public enum ProjectStatus {
 
     TO_DE_CONFIRMED(-1,"待确认--项目组长编写后"),
 
+    GUIDE_TEACHER_ALLOWED(0,"指导老师确认"),
+
     DECLARE(0,"申报"),
 
     LAB_ALLOWED(1,"实验室审核通过,待上报"),

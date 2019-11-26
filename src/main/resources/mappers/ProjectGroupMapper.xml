@@ -3,6 +3,7 @@
 <mapper namespace="com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper">
     <resultMap id="OpenTopicInfoResultMap" type="com.swpu.uchain.openexperiment.VO.project.OpenTopicInfo">
         <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="subordinate_college" property="subordinateCollege"/>
         <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
         <result column="address" jdbcType="VARCHAR" property="address" />
         <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
@@ -59,6 +60,7 @@
         <result column="is_open_topic" jdbcType="INTEGER" property="isOpenTopic"/>
         <result column="apply_funds" property="applyFunds"/>
         <result column="whether_commit_key_apply" property="whetherCommitKeyApply"/>
+        <result column="key_project_status" property="keyProjectStatus"/>
         <collection property="list" ofType="com.swpu.uchain.openexperiment.VO.user.ProjectUserVO"
                     javaType="java.util.ArrayList" columnPrefix="u_">
             <id column="real_name" property="realName"/>
@@ -334,7 +336,8 @@
   </select>
     <select id="getAllOpenTopic" resultMap="OpenTopicInfoResultMap">
       select project_group.id,
-            project_group.serial_number,
+             project_group.subordinate_college,
+             project_group.serial_number,
              project_group.address,
              project_group.create_time,
              project_group.creator_id,
@@ -422,6 +425,7 @@
                project_group.main_Content,
                project_group.apply_funds,
                project_group.is_open_topic,
+               key_project_status.status as key_project_status,
                key_project_status.project_id as whether_commit_key_apply,
                user_project_group.user_id        as u_code,
                user_project_group.technical_role as u_technical_role,
@@ -441,6 +445,7 @@
                user.email                        as u_email
         from openexperiment.project_group
                  inner join openexperiment.user_project_group on user_project_group.project_group_id = project_group.id
+                                                                     and user_project_group.status = 2 <!--2表示加入-->
                  inner join openexperiment.user on user_project_group.user_id = user.code
                  left join openexperiment.key_project_status on key_project_status.project_id = project_group_id
         where project_group.id = #{projectId}

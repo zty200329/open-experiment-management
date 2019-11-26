@@ -104,7 +104,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         }
         //将项目组表中的项目状态变为重点项目申请  （之后的状态查询都在重点项目状态表中查询）
         projectGroupMapper.updateProjectStatus(form.getProjectId(),ProjectStatus.KEY_PROJECT_APPLY.getValue());
-        keyProjectStatusMapper.insert(projectId, KeyProjectStatus.TO_DE_CONFIRMED.getValue(),
+        keyProjectStatusMapper.insert(projectId, ProjectStatus.TO_DE_CONFIRMED.getValue(),
                 projectGroup.getSubordinateCollege(), Long.valueOf(user.getCode()));
 
 
@@ -134,7 +134,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
         Long userId = Long.valueOf(user.getCode());
-        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectListByUserId(userId,KeyProjectStatus.TO_DE_CONFIRMED.getValue());
+        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectListByUserId(userId,null);
         for (KeyProjectDTO keyProjectDTO :list
         ) {
             keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(keyProjectDTO.getId(),null));
@@ -146,31 +146,31 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result getKeyProjectApplyingListByLabAdmin() {
          User user  = getUserService.getCurrentUser();
-         return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.GUIDE_TEACHER_ALLOWED,user.getInstitute());
+         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.GUIDE_TEACHER_ALLOWED,user.getInstitute());
     }
 
     @Override
     public Result getKeyProjectApplyingListBySecondaryUnit() {
         User user  = getUserService.getCurrentUser();
-        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.LAB_ALLOWED_AND_REPORTED,user.getInstitute());
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.LAB_ALLOWED_AND_REPORTED,user.getInstitute());
     }
 
     @Override
     public Result getKeyProjectApplyingListByFunctionalDepartment() {
-        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED,null);
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED,null);
     }
 
     @Override
     public Result getIntermediateInspectionKeyProject(Integer college) {
-        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.ESTABLISH,college);
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.ESTABLISH,college);
     }
 
     @Override
     public Result getToBeConcludingKeyProject(Integer college) {
-        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.MID_TERM_INSPECTION,college);
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.MID_TERM_INSPECTION,college);
     }
 
-    private Result getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus status, Integer college){
+    private Result getKeyProjectDTOListByStatusAndCollege(ProjectStatus status, Integer college){
         List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(status.getValue(),college);
         for (KeyProjectDTO keyProjectDTO :list
              ) {
@@ -180,36 +180,36 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return Result.success(list);
     }
 
-    private KeyProjectStatus getNextStatusByRoleAndOperation(RoleType roleType, OperationType operationType){
-        KeyProjectStatus keyProjectStatus;
+    private ProjectStatus getNextStatusByRoleAndOperation(RoleType roleType, OperationType operationType){
+        ProjectStatus keyProjectStatus;
         if (operationType == OperationType.REJECT) {
-            keyProjectStatus = KeyProjectStatus.REJECT_MODIFY;
+            keyProjectStatus = ProjectStatus.REJECT_MODIFY;
             return keyProjectStatus;
         }
         switch (roleType.getValue()){
             //如果是指导老师
             case 3:
-                keyProjectStatus = KeyProjectStatus.GUIDE_TEACHER_ALLOWED;
+                keyProjectStatus = ProjectStatus.GUIDE_TEACHER_ALLOWED;
                     break;
             //如果是实验室
             case 4:
                 if (operationType == OperationType.AGREE){
-                    keyProjectStatus = KeyProjectStatus.LAB_ALLOWED;
+                    keyProjectStatus = ProjectStatus.LAB_ALLOWED;
                 }else {
-                    keyProjectStatus = KeyProjectStatus.LAB_ALLOWED_AND_REPORTED;
+                    keyProjectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED;
                 }
                 break;
                 //如果是二级单位
             case 5:
                 if (operationType == OperationType.AGREE){
-                    keyProjectStatus = KeyProjectStatus.SECONDARY_UNIT_ALLOWED;
+                    keyProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED;
                 }else {
-                    keyProjectStatus = KeyProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED;
+                    keyProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED;
                 }
                 break;
                 //如果是职能部门
             case 6:
-                keyProjectStatus = KeyProjectStatus.ESTABLISH;
+                keyProjectStatus = ProjectStatus.ESTABLISH;
                     break;
             default:
                 throw new GlobalException(CodeMsg.UNKNOWN_ROLE_TYPE_AND_OPERATION_TYPE);
@@ -344,12 +344,12 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result getToBeReportedProjectByLabAdmin() {
-        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.LAB_ALLOWED,null);
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.LAB_ALLOWED,null);
     }
 
     @Override
     public Result getToBeReportedProjectBySecondaryUnit() {
-        return getKeyProjectDTOListByStatusAndCollege(KeyProjectStatus.SECONDARY_UNIT_ALLOWED,null);
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.SECONDARY_UNIT_ALLOWED,null);
     }
 
 

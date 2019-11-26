@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.VO.project;
 
 import com.swpu.uchain.openexperiment.VO.user.Instructor;
+import com.swpu.uchain.openexperiment.enums.CollegeType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,6 +19,11 @@ public class OpenTopicInfo {
 
     @ApiModelProperty("主键")
     private Long id;
+
+    /**
+     * 所属学院  {@link CollegeType#getValue()}
+     */
+    private Integer subordinateCollege;
 
     @ApiModelProperty("项目编号")
     private String serialNumber;

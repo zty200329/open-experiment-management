@@ -185,4 +185,10 @@ public class ProjectInvokeController {
         return projectService.rejectProjectApplyByFunctionalDepartment(formList);
     }
 
+    @ApiOperation("删除成员")
+    @PostMapping("/deleteMemberFromProject")
+    public Result deleteMemberFromProject(Long projectId,Long userId){
+        return projectService.deleteMemberFromProject(projectId,userId);
+    }
+
 }

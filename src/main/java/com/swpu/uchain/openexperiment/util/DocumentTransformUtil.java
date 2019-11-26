@@ -14,8 +14,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -68,7 +66,7 @@ public class DocumentTransformUtil {
             serializer.transform(domSource, streamResult);
             result = FileUtils.readFileToString(htmlFile,"UTF-8");
             //这里拿到html文本后 jsoup 解析
-            result =  processUeditorStyle(result);
+            result =  processUneditedStyle(result);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("doc--->html出错:{}",e.getMessage());
@@ -83,7 +81,7 @@ public class DocumentTransformUtil {
      * @param result
      * @return
      */
-    private static String processUeditorStyle(String result) {
+    private static String processUneditedStyle(String result) {
         Document doc = Jsoup.parse(result);
         //body 处理
         //<body class="view" contenteditable="true" spellcheck="false" style="overflow-y: hidden; height: 500px; cursor: text;">
@@ -154,8 +152,13 @@ public class DocumentTransformUtil {
 
     }
 
+    /**
+     * 也可生成docx
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
 //        doc2Html(new File("c:/优化规则.doc"));
-        html2doc(new File("/home/panghu/Desktop/83_立项申请主要内容(复件).doc"),FileUtils.readFileToString(new File("/home/panghu/Desktop/83_立项申请主要内容(复件).html"),"UTF-8"));
+        html2doc(new File("/home/panghu/Desktop/23.docx"),FileUtils.readFileToString(new File("/home/panghu/Desktop/87_立项申请主要内容.html"),"UTF-8"));
     }
 }

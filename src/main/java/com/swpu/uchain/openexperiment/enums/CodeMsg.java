@@ -90,7 +90,7 @@ public enum CodeMsg {
     USER_HAD_BEEN_REJECTED(520,"用户曾已经被拒绝,无法再次加入"),
     USER_NOT_APPLYING(521,"用户未申请,无法进行操作" ),
     ANNOUNCEMENT_NOT_EXIST(522,"公告信息不存在" ),
-    USER_GROUP_NOT_EXIST(523,"用户并未加入项目组" ),
+    USER_GROUP_NOT_EXIST(523,"用户并未加入该项目组" ),
     CANT_AIM_TEACHER(524, "不能指定指导老师担任任何角色"),
     GROUP_LEADER_EXIST(525, "项目组组长已经存在"),
     USER_NOT_IN_GROUP(526, "非法操作,不能操作非自己的项目组"),

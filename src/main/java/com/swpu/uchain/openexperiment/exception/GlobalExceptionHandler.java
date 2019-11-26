@@ -35,10 +35,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(GlobalException.class)
     public Result handleSelfException(GlobalException exception, HttpServletResponse response){
         log.error(EXCEPTION_MSG_KEY+exception.getMessage());
-        if (exception.getCode().equals(CodeMsg.PERMISSION_DENNY.getCode())) {
-            response.setStatus(403);
-            System.err.println(response.getStatus());
-        }
+//        if (exception.getCode().equals(CodeMsg.PERMISSION_DENNY.getCode())) {
+//            response.setStatus(403);
+//            System.err.println(response.getStatus());
+//        }
         return Result.error(exception);
     }
 

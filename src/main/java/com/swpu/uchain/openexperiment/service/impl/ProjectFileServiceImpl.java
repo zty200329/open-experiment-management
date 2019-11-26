@@ -155,11 +155,11 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         //上传文件并转化成PDF
         if (FileUtil.uploadFile(file, bodyDocPath) && FileUtil.uploadFile(headFile, headHtmlPath)) {
 
-            try {
-                DocumentTransformUtil.html2doc(new File(headDocPath), FileUtils.readFileToString(new File(headHtmlPath),"UTF-8"));
-            } catch (IOException e) {
-                throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
-            }
+//            try {
+//                DocumentTransformUtil.html2doc(new File(headDocPath), FileUtils.readFileToString(new File(headHtmlPath),"UTF-8"));
+//            } catch (IOException e) {
+//                throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
+//            }
             //临时的PDF
             String pdfHeadPath = FileUtil.getFileRealPath(projectGroupId,
                     uploadConfig.getPdfTempDir(),
@@ -177,11 +177,15 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
             //转化为PDF
             try {
-                PDFConvertUtil.Word2Pdf(headDocPath,pdfHeadPath,bodyDocPath,pdfBodyPath);
+                Html2PDFUtil.convertHtml2PDF(headHtmlPath,pdfHeadPath);
+                log.info("开始转化HTML头文件为PDF----------------");
+                PDFConvertUtil.Word2Pdf(headDocPath,pdfHeadPath);
+                log.info("开始内容正文文件为PDF----------------");
             } catch (IOException e) {
                 throw new GlobalException(CodeMsg.PDF_CONVERT_ERROR);
             }
 
+            log.info("开始合并PDF-------");
             mergePdf(pdfHeadPath, pdfBodyPath, pdfPath);
 
             Map<String, String> map = new HashMap<>();

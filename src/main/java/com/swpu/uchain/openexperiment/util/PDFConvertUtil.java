@@ -12,14 +12,11 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * 可行
  * @author dengg
  */
 @Slf4j
 public class PDFConvertUtil {
-
-    public static void main(String[] args) {
-        convert("/home/panghu/Desktop/87_立项申请主要内容.doc","/home/panghu/Desktop/87_立项申请主要内容(复件).pdf");
-    }
 
     public static void convert(String input, String output){
         File inputFile = new File(input);
@@ -39,7 +36,7 @@ public class PDFConvertUtil {
     }
 
     // 将word格式的文件转换为pdf格式
-    public static void Word2Pdf(String srcPath, String desPath,String srcPath2, String desPath2) throws IOException {
+    public static void Word2Pdf(String srcPath, String desPath) throws IOException {
         // 源文件目录
         File inputFile = new File(srcPath);
         if (!inputFile.exists()) {
@@ -48,18 +45,6 @@ public class PDFConvertUtil {
         }
         // 输出文件目录
         File outputFile = new File(desPath);
-        if (!outputFile.getParentFile().exists()) {
-            outputFile.getParentFile().exists();
-        }
-
-        // 源文件目录
-        File inputFile2 = new File(srcPath2);
-        if (!inputFile.exists()) {
-            System.out.println("源文件不存在！");
-            return;
-        }
-        // 输出文件目录
-        File outputFile2 = new File(desPath2);
         if (!outputFile.getParentFile().exists()) {
             outputFile.getParentFile().exists();
         }
@@ -80,12 +65,7 @@ public class PDFConvertUtil {
         // 转换word到pdf
         DocumentConverter converter = new StreamOpenOfficeDocumentConverter(
                 connection);
-        log.info("开始转换头文件----------------");
         converter.convert(inputFile, outputFile);
-        log.info("开始内容头文件----------------");
-        converter.convert(inputFile2, outputFile2);
-
-
         // 关闭连接
         connection.disconnect();
 

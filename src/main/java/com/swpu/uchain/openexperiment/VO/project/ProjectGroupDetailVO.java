@@ -119,6 +119,8 @@ public class ProjectGroupDetailVO {
      */
     private Integer whetherCommitKeyApply;
 
+    private Integer keyProjectStatus;
+
 
     /**
      * 项目开展进度

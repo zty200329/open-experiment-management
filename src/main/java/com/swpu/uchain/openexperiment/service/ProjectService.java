@@ -261,4 +261,6 @@ public interface ProjectService {
     Result rejectToBeConcludingProject(List<ProjectCheckForm> list);
 
     Result getAllOpenTopicByCondition(QueryConditionForm queryConditionForm);
+
+    Result deleteMemberFromProject(Long projectId, Long userId);
 }
