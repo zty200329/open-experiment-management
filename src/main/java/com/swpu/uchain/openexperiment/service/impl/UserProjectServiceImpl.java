@@ -17,6 +17,7 @@ import com.swpu.uchain.openexperiment.service.TimeLimitService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.service.UserService;
 import com.swpu.uchain.openexperiment.util.CountUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ import java.util.List;
  * @Description:
  */
 @Service
+@Slf4j
 public class UserProjectServiceImpl implements UserProjectService {
     @Autowired
         private UserProjectGroupMapper userProjectGroupMapper;
@@ -126,6 +128,7 @@ public class UserProjectServiceImpl implements UserProjectService {
             ) {
                 if (grade.equals(user.getGrade().toString())) {
                     allowed += 1;
+                    log.info("年级符合要求----");
                 }
             }
         }
@@ -137,8 +140,9 @@ public class UserProjectServiceImpl implements UserProjectService {
         }else {
             for (String grade:limitCollegeArr
             ) {
-                if (grade.equals(user.getInstitute().toString())) {
+                if (grade.equals("\""+user.getInstitute().toString()+"\"")) {
                     allowed += 1;
+                    log.info("学院符合要求----");
                 }
             }
         }
@@ -150,8 +154,9 @@ public class UserProjectServiceImpl implements UserProjectService {
         }else {
             for (String grade:limitMajorArr
             ) {
-                if (grade.equals(user.getGrade().toString())) {
+                if (grade.equals("\""+user.getMajor()+"\"")) {
                     allowed += 1;
+                    log.info("专业符合要求----");
                 }
             }
         }
