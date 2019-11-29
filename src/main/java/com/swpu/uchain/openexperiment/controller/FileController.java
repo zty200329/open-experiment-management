@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.enums.ProjectStatus;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.ProjectFileService;
@@ -70,6 +71,8 @@ public class FileController {
     }
 
 
+
+
     @ApiIgnore("附件上传--6，普通项目结题验收报告；7，重点项目结题验收报告 8，普通项目实验报告")
     @PostMapping(value = "/uploadAttachmentFile", name = "上传附件")
     public Object uploadAttachmentFile(MultipartFile multipartFile,Integer attachmentType){
@@ -110,9 +113,17 @@ public class FileController {
         projectFileService.generateConclusionExcel(response);
     }
 
+
+
     @ApiOperation("生成立项总览表")
     @PostMapping(value = "/generateEstablishExcel", name = "生成立项总览表")
     public void generateEstablishExcel(HttpServletResponse response){
-        projectFileService.generateEstablishExcel(response);
+        projectFileService.generateEstablishExcel(response, ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue());
+    }
+
+    @ApiOperation("生成项目信息总览表")
+    @PostMapping(value = "/generateEstablishExcel", name = "生成立项总览表")
+    public void generateProjectInfoExcel(HttpServletResponse response){
+        projectFileService.generateEstablishExcel(response,null);
     }
 }

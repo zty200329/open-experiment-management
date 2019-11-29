@@ -96,7 +96,7 @@ public interface ProjectFileService {
     /**
      * 生成立项总览表
      */
-    void generateEstablishExcel(HttpServletResponse response);
+    void generateEstablishExcel(HttpServletResponse response,Integer projectStatus);
 
     /**
      * 生成结题总览表

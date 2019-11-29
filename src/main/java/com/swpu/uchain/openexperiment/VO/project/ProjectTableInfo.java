@@ -97,5 +97,14 @@ public class ProjectTableInfo {
      */
     private Integer suggestGroupType;
 
+    /**
+     * 项目状态
+     */
+    private String projectStatus;
+
+    /**
+     * 重点项目状态
+     */
+    private String keyProjectStatus;
 
 }

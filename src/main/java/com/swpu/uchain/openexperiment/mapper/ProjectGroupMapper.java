@@ -60,7 +60,7 @@ public interface ProjectGroupMapper {
      * @param college
      * @return
      */
-    List<ProjectTableInfo> getProjectTableInfoListByCollegeAndList(@Param("college") Integer college);
+    List<ProjectTableInfo> getProjectTableInfoListByCollegeAndList(@Param("college") Integer college,@Param("status")Integer status);
 
     int updateProjectStatus(@Param("id") Long projectId,@Param("status")Integer status);
 

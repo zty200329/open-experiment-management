@@ -6,15 +6,12 @@ import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
 import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
-import com.swpu.uchain.openexperiment.enums.MemberRole;
+import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.mapper.ProjectFileMapper;
 import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
-import com.swpu.uchain.openexperiment.enums.CodeMsg;
-import com.swpu.uchain.openexperiment.enums.FileType;
-import com.swpu.uchain.openexperiment.enums.MaterialType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.mapper.UserProjectGroupMapper;
 import com.swpu.uchain.openexperiment.redis.RedisService;
@@ -385,7 +382,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public void generateEstablishExcel(HttpServletResponse response) {
+    public void generateEstablishExcel(HttpServletResponse response,Integer projectStatus) {
 
         User user = getUserService.getCurrentUser();
         //获取管理人员所管理的学院
@@ -396,7 +393,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (college == null) {
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
         }
-        List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(college);
+        List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(college, projectStatus);
         // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
         XSSFWorkbook wb = new XSSFWorkbook();
         // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
@@ -426,7 +423,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
         // 4.设置表头，即每个列的列名
         String[] head = {"院/中心", "序号", "项目名称", "实验类型", "实验时数", "指导教师", "负责学生"
-                , "专业年级", "开始时间", "结束时间", "开放\r\n实验室", "实验室地点", "负责学生\r\n电话", "申请经费（元）", "建议\r\n评审分组"};
+                , "专业年级", "开始时间", "结束时间", "开放\r\n实验室", "实验室地点", "负责学生\r\n电话"
+                , "申请经费（元）", "建议\r\n评审分组","项目状态"};
         // 4.1创建表头行
         XSSFRow row = sheet.createRow(index++);
 
@@ -441,9 +439,13 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
         //写入数据
         for (ProjectTableInfo projectTableInfo : list) {
-            //创建行
-            // 创建行
 
+            //替换项目状态(如果项目是重点,替换项目状态)
+            if (projectTableInfo.getKeyProjectStatus() != null) {
+                projectTableInfo.setProjectStatus(projectTableInfo.getKeyProjectStatus());
+            }
+
+            //创建行
             row = sheet.createRow(index++);
 
             //设置行高
@@ -464,6 +466,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             row.createCell(12).setCellValue(projectTableInfo.getLeadStudentPhone());
             row.createCell(13).setCellValue(projectTableInfo.getApplyFunds());
             row.createCell(14).setCellValue(projectTableInfo.getSuggestGroupType());
+            row.createCell(15).setCellValue(projectTableInfo.getProjectStatus());
 
         }
 

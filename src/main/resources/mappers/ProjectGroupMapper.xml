@@ -452,8 +452,20 @@
     </select>
     <select id="getProjectTableInfoListByCollegeAndList" resultMap="ProjectTableInfoResultMap"
             resultType="com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo">
-        SELECT DISTINCT
+        select distinct
             project_group.id,
+            case
+                when project_group.status = -3 then '立项失败'
+                when project_group.status = -2 then '驳回修改'
+                when project_group.status = -1 then '待指导老师确认'
+                when project_group.status = 0 then '待实验室审核'
+                when project_group.status = 1 then '实验室审核通过(待上报)'
+                when project_group.status = 2 then '实验室上报(待二级单位审核)'
+                when project_group.status = 3 then '二级单位审核通过(待上报)'
+                when project_group.status = 4 then '二级单位上报(待职能部门审核)'
+                when project_group.status = 5 then '职能部门审核通过(待中期检查)'
+                when project_group.status = 6 then '中期检查(待结题审核)'
+                when project_group.status = 7 then '结题' end as projectStatus,
             project_group.serial_number,
             project_group.address,
             project_group.create_time,
@@ -465,17 +477,30 @@
             project_group.apply_funds,
             project_group.experiment_type,
             project_group.suggest_group_type,
-            project_group.subordinate_college          AS college,
+            project_group.subordinate_college  AS college,
+            case
+                when key_project_status.status = -3 then '立项失败'
+                when key_project_status.status = -2 then '驳回修改'
+                when key_project_status.status = -1 then '待指导老师确认'
+                when key_project_status.status = 0 then '待实验室审核'
+                when key_project_status.status = 1 then '实验室审核通过(待上报)'
+                when key_project_status.status = 2 then '实验室上报(待二级单位审核)'
+                when key_project_status.status = 3 then '二级单位审核通过(待上报)'
+                when key_project_status.status = 4 then '二级单位上报(待职能部门审核)'
+                when key_project_status.status = 5 then '职能部门审核通过(待中期检查)'
+                when key_project_status.status = 6 then '中期检查(待结题审核)'
+                when key_project_status.status = 7 then '结题' end as keyProjectStatus,
             CONCAT(t_lead_stu.grade, t_lead_stu.major) AS gradeAndMajor,
             t_lead_stu.lead_student                    AS leadStudent,
             t_lead_stu.lead_student_phone              AS leadStudentPhone,
             `user`.real_name                           AS leadTeacher,
             `user`.mobile_phone                        AS leadTeacherPhone
-        FROM openexperiment.project_group
-        INNER JOIN openexperiment.user_project_group ON user_project_group.project_group_id = project_group.id
-        INNER JOIN openexperiment.`user` ON project_group.creator_id = `user`.`code`
-        LEFT JOIN (
-            SELECT
+        from openexperiment.project_group
+        inner join openexperiment.user_project_group on user_project_group.project_group_id = project_group.id
+        inner join openexperiment.`user` on project_group.creator_id = `user`.`code`
+        left join openexperiment.key_project_status on project_group.id = key_project_status.project_id
+        left join (
+            select
                 `user`.grade                        AS grade,
                 `user`.major                        AS major,
                 `user`.mobile_phone                 AS lead_student_phone,
@@ -484,11 +509,14 @@
             FROM openexperiment.`user`
             INNER JOIN openexperiment.user_project_group
                 ON `user`.`code` = user_project_group.user_id
-                AND `user_project_group`.member_role = 2
+                AND `user_project_group`.member_role = 2 <!--2代表已经加入-->
             ) AS t_lead_stu ON project_group.id = related_project_id
         <where>
-            <if test="college!=null">
-                project_group.subordinate_college = #{college} and project_group.status = 3 <!--3二级单位指的是立项-->
+            <if test="college!=null and college != ''">
+                project_group.subordinate_college = #{college}
+            </if>
+            <if test="status!=null">
+                and project_group.status = #{status}
             </if>
         </where>
     </select>
