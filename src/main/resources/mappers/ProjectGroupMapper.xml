@@ -370,6 +370,12 @@
              inner join openexperiment.user_project_group on openexperiment.project_group.id = user_project_group.project_group_id <!--and user_project_group.status = 2-->
              inner join openexperiment.user on user_project_group.user_id = user.code
         where project_group.status = 1<!--1指的是实验室审核通过-->  and project_group.is_open_topic !=2 and member_role = 1<!--2是指不开放-->
+        <if test="list!=null">
+            and project_group.id in
+            <foreach collection="list" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+        </if>
     </select>
     <select id="selectByCollegeIdAndStatus" resultMap="ProjectGroupResultMap" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         select project_group.id,
@@ -530,9 +536,15 @@
     <select id="conditionQuery" resultType="java.lang.Long">
         select project_group.id
             from openexperiment.project_group
+        <if test="creator!=null">
+            inner join openexperiment.user on user.code = project_group.creator_id where user.real_name = #{creator}
+        </if>
         <where>
             <if test="status!=null">
                 project_group.status = #{status}
+            </if>
+            <if test="subordinateCollege!=null">
+                and subordinate_college = #{subordinateCollege}
             </if>
             <if test="suggestGroupType!=null">
                 and project_group.suggest_group_type = #{suggestGroupType}
@@ -559,6 +571,7 @@
             <if test="projectName!=null">
                 and locate(#{projectName},project_group.project_name)
             </if>
+
         </where>
     </select>
     <select id="selectHistoricalInfoByUnitAndOperation" resultMap="ProjectGroupResultMap"
@@ -647,8 +660,11 @@
             <if test="status!=null">
                 project_group.status = #{status}
             </if>
-            <if test="college!=null">
-                and project_group.subordinate_college = #{college}
+            <if test="applyFunds!=null">
+                and project_group.apply_funds = #{applyFunds}
+            </if>
+            <if test="subordinateCollege!=null">
+                and project_group.subordinate_college = #{subordinateCollege}
             </if>
             <if test="suggestGroupType!=null">
                 and project_group.suggest_group_type = #{suggestGroupType}

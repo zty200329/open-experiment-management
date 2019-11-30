@@ -33,7 +33,7 @@ public class ProjectQueryController {
 
     @ApiOperation("学生根据条件查询可加入的项目信息")
     @PostMapping("/getAllOpenTopicByStudentByCondition")
-    public Result getAllOpenTopicByCondition(QueryConditionForm queryConditionForm){
+    public Result getAllOpenTopicByCondition(@RequestBody QueryConditionForm queryConditionForm){
         return projectService.getAllOpenTopicByCondition(queryConditionForm);
     }
 

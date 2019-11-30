@@ -760,8 +760,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result getHistoricalProjectInfo(HistoryQueryProjectInfo info) {
 
-        // TODO 权限验证
-
         List<ProjectGroup> list = projectGroupMapper.selectHistoricalInfoByUnitAndOperation(info.getOperationUnit(), info.getOperationType());
         for (ProjectGroup projectGroup : list
         ) {
@@ -772,9 +770,19 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result getAllOpenTopicByCondition(QueryConditionForm queryConditionForm) {
-        queryConditionForm.setStatus(ProjectStatus.LAB_ALLOWED.getValue());
-        return Result.success(conditionallyQueryOfProject(queryConditionForm));
+    public Result getAllOpenTopicByCondition(QueryConditionForm form) {
+        //先查询出符合条件的ID，在进行条件查询
+        List<Long> projectIdList = projectGroupMapper.conditionQuery(form);
+        if (projectIdList.isEmpty()) {
+            return Result.success(null);
+        }
+        //查询已选学生数量
+        List<OpenTopicInfo> list = projectGroupMapper.getAllOpenTopic(projectIdList);
+        for (OpenTopicInfo info : list
+        ) {
+            info.setAmountOfSelected(userProjectGroupMapper.getMemberAmountOfProject(info.getId(), null));
+        }
+        return Result.success(list);
     }
 
     private Result conditionallyQueryOfCheckedProject(QueryConditionForm form) {
@@ -877,7 +885,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getAllOpenTopic() {
-        List<OpenTopicInfo> list = projectGroupMapper.getAllOpenTopic();
+        List<OpenTopicInfo> list = projectGroupMapper.getAllOpenTopic(null);
         for (OpenTopicInfo info : list
         ) {
             info.setAmountOfSelected(userProjectGroupMapper.getMemberAmountOfProject(info.getId(), null));

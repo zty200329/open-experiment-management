@@ -89,7 +89,7 @@ public class KeyProjectQueryController {
 
     @ApiOperation("重点项目条件查询")
     @PostMapping("/conditionallyQueryOfKeyProject")
-    public Result conditionallyQueryOfKeyProject(@RequestBody QueryConditionForm form){
+    public Result conditionallyQueryOfKeyProject(@RequestBody @Valid QueryConditionForm form){
         return keyProjectService.conditionallyQueryOfKeyProject(form);
     }
 }

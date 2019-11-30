@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,7 +20,13 @@ public class ProjectGroupMapperTest {
 
     @Test
     public void getAllOpenTopic() {
-        System.err.println(projectGroupMapper.getAllOpenTopic());
+        List list = new ArrayList();
+        list.add(1);
+        list.add(2);
+        list.add(5);
+        list.add(4);
+        list.add(3);
+        System.err.println(projectGroupMapper.getAllOpenTopic(list));
     }
 
     @Test

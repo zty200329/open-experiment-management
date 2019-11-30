@@ -51,7 +51,7 @@ public interface ProjectGroupMapper {
      * 查询所有的公开选题的项目
      * @return
      */
-    List<OpenTopicInfo> getAllOpenTopic();
+    List<OpenTopicInfo> getAllOpenTopic(List<Long> list);
 
     ProjectGroupDetailVO getProjectGroupDetailVOByProjectId(@Param("projectId")Long projectId);
 

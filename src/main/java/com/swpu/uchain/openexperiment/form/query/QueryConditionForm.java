@@ -42,4 +42,13 @@ public class QueryConditionForm {
 
     @ApiModelProperty("项目状态  0-7")
     private Integer status;
+
+    @ApiModelProperty("创建人")
+    private String creator;
+
+    @ApiModelProperty("所属学院")
+    private Integer subordinateCollege;
+
+    @ApiModelProperty("申请经费")
+    private Float applyFunds;
 }
