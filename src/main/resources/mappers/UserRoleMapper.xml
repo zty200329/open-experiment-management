@@ -23,6 +23,9 @@
       role_id = #{roleId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+    <update id="updateUserRoleByUserIdAndRole">
+      update openexperiment.user_role set role_id = #{role} where user_id = #{userId}
+    </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select id, user_id, role_id
     from user_role

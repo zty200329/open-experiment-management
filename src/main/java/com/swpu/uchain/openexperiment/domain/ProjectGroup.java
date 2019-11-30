@@ -157,8 +157,6 @@ public class ProjectGroup implements Serializable {
      */
     private Integer subordinateCollege;
 
-
-
     private static final long serialVersionUID = 1L;
 
 

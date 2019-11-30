@@ -15,6 +15,7 @@ import com.swpu.uchain.openexperiment.service.TimeLimitService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +40,7 @@ public class TimeLimitServiceImpl implements TimeLimitService {
     }
 
     @Override
+    @Transactional(rollbackFor = GlobalException.class)
     public Result insert(TimeLimitForm form) {
         TimeLimit timeLimit = new TimeLimit();
         Integer college = getUserService.getCurrentUser().getInstitute();
@@ -50,8 +52,8 @@ public class TimeLimitServiceImpl implements TimeLimitService {
         timeLimitList.add(timeLimit);
         int result = timeLimitMapper.multiInsert(timeLimitList);
         BeanUtils.copyProperties(form,timeLimit);
-        if (result!=1){
-            throw new GlobalException(CodeMsg.ADD_ERROR);
+        if (result!=timeLimitList.size()){
+            throw new GlobalException(CodeMsg.INPUT_INFO_HAS_EXISTED);
         }
         return Result.success();
     }

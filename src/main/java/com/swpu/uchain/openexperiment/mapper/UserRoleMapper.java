@@ -27,7 +27,9 @@ public interface UserRoleMapper {
 
     int updateByPrimaryKey(UserRole record);
 
-    UserRole selectByUserIdAndRoleId(Long userId, Long roleId);
+    int updateUserRoleByUserIdAndRole(@Param("userId") Long userId,@Param("role") Integer role);
+
+    UserRole selectByUserIdAndRoleId(Long userId, Integer roleId);
 
     List<UserRole> selectByRoleId(Long roleId);
 

@@ -122,7 +122,7 @@ public class FileController {
     }
 
     @ApiOperation("生成项目信息总览表")
-    @PostMapping(value = "/generateEstablishExcel", name = "生成立项总览表")
+    @PostMapping(value = "/generateProjectInfoExcel", name = "生成立项总览表")
     public void generateProjectInfoExcel(HttpServletResponse response){
         projectFileService.generateEstablishExcel(response,null);
     }

@@ -14,5 +14,5 @@ public class UserRoleForm {
     @NotNull(message = "用户id不能为空")
     private Long userId;
     @NotNull(message = "用户id不能为空")
-    private Long roleId;
+    private Integer roleId;
 }

@@ -13,8 +13,8 @@ import com.lowagie.text.pdf.BaseFont;
 public class Html2PDFUtil {
 
     public static void main(String[] args) {
-        convertHtml2PDF("/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/apply_dir_2/94_立项申请主要内容.html",
-                "/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/apply_dir_2/94_立项申请主要内容.pdf");
+        convertHtml2PDF("/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/pdf_temp_dir/94_立项申请主要内容.html",
+                "/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/apply_dir_2/96_立项申请主要内容.pdf");
     }
 
     public static void convertHtml2PDF(String htmlPath,String pdfPath) {

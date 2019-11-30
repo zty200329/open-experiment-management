@@ -118,6 +118,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectGroup selectByProjectGroupId(Long projectGroupId) {
+        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectGroupId);
+        //重点项目状态表中不为空，设置值为重点项目状态
+        if (projectGroup.getWhetherCommitKeyApply() != null) {
+            projectGroup.setStatus(projectGroup.getWhetherCommitKeyApply());
+        }
         return projectGroupMapper.selectByPrimaryKey(projectGroupId);
     }
 
@@ -240,27 +245,36 @@ public class ProjectServiceImpl implements ProjectService {
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
         //状态不允许修改
-        if (projectGroup.getStatus() != ProjectStatus.DECLARE.getValue().intValue() || projectGroup.getStatus() != ProjectStatus.REJECT_MODIFY.getValue().intValue()) {
+        if (!projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()) && !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())) {
             return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
         }
         //更新项目组基本信息
         BeanUtils.copyProperties(updateProjectApplyForm, projectGroup);
         update(projectGroup);
         userProjectService.deleteByProjectGroupId(projectGroup.getId());
-        String[] stuCodes = new String[updateProjectApplyForm.getStuCodes().length];
-        String[] teacherCodes = new String[updateProjectApplyForm.getStuCodes().length];
-        for (int i = 0; i < updateProjectApplyForm.getStuCodes().length; i++) {
-            stuCodes[i] = updateProjectApplyForm.getStuCodes()[i].toString();
-        }
-        for (int i = 0; i < updateProjectApplyForm.getTeacherCodes().length; i++) {
-            teacherCodes[i] = updateProjectApplyForm.getTeacherCodes()[i].toString();
-        }
+        String[] stuCodes = null;
+        String[] teacherCodes = null;
 
-        userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
+        //更新成员信息--不需要
+//        if (updateProjectApplyForm.getStuCodes() != null ) {
+//            stuCodes = new String[updateProjectApplyForm.getStuCodes().length];
+//            for (int i = 0; i < updateProjectApplyForm.getStuCodes().length; i++) {
+//                stuCodes[i] = updateProjectApplyForm.getStuCodes()[i].toString();
+//            }
+//        }
+//        if (updateProjectApplyForm.getTeacherCodes() != null) {
+//            teacherCodes = new String[updateProjectApplyForm.getTeacherCodes().length];
+//            for (int i = 0; i < updateProjectApplyForm.getTeacherCodes().length; i++) {
+//                teacherCodes[i] = updateProjectApplyForm.getTeacherCodes()[i].toString();
+//            }
+//        }
+//
+//        userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
         //修改项目状态,重新开始申报
-        updateProjectStatus(projectGroup.getId(), ProjectStatus.ESTABLISH.getValue());
+//        updateProjectStatus(projectGroup.getId(), ProjectStatus.ESTABLISH.getValue());
 
         OperationRecord operationRecord = new OperationRecord();
+        operationRecord.setRelatedId(updateProjectApplyForm.getProjectGroupId());
         operationRecord.setOperationType(OperationType.MODIFY.getValue());
         operationRecord.setOperationUnit(OperationUnit.MENTOR.getValue());
         //设置执行人

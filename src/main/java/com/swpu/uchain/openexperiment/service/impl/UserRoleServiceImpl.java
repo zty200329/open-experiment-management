@@ -32,11 +32,11 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public Result deleteByUserIdRoleId(Long userId, Long roleId) {
+    public Result deleteByUserIdRoleId(Long userId, Integer roleId) {
         if (userRoleMapper.selectByUserId(userId) == null){
             throw new GlobalException(CodeMsg.USER_NO_EXIST);
         }
-        int result = userRoleMapper.deleteByUserIdAndRoleId(userId, roleId);
+        int result = userRoleMapper.updateUserRoleByUserIdAndRole(userId, RoleType.MENTOR.getValue());
         if (result != 1){
             throw new GlobalException(CodeMsg.USER_INFORMATION_MATCH_ERROR);
         }
@@ -49,16 +49,33 @@ public class UserRoleServiceImpl implements UserRoleService {
             throw new GlobalException(CodeMsg.USER_NO_EXIST);
         }
         UserRole userRole = userRoleMapper.selectByUserIdAndRoleId(userRoleForm.getUserId(), userRoleForm.getRoleId());
+
         if (userRole != null){
             return Result.error(CodeMsg.USER_ROLE_HAD_EXIST);
         }
-        userRole = new UserRole();
-        userRole.setUserId(userRoleForm.getUserId());
-        userRole.setRoleId(userRoleForm.getRoleId());
-        if (insert(userRole)){
-            return Result.success();
+
+        int result ;
+
+        UserRole userRoleQueryResult = userRoleMapper.selectByUserId(userRoleForm.getUserId());
+
+        //不存在则增加
+        if (userRoleQueryResult == null) {
+            UserRole userRoleDomain = new UserRole();
+            userRoleDomain.setRoleId(userRoleForm.getRoleId());
+            userRoleDomain.setUserId(userRoleForm.getUserId());
+            result = userRoleMapper.insert(userRoleDomain);
+        //存在则更新
+        }else {
+            if (userRoleQueryResult.getRoleId().equals(RoleType.NORMAL_STU.getValue()) ||
+                userRoleQueryResult.getRoleId().equals(RoleType.PROJECT_LEADER.getValue())) {
+                throw new GlobalException(CodeMsg.STUDENT_CANT_GAIN_THIS_PERMISSION);
+            }
+            result = userRoleMapper.updateUserRoleByUserIdAndRole(userRoleForm.getUserId(),userRoleForm.getRoleId());
         }
-        return Result.error(CodeMsg.ADD_ERROR);
+        if (result != 1) {
+            return Result.error(CodeMsg.ADD_ERROR);
+        }
+        return Result.success();
     }
 
     @Override

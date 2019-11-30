@@ -17,7 +17,7 @@ public class TimeLimitForm {
     /**
      * {@link com.swpu.uchain.openexperiment.enums.TimeLimitType}
      */
-    @Min(1)
+    @Min(0)
     @Max(8)
     @NotNull
     @ApiModelProperty("时间限制类型")

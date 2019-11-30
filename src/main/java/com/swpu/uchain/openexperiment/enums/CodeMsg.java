@@ -33,6 +33,7 @@ public enum CodeMsg {
     ALREADY_APPLY(1417, "已经进行申请操作,无法再次操作,请勿重复操作"),
     ROLE_ACL_HAD_EXIST(1418, "当前角色已拥有该权限,不能重复添加" ),
     MAXIMUM_APPLICATION(1419,"该类型项目申请达到上限"),
+    STUDENT_CANT_GAIN_THIS_PERMISSION(1420,"学生无权获得该权限"),
 
 
 
@@ -110,7 +111,7 @@ public enum CodeMsg {
     NOT_IN_VALID_TIME(1807,"操作不在允许的时间之内"),
     TIME_DEFINE_ERROR(1808,"时间设置错误"),
     PAGE_NUM_ERROR(1809, "分页数目异常"),
-    INPUT_INFO_HAS_EXISTED(1810,"该信息已经存在"),
+    INPUT_INFO_HAS_EXISTED(1810,"信息已经存在"),
     UPDATE_ERROR(1807, "更新数据库失败"),
     DELETE_ERROR(1808,"信息不存在，删除失败");
 
