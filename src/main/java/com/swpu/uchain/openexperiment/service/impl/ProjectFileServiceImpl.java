@@ -459,14 +459,14 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             row.createCell(4).setCellValue(projectTableInfo.getTotalHours());
             row.createCell(5).setCellValue(projectTableInfo.getLeadTeacher());
             row.createCell(6).setCellValue(projectTableInfo.getLeadStudent());
-            row.createCell(7).setCellValue(projectTableInfo.getGradeAndMajor());
+            row.createCell(7).setCellValue(ConvertUtil.getGradeAndMajorByNumber(projectTableInfo.getGradeAndMajor()));
             row.createCell(8).setCellValue(projectTableInfo.getStartTime());
             row.createCell(9).setCellValue(projectTableInfo.getEndTime());
             row.createCell(10).setCellValue(projectTableInfo.getLabName());
             row.createCell(11).setCellValue(projectTableInfo.getAddress());
             row.createCell(12).setCellValue(projectTableInfo.getLeadStudentPhone());
             row.createCell(13).setCellValue(projectTableInfo.getApplyFunds());
-            row.createCell(14).setCellValue(projectTableInfo.getSuggestGroupType());
+            row.createCell(14).setCellValue(ConvertUtil.getStringSuggestGroupType(projectTableInfo.getSuggestGroupType()));
             row.createCell(15).setCellValue(projectTableInfo.getProjectStatus());
 
         }

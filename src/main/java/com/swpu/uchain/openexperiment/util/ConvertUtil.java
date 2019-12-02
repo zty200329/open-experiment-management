@@ -26,8 +26,7 @@ import java.util.List;
 /**
  * @Author: clf
  * @Date: 19-1-23
- * @Description:
- * VO转换工具类
+ * @Description: VO转换工具类
  */
 @Service
 public class ConvertUtil {
@@ -42,7 +41,7 @@ public class ConvertUtil {
         this.roleMapper = roleMapper;
     }
 
-    public  List<String> fromAclsToUrls(List<Acl> acls){
+    public List<String> fromAclsToUrls(List<Acl> acls) {
         List<String> urls = new ArrayList<>();
         for (Acl acl : acls) {
             urls.add(acl.getUrl());
@@ -80,32 +79,31 @@ public class ConvertUtil {
         }
     }
 
-    public static Character getCharSuggestGroupType(Integer suggestGroupType){
-        switch (suggestGroupType){
+    public static String getStringSuggestGroupType(Integer suggestGroupType) {
+        switch (suggestGroupType) {
             case 1:
-                return  'A';
+                return "A";
 
             case 2:
-                return  'B';
+                return "B";
 
             case 3:
-                return  'C';
+                return "C";
 
             case 4:
-                return  'D';
+                return "D";
 
             case 5:
-                return  'E';
-
+                return "E";
             case 6:
-                return  'F';
+                return "F";
             default:
-                return null;
+                return "";
         }
     }
 
-    public  String getTechnicalRole(int type){
-        switch (type){
+    public String getTechnicalRole(int type) {
+        switch (type) {
             case 1:
                 return UserType.STUDENT.getMessage();
             case 2:
@@ -119,23 +117,23 @@ public class ConvertUtil {
         }
     }
 
-    public  <T> T addUserDetailVO(List<User> users,Class<T> clazz){
+    public <T> T addUserDetailVO(List<User> users, Class<T> clazz) {
         List<UserDetailVO> guideTeachers = new ArrayList<>();
         List<UserDetailVO> stuMembers = new ArrayList<>();
         for (User user : users) {
             UserDetailVO userDetailVO = convertUserDetailVO(user);
-            if (user.getUserType().intValue() == UserType.STUDENT.getValue()){
+            if (user.getUserType().intValue() == UserType.STUDENT.getValue()) {
                 stuMembers.add(userDetailVO);
-            }else {
+            } else {
                 guideTeachers.add(userDetailVO);
             }
         }
-        if (clazz == ApplyKeyFormInfoVO.class){
+        if (clazz == ApplyKeyFormInfoVO.class) {
             ApplyKeyFormInfoVO applyKeyFormInfoVO = new ApplyKeyFormInfoVO();
             applyKeyFormInfoVO.setStuMembers(stuMembers);
             applyKeyFormInfoVO.setGuideTeachers(guideTeachers);
             return (T) applyKeyFormInfoVO;
-        }else {
+        } else {
             ApplyGeneralFormInfoVO applyGeneralFormInfoVO = new ApplyGeneralFormInfoVO();
             applyGeneralFormInfoVO.setStuMembers(stuMembers);
             applyGeneralFormInfoVO.setGuideTeachers(guideTeachers);
@@ -143,7 +141,7 @@ public class ConvertUtil {
         }
     }
 
-    public  List<AttachmentFileVO> getAttachmentFileVOS(List<AttachmentFileDTO> attachmentFileDTOS) {
+    public List<AttachmentFileVO> getAttachmentFileVOS(List<AttachmentFileDTO> attachmentFileDTOS) {
         List<AttachmentFileVO> attachmentFileVOS = new ArrayList<>();
         for (AttachmentFileDTO attachmentFileDTO : attachmentFileDTOS) {
             AttachmentFileVO attachmentFileVO = new AttachmentFileVO();
@@ -154,7 +152,7 @@ public class ConvertUtil {
         return attachmentFileVOS;
     }
 
-    public  List<UserManageInfo> convertUsers(List<User> users){
+    public List<UserManageInfo> convertUsers(List<User> users) {
         List<UserManageInfo> userList = new ArrayList<>();
         users.forEach(user -> {
             UserManageInfo userManageInfo = new UserManageInfo();
@@ -166,11 +164,11 @@ public class ConvertUtil {
         return userList;
     }
 
-    public  RoleInfoVO convertRole(Role role){
+    public RoleInfoVO convertRole(Role role) {
         return convertOneRoleInfo(role);
     }
 
-    public  List<RoleInfoVO> convertRoles(List<Role> roles){
+    public List<RoleInfoVO> convertRoles(List<Role> roles) {
         List<RoleInfoVO> roleList = new ArrayList<>();
         roles.forEach(role -> {
             RoleInfoVO roleInfoVO = convertOneRoleInfo(role);
@@ -179,7 +177,7 @@ public class ConvertUtil {
         return roleList;
     }
 
-    public  RoleInfoVO convertOneRoleInfo(Role role) {
+    public RoleInfoVO convertOneRoleInfo(Role role) {
         RoleInfoVO roleInfoVO = new RoleInfoVO();
         BeanUtils.copyProperties(role, roleInfoVO);
         List<Acl> acls = aclMapper.selectByRoleId(role.getId());
@@ -193,7 +191,7 @@ public class ConvertUtil {
         return userDetailVO;
     }
 
-    public  Long[] parseIds(String str){
+    public Long[] parseIds(String str) {
         String[] split = str.split(",");
         Long[] ids = new Long[split.length];
         for (int i = 0; i < split.length; i++) {
@@ -203,8 +201,8 @@ public class ConvertUtil {
         return ids;
     }
 
-    private static String operationUnitToWord(String operationUnit){
-        switch (operationUnit){
+    private static String operationUnitToWord(String operationUnit) {
+        switch (operationUnit) {
             case "1":
                 operationUnit = "通过";
                 break;
@@ -216,9 +214,9 @@ public class ConvertUtil {
         return operationUnit;
     }
 
-    public static Integer getIntCollege(String strCollege){
+    public static Integer getIntCollege(String strCollege) {
         int result;
-        switch (strCollege){
+        switch (strCollege) {
             case "马克思主义学院":
                 result = 1;
                 break;
@@ -270,9 +268,9 @@ public class ConvertUtil {
         return result;
     }
 
-    public static String getStrCollege(int intCollege){
+    public static String getStrCollege(int intCollege) {
         String result;
-        switch (intCollege){
+        switch (intCollege) {
             case 1:
                 result = "石油与天然气工程学院";
                 break;
@@ -325,10 +323,43 @@ public class ConvertUtil {
     }
 
     public static String getStrProjectType(Integer type) {
-        if (type == 1){
+        if (type == 1) {
             return "重点";
-        }else {
+        } else {
             return "普通";
         }
     }
+
+    public static String getMajorNameByNumber(Integer number) {
+        switch (number) {
+            case 24:
+                return "计算机科学与技术";
+            case 25:
+                return "软件工程";
+            case 26:
+                return "网络工程";
+            case 27:
+                return "物联网工程";
+            case 28:
+                return "数据科学与大数据技术";
+            case 29:
+                return "网络空间安全";
+            default:
+                return "未知专业";
+        }
+    }
+
+    public static String getGradeAndMajorByNumber(String gradeAndMajor) {
+        if (gradeAndMajor == null) {
+            return "";
+        }
+        String grade = gradeAndMajor.substring(0, 4);
+        Integer major = Integer.valueOf(gradeAndMajor.substring(4));
+        return grade + "级" + getMajorNameByNumber(major);
+    }
+
+    public static void main(String[] args) {
+        System.err.println(getGradeAndMajorByNumber(String.valueOf(201726)));
+    }
+
 }
