@@ -121,7 +121,7 @@
         <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
         <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
         <result column="total_hours" jdbcType="INTEGER" property="totalHours" />
-
+        <result column="temp_serial_number" property="tempSerialNumber"/>
         <result column="lab_name" jdbcType="VARCHAR" property="labName" />
         <result column="project_name" jdbcType="VARCHAR" property="projectName" />
         <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
@@ -473,6 +473,7 @@
                 when project_group.status = 6 then '中期检查(待结题审核)'
                 when project_group.status = 7 then '结题' end as projectStatus,
             project_group.serial_number,
+            project_group.temp_serial_number,
             project_group.address,
             project_group.create_time,
             project_group.start_time,
@@ -502,9 +503,9 @@
             `user`.real_name                           AS leadTeacher,
             `user`.mobile_phone                        AS leadTeacherPhone
         from openexperiment.project_group
+        left join openexperiment.key_project_status on project_group.id = key_project_status.project_id
         inner join openexperiment.user_project_group on user_project_group.project_group_id = project_group.id
         inner join openexperiment.`user` on project_group.creator_id = `user`.`code`
-        left join openexperiment.key_project_status on project_group.id = key_project_status.project_id
         left join (
             select
                 `user`.grade                        AS grade,
@@ -515,7 +516,7 @@
             FROM openexperiment.`user`
             INNER JOIN openexperiment.user_project_group
                 ON `user`.`code` = user_project_group.user_id
-                AND `user_project_group`.member_role = 2 <!--2代表已经加入-->
+                AND `user_project_group`.member_role != 2 <!--2代表组长--> and user_project_group.status = 2 <!--代表加入-->
             ) AS t_lead_stu ON project_group.id = related_project_id
         <where>
             <if test="college!=null and college != ''">
@@ -603,7 +604,7 @@
         INNER JOIN openexperiment.operation_record ON operation_record.related_id = project_group.id
         WHERE operation_record.operation_unit = #{unit} AND operation_record.operation_type = #{type} AND operation_record.status = 'Y'
     </select>
-    <select id="getIndexByCollege" resultType="java.lang.String">
+    <select id="getMaxSerialNumberByCollege" resultType="java.lang.String">
         select  max(serial_number) from openexperiment.project_group where subordinate_college = #{college}
     </select>
     <select id="selectConclusionDTOs" resultType="com.swpu.uchain.openexperiment.DTO.ConclusionDTO">
@@ -702,6 +703,9 @@
         update openexperiment.project_group set `serial_number` = #{serialNumber} where id =
         #{id}
     </update>
+    <update id="updateProjectTempSerialNumber">
+        update openexperiment.project_group set `temp_serial_number` = #{tempSerialNumber} where id = #{id}
+    </update>
     <select id="selectKeyHistoricalInfoByUnitAndOperation" resultMap="ProjectGroupResultMap">
         SELECT
         key_project_status.project_id as id,
@@ -733,5 +737,8 @@
     </select>
     <select id="getCountOfSpecifiedStatusAndProjectProject" resultType="java.lang.Integer">
         select count(id) from openexperiment.project_group where `status` = #{status} and  subordinate_college = #{college}
+    </select>
+    <select id="getMaxTempSerialNumberByCollege" resultType="java.lang.String">
+        select  max(temp_serial_number) from openexperiment.project_group where subordinate_college = #{college}
     </select>
 </mapper>

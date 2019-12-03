@@ -27,4 +27,8 @@ public class UserMemberVO implements Serializable {
      * 成员角色
      */
     private Integer memberRole;
+
+    private String major;
+
+    private String grade;
 }

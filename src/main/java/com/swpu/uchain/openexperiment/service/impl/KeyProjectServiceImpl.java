@@ -21,6 +21,7 @@ import com.swpu.uchain.openexperiment.service.KeyProjectService;
 import com.swpu.uchain.openexperiment.service.TimeLimitService;
 import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
 import io.swagger.models.auth.In;
+import net.sf.jsqlparser.statement.select.Join;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,7 +96,8 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
         //验证项目状态合法性
         Long projectId = projectGroup.getId();
-        if (projectGroup.getStatus() < ProjectStatus.LAB_ALLOWED.getValue()){
+        if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue()) &&
+            !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())){
             throw new GlobalException(CodeMsg.PROJECT_IS_NOT_LAB_ALLOWED);
         }
         //验证是否已经进行了重点项目申请
@@ -138,7 +140,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         for (KeyProjectDTO keyProjectDTO :list
         ) {
             keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(keyProjectDTO.getId(),null));
-            keyProjectDTO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId()));
+            keyProjectDTO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId(),JoinStatus.JOINED.getValue()));
         }
         return Result.success(list);
     }
@@ -175,7 +177,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         for (KeyProjectDTO keyProjectDTO :list
              ) {
             keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(keyProjectDTO.getId(),null));
-            keyProjectDTO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId()));
+            keyProjectDTO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId(),JoinStatus.JOINED.getValue()));
         }
         return Result.success(list);
     }
@@ -308,7 +310,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
         //生成项目编号
         for (KeyProjectCheck check : list) {
-            String serialNumber = projectGroupMapper.selectByPrimaryKey(check.getProjectId()).getSerialNumber();
+            String serialNumber = projectGroupMapper.getMaxSerialNumberByCollege(college);
             //计算编号并在数据库中插入编号
             projectGroupMapper.updateProjectSerialNumber(check.getProjectId(), SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), serialNumber));
         }
@@ -337,7 +339,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         for (ProjectGroup projectGroup:list
         ) {
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(),null));
-            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectGroup.getId()));
+            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectGroup.getId(),JoinStatus.JOINED.getValue()));
         }
         return Result.success(list);
     }
@@ -389,7 +391,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         ) {
             Long id = projectGroup.getId();
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(id,null));
-            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null,id));
+            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null,id, JoinStatus.JOINED.getValue()));
         }
         return Result.success(list);
     }

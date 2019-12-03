@@ -41,6 +41,7 @@ public class KeyProjectInvokeController {
         return keyProjectService.agreeKeyProjectByGuideTeacher(list);
     }
 
+
     @ApiOperation("实验室主任同意带审核项目")
     @PostMapping(value = "/agreeKeyProjectByLabAdministrator")
     public Result agreeKeyProjectByLabAdministrator(@Valid @RequestBody List<KeyProjectCheck> list){

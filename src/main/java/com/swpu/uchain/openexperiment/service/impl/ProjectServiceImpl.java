@@ -180,12 +180,6 @@ public class ProjectServiceImpl implements ProjectService {
             Result.error(CodeMsg.STUDENT_CANT_APPLY);
         }
 
-
-        ProjectGroup projectGroup = projectGroupMapper.selectByName(form.getProjectName());
-        if (projectGroup != null) {
-            return Result.error(CodeMsg.PROJECT_GROUP_HAD_EXIST);
-        }
-
         //开放选题时,不进行学生选择
         if (form.getIsOpenTopic().equals(OpenTopicType.OPEN_TOPIC_ALL.getValue()) && form.getStuCodes() != null) {
             throw new GlobalException(CodeMsg.TOPIC_IS_NOT_OPEN);
@@ -196,7 +190,7 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.TIME_DEFINE_ERROR);
         }
 
-        projectGroup = new ProjectGroup();
+        ProjectGroup projectGroup = new ProjectGroup();
         BeanUtils.copyProperties(form, projectGroup);
         projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
         //设置申请人
@@ -207,6 +201,12 @@ public class ProjectServiceImpl implements ProjectService {
         if (result.getCode() != 0) {
             throw new GlobalException(CodeMsg.ADD_PROJECT_GROUP_ERROR);
         }
+
+        //设置项目创建编号
+        String serialNumber = projectGroupMapper.getMaxSerialNumberByCollege(college);
+        //计算编号并在数据库中插入编号
+        projectGroupMapper.updateProjectSerialNumber(projectGroup.getId(), SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), serialNumber));
+
 
 //        String[] teacherCodes = form.getTeacherCodes();
 
@@ -320,7 +320,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectDetails.setCreator(new UserMemberVO(
                 Long.valueOf(user.getCode()),
                 user.getRealName(),
-                userProjectGroup.getMemberRole()));
+                userProjectGroup.getMemberRole(),null,null));
         //设置项目的成员信息
         List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(projectGroup.getId());
         List<UserMemberVO> members = new ArrayList<>();
@@ -331,7 +331,7 @@ public class ProjectServiceImpl implements ProjectService {
                 projectDetails.setLeader(new UserMemberVO(
                         member.getId(),
                         member.getRealName(),
-                        userProject.getMemberRole()));
+                        userProject.getMemberRole(),null,null));
             }
             UserMemberVO userMemberVO = new UserMemberVO();
             userMemberVO.setUserId(member.getId());
@@ -764,7 +764,7 @@ public class ProjectServiceImpl implements ProjectService {
         for (ProjectGroup projectGroup : list
         ) {
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(), null));
-            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(), projectGroup.getId()));
+            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(), projectGroup.getId(),JoinStatus.JOINED.getValue()));
         }
         return Result.success(list);
     }
@@ -795,7 +795,7 @@ public class ProjectServiceImpl implements ProjectService {
         ) {
             Long id = projectGroup.getId();
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(id, null));
-            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null, id));
+            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null, id,JoinStatus.JOINED.getValue()));
         }
         return Result.success(list);
     }
@@ -871,7 +871,7 @@ public class ProjectServiceImpl implements ProjectService {
                 //设置项目编号
 
                 //获取最大的项目编号
-                String serialNumber = projectGroupMapper.getIndexByCollege(user.getInstitute());
+                String serialNumber = projectGroupMapper.getMaxSerialNumberByCollege(user.getInstitute());
                 //计算编号并在数据库中插入编号
                 projectGroupMapper.updateProjectSerialNumber(form.getProjectId(), SerialNumberUtil.getSerialNumberOfProject(user.getInstitute(), ProjectType.GENERAL.getValue(), serialNumber));
             }

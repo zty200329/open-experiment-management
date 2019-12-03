@@ -20,7 +20,20 @@ import java.util.List;
 @Repository
 public interface ProjectGroupMapper {
 
-    String getIndexByCollege(@Param("college")Integer college);
+    /**
+     * 更新项目上传编号
+     * @param projectId
+     * @param serialNumber
+     * @return
+     */
+    int updateProjectSerialNumber(@Param("id") Long projectId,@Param("serialNumber")String serialNumber);
+
+    String getMaxSerialNumberByCollege(@Param("college")Integer college);
+
+    String getMaxTempSerialNumberByCollege(@Param("college")Integer college);
+
+    int updateProjectTempSerialNumber(@Param("id") Long projectId,@Param("tempSerialNumber")String serialNumber);
+
 
     int deleteByPrimaryKey(Long id);
 
@@ -64,7 +77,6 @@ public interface ProjectGroupMapper {
 
     int updateProjectStatus(@Param("id") Long projectId,@Param("status")Integer status);
 
-    int updateProjectSerialNumber(@Param("id") Long projectId,@Param("serialNumber")String serialNumber);
 
     int updateProjectStatusOfList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);
 

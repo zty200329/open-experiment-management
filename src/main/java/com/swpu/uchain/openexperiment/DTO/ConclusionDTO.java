@@ -11,7 +11,7 @@ import java.util.Date;
 @Data
 public class ConclusionDTO {
 
-    private Long id;
+    private String id;
 
 
     /**

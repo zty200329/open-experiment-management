@@ -34,11 +34,18 @@ public interface UserProjectGroupMapper {
 
     void deleteByProjectGroupId(Long projectGroupId);
 
+    /**
+     * 获取指定状态学生
+     * @param projectGroupId
+     * @param joinStatus
+     * @return
+     */
     List<UserProjectGroup> selectByProjectGroupIdAndJoinStatus(Long projectGroupId, Integer joinStatus);
 
     List<String> selectUserCodesByProjectGroupId(Long projectGroupId);
 
-    List<UserMemberVO> selectUserMemberVOListByMemberRoleAndProjectId(@Param("memberRole")Integer memberRole,@Param("projectId")Long projectId);
+    List<UserMemberVO> selectUserMemberVOListByMemberRoleAndProjectId(@Param("memberRole")Integer memberRole,@Param("projectId")Long projectId,
+                                                                      @Param("status")Integer joinStatus);
 
     /**
      * 通过角工号和角色查询项目ID

@@ -4,6 +4,7 @@ import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
 import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
 import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
 import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
+import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import com.swpu.uchain.openexperiment.enums.*;
@@ -112,6 +113,13 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         //先检查文件是否为空
         if (file == null || headFile == null) {
             throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
+        }
+
+        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectGroupId);
+        //验证项目状态合法性
+        if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue()) &&
+                !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())){
+            throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
         }
 
         if (!getFileSuffix(file.getOriginalFilename()).equals(".doc") || !getFileSuffix(headFile.getOriginalFilename()).equals(".html")) {
@@ -423,9 +431,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         index++;
 
         // 4.设置表头，即每个列的列名
-        String[] head = {"院/中心", "序号", "项目名称", "实验类型", "实验时数", "指导教师", "负责学生"
+        String[] head = {"院/中心", "创建编号", "项目名称", "实验类型", "实验时数", "指导教师", "学生"
                 , "专业年级", "开始时间", "结束时间", "开放\r\n实验室", "实验室地点", "负责学生\r\n电话"
-                , "申请经费（元）", "建议\r\n评审分组","项目状态"};
+                , "申请经费（元）", "建议\r\n评审分组","项目状态","上报编号"};
         // 4.1创建表头行
         XSSFRow row = sheet.createRow(index++);
 
@@ -446,6 +454,26 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 projectTableInfo.setProjectStatus(projectTableInfo.getKeyProjectStatus());
             }
 
+            List<UserMemberVO> userMemberVOList =
+                    userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.PROJECT_GROUP_LEADER.getValue(),projectTableInfo.getId(),JoinStatus.JOINED.getValue());
+            StringBuilder students = new StringBuilder("");
+            StringBuilder studentsMajorAndGrade = new StringBuilder("");
+            for (UserMemberVO userMemberVO : userMemberVOList) {
+                students.append(userMemberVO.getUserName());
+                students.append("\r\n");
+                studentsMajorAndGrade.append(ConvertUtil.getGradeAndMajorByNumber(userMemberVO.getGrade() + userMemberVO.getMajor()));
+                studentsMajorAndGrade.append("\r\n");
+            }
+
+            List<UserMemberVO> userMemberVOList2 =
+                    userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.NORMAL_MEMBER.getValue(),projectTableInfo.getId(),JoinStatus.JOINED.getValue());
+            for (UserMemberVO userMemberVO : userMemberVOList2) {
+                students.append(userMemberVO.getUserName());
+                students.append(",\r\n");
+                studentsMajorAndGrade.append(ConvertUtil.getGradeAndMajorByNumber(userMemberVO.getGrade() + userMemberVO.getMajor()));
+                studentsMajorAndGrade.append(",\r\n");
+            }
+
             //创建行
             row = sheet.createRow(index++);
 
@@ -453,13 +481,15 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             row.setHeight((short) (16 * 22));
             // 序号
             row.createCell(0).setCellValue(ConvertUtil.getStrCollege(projectTableInfo.getCollege()));
-            row.createCell(1).setCellValue(projectTableInfo.getSerialNumber());
+            if (projectTableInfo.getTempSerialNumber() != null) {
+                row.createCell(1).setCellValue(projectTableInfo.getTempSerialNumber()+"T");
+            }
             row.createCell(2).setCellValue(projectTableInfo.getProjectName());
             row.createCell(3).setCellValue(ConvertUtil.getStrExperimentType(projectTableInfo.getExperimentType()));
             row.createCell(4).setCellValue(projectTableInfo.getTotalHours());
             row.createCell(5).setCellValue(projectTableInfo.getLeadTeacher());
-            row.createCell(6).setCellValue(projectTableInfo.getLeadStudent());
-            row.createCell(7).setCellValue(ConvertUtil.getGradeAndMajorByNumber(projectTableInfo.getGradeAndMajor()));
+            row.createCell(6).setCellValue(students.toString());
+            row.createCell(7).setCellValue(studentsMajorAndGrade.toString());
             row.createCell(8).setCellValue(projectTableInfo.getStartTime());
             row.createCell(9).setCellValue(projectTableInfo.getEndTime());
             row.createCell(10).setCellValue(projectTableInfo.getLabName());
@@ -468,6 +498,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             row.createCell(13).setCellValue(projectTableInfo.getApplyFunds());
             row.createCell(14).setCellValue(ConvertUtil.getStringSuggestGroupType(projectTableInfo.getSuggestGroupType()));
             row.createCell(15).setCellValue(projectTableInfo.getProjectStatus());
+            row.createCell(16).setCellValue(projectTableInfo.getSerialNumber());
 
         }
 

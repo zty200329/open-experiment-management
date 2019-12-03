@@ -26,6 +26,12 @@ public class ProjectTableInfo {
     private String serialNumber;
 
     /**
+     * 创建编号（临时编号）
+     */
+    private String tempSerialNumber;
+
+
+    /**
      * 项目名称
      */
     private String projectName;

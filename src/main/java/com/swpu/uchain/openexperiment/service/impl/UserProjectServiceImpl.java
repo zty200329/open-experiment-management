@@ -110,6 +110,9 @@ public class UserProjectServiceImpl implements UserProjectService {
         timeLimitService.validTime(TimeLimitType.JOIN_APPLY_LIMIT);
 
         User user = getUserService.getCurrentUser();
+        if (user.getMobilePhone() == null || user.getQqNum() ==null) {
+            throw new GlobalException(CodeMsg.USER_INFO_NOT_COMPLETE);
+        }
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(joinProjectApplyForm.getProjectGroupId());
 
         if (projectGroup == null){
