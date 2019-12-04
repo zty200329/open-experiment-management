@@ -27,7 +27,7 @@
                end_time as endTime,
                limit_college as  limitCollege
         from openexperiment.time_limit
-        where  limit_type = #{type} and limit_college = #{college}
+        where  limit_type = #{type} and limit_college = #{college} limit 1
     </select>
     <select id="getAll" resultType="com.swpu.uchain.openexperiment.domain.TimeLimit">
         select limit_type as timeLimitType,

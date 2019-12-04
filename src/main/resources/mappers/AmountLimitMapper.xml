@@ -2,16 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.swpu.uchain.openexperiment.mapper.AmountLimitMapper">
 
-    <insert id="multiInsert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.TimeLimit">
-        insert into openexperiment.amount_limit(id, max_amount, min_amount, limit_college, project_type)
+    <insert id="multiInsert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.AmountLimit">
+        insert into openexperiment.amount_limit(max_amount, min_amount, limit_college, project_type,limit_unit)
         value
             <foreach collection="list" item="amountLimit" separator=",">
                 (
-                    #{amountLimit.id},
-                    #{amountLimit.maxAmount},
-                    #{amountLimit.minAmount},
-                    #{amountLimit.limitCollege},
-                    #{amountLimit.projectType}
+                #{amountLimit.maxAmount},
+                #{amountLimit.minAmount},
+                #{amountLimit.limitCollege},
+                #{amountLimit.projectType},
+                #{amountLimit.limitUnit}
                 )
             </foreach>
     </insert>

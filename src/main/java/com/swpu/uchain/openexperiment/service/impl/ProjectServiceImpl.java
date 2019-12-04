@@ -38,6 +38,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -174,6 +177,22 @@ public class ProjectServiceImpl implements ProjectService {
             }
         }
 
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        //写死时间
+        try {
+            Date startTime = dateFormat.parse("2019-12-05");
+            form.setStartTime(startTime);
+            Date endTime = new Date();
+            if (form.getProjectType().equals(ProjectType.GENERAL.getValue())) {
+                endTime = dateFormat.parse("2020-06-01");
+            }else {
+                endTime = dateFormat.parse("2020-11-01");
+            }
+            form.setEndTime(endTime);
+        } catch (ParseException e) {
+            throw new GlobalException(CodeMsg.TIME_DEFINE_ERROR);
+        }
+
 
         //判断用户类型
         if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()) {
@@ -245,9 +264,12 @@ public class ProjectServiceImpl implements ProjectService {
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
         //状态不允许修改
-        if (!projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()) && !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())) {
+        if (!projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())) {
             return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
         }
+        //修改的话状态修改为申报状态
+        projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
+
         //更新项目组基本信息
         BeanUtils.copyProperties(updateProjectApplyForm, projectGroup);
         update(projectGroup);

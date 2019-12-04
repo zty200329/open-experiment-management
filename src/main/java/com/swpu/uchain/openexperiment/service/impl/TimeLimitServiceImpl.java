@@ -47,6 +47,11 @@ public class TimeLimitServiceImpl implements TimeLimitService {
         BeanUtils.copyProperties(form,timeLimit);
         timeLimit.setLimitCollege(college);
 
+        TimeLimit timeLimit1 = timeLimitMapper.getTimeLimitByTypeAndCollege(timeLimit.getTimeLimitType(),college);
+        if (timeLimit1 != null) {
+            throw new GlobalException(CodeMsg.INPUT_INFO_HAS_EXISTED);
+        }
+
         //添加元素，直接使用多值插入的方式插入数据库
         List<TimeLimit> timeLimitList = new ArrayList<>();
         timeLimitList.add(timeLimit);

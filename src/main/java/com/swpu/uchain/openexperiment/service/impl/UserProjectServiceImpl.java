@@ -152,7 +152,8 @@ public class UserProjectServiceImpl implements UserProjectService {
 
         String limitMajor = projectGroup.getLimitMajor();
         String[] limitMajorArr = strToStrArr(limitMajor);
-        if (limitMajorArr == null){
+        //大类专业直接通过
+        if (limitMajorArr == null || user.getMajor().equals("2019")){
             allowed += 1;
         }else {
             for (String grade:limitMajorArr
