@@ -42,7 +42,7 @@ import java.util.Map;
 @Slf4j
 @CrossOrigin
 @RestController
-@RequestMapping("/permission")
+@RequestMapping("/api/permission")
 @Api(tags = "权限控制接口")
 public class PermissionController implements InitializingBean {
     @Autowired

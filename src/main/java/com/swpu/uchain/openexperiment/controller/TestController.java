@@ -28,7 +28,7 @@
 //@Api
 //@Slf4j
 //@RestController
-//@RequestMapping("/test")
+//@RequestMapping("/api/test")
 //public class TestController {
 //
 //    @Autowired

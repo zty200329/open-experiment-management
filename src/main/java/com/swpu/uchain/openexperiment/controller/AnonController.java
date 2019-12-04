@@ -24,7 +24,7 @@ import java.io.IOException;
 @Slf4j
 @CrossOrigin
 @RestController
-@RequestMapping("/anon")
+@RequestMapping("/api/anon")
 @Api(tags = "匿名访问接口")
 public class AnonController {
     @Autowired

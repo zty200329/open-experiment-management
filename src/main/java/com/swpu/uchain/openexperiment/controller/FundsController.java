@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @Api(tags = "资金管理接口")
 @RestController
 @CrossOrigin
-@RequestMapping("/funds")
+@RequestMapping("/api/funds")
 public class FundsController {
 
     private FundsService fundsService;

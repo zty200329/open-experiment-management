@@ -15,7 +15,7 @@ import javax.validation.Valid;
  */
 @RestController
 @CrossOrigin
-@RequestMapping("/timeLimit")
+@RequestMapping("/api/timeLimit")
 @Api(tags = "时间限制设置接口")
 public class TimeLimitController {
 

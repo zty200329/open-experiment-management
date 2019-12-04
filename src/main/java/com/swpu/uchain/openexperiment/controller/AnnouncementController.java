@@ -23,7 +23,7 @@ import javax.validation.Valid;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/announcement")
+@RequestMapping("/api/announcement")
 @Api(tags = "公告模块接口")
 public class AnnouncementController {
     @Autowired

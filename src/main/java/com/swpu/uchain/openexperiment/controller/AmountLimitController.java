@@ -19,7 +19,7 @@ import java.util.List;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/amount")
+@RequestMapping("/api/amount")
 @Api(tags = "项目数量限制模块")
 public class AmountLimitController {
 

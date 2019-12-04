@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/info")
+@RequestMapping("/api/info")
 @Api(tags = "消息模块接口")
 public class MessageController {
 

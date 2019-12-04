@@ -21,7 +21,7 @@ import javax.validation.Valid;
 @CrossOrigin
 @RestController
 @Api(tags = "项目(普通)模块查询接口")
-@RequestMapping("/project")
+@RequestMapping("/api/project")
 public class ProjectQueryController {
 
     private ProjectService projectService;

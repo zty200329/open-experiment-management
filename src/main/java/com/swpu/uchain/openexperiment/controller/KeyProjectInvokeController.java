@@ -17,7 +17,7 @@ import java.util.List;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/project")
+@RequestMapping("/api/project")
 @Api(tags = "项目（重点）模块执行接口")
 public class KeyProjectInvokeController {
 

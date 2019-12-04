@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "统计信息接口")
 @RestController
 @CrossOrigin
-@RequestMapping("/info")
+@RequestMapping("/api/info")
 public class InfoController {
 
     @GetMapping("/get")

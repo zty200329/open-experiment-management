@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/file")
+@RequestMapping("/api/file")
 @Api(tags = "文件管理接口")
 public class FileController {
 
