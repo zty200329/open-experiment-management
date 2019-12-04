@@ -58,22 +58,25 @@ public class AmountLimitServiceImpl implements AmountLimitService {
             timeLimitList.add(timeLimit);
 
 
-            for (AmountAndType amountAndType:form.getList()
-                 ) {
-                if (amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(form.getLimitCollege(),amountAndType.getProjectType(),RoleType.SECONDARY_UNIT.getValue()).size() != 0){
-                    throw new GlobalException(CodeMsg.INPUT_INFO_HAS_EXISTED);
-                }
-                AmountLimit amountLimit = new AmountLimit();
-                amountLimit.setLimitCollege(form.getLimitCollege());
-                amountLimit.setMaxAmount(amountAndType.getMaxAmount());
-                amountLimit.setProjectType(amountAndType.getProjectType());
-                amountLimit.setLimitUnit(RoleType.SECONDARY_UNIT.getValue());
-                amountLimitList.add(amountLimit);
+        for (AmountAndType amountAndType:form.getList()
+             ) {
+            if (amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(form.getLimitCollege(),amountAndType.getProjectType(),RoleType.SECONDARY_UNIT.getValue()).size() != 0){
+                throw new GlobalException(CodeMsg.INPUT_INFO_HAS_EXISTED);
             }
+            AmountLimit amountLimit = new AmountLimit();
+            amountLimit.setLimitCollege(form.getLimitCollege());
+            amountLimit.setMaxAmount(amountAndType.getMaxAmount());
+            amountLimit.setProjectType(amountAndType.getProjectType());
+            amountLimit.setLimitUnit(RoleType.SECONDARY_UNIT.getValue());
+            amountLimitList.add(amountLimit);
+        }
 
         }
-        amountLimitMapper.multiInsert(amountLimitList);
-        timeLimitMapper.multiInsert(timeLimitList);
+        int resultOfAmountInsert = amountLimitMapper.multiInsert(amountLimitList);
+        int resultOfTimeLimitInsert = timeLimitMapper.multiInsert(timeLimitList);
+        if (resultOfAmountInsert != amountLimitList.size() || resultOfTimeLimitInsert != timeLimitList.size()) {
+            throw new GlobalException(CodeMsg.INPUT_INFO_HAS_EXISTED);
+        }
         return Result.success();
     }
 
