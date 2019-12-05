@@ -65,6 +65,8 @@ public enum CodeMsg {
     PROJECT_AMOUNT_LIMIT(1521,"普通项目上报数量超过最大限制"),
     GENERAL_PROJECT_CANT_APPLY(1522,"普通项目不得进行重点项目申请"),
     KEY_PROJECT_APPLY_MATERIAL_EMPTY(1523,"证明材料为空"),
+    PROJECT_USER_MAX_ERROR(1524,"项目组成员达到最大值"),
+
 
 
 

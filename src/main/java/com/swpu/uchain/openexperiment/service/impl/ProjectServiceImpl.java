@@ -998,12 +998,23 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.USER_NOT_IN_GROUP);
         }
 
+        //判断用户是否存在
         if (userMapper.selectByUserCode(String.valueOf(joinForm.getUserId())) == null) {
             throw new GlobalException(CodeMsg.USER_NO_EXIST);
         }
 
+        //判断用户时候已经加入
         if (userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(), joinForm.getUserId()) != null) {
             throw new GlobalException(CodeMsg.USER_HAD_JOINED);
+        }
+
+        Integer amount = userProjectGroupMapper.getMemberAmountOfProject(joinForm.getProjectGroupId(),MemberRole.NORMAL_MEMBER.getValue()) +
+                userProjectGroupMapper.getMemberAmountOfProject(joinForm.getProjectGroupId(),MemberRole.PROJECT_GROUP_LEADER.getValue());
+
+        //数量限制判断
+        ProjectGroup projectGroup = selectByProjectGroupId(joinForm.getProjectGroupId());
+        if (projectGroup.getFitPeopleNum() <= amount) {
+            throw new GlobalException(CodeMsg.PROJECT_USER_MAX_ERROR);
         }
 
         UserProjectGroup userProjectGroup = new UserProjectGroup();
