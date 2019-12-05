@@ -30,7 +30,6 @@ public class UserUpdateForm {
     @ApiModelProperty("固定电话")
     private String fixPhone;
 
-    @NotNull(message = "身份证号不能为空")
     @ApiModelProperty("身份证号")
     private String idCard;
 
