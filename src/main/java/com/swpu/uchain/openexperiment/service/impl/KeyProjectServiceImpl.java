@@ -184,8 +184,13 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     private ProjectStatus getNextStatusByRoleAndOperation(RoleType roleType, OperationType operationType){
         ProjectStatus keyProjectStatus;
+        //如果驳回的操作是老师或者实验室主任进行的话，则是驳回修改，其他的就是立项失败
         if (operationType == OperationType.REJECT) {
-            keyProjectStatus = ProjectStatus.REJECT_MODIFY;
+            if (roleType.equals(RoleType.LAB_ADMINISTRATOR) || roleType.equals(RoleType.MENTOR)) {
+                keyProjectStatus = ProjectStatus.REJECT_MODIFY;
+            }else {
+                keyProjectStatus = ProjectStatus.REJECT_MODIFY;
+            }
             return keyProjectStatus;
         }
         switch (roleType.getValue()){
@@ -225,6 +230,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         if (user == null){
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
+
         //需要生成编号，通过操作人来判断学院信息
         Integer college = getUserService.getCurrentUser().getInstitute();
         if (college == null){
@@ -260,8 +266,8 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result agreeKeyProjectByLabAdministrator(List<KeyProjectCheck> list) {
-
-        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR, OperationType.AGREE,list);
+        //重点项目审核同意后直接相当于上报
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR, OperationType.REPORT,list);
     }
 
     @Override

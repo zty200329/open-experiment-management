@@ -1098,21 +1098,17 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result rejectProjectApplyByLabAdministrator(List<ProjectCheckForm> formList) {
-        //TODO 身份验证
 
         return rejectProjectApply(formList, OperationUnit.LAB_ADMINISTRATOR, OperationType.REJECT);
     }
 
     @Override
     public Result rejectProjectApplyBySecondaryUnit(List<ProjectCheckForm> formList) {
-        //TODO 身份验证
-
         return rejectProjectApply(formList, OperationUnit.SECONDARY_UNIT, OperationType.REJECT);
     }
 
     @Override
     public Result rejectProjectApplyByFunctionalDepartment(List<ProjectCheckForm> formList) {
-        //TODO 身份验证
 
         return rejectProjectApply(formList, OperationUnit.FUNCTIONAL_DEPARTMENT, OperationType.REJECT);
     }
@@ -1137,11 +1133,9 @@ public class ProjectServiceImpl implements ProjectService {
     Result rejectProjectApply(List<ProjectCheckForm> formList, OperationUnit operationUnit, OperationType operationType) {
         User user = getUserService.getCurrentUser();
         List<OperationRecord> list = new LinkedList<>();
-        Integer rightProjectStatus = null;
+        Integer rightProjectStatus;
         switch (operationUnit.getValue()) {
-            case 4:
-                rightProjectStatus = ProjectStatus.DECLARE.getValue();
-                break;
+            //不验证实验室的状态
             case 5:
                 rightProjectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
                 break;
@@ -1155,9 +1149,11 @@ public class ProjectServiceImpl implements ProjectService {
         for (ProjectCheckForm form : formList
         ) {
             Integer status = projectGroupMapper.selectByPrimaryKey(form.getProjectId()).getStatus();
-            if (!rightProjectStatus.equals(status)) {
+            //验证当前状态
+            if (!rightProjectStatus.equals(status) && operationUnit!= OperationUnit.LAB_ADMINISTRATOR ) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
+            //批量插入数据
             OperationRecord operationRecord = new OperationRecord();
 
             operationRecord.setRelatedId(form.getProjectId());
@@ -1166,7 +1162,12 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecord.setOperationType(operationType.getValue());
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
             //修改状态
-            updateProjectStatus(form.getProjectId(), ProjectStatus.REJECT_MODIFY.getValue());
+            if (operationUnit == OperationUnit.LAB_ADMINISTRATOR  ||
+                operationUnit == OperationUnit.MENTOR) {
+                updateProjectStatus(form.getProjectId(), ProjectStatus.REJECT_MODIFY.getValue());
+            }else {
+                updateProjectStatus(form.getProjectId(), ProjectStatus.ESTABLISH_FAILED.getValue());
+            }
             list.add(operationRecord);
         }
         recordMapper.multiInsert(list);

@@ -42,7 +42,7 @@ public class KeyProjectInvokeController {
     }
 
 
-    @ApiOperation("实验室主任同意带审核项目")
+    @ApiOperation("实验室主任同意待审核项目")
     @PostMapping(value = "/agreeKeyProjectByLabAdministrator")
     public Result agreeKeyProjectByLabAdministrator(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.agreeKeyProjectByLabAdministrator(list);
@@ -74,7 +74,6 @@ public class KeyProjectInvokeController {
 
 
     @ApiOperation("实验室主任上报已审核项目")
-    @PostMapping(value = "/reportKeyProjectByLabAdministrator")
     public Result reportKeyProjectByLabAdministrator(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.reportKeyProjectByLabAdministrator(list);
     }
