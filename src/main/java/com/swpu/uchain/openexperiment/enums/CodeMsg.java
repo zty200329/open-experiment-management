@@ -45,7 +45,7 @@ public enum CodeMsg {
     PROJECT_STATUS_IS_NOT_DECLARE(1501,"项目状态不是申报状态"),
     PROJECT_IS_NOT_LAB_ALLOWED(1502,"项目非实验室审核通过状态"),
     PROJECT_STATUS_IS_NOT_CONCLUDED(1503,"项目非结题状态"),
-    PROJECT_GROUP_INFO_CANT_CHANGE(1504, "项目非实验室上报状态，无法修改"),
+    PROJECT_GROUP_INFO_CANT_CHANGE(1504, "当前项目状态不允许进行修改"),
     REACH_NUM_MAX(1505,"已经达到人数限制,无法进行申请" ),
     PROJECT_CURRENT_STATUS_ERROR(1506,"当前项目状态不支持该操作"),
     PROJECT_TYPE_NULL_ERROR(1507,"项目类型不能为空"),

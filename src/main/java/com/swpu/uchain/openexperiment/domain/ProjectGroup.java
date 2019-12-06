@@ -152,6 +152,8 @@ public class ProjectGroup implements Serializable {
     @Null
     private Integer whetherCommitKeyApply;
 
+    @Null
+    private Integer keyProjectStatus;
     /**
      * 所属学院  {@link CollegeType#getValue()}
      */

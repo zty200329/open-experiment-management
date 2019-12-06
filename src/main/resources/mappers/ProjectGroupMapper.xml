@@ -110,6 +110,7 @@
         <result column="main_content" jdbcType="LONGVARCHAR" property="mainContent"/>
         <result column="apply_funds" property="applyFunds"/>
         <result column="is_open_topic" jdbcType="INTEGER" property="isOpenTopic"/>
+        <result column="key_project_status" property="keyProjectStatus"/>
     </resultMap>
 
     <resultMap id="ProjectTableInfoResultMap" type="com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo">
@@ -180,7 +181,6 @@
     update openexperiment.project_group
     set address = #{address,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      creator_id = #{creatorId,jdbcType=BIGINT},
       end_time = #{endTime,jdbcType=TIMESTAMP},
       experiment_condition = #{experimentCondition,jdbcType=VARCHAR},
       suggest_group_type = #{suggestGroupType,jdbcType=INTEGER},
@@ -257,6 +257,7 @@
            is_open_topic,
            project_group.`status`,
            key_project_status.project_id as whetherCommitKeyApply,
+           key_project_status.status as key_project_status,
            update_time,
            main_Content,
            apply_funds

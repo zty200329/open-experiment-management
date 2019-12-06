@@ -182,7 +182,7 @@ public class ProjectServiceImpl implements ProjectService {
         try {
             Date startTime = dateFormat.parse("2019-12-05");
             form.setStartTime(startTime);
-            Date endTime = new Date();
+            Date endTime;
             if (form.getProjectType().equals(ProjectType.GENERAL.getValue())) {
                 endTime = dateFormat.parse("2020-06-01");
             }else {
@@ -224,7 +224,7 @@ public class ProjectServiceImpl implements ProjectService {
         //设置项目创建编号
         String serialNumber = projectGroupMapper.getMaxSerialNumberByCollege(college);
         //计算编号并在数据库中插入编号
-        projectGroupMapper.updateProjectSerialNumber(projectGroup.getId(), SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), serialNumber));
+        projectGroupMapper.updateProjectTempSerialNumber(projectGroup.getId(), SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), serialNumber));
 
 
 //        String[] teacherCodes = form.getTeacherCodes();
@@ -263,37 +263,36 @@ public class ProjectServiceImpl implements ProjectService {
         if (userProjectGroup == null) {
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
-        //状态不允许修改
-        if (!projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())) {
+        //状态不是申报或者退回修改不允许修改
+        if (!(projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) ||
+                projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()) )) {
             return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
         }
         //修改的话状态修改为申报状态
         projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
 
+        //设置创建者
+        projectGroup.setCreatorId(Long.valueOf(currentUser.getCode()));
+        //固定时间
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date startTime = dateFormat.parse("2019-12-05");
+            updateProjectApplyForm.setStartTime(startTime);
+            Date endTime;
+            if (updateProjectApplyForm.getProjectType().equals(ProjectType.GENERAL.getValue())) {
+                endTime = dateFormat.parse("2020-06-01");
+            }else {
+                endTime = dateFormat.parse("2020-11-01");
+            }
+            updateProjectApplyForm.setEndTime(endTime);
+        } catch (ParseException e) {
+            throw new GlobalException(CodeMsg.TIME_DEFINE_ERROR);
+        }
+
+
         //更新项目组基本信息
         BeanUtils.copyProperties(updateProjectApplyForm, projectGroup);
         update(projectGroup);
-        userProjectService.deleteByProjectGroupId(projectGroup.getId());
-        String[] stuCodes = null;
-        String[] teacherCodes = null;
-
-        //更新成员信息--不需要
-//        if (updateProjectApplyForm.getStuCodes() != null ) {
-//            stuCodes = new String[updateProjectApplyForm.getStuCodes().length];
-//            for (int i = 0; i < updateProjectApplyForm.getStuCodes().length; i++) {
-//                stuCodes[i] = updateProjectApplyForm.getStuCodes()[i].toString();
-//            }
-//        }
-//        if (updateProjectApplyForm.getTeacherCodes() != null) {
-//            teacherCodes = new String[updateProjectApplyForm.getTeacherCodes().length];
-//            for (int i = 0; i < updateProjectApplyForm.getTeacherCodes().length; i++) {
-//                teacherCodes[i] = updateProjectApplyForm.getTeacherCodes()[i].toString();
-//            }
-//        }
-//
-//        userProjectService.addStuAndTeacherJoin(stuCodes, teacherCodes, projectGroup.getId());
-        //修改项目状态,重新开始申报
-//        updateProjectStatus(projectGroup.getId(), ProjectStatus.ESTABLISH.getValue());
 
         OperationRecord operationRecord = new OperationRecord();
         operationRecord.setRelatedId(updateProjectApplyForm.getProjectGroupId());
@@ -561,13 +560,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getToBeConcludingProject() {
-        //TODO 身份验证
         return getCheckInfo(ProjectStatus.ESTABLISH);
     }
 
     @Override
     public Result getIntermediateInspectionProject() {
-        //TODO 身份验证
         return getCheckInfo(ProjectStatus.MID_TERM_INSPECTION);
     }
 
@@ -652,6 +649,12 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success(checkProjectVOs);
     }
 
+    /**
+     * 验证项目状态
+     * @param projectIdList
+     * @param status 正确的项目状态
+     * @return
+     */
     private boolean checkProjectStatus(List<Long> projectIdList, Integer status) {
         int count = projectGroupMapper.selectSpecifiedProjectList(projectIdList, status);
         return count == projectIdList.size();
@@ -692,10 +695,42 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional(rollbackFor = GlobalException.class)
-    public Result reportToCollegeLeader(List<Long> projectGroupIdList) {
+    public Result reportToCollegeLeader(List<ProjectCheckForm> formList) {
         //时间限制验证
         timeLimitService.validTime(TimeLimitType.LAB_REPORT_LIMIT);
-        return reportToHigherUnit(projectGroupIdList, ProjectStatus.LAB_ALLOWED, OperationUnit.LAB_ADMINISTRATOR);
+
+        User user = getUserService.getCurrentUser();
+        List<Long> projectGroupIdList = new LinkedList<>();
+        for (ProjectCheckForm projectCheckForm : formList) {
+            projectGroupIdList.add(projectCheckForm.getProjectId());
+        }
+
+        //验证项目状态
+        if (!checkProjectStatus(projectGroupIdList, ProjectStatus.DECLARE.getValue())) {
+            throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+        }
+
+        projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
+
+
+        List<OperationRecord> list = new ArrayList<>();
+        //添加历史记录
+        for (ProjectCheckForm form : formList
+        ) {
+            OperationRecord operationRecord = new OperationRecord();
+            operationRecord.setRelatedId(form.getProjectId());
+            operationRecord.setOperationReason(form.getReason());
+            operationRecord.setOperationType(OperationType.REPORT.getValue());
+            operationRecord.setOperationUnit(OperationUnit.LAB_ADMINISTRATOR.getValue());
+            operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
+            list.add(operationRecord);
+
+            projectGroupMapper.updateProjectStatus(form.getProjectId(),ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
+        }
+        //存储上报记录信息
+        recordMapper.multiInsert(list);
+
+        return Result.success();
     }
 
     @Override
@@ -1098,7 +1133,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result rejectProjectApplyByLabAdministrator(List<ProjectCheckForm> formList) {
-
         return rejectProjectApply(formList, OperationUnit.LAB_ADMINISTRATOR, OperationType.REJECT);
     }
 

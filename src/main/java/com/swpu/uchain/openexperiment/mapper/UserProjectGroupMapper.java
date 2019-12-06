@@ -72,6 +72,12 @@ public interface UserProjectGroupMapper {
      */
     Integer selectStuCount(@Param("projectId") Long id,@Param("status") Integer status);
 
+    /**
+     * 获取已加入人数数量
+     * @param projectId
+     * @param memberRole
+     * @return
+     */
     Integer getMemberAmountOfProject(@Param("projectId")Long projectId,@Param("memberRole")Integer memberRole);
 
     /**

@@ -8,8 +8,10 @@ import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.form.query.HistoryQueryProjectInfo;
 import com.swpu.uchain.openexperiment.result.Result;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -128,10 +130,10 @@ public interface ProjectService {
     /**
      * 上报学院领导
      *
-     * @param projectGroupIdList
+     * @param formList
      * @return
      */
-    Result reportToCollegeLeader(List<Long> projectGroupIdList);
+    Result reportToCollegeLeader(List<ProjectCheckForm> formList);
 
     /**
      * 获取当前指导老师的项目成员审批列表
