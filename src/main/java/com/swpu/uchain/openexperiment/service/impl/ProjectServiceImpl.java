@@ -222,16 +222,10 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         //设置项目创建编号
-        String serialNumber = projectGroupMapper.getMaxSerialNumberByCollege(college);
+        String maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(college);
         //计算编号并在数据库中插入编号
-        projectGroupMapper.updateProjectTempSerialNumber(projectGroup.getId(), SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), serialNumber));
+        projectGroupMapper.updateProjectTempSerialNumber(projectGroup.getId(), SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), maxTempSerialNumber));
 
-
-//        String[] teacherCodes = form.getTeacherCodes();
-
-        //在指导教师中添加当前用户
-//        String[] teacherArray = Arrays.copyOf(teacherCodes,teacherCodes.length+1);
-//        teacherArray[teacherArray.length-1] = currentUser.getCode();
 
         String[] teacherArray = new String[1];
         teacherArray[0] = currentUser.getCode();
@@ -587,13 +581,16 @@ public class ProjectServiceImpl implements ProjectService {
         for (CheckProjectVO checkProjectVO : checkProjectVOs) {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
             List<UserMemberVO> guidanceTeachers = new ArrayList<>();
+            //如果是老师则加入数组
             for (UserProjectGroup userProjectGroup : userProjectGroups
             ) {
-                UserMemberVO userMemberVO = new UserMemberVO();
-                userMemberVO.setMemberRole(userProjectGroup.getMemberRole());
-                userMemberVO.setUserId(userProjectGroup.getUserId());
-                userMemberVO.setUserName(userMapper.selectByUserCode(String.valueOf(userProjectGroup.getUserId())).getRealName());
-                guidanceTeachers.add(userMemberVO);
+                if (userProjectGroup.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
+                    UserMemberVO userMemberVO = new UserMemberVO();
+                    userMemberVO.setMemberRole(userProjectGroup.getMemberRole());
+                    userMemberVO.setUserId(userProjectGroup.getUserId());
+                    userMemberVO.setUserName(userMapper.selectByUserCode(String.valueOf(userProjectGroup.getUserId())).getRealName());
+                    guidanceTeachers.add(userMemberVO);
+                }
             }
             checkProjectVO.setGuidanceTeachers(guidanceTeachers);
             checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(checkProjectVO.getId(), null));
