@@ -72,7 +72,7 @@ public class CreateProjectApplyForm {
     private Integer isOpenTopic;
 
     @ApiModelProperty("指导老师编号--选填")
-    private String[] teacherCodes;
+    private String anotherTeacherCodes;
 
     @ApiModelProperty("学生编号--选填,如果开放选题选择否则不能添加学生")
     private String[] stuCodes;

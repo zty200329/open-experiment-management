@@ -66,6 +66,8 @@ public enum CodeMsg {
     GENERAL_PROJECT_CANT_APPLY(1522,"普通项目不得进行重点项目申请"),
     KEY_PROJECT_APPLY_MATERIAL_EMPTY(1523,"证明材料为空"),
     PROJECT_USER_MAX_ERROR(1524,"项目组成员达到最大值"),
+    FIT_PEOPLE_LIMIT_ERROR(1525,"添加人数不在适应人数范围内"),
+    FIT_PEOPLE_ERROR(1526,"限选人数参数错误"),
 
 
 
