@@ -133,6 +133,7 @@
 
     <resultMap id="CheckProjectResultMap" type="com.swpu.uchain.openexperiment.VO.project.CheckProjectVO">
         <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="apply_funds" property="applyFunds"/>
         <result column="address" jdbcType="VARCHAR" property="address" />
         <result column="is_open_topic" property="isOpenTopic"/>
         <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
@@ -311,6 +312,7 @@
            openexperiment.project_group.is_open_topic,
            openexperiment.project_group.serial_number,
            openexperiment.project_group.id,
+           project_group.apply_funds,
            openexperiment.project_group.project_name,
            openexperiment.project_group.experiment_type,
            openexperiment.project_group.total_hours,

@@ -23,7 +23,6 @@ public class UserUpdateForm {
     @ApiModelProperty("密码")
     private String password;
 
-    @NotNull(message = "邮箱号不能为空")
     @ApiModelProperty("邮箱号")
     private String email;
 

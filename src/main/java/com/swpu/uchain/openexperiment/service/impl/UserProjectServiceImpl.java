@@ -110,12 +110,12 @@ public class UserProjectServiceImpl implements UserProjectService {
         timeLimitService.validTime(TimeLimitType.JOIN_APPLY_LIMIT);
 
         User user = getUserService.getCurrentUser();
-        if (user.getMobilePhone() == null || user.getQqNum() ==null) {
+        if (user.getMobilePhone() == null || user.getQqNum() == null) {
             throw new GlobalException(CodeMsg.USER_INFO_NOT_COMPLETE);
         }
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(joinProjectApplyForm.getProjectGroupId());
 
-        if (projectGroup == null){
+        if (projectGroup == null) {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
 
@@ -124,10 +124,10 @@ public class UserProjectServiceImpl implements UserProjectService {
 
         String limitGrade = projectGroup.getLimitGrade();
         String[] limitGradeArr = strToStrArr(limitGrade);
-        if (limitGradeArr == null){
+        if (limitGradeArr == null) {
             allowed += 1;
-        }else {
-            for (String grade:limitGradeArr
+        } else {
+            for (String grade : limitGradeArr
             ) {
                 if (grade.equals(user.getGrade().toString())) {
                     allowed += 1;
@@ -138,12 +138,12 @@ public class UserProjectServiceImpl implements UserProjectService {
 
         String limitCollege = projectGroup.getLimitCollege();
         String[] limitCollegeArr = strToStrArr(limitCollege);
-        if (limitCollegeArr == null){
+        if (limitCollegeArr == null) {
             allowed += 1;
-        }else {
-            for (String grade:limitCollegeArr
+        } else {
+            for (String grade : limitCollegeArr
             ) {
-                if (grade.equals("\""+user.getInstitute().toString()+"\"")) {
+                if (grade.equals("\"" + user.getInstitute().toString() + "\"")) {
                     allowed += 1;
                     log.info("学院符合要求----");
                 }
@@ -153,12 +153,12 @@ public class UserProjectServiceImpl implements UserProjectService {
         String limitMajor = projectGroup.getLimitMajor();
         String[] limitMajorArr = strToStrArr(limitMajor);
         //大类专业直接通过
-        if (limitMajorArr == null || user.getMajor().equals("2019")){
+        if (limitMajorArr == null || user.getMajor().equals("2019")) {
             allowed += 1;
-        }else {
-            for (String grade:limitMajorArr
+        } else {
+            for (String grade : limitMajorArr
             ) {
-                if (grade.equals("\""+user.getMajor()+"\"")) {
+                if (grade.equals("\"" + user.getMajor() + "\"")) {
                     allowed += 1;
                     log.info("专业符合要求----");
                 }
@@ -170,32 +170,26 @@ public class UserProjectServiceImpl implements UserProjectService {
 
 
         //验证项目状态
-        if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue())){
+        if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue())) {
             return Result.error(CodeMsg.PROJECT_IS_NOT_LAB_ALLOWED);
         }
         //判断已经申请和申请被拒绝
-        if (selectByProjectGroupIdAndUserId(projectGroup.getId(), Long.valueOf(user.getCode())) != null){
+        if (selectByProjectGroupIdAndUserId(projectGroup.getId(), Long.valueOf(user.getCode())) != null) {
             return Result.error(CodeMsg.ALREADY_APPLY);
         }
-        //检验申请条件
-        Result result = checkUserMatch(user, projectGroup);
         //检验通过
-        if (result.getCode().intValue()
-                == Result.success().getCode().intValue()){
-            UserProjectGroup userProjectGroup = new UserProjectGroup();
-            userProjectGroup.setMemberRole(MemberRole.NORMAL_MEMBER.getValue());
-            userProjectGroup.setPersonalJudge(joinProjectApplyForm.getPersonalJudge());
-            userProjectGroup.setProjectGroupId(joinProjectApplyForm.getProjectGroupId());
-            userProjectGroup.setStatus(JoinStatus.APPLYING.getValue());
-            userProjectGroup.setJoinTime(new Date());
-            userProjectGroup.setUpdateTime(new Date());
-            userProjectGroup.setUserId(Long.valueOf(user.getCode()));
-            userProjectGroup.setTechnicalRole(userProjectGroup.getTechnicalRole());
-            if (insert(userProjectGroup)) {
-                return Result.success("已申请");
-            }
-        }
-        return result;
+        UserProjectGroup userProjectGroup = new UserProjectGroup();
+        userProjectGroup.setMemberRole(MemberRole.NORMAL_MEMBER.getValue());
+        userProjectGroup.setPersonalJudge(joinProjectApplyForm.getPersonalJudge());
+        userProjectGroup.setProjectGroupId(joinProjectApplyForm.getProjectGroupId());
+        userProjectGroup.setStatus(JoinStatus.APPLYING.getValue());
+        userProjectGroup.setJoinTime(new Date());
+        userProjectGroup.setUpdateTime(new Date());
+        userProjectGroup.setUserId(Long.valueOf(user.getCode()));
+        userProjectGroup.setTechnicalRole(userProjectGroup.getTechnicalRole());
+        //入库
+        insert(userProjectGroup);
+        return Result.success("已申请");
     }
 
     @Override
@@ -204,18 +198,6 @@ public class UserProjectServiceImpl implements UserProjectService {
         if (users.size() < projectGroup.getFitPeopleNum()
                 && selectByProjectGroupId(projectGroup.getId()).size()
                 < CountUtil.getMaxApplyNum(projectGroup.getFitPeopleNum())){
-//            if (projectGroup.getLimitGrade() != null
-//                    && projectGroup.getLimitGrade().intValue() != user.getGrade().intValue()){
-//                return Result.error(CodeMsg.NOT_MATCH_LIMIT);
-//            }
-//            if (projectGroup.getLimitCollege() != null
-//                    && !projectGroup.getLimitCollege().equals(user.getInstitute())){
-//                return Result.error(CodeMsg.NOT_MATCH_LIMIT);
-//            }
-//            if (projectGroup.getLimitMajor() != null
-//                    && !projectGroup.getLimitMajor().equals(user.getMajor())){
-//                return Result.error(CodeMsg.NOT_MATCH_LIMIT);
-//            }
             return Result.success();
         }
         return Result.error(CodeMsg.REACH_NUM_MAX);
