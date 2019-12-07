@@ -535,20 +535,16 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getPendingApprovalProjectByLabAdministrator() {
-        //TODO 身份验证
         return getCheckInfo(ProjectStatus.DECLARE);
     }
 
     @Override
     public Result getPendingApprovalProjectBySecondaryUnit() {
-        //TODO 身份验证
-
         return getCheckInfo(ProjectStatus.LAB_ALLOWED_AND_REPORTED);
     }
 
     @Override
     public Result getPendingApprovalProjectByFunctionalDepartment() {
-        //TODO 身份验证
         return getCheckInfo(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED);
     }
 
@@ -1054,6 +1050,7 @@ public class ProjectServiceImpl implements ProjectService {
         userProjectGroup.setProjectGroupId(joinForm.getProjectGroupId());
         userProjectGroup.setMemberRole(MemberRole.NORMAL_MEMBER.getValue());
         userProjectGroup.setStatus(JoinStatus.JOINED.getValue());
+        userProjectGroup.setJoinTime(new Date());
         userProjectGroupMapper.insert(userProjectGroup);
         return Result.success();
     }

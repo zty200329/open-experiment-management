@@ -19,6 +19,11 @@ public class ProjectGroupDetailVO {
     private Long id;
 
     /**
+     * 所属学院
+     */
+    private Integer subordinateCollege;
+
+    /**
      * 项目编号
      */
     private String serialNumber;

@@ -37,6 +37,7 @@
     <resultMap id="ProjectGroupDetailVOResultMap" type="com.swpu.uchain.openexperiment.VO.project.ProjectGroupDetailVO">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="subordinate_college" property="subordinateCollege"/>
         <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
@@ -432,6 +433,7 @@
                project_group.main_Content,
                project_group.apply_funds,
                project_group.is_open_topic,
+               project_group.subordinate_college,
                key_project_status.status as key_project_status,
                key_project_status.project_id as whether_commit_key_apply,
                user_project_group.user_id        as u_code,
