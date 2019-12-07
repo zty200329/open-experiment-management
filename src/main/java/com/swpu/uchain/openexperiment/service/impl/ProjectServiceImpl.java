@@ -168,6 +168,8 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         User currentUser = getUserService.getCurrentUser();
+
+        //验证学院信息
         Integer college = currentUser.getInstitute();
         if (college == null) {
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
@@ -248,7 +250,7 @@ public class ProjectServiceImpl implements ProjectService {
         //判定数量
         if (stuCodes != null && stuCodes.length > form.getFitPeopleNum()) {
             for (String stuCode : stuCodes) {
-                //判断用户信息是否完整
+                //判断用户信息是否完整(当前教师和添加的教师)
                 User addUser = userMapper.selectByUserCode(stuCode);
                 if (addUser.getMobilePhone() == null) {
                     throw new GlobalException(CodeMsg.ADD_USER_INFO_NOT_COMPLETE);

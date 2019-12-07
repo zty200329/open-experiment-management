@@ -67,6 +67,9 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     public Result createKeyApply(KeyProjectApplyForm form) {
 
         User user = getUserService.getCurrentUser();
+        if (user.getMobilePhone() == null) {
+            throw new GlobalException(CodeMsg.USER_INFO_NOT_COMPLETE);
+        }
 
         //验证项目是否存在
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(form.getProjectId());
