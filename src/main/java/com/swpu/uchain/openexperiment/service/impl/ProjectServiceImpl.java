@@ -718,7 +718,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         //验证项目状态
-        if (!checkProjectStatus(projectGroupIdList, ProjectStatus.DECLARE.getValue())) {
+        if (!checkProjectStatus(projectGroupIdList, ProjectStatus.LAB_ALLOWED.getValue())) {
             throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
         }
 
