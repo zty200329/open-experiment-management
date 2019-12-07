@@ -326,7 +326,7 @@ public class ProjectServiceImpl implements ProjectService {
         //设置当前用户的所有项目VO
         List<MyProjectVO> projectVOS = new ArrayList<>();
         for (ProjectGroup projectGroup : projectGroups) {
-            Integer numberOfSelectedStu = userProjectGroupMapper.selectStuCount(projectGroup.getId(), null);
+            Integer numberOfSelectedStu = userProjectGroupMapper.selectStuCount(projectGroup.getId(), JoinStatus.JOINED.getValue());
             MyProjectVO myProjectVO = new MyProjectVO();
             Integer status = keyProjectStatusMapper.getStatusByProjectId(projectGroup.getId());
             if (status != null) {
@@ -717,6 +717,7 @@ public class ProjectServiceImpl implements ProjectService {
             projectGroupIdList.add(projectCheckForm.getProjectId());
         }
 
+
         //验证项目状态
         if (!checkProjectStatus(projectGroupIdList, ProjectStatus.LAB_ALLOWED.getValue())) {
             throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
@@ -729,6 +730,12 @@ public class ProjectServiceImpl implements ProjectService {
         //添加历史记录
         for (ProjectCheckForm form : formList
         ) {
+            //验证项目成员数量限制
+            Integer amount = userProjectGroupMapper.selectStuCount(form.getProjectId(),JoinStatus.JOINED.getValue());
+            if (amount < 3 || amount > 6){
+                throw new GlobalException(CodeMsg.PROJECT_FIT_PEOPLE_ERROR);
+            }
+
             OperationRecord operationRecord = new OperationRecord();
             operationRecord.setRelatedId(form.getProjectId());
             operationRecord.setOperationReason(form.getReason());
@@ -1056,8 +1063,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         //不得超过最大数量限制
-        Integer amount = userProjectGroupMapper.getMemberAmountOfProject(joinForm.getProjectGroupId(),MemberRole.NORMAL_MEMBER.getValue()) +
-                userProjectGroupMapper.getMemberAmountOfProject(joinForm.getProjectGroupId(),MemberRole.PROJECT_GROUP_LEADER.getValue());
+        Integer amount = userProjectGroupMapper.selectStuCount(joinForm.getProjectGroupId(),JoinStatus.JOINED.getValue());
 
         //数量限制判断
         ProjectGroup projectGroup = selectByProjectGroupId(joinForm.getProjectGroupId());
@@ -1084,8 +1090,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         //验证人数限制
-        Integer amount =   userProjectGroupMapper.getMemberAmountOfProject(joinForm.getProjectGroupId(),MemberRole.NORMAL_MEMBER.getValue()) +
-                userProjectGroupMapper.getMemberAmountOfProject(joinForm.getProjectGroupId(),MemberRole.PROJECT_GROUP_LEADER.getValue());
+        Integer amount = userProjectGroupMapper.selectStuCount(joinForm.getProjectGroupId(),JoinStatus.JOINED.getValue());
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(joinForm.getProjectGroupId());
         if (amount <= projectGroup.getFitPeopleNum()) {
             throw new GlobalException(CodeMsg.FIT_PEOPLE_LIMIT_ERROR);

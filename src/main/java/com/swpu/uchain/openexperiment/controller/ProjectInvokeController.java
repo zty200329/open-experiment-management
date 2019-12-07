@@ -148,7 +148,7 @@ public class ProjectInvokeController {
 //    }
 
 
-    @ApiOperation("上报学院领导(二级单位)--(实验室主任)可使用")
+    @ApiOperation("普通项目拟题审批")
     @PostMapping(value = "/reportToCollegeLeader", name = "上报学院领导")
     public Result reportToCollegeLeader(@Valid @RequestBody List<ProjectCheckForm> formList){
         if (formList == null){
