@@ -128,7 +128,7 @@ public class ProjectInvokeController {
         return projectService.agreeToBeConcludingProject(list);
     }
 
-    @ApiOperation("实验室批准操作")
+    @ApiOperation("实验室拟题批准操作")
     @PostMapping(value = "/approveProjectApplyByLabAdministrator")
     public Result approveProjectApplyByLabAdministrator(@RequestBody List<ProjectCheckForm> list){
         return projectService.approveProjectApplyByLabAdministrator(list);
@@ -148,7 +148,7 @@ public class ProjectInvokeController {
 //    }
 
 
-    @ApiOperation("普通项目拟题审批")
+    @ApiOperation("普通项目审批")
     @PostMapping(value = "/reportToCollegeLeader", name = "上报学院领导")
     public Result reportToCollegeLeader(@Valid @RequestBody List<ProjectCheckForm> formList){
         if (formList == null){

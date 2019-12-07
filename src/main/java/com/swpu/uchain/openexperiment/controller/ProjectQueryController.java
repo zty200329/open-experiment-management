@@ -73,7 +73,7 @@ public class ProjectQueryController {
         return projectService.getProjectDetailById(projectId);
     }
 
-    @ApiOperation("实验室获取待立项审核的项目")
+    @ApiOperation("实验室获取待拟题的项目")
     @GetMapping(value = "getPendingApprovalProjectByLabAdministrator")
     public Result getPendingApprovalProjectByLabAdministrator (){
         return projectService.getPendingApprovalProjectByLabAdministrator();
@@ -124,7 +124,7 @@ public class ProjectQueryController {
         return projectService.getToBeReportedProjectBySecondaryUnit();
     }
 
-    @ApiOperation("实验室主任查看待上报项目")
+    @ApiOperation("实验室主任查看待普通项目审批项目")
     @GetMapping("/getToBeReportedProjectByLabLeader")
     public Result getToBeReportedProjectByLabLeader(){
         return projectService.getToBeReportedProjectByLabLeader();

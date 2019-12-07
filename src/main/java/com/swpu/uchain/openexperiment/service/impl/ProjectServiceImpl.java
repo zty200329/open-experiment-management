@@ -247,8 +247,16 @@ public class ProjectServiceImpl implements ProjectService {
         String[] stuCodes = form.getStuCodes();
         //判定数量
         if (stuCodes != null && stuCodes.length > form.getFitPeopleNum()) {
+            for (String stuCode : stuCodes) {
+                //判断用户信息是否完整
+                User addUser = userMapper.selectByUserCode(stuCode);
+                if (addUser.getMobilePhone() == null) {
+                    throw new GlobalException(CodeMsg.ADD_USER_INFO_NOT_COMPLETE);
+                }
+            }
             throw new GlobalException(CodeMsg.FIT_PEOPLE_LIMIT_ERROR);
         }
+
 
         userProjectService.addStuAndTeacherJoin(stuCodes, teacherArray, projectGroup.getId());
         //记录申请信息
@@ -942,14 +950,8 @@ public class ProjectServiceImpl implements ProjectService {
             //如果不是实验室上报状态,抛出异常
             if (role.equals(RoleType.SECONDARY_UNIT.getValue())) {
                 if (!projectGroup.getStatus().equals(projectStatus)) {
-                    throw new GlobalException("项目编号为" + projectGroup.getId() + "的项目非实验室上报状态", CodeMsg.PROJECT_CURRENT_STATUS_ERROR.getCode());
+                    throw new GlobalException("项目编号为" + projectGroup.getId() + "的项目非实验室审核通过", CodeMsg.PROJECT_CURRENT_STATUS_ERROR.getCode());
                 }
-                //设置项目编号
-
-                //获取最大的项目编号
-                String serialNumber = projectGroupMapper.getMaxSerialNumberByCollege(user.getInstitute());
-                //计算编号并在数据库中插入编号
-                projectGroupMapper.updateProjectSerialNumber(form.getProjectId(), SerialNumberUtil.getSerialNumberOfProject(user.getInstitute(), ProjectType.GENERAL.getValue(), serialNumber));
             }
             //根据不同角色设置不同的项目状态
             updateProjectStatus(form.getProjectId(), updateProjectStatus);
@@ -1043,10 +1045,30 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success(joinUnCheckVOS);
     }
 
+    /**
+     * 添加学生到项目组
+     * @param joinForm
+     * @return
+     */
     @Override
     public Result addStudentToProject(JoinForm joinForm) {
         User user = getUserService.getCurrentUser();
         Long userId = Long.valueOf(user.getCode());
+
+        //判断用户信息是否完整
+        User addUser = userMapper.selectByUserCode(joinForm.getUserId().toString());
+        if (addUser.getMobilePhone() == null) {
+            throw new GlobalException(CodeMsg.ADD_USER_INFO_NOT_COMPLETE);
+        }
+
+        ProjectGroup projectGroup = selectByProjectGroupId(joinForm.getProjectGroupId());
+        Integer status = projectGroup.getStatus();
+
+        //验证项目状态
+        if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue()) ) {
+            throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+        }
+
         UserProjectGroup userProjectGroupOfCurrentUser = userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(), userId);
         if (userProjectGroupOfCurrentUser == null || !userProjectGroupOfCurrentUser.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
             throw new GlobalException(CodeMsg.USER_NOT_IN_GROUP);
@@ -1066,7 +1088,6 @@ public class ProjectServiceImpl implements ProjectService {
         Integer amount = userProjectGroupMapper.selectStuCount(joinForm.getProjectGroupId(),JoinStatus.JOINED.getValue());
 
         //数量限制判断
-        ProjectGroup projectGroup = selectByProjectGroupId(joinForm.getProjectGroupId());
         if (projectGroup.getFitPeopleNum() <= amount) {
             throw new GlobalException(CodeMsg.PROJECT_USER_MAX_ERROR);
         }
@@ -1085,7 +1106,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Result removeStudentFromProject(JoinForm joinForm) {
         //验证项目状态
         Integer status = projectGroupMapper.selectByPrimaryKey(joinForm.getProjectGroupId()).getStatus();
-        if (status > ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue()) {
+        if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue())) {
             throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
         }
 

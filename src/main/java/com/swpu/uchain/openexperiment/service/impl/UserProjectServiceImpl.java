@@ -226,7 +226,7 @@ public class UserProjectServiceImpl implements UserProjectService {
 
         //验证项目状态
         Integer status = projectGroupMapper.selectByPrimaryKey(aimForm.getProjectGroupId()).getStatus();
-        if (status > ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue()){
+        if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue())) {
             throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
         }
 

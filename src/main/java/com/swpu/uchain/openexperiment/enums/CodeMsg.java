@@ -34,7 +34,8 @@ public enum CodeMsg {
     ROLE_ACL_HAD_EXIST(1418, "当前角色已拥有该权限,不能重复添加" ),
     MAXIMUM_APPLICATION(1419,"该类型项目申请达到上限"),
     STUDENT_CANT_GAIN_THIS_PERMISSION(1420,"学生无权获得该权限"),
-    USER_INFO_NOT_COMPLETE(1421,"请先完善个人信息"),
+    USER_INFO_NOT_COMPLETE(1421,"用户信息不完整"),
+    ADD_USER_INFO_NOT_COMPLETE(1422,"添加用户信息不完整"),
 
 
 
