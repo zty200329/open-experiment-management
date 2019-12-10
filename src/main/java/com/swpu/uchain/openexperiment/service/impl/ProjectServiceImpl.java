@@ -236,6 +236,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 
         String[] teacherArray = new String[1];
+        teacherArray[0] = currentUser.getCode();
         String secondTeacherCode = form.getAnotherTeacherCodes();
         if (secondTeacherCode != null) {
             teacherArray = new String[2];
