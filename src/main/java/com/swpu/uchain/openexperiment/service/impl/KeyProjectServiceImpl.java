@@ -66,6 +66,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result createKeyApply(KeyProjectApplyForm form) {
 
+        //用户信息不完整
         User user = getUserService.getCurrentUser();
         if (user.getMobilePhone() == null) {
             throw new GlobalException(CodeMsg.USER_INFO_NOT_COMPLETE);

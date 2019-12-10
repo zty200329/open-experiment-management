@@ -252,13 +252,13 @@ public class ProjectServiceImpl implements ProjectService {
         String[] stuCodes = form.getStuCodes();
         //判定数量
         if (stuCodes != null && stuCodes.length > form.getFitPeopleNum()) {
-            for (String stuCode : stuCodes) {
-                //判断用户信息是否完整(当前教师和添加的教师)
-                User addUser = userMapper.selectByUserCode(stuCode);
-                if (addUser.getMobilePhone() == null) {
-                    throw new GlobalException(CodeMsg.ADD_USER_INFO_NOT_COMPLETE);
-                }
-            }
+//            for (String stuCode : stuCodes) {
+//                //判断用户信息是否完整(当前教师和添加的教师)
+//                User addUser = userMapper.selectByUserCode(stuCode);
+//                if (addUser.getMobilePhone() == null) {
+//                    throw new GlobalException(CodeMsg.ADD_USER_INFO_NOT_COMPLETE);
+//                }
+//            }
             throw new GlobalException(CodeMsg.FIT_PEOPLE_LIMIT_ERROR);
         }
 
