@@ -59,7 +59,7 @@ public enum CodeMsg {
     ADD_PROJECT_GROUP_ERROR(1510, "创建项目组异常"),
     ADD_USER_JOIN_ERROR(1511, "用户加入项目异常"),
     STUDENT_CANT_APPLY(1512, "学生无法申请立项"),
-    CURRENT_PROJECT_STATUS_ERROR(1513,"当前项目不支持该操作"),
+    CURRENT_PROJECT_STATUS_ERROR(1513,"当前项目状态不支持该操作"),
     PROJECT_NOT_MODIFY_BY_FUNCTION_DEPARTMENT(1514,"项目未被职能部门修改"),
     LEADING_TEACHER_CONTAINS_ERROR(1515,"指导教师必须包含项目申请人"),
     TOPIC_IS_NOT_OPEN(1516,"选题选择开放,无法在申请立项时指定学生"),
