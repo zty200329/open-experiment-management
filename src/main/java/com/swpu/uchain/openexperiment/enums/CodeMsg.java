@@ -37,6 +37,8 @@ public enum CodeMsg {
     USER_INFO_NOT_COMPLETE(1421,"用户信息不完整,请先完善用户信息"),
     ADD_USER_INFO_NOT_COMPLETE(1422,"添加学生信息不完整"),
     ADD_TEACHER_INFO_NOT_COMPLETE(1422,"添加教师信息不完整"),
+    ADD_TEACHER_NOT_EXIST(1422,"添加教师不存在"),
+
 
 
 

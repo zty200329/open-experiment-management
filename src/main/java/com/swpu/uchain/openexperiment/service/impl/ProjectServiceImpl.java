@@ -235,16 +235,18 @@ public class ProjectServiceImpl implements ProjectService {
         projectGroupMapper.updateProjectTempSerialNumber(projectGroup.getId(), SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), maxTempSerialNumber));
 
 
-        String[] teacherArray = new String[2];
-        teacherArray[0] = currentUser.getCode();
+        String[] teacherArray = new String[1];
         String secondTeacherCode = form.getAnotherTeacherCodes();
         if (secondTeacherCode != null) {
+            teacherArray = new String[2];
+            teacherArray[0] = currentUser.getCode();
             teacherArray[1] = secondTeacherCode;
             //判定用户是否存在
             if (userMapper.selectByUserCode(secondTeacherCode) == null) {
-                throw new GlobalException(CodeMsg.USER_NO_EXIST);
+                throw new GlobalException(CodeMsg.ADD_TEACHER_NOT_EXIST);
             }
         }
+
 
         String[] stuCodes = form.getStuCodes();
         //判定数量

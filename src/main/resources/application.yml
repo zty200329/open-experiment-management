@@ -30,7 +30,7 @@ mybatis:
 ###security###
 jwt:
   secret: swpu-uchain
-  expiration: 12960000
+  expiration: 43000
 #redis
 redis:
   host: localhost
