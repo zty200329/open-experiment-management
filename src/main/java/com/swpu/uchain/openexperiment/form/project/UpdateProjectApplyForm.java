@@ -80,9 +80,11 @@ public class UpdateProjectApplyForm{
     @ApiModelProperty("所需经费支持")
     private Float applyFunds;
 
+    @Null
     @ApiModelProperty("指导老师编号--选填")
     private Integer[] teacherCodes;
 
+    @Null
     @ApiModelProperty("学生编号--选填")
     private Integer[] stuCodes;
 

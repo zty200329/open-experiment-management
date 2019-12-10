@@ -186,6 +186,7 @@
       end_time = #{endTime,jdbcType=TIMESTAMP},
       experiment_condition = #{experimentCondition,jdbcType=VARCHAR},
       suggest_group_type = #{suggestGroupType,jdbcType=INTEGER},
+      apply_funds = #{applyFunds},
       experiment_type = #{experimentType,jdbcType=INTEGER},
       achievement_check = #{achievementCheck,jdbcType=VARCHAR},
       limit_college = #{limitCollege,jdbcType=VARCHAR},
