@@ -52,6 +52,7 @@ public class ProjectServiceImpl implements ProjectService {
     private GetUserService getUserService;
     private UserProjectGroupMapper userProjectGroupMapper;
     private RoleMapper roleMapper;
+    private UserRoleMapper userRoleMapper;
     private OperationRecordMapper recordMapper;
     private UserMapper userMapper;
     private KeyProjectStatusMapper keyProjectStatusMapper;
@@ -69,7 +70,7 @@ public class ProjectServiceImpl implements ProjectService {
                               RoleMapper roleMapper, AmountLimitMapper amountLimitMapper,
                               UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper,
                               KeyProjectStatusMapper keyProjectStatusMapper, ProjectFileMapper projectFileMapper,
-                              TimeLimitService timeLimitService) {
+                              TimeLimitService timeLimitService,UserRoleMapper userRoleMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -87,6 +88,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectFileMapper = projectFileMapper;
         this.timeLimitService = timeLimitService;
         this.amountLimitMapper = amountLimitMapper;
+        this.userRoleMapper = userRoleMapper;
     }
 
     @Override
@@ -194,8 +196,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 
         //判断用户类型
-        if (currentUser.getUserType().intValue() == UserType.STUDENT.getValue()) {
-            Result.error(CodeMsg.STUDENT_CANT_APPLY);
+        if (!userRoleMapper.selectByUserId(Long.valueOf(currentUser.getCode())).getRoleId().equals(RoleType.MENTOR.getValue())) {
+            throw new GlobalException(CodeMsg.ONLY_TEACHER_CAN_APPLY);
         }
 
         //开放选题时,不进行学生选择
