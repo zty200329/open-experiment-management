@@ -81,7 +81,7 @@ public interface UserProjectGroupMapper {
     Integer getMemberAmountOfProject(@Param("projectId")Long projectId,@Param("memberRole")Integer memberRole);
 
     /**
-     * 用于统计银镜申请项目的数量
+     * 用于统计申请项目的数量
      * @param userId 用户ID
      * @param projectType 项目类型
      * @return
