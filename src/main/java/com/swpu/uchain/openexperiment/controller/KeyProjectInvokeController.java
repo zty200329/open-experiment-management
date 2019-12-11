@@ -97,11 +97,16 @@ public class KeyProjectInvokeController {
     }
 
 
-
     @ApiOperation("二级单位主任拒绝待审核项目")
     @PostMapping(value = "/rejectKeyProjectBySecondaryUnit")
     public Result rejectKeyProjectBySecondaryUnit(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.rejectKeyProjectBySecondaryUnit(list);
+    }
+
+    @ApiOperation("二级单位主任拒绝上报项目")
+    @PostMapping(value = "/rejectKeyProjectReportBySecondaryUnit")
+    public Result rejectKeyProjectReportBySecondaryUnit(@Valid @RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.rejectKeyProjectReportBySecondaryUnit(list);
     }
 
     @ApiOperation("职能部门拒绝待审核项目")
@@ -109,6 +114,7 @@ public class KeyProjectInvokeController {
     public Result rejectKeyProjectByFunctionalDepartment(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.rejectKeyProjectByFunctionalDepartment(list);
     }
+
 
     @ApiOperation("职能部门拒绝中期检查项目")
     @PostMapping(value = "/rejectIntermediateInspectionKeyProject")

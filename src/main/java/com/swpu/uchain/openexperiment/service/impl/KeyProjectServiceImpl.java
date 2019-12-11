@@ -197,6 +197,12 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             }
             return keyProjectStatus;
         }
+
+        //如果是上报驳回则是立项失败
+        if (operationType == OperationType.REPORT_REJECT) {
+            return ProjectStatus.ESTABLISH_FAILED;
+        }
+
         switch (roleType.getValue()){
             //如果是指导老师
             case 3:
@@ -376,6 +382,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result rejectKeyProjectBySecondaryUnit(List<KeyProjectCheck> list) {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT, OperationType.REJECT,list);
+    }
+
+    @Override
+    public Result rejectKeyProjectReportBySecondaryUnit(List<KeyProjectCheck> list) {
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT, OperationType.REPORT_REJECT,list);
     }
 
     @Override

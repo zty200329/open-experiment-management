@@ -73,4 +73,6 @@ public interface KeyProjectService {
     Result rejectIntermediateInspectionKeyProject(List<KeyProjectCheck> list);
 
     Result rejectToBeConcludingKeyProject(List<KeyProjectCheck> list);
+
+    Result rejectKeyProjectReportBySecondaryUnit(List<KeyProjectCheck> list);
 }

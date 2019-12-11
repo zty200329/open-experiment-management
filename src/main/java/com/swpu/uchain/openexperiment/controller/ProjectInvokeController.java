@@ -167,10 +167,16 @@ public class ProjectInvokeController {
         return projectService.reportToFunctionalDepartment(projectGroupIdList);
     }
 
-    @ApiOperation(" 实验室驳回项目立项申请")
+    @ApiOperation(" 实验室驳回项目拟题申请")
     @PostMapping(value = "/rejectProjectApplyByLabAdministrator")
     public Result rejectProjectApplyByLabAdministrator(@Valid @RequestBody List<ProjectCheckForm> formList){
         return projectService.rejectProjectApplyByLabAdministrator(formList);
+    }
+
+    @ApiOperation("实验室普通项目上报驳回")
+    @PostMapping(value = "/rejectProjectReportByLabAdministrator")
+    public Result rejectProjectReportByLabAdministrator(@Valid @RequestBody List<ProjectCheckForm> formList){
+        return projectService.rejectProjectReportByLabAdministrator(formList);
     }
 
     @ApiOperation(" 二级单位驳回项目立项申请")

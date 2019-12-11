@@ -265,4 +265,6 @@ public interface ProjectService {
     Result getAllOpenTopicByCondition(QueryConditionForm queryConditionForm);
 
     Result deleteMemberFromProject(Long projectId, Long userId);
+
+    Result rejectProjectReportByLabAdministrator(List<ProjectCheckForm> formList);
 }

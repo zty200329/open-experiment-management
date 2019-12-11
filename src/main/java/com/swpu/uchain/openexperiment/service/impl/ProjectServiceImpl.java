@@ -1203,6 +1203,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public Result rejectProjectReportByLabAdministrator(List<ProjectCheckForm> formList) {
+        return rejectProjectApply(formList, OperationUnit.LAB_ADMINISTRATOR, OperationType.REPORT_REJECT);
+    }
+
+    @Override
     public Result rejectProjectApplyBySecondaryUnit(List<ProjectCheckForm> formList) {
         return rejectProjectApply(formList, OperationUnit.SECONDARY_UNIT, OperationType.REJECT);
     }
