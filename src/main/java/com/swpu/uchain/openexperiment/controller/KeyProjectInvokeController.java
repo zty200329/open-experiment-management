@@ -72,7 +72,6 @@ public class KeyProjectInvokeController {
         return keyProjectService.agreeToBeConcludingKeyProject(list);
     }
 
-
     @ApiOperation("实验室主任上报已审核项目")
     public Result reportKeyProjectByLabAdministrator(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.reportKeyProjectByLabAdministrator(list);

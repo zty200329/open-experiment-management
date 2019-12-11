@@ -352,9 +352,14 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result getHistoricalKeyProjectInfo(HistoryQueryKeyProjectInfo info) {
 
-        // TODO 权限验证
+        User user = getUserService.getCurrentUser();
+        Integer college = user.getInstitute();
+        //职能部门不需要学院信息
+        if (info.getOperationUnit().equals(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue())) {
+            college = null;
+        }
 
-        List<ProjectGroup> list = projectGroupMapper.selectKeyHistoricalInfoByUnitAndOperation(info.getOperationUnit(),info.getOperationType());
+        List<ProjectGroup> list = projectGroupMapper.selectKeyHistoricalInfoByUnitAndOperation(info.getOperationUnit(),info.getOperationType(),college);
         for (ProjectGroup projectGroup:list
         ) {
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(),null));
