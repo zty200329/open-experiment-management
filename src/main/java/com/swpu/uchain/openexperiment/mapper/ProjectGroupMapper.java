@@ -53,8 +53,7 @@ public interface ProjectGroupMapper {
 
     List<ProjectGroup> selectByCollegeIdAndStatus(@Param("college") String college,@Param("projectStatus") Integer projectStatus);
 
-
-    List<CheckProjectVO> selectApplyOrderByTime(@Param("projectStatus") int projectStatus,@Param("projectType") Integer projectType);
+    List<CheckProjectVO> selectApplyOrderByTime(@Param("projectStatus") int projectStatus,@Param("projectType") Integer projectType,@Param("college") Integer college);
 
     List<SelectProjectVO> selectByFuzzyName(@Param("name") String name);
 

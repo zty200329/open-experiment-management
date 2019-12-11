@@ -592,6 +592,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private Result getReportInfo(Integer role) {
+
+        User currentUser = getUserService.getCurrentUser();
+
         Integer projectStatus;
         switch (role) {
             //二级部门(学院领导)
@@ -606,7 +609,7 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
         }
         //获取待上报的普通项目
-        List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus, ProjectType.GENERAL.getValue());
+        List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus, ProjectType.GENERAL.getValue(),currentUser.getInstitute());
         for (CheckProjectVO checkProjectVO : checkProjectVOs) {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
             List<UserMemberVO> guidanceTeachers = new ArrayList<>();
@@ -634,7 +637,10 @@ public class ProjectServiceImpl implements ProjectService {
         if (projectStatus == ProjectStatus.DECLARE) {
             projectType = null;
         }
-        List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(status, projectType);
+
+        User currentUser = getUserService.getCurrentUser();
+
+        List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(status, projectType,currentUser.getInstitute());
         for (CheckProjectVO checkProjectVO : checkProjectVOs) {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
             checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(checkProjectVO.getId(), null));

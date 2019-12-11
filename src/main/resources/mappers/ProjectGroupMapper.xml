@@ -331,6 +331,9 @@
     <if test="projectType!=null">
         and project_type = #{projectType}
     </if>
+    <if  test="college!=null">
+        and subordinate_college = #{college}
+    </if>
     order by create_time desc
   </select>
   <select id="selectByFuzzyName" resultMap="SelectProjectMap">

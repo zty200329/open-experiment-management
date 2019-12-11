@@ -97,7 +97,6 @@ public class ProjectInvokeController {
         return userProjectService.aimUserMemberRole(aimForm);
     }
 
-
     @ApiOperation("职能部门批准立项操作")
     @PostMapping(value = "/agreeEstablish", name = "同意立项")
     public Result agreeEstablish(@Valid @RequestBody List<ProjectCheckForm> projectGroupIdList){
