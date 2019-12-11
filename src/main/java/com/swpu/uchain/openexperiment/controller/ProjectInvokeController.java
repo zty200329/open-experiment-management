@@ -90,7 +90,6 @@ public class ProjectInvokeController {
         return projectService.removeStudentFromProject(joinForm);
     }
 
-
     @ApiOperation("修改项目组成员身份  1.指导教师2.项目组长3.普通成员--可使用")
     @PostMapping(value = "/aimMemberLeader", name = "修改项目组成员身份-")
     public Result aimMemberLeader(@Valid @RequestBody AimForm aimForm){

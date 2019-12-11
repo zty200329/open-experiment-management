@@ -113,11 +113,21 @@ public class UserProjectServiceImpl implements UserProjectService {
         if (user.getMobilePhone() == null || user.getQqNum() == null) {
             throw new GlobalException(CodeMsg.USER_INFO_NOT_COMPLETE);
         }
+
+
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(joinProjectApplyForm.getProjectGroupId());
 
+        //验证项目是否存在
         if (projectGroup == null) {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
+
+        //验证是否已经达到最大数量
+        if (userProjectGroupMapper.selectStuCount(joinProjectApplyForm.getProjectGroupId(),JoinStatus.JOINED.getValue()) >= projectGroup.getFitPeopleNum()) {
+            throw new GlobalException(CodeMsg.PROJECT_USER_MAX_ERROR);
+        }
+
+
 
         //学生是否可以加入判断
         int allowed = 0;
