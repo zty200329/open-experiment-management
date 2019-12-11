@@ -987,7 +987,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<OpenTopicInfo> list = projectGroupMapper.getAllOpenTopic(null);
         for (OpenTopicInfo info : list
         ) {
-            info.setAmountOfSelected(userProjectGroupMapper.getMemberAmountOfProject(info.getId(), null));
+            info.setAmountOfSelected(userProjectGroupMapper.selectStuCount(info.getId(),JoinStatus.JOINED.getValue()));
         }
         return Result.success(list);
     }
