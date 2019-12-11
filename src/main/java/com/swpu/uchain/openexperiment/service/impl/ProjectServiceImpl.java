@@ -194,7 +194,6 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.TIME_DEFINE_ERROR);
         }
 
-
         //判断用户类型
         if (!userRoleMapper.selectByUserId(Long.valueOf(currentUser.getCode())).getRoleId().equals(RoleType.MENTOR.getValue())) {
             throw new GlobalException(CodeMsg.ONLY_TEACHER_CAN_APPLY);
