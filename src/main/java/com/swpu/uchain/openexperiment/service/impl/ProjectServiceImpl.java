@@ -408,6 +408,13 @@ public class ProjectServiceImpl implements ProjectService {
             if (projectGroup == null) {
                 return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
             }
+
+            //数量限制
+            Integer amountOfSelected = userProjectGroupMapper.selectStuCount(projectGroup.getId(),JoinStatus.JOINED.getValue());
+            if (amountOfSelected >= projectGroup.getFitPeopleNum()) {
+                throw new GlobalException(CodeMsg.PROJECT_USER_MAX_ERROR);
+            }
+
             UserProjectGroup userProjectGroup = userProjectService
                     .selectByProjectGroupIdAndUserId(
                             form.getProjectGroupId(),
