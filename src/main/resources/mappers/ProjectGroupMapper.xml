@@ -581,7 +581,7 @@
 
         </where>
     </select>
-    <select id="selectHistoricalInfoByUnitAndOperation" resultMap="ProjectGroupResultMap"
+    <select id="selectHistoricalInfoByUnitCollegeAndOperation" resultMap="ProjectGroupResultMap"
             resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         SELECT
             project_group.id,
@@ -609,6 +609,9 @@
         FROM openexperiment.project_group
         INNER JOIN openexperiment.operation_record ON operation_record.related_id = project_group.id
         WHERE operation_record.operation_unit = #{unit} AND operation_record.operation_type = #{type} AND operation_record.status = 'Y'
+        <if test="college!=null">
+            and operation_college = #{college}
+        </if>
     </select>
     <select id="getMaxSerialNumberByCollege" resultType="java.lang.String">
         select  max(serial_number) from openexperiment.project_group where subordinate_college = #{college}

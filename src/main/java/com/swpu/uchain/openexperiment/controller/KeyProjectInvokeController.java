@@ -96,6 +96,8 @@ public class KeyProjectInvokeController {
         return keyProjectService.rejectKeyProjectByLabAdministrator(list);
     }
 
+
+
     @ApiOperation("二级单位主任拒绝待审核项目")
     @PostMapping(value = "/rejectKeyProjectBySecondaryUnit")
     public Result rejectKeyProjectBySecondaryUnit(@Valid @RequestBody List<KeyProjectCheck> list){

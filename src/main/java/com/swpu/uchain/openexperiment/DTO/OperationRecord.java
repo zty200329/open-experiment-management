@@ -26,6 +26,11 @@ public class OperationRecord {
     private Integer operationUnit;
 
     /**
+     * 操作者所属的学院
+     */
+    private Integer operationCollege;
+
+    /**
      * 操作理由
      */
     private String operationReason;

@@ -1,47 +1,38 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
 import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.VO.limit.AmountAndTypeVO;
 import com.swpu.uchain.openexperiment.VO.project.*;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
-import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
-import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.member.MemberQueryCondition;
 import com.swpu.uchain.openexperiment.form.project.*;
-import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.form.query.HistoryQueryProjectInfo;
+import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
+import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
-import com.swpu.uchain.openexperiment.util.IPUtil;
 import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -321,9 +312,11 @@ public class ProjectServiceImpl implements ProjectService {
         update(projectGroup);
 
         OperationRecord operationRecord = new OperationRecord();
+        operationRecord.setOperationCollege(currentUser.getInstitute());
         operationRecord.setRelatedId(updateProjectApplyForm.getProjectGroupId());
         operationRecord.setOperationType(OperationType.MODIFY.getValue());
         operationRecord.setOperationUnit(OperationUnit.MENTOR.getValue());
+        operationRecord.setOperationExecutorId(Long.valueOf(currentUser.getCode()));
         //设置执行人
         setOperationExecutor(operationRecord);
         recordMapper.insert(operationRecord);
@@ -477,6 +470,7 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new GlobalException(CodeMsg.UPDATE_ERROR);
             }
             OperationRecord operationRecord = new OperationRecord();
+
             operationRecord.setOperationType(operationType.getValue());
             operationRecord.setOperationUnit(operationUnit.getValue());
             operationRecord.setOperationReason(projectCheckForm.getReason());
@@ -694,14 +688,19 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
         }
 
+        User user = getUserService.getCurrentUser();
+
         //存入操作历史
         for (Long projectId : projectGroupIdList
         ) {
             OperationRecord operationRecord = new OperationRecord();
+
             operationRecord.setRelatedId(projectId);
+            operationRecord.setOperationReason(null);
             operationRecord.setOperationUnit(operationUnit.getValue());
             operationRecord.setOperationType(OperationType.REPORT.getValue());
-            setOperationExecutor(operationRecord);
+            operationRecord.setOperationCollege(user.getInstitute());
+            operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
 
             list.add(operationRecord);
         }
@@ -755,6 +754,8 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecord.setOperationType(OperationType.REPORT.getValue());
             operationRecord.setOperationUnit(OperationUnit.LAB_ADMINISTRATOR.getValue());
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
+            operationRecord.setOperationCollege(user.getInstitute());
+
             list.add(operationRecord);
 
             projectGroupMapper.updateProjectStatus(form.getProjectId(),ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
@@ -848,8 +849,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getHistoricalProjectInfo(HistoryQueryProjectInfo info) {
-
-        List<ProjectGroup> list = projectGroupMapper.selectHistoricalInfoByUnitAndOperation(info.getOperationUnit(), info.getOperationType());
+        User user = getUserService.getCurrentUser();
+        Integer college = user.getInstitute();
+        //职能部门不需要学院信息
+        if (info.getOperationUnit().equals(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue())) {
+            college = null;
+        }
+        List<ProjectGroup> list = projectGroupMapper.selectHistoricalInfoByUnitCollegeAndOperation(info.getOperationUnit(), info.getOperationType(),college);
         for (ProjectGroup projectGroup : list
         ) {
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(), null));
@@ -945,7 +951,10 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecord.setOperationReason(form.getReason());
             operationRecord.setOperationType(OperationType.AGREE.getValue());
             operationRecord.setOperationUnit(operationUnit);
+            operationRecord.setOperationCollege(user.getInstitute());
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
+
+
             list.add(operationRecord);
             //当角色是实验室主任的时候,项目状态不是
             ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
@@ -1200,7 +1209,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result rejectProjectApplyByFunctionalDepartment(List<ProjectCheckForm> formList) {
-
         return rejectProjectApply(formList, OperationUnit.FUNCTIONAL_DEPARTMENT, OperationType.REJECT);
     }
 
@@ -1251,6 +1259,7 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecord.setOperationReason(form.getReason());
             operationRecord.setOperationUnit(operationUnit.getValue());
             operationRecord.setOperationType(operationType.getValue());
+            operationRecord.setOperationCollege(user.getInstitute());
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
             //修改状态
             if (operationUnit == OperationUnit.LAB_ADMINISTRATOR  ||

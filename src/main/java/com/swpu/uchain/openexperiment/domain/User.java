@@ -37,6 +37,9 @@ public class User implements Serializable {
      */
     private Integer userType;
 
+    /**
+     * 所属学院
+     */
     private Integer institute;
 
     private String major;

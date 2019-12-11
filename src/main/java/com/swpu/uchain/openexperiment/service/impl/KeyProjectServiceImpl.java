@@ -251,6 +251,9 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             operationRecord.setOperationReason(check.getReason());
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
             operationRecord.setRelatedId(check.getProjectId());
+            operationRecord.setOperationCollege(user.getInstitute());
+
+            //批量插入
             operationRecordList.add(operationRecord);
 
             idList.add(check.getProjectId());

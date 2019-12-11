@@ -86,7 +86,7 @@ public interface ProjectGroupMapper {
 
     List<Long> conditionQueryOfKeyProject(QueryConditionForm form);
 
-    List<ProjectGroup> selectHistoricalInfoByUnitAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType);
+    List<ProjectGroup> selectHistoricalInfoByUnitCollegeAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType,@Param("college")Integer college);
 
     List<ProjectGroup> selectKeyHistoricalInfoByUnitAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType);
 

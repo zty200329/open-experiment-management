@@ -12,15 +12,16 @@
     </resultMap>
     
     <insert id="insert">
-        insert into operation_record (related_id, operation_type, operation_unit, operation_reason)
-            valueS (#{relatedId},#{operationType},#{operationUnit},#{operationReason})
+        insert into  openexperiment.operation_record (related_id,operation_college, operation_type, operation_unit, operation_reason)
+            valueS (#{relatedId},#{record.operationCollege},#{operationType},#{operationUnit},#{operationReason})
     </insert>
     <insert id="multiInsert">
-        insert into operation_record (related_id, operation_type, operation_unit, operation_reason,operation_executor_id)
+        insert into openexperiment.operation_record (related_id,operation_college, operation_type, operation_unit, operation_reason,operation_executor_id)
             value
             <foreach collection="list" item="record" separator=",">
                 (
                     #{record.relatedId},
+                    #{record.operationCollege},
                     #{record.operationType},
                     #{record.operationUnit},
                     #{record.operationReason},
@@ -30,12 +31,9 @@
             </foreach>
     </insert>
 
-    <update id="updateByPrimaryKey">
-
-    </update>
     <!--type传入为空则更新所有-->
     <update id="setNotVisibleByProjectId">
-        update operation_record set status = 'N'
+        update openexperiment.operation_record set status = 'N'
         where related_id = #{projectId}
         <if test="type!=null">
            and operation_type = #{type}
