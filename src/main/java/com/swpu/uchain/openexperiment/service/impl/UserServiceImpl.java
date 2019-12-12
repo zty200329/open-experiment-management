@@ -308,6 +308,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> selectByKeyWord(String keyWord, boolean isTeacher) {
-        return userMapper.selectByRandom(keyWord, isTeacher);
+
+        //用户更新无须修改缓存,因为用户无法修改基本信息(这里前端只需要基本信息)
+        List<User> users = (List<User>) redisService.getList(UserKey.getByKeyWord, keyWord + isTeacher);
+        if (users == null || users.size() == 0){
+            users = userMapper.selectByRandom(keyWord, isTeacher);
+            if (users != null && users.size() != 0){
+                redisService.set(UserKey.getByKeyWord, keyWord + isTeacher, users);
+                redisService.setList(UserKey.getByKeyWord, keyWord + isTeacher, users);
+            }
+        }
+        return users;
     }
 }
