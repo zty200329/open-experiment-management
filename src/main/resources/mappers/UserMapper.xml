@@ -65,7 +65,7 @@
   <select id="selectAll" resultMap="BaseResultMap">
     select id, code, email, fix_phone, id_card, mobile_phone, `password`, qq_num, real_name, 
     sex, user_type, institute, major, grade, work_unit, class_num
-    from user
+    from openexperiment.user
   </select>
   <select id="selectByUserCode" resultMap="BaseResultMap">
     select

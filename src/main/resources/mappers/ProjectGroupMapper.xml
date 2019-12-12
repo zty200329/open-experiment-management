@@ -547,7 +547,7 @@
         select project_group.id
             from openexperiment.project_group
         <if test="creator!=null">
-            inner join openexperiment.user on user.code = project_group.creator_id where user.real_name = #{creator}
+            inner join openexperiment.user on user.code = project_group.creator_id where locate(#{creator},user.real_name)
         </if>
         <where>
             <if test="status!=null">
@@ -573,7 +573,7 @@
             </if>
             <!--locate函数会比like的全局匹配更快-->
             <if test="limitMajor!=null">
-                and locate(#{limitMajor},project_group.limit_major)
+                and locate(#{limitMajor},project_group.limit_major) or limit_major = null
             </if>
             <if test="limitCollege!=null">
                 and locate(#{limitCollege},project_group.limit_college)
