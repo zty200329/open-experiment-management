@@ -576,10 +576,10 @@
                 and locate(#{limitMajor},project_group.limit_major) or limit_major = null
             </if>
             <if test="limitCollege!=null">
-                and locate(#{limitCollege},project_group.limit_college)
+                and locate(#{limitCollege},project_group.limit_college) or limit_college = null
             </if>
             <if test="limitGrade!=null">
-                and locate(#{limitGrade},project_group.limit_grade)
+                and locate(#{limitGrade},project_group.limit_grade) or limit_grade = null
             </if>
             <if test="projectName!=null">
                 and locate(#{projectName},project_group.project_name)
