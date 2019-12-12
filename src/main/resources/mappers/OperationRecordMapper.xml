@@ -13,7 +13,7 @@
     
     <insert id="insert">
         insert into  openexperiment.operation_record (related_id,operation_college, operation_type, operation_unit, operation_reason)
-            valueS (#{relatedId},#{record.operationCollege},#{operationType},#{operationUnit},#{operationReason})
+            valueS (#{relatedId},#{operationCollege},#{operationType},#{operationUnit},#{operationReason})
     </insert>
     <insert id="multiInsert">
         insert into openexperiment.operation_record (related_id,operation_college, operation_type, operation_unit, operation_reason,operation_executor_id)

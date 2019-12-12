@@ -51,4 +51,10 @@ public class QueryConditionForm {
 
     @ApiModelProperty("申请经费")
     private Float applyFunds;
+
+    /**
+     * {@link com.swpu.uchain.openexperiment.enums.ProjectType}
+     */
+    @ApiModelProperty("项目类型")
+    private Integer projectType;
 }

@@ -553,6 +553,9 @@
             <if test="status!=null">
                 project_group.status = #{status}
             </if>
+            <if test="projectType!=null">
+                and project_group.project_type= #{projectType}
+            </if>
             <if test="subordinateCollege!=null">
                 and subordinate_college = #{subordinateCollege}
             </if>

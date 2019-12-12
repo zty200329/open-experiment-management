@@ -286,7 +286,7 @@ public class ProjectServiceImpl implements ProjectService {
                 projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()) )) {
             return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
         }
-        //修改的话状态修改为申报状态
+        //修改的话将状态修改为申报状态
         projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
 
         //设置创建者
@@ -320,6 +320,10 @@ public class ProjectServiceImpl implements ProjectService {
         operationRecord.setOperationExecutorId(Long.valueOf(currentUser.getCode()));
         //设置执行人
         setOperationExecutor(operationRecord);
+
+        //修改项目状态
+        projectGroupMapper.updateProjectStatus(projectGroup.getId(),ProjectStatus.DECLARE.getValue());
+
         recordMapper.insert(operationRecord);
         return Result.success();
     }
