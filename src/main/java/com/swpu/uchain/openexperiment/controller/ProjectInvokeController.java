@@ -195,4 +195,10 @@ public class ProjectInvokeController {
         return projectService.deleteMemberFromProject(projectId,userId);
     }
 
+    @ApiOperation("将重点项目转换为普通项目")
+    @GetMapping("changeKeyProjectToGeneral")
+    public Result changeKeyProjectToGeneral(@Valid @RequestBody List<ProjectCheckForm> formList) {
+        return projectService.changeKeyProjectToGeneral(formList);
+    }
+
 }

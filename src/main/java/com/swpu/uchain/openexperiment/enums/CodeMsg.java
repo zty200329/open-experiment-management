@@ -75,6 +75,7 @@ public enum CodeMsg {
     FIT_PEOPLE_LIMIT_ERROR(1525,"添加人数不在适应人数范围内"),
     FIT_PEOPLE_ERROR(1526,"限选人数参数错误"),
     PROJECT_FIT_PEOPLE_ERROR(1527,"项目组人数不符合要求,无法通过"),
+    CURRENT_MODIFY_PROJECT_TYPE_ERROR(1528,"当前修改项目非重点项目"),
 
 
 

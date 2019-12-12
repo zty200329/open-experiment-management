@@ -267,4 +267,6 @@ public interface ProjectService {
     Result deleteMemberFromProject(Long projectId, Long userId);
 
     Result rejectProjectReportByLabAdministrator(List<ProjectCheckForm> formList);
+
+    Result changeKeyProjectToGeneral(List<ProjectCheckForm> formList);
 }

@@ -17,6 +17,9 @@
                       #{projectId}
                   </foreach>
     </update>
+    <delete id="deleteByProjectId">
+        delete from openexperiment.key_project_status where project_id = #{projectId}
+    </delete>
     <select id="getStatusByProjectId" resultType="java.lang.Integer">
         select status from openexperiment.key_project_status where project_id = #{projectId}
     </select>

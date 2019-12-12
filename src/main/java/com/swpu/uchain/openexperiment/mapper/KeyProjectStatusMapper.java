@@ -26,5 +26,7 @@ public interface KeyProjectStatusMapper {
     List<KeyProjectDTO> getKeyProjectListByUserId(@Param("userId") Long userId,@Param("status")Integer status);
 
     Integer getCountOfSpecifiedStatusAndProjectProject(@Param("status") Integer status,@Param("college")Integer college);
+
+    int deleteByProjectId(@Param("projectId") Long projectId);
 }
 

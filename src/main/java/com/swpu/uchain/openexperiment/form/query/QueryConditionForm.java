@@ -17,6 +17,9 @@ public class QueryConditionForm {
     @ApiModelProperty("项目名称")
     private String projectName;
 
+    @ApiModelProperty("指导教师")
+    private String guideTeacher;
+
     @ApiModelProperty("建议分组")
     private Integer suggestGroupType;
 

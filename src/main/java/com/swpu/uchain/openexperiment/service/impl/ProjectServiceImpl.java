@@ -1216,6 +1216,45 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(rollbackFor = GlobalException.class)
+    public Result changeKeyProjectToGeneral(List<ProjectCheckForm> formList) {
+
+        User user = getUserService.getCurrentUser();
+
+        List<OperationRecord> list = new ArrayList<>();
+
+        for (ProjectCheckForm form : formList
+        ) {
+            Integer status = projectGroupMapper.selectByPrimaryKey(form.getProjectId()).getStatus();
+            //验证当前状态
+            if (!ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue().equals(status)) {
+                throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+            }
+            //批量插入数据
+            OperationRecord operationRecord = new OperationRecord();
+            operationRecord.setRelatedId(form.getProjectId());
+            operationRecord.setOperationReason(form.getReason());
+            operationRecord.setOperationUnit(OperationUnit.SECONDARY_UNIT.getValue());
+            operationRecord.setOperationType(OperationType.MODIFY.getValue());
+            operationRecord.setOperationCollege(user.getInstitute());
+            operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
+
+            //删除重点项目状态
+            int result = keyProjectStatusMapper.deleteByProjectId(form.getProjectId());
+            if (result != 1) {
+                throw new GlobalException(CodeMsg.CURRENT_MODIFY_PROJECT_TYPE_ERROR);
+            }
+
+            //修改状态
+            updateProjectStatus(form.getProjectId(), ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue());
+
+            list.add(operationRecord);
+        }
+        recordMapper.multiInsert(list);
+        return Result.success();
+    }
+
+    @Override
     public Result rejectProjectApplyByLabAdministrator(List<ProjectCheckForm> formList) {
         return rejectProjectApply(formList, OperationUnit.LAB_ADMINISTRATOR, OperationType.REJECT);
     }
