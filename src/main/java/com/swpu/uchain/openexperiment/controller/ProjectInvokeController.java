@@ -196,7 +196,7 @@ public class ProjectInvokeController {
     }
 
     @ApiOperation("将重点项目转换为普通项目")
-    @GetMapping("changeKeyProjectToGeneral")
+    @PostMapping("changeKeyProjectToGeneral")
     public Result changeKeyProjectToGeneral(@Valid @RequestBody List<ProjectCheckForm> formList) {
         return projectService.changeKeyProjectToGeneral(formList);
     }
