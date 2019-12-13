@@ -1,14 +1,13 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.mapper.UserProjectGroupMapper;
-import com.swpu.uchain.openexperiment.domain.ProjectGroup;
-import com.swpu.uchain.openexperiment.domain.User;
-import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.project.AimForm;
 import com.swpu.uchain.openexperiment.form.project.JoinProjectApplyForm;
+import com.swpu.uchain.openexperiment.mapper.UserRoleMapper;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.UserProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -44,6 +43,8 @@ public class UserProjectServiceImpl implements UserProjectService {
     private ProjectGroupMapper projectGroupMapper;
     @Autowired
     private TimeLimitService timeLimitService;
+    @Autowired
+    private UserRoleMapper userRoleMapper;
 
     @Override
     public boolean insert(UserProjectGroup userProjectGroup) {
@@ -114,6 +115,10 @@ public class UserProjectServiceImpl implements UserProjectService {
             throw new GlobalException(CodeMsg.USER_INFO_NOT_COMPLETE);
         }
 
+        //验证成员身份
+        if (!userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId().equals(RoleType.NORMAL_STU.getValue())) {
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
 
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(joinProjectApplyForm.getProjectGroupId());
 
