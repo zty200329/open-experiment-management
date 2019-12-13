@@ -1227,7 +1227,7 @@ public class ProjectServiceImpl implements ProjectService {
         ) {
             Integer status = keyProjectStatusMapper.getStatusByProjectId(form.getProjectId());
             //验证当前状态
-            if (!ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue().equals(status)) {
+            if (!ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue().equals(status)) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
             //批量插入数据
