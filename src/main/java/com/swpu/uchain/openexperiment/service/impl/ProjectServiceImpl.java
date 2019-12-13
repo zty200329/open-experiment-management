@@ -1225,7 +1225,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         for (ProjectCheckForm form : formList
         ) {
-            Integer status = projectGroupMapper.selectByPrimaryKey(form.getProjectId()).getStatus();
+            Integer status = keyProjectStatusMapper.getStatusByProjectId(form.getProjectId());
             //验证当前状态
             if (!ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue().equals(status)) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
