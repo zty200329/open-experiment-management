@@ -143,7 +143,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
         Long userId = Long.valueOf(user.getCode());
-        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectListByUserId(userId,JoinStatus.JOINED.getValue());
+        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectListByUserIdAndProjectStatus(userId,ProjectStatus.TO_DE_CONFIRMED.getValue());
         for (KeyProjectDTO keyProjectDTO :list
         ) {
             keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(keyProjectDTO.getId(),null));
