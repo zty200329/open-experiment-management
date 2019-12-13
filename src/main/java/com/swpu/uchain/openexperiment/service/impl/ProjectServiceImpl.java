@@ -630,7 +630,7 @@ public class ProjectServiceImpl implements ProjectService {
                 }
             }
             checkProjectVO.setGuidanceTeachers(guidanceTeachers);
-            checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(checkProjectVO.getId(), null));
+            checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(checkProjectVO.getId(),JoinStatus.JOINED.getValue()));
         }
         return Result.success(checkProjectVOs);
     }
