@@ -1018,7 +1018,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<JoinUnCheckVO> joinUnCheckVOS = new ArrayList<>();
 
         //获取当前教师参与申报的项目组
-        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), ProjectStatus.LAB_ALLOWED.getValue(), JoinStatus.JOINED.getValue());
+        List<ProjectGroup> projectGroups = selectByUserIdAndProjectStatus(Long.valueOf(currentUser.getCode()), null, JoinStatus.JOINED.getValue());
         for (int i = 0; i < projectGroups.size(); i++) {
             if (projectGroups.get(i) == null) {
                 i++;
