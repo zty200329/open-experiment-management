@@ -46,12 +46,14 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private TimeLimitService timeLimitService;
     private AmountLimitMapper amountLimitMapper;
     private ProjectFileMapper projectFileMapper;
+    private UserRoleMapper userRoleMapper;
 
     @Autowired
     public KeyProjectServiceImpl(ProjectGroupMapper projectGroupMapper, UserProjectGroupMapper userProjectGroupMapper,
                                  KeyProjectStatusMapper keyProjectStatusMapper,GetUserService getUserService,
                                  OperationRecordMapper operationRecordMapper,TimeLimitService timeLimitService,
-                                 AmountLimitMapper amountLimitMapper,ProjectFileMapper projectFileMapper) {
+                                 AmountLimitMapper amountLimitMapper,ProjectFileMapper projectFileMapper,
+                                 UserRoleMapper userRoleMapper) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
@@ -60,6 +62,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         this.timeLimitService = timeLimitService;
         this.amountLimitMapper = amountLimitMapper;
         this.projectFileMapper = projectFileMapper;
+        this.userRoleMapper = userRoleMapper;
     }
 
     @Transactional(rollbackFor = GlobalException.class)
@@ -140,7 +143,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
         Long userId = Long.valueOf(user.getCode());
-        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectListByUserId(userId,null);
+        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectListByUserId(userId,JoinStatus.JOINED.getValue());
         for (KeyProjectDTO keyProjectDTO :list
         ) {
             keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(keyProjectDTO.getId(),null));
@@ -152,17 +155,27 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result getKeyProjectApplyingListByLabAdmin() {
          User user  = getUserService.getCurrentUser();
+         if ( !userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId().equals(RoleType.LAB_ADMINISTRATOR.getValue())) {
+             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+         }
          return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.GUIDE_TEACHER_ALLOWED,user.getInstitute());
     }
 
     @Override
     public Result getKeyProjectApplyingListBySecondaryUnit() {
         User user  = getUserService.getCurrentUser();
+        if ( !userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId().equals(RoleType.SECONDARY_UNIT.getValue())) {
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.LAB_ALLOWED_AND_REPORTED,user.getInstitute());
     }
 
     @Override
     public Result getKeyProjectApplyingListByFunctionalDepartment() {
+        User user  = getUserService.getCurrentUser();
+        if ( !userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId().equals(RoleType.SECONDARY_UNIT.getValue())) {
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED,null);
     }
 
@@ -251,6 +264,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         List<Long> idList = new LinkedList<>();
         for (KeyProjectCheck check:list
         ) {
+            UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(check.getProjectId(), Long.valueOf(user.getCode()));
+            if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(roleType.getValue())) {
+                throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+            }
+
             OperationRecord operationRecord = new OperationRecord();
             operationRecord.setOperationUnit(roleType.getValue());
             operationRecord.setOperationType(operationType.getValue());
