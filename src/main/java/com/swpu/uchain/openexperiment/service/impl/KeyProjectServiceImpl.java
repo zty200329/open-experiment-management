@@ -211,8 +211,9 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             return keyProjectStatus;
         }
 
-        //如果是上报驳回则是立项失败
-        if (operationType == OperationType.REPORT_REJECT) {
+        //如果是二级单位和职能部门上报驳回则是立项失败
+        if (operationType == OperationType.REPORT_REJECT && (roleType == RoleType.SECONDARY_UNIT ||
+                roleType == RoleType.FUNCTIONAL_DEPARTMENT)) {
             return ProjectStatus.ESTABLISH_FAILED;
         }
 
@@ -269,6 +270,10 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             //验证属于该项目并且是该项目的指导教师
             if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
                 throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+            }
+
+            if ( projectFileMapper.selectByProjectGroupIdAndMaterialType(check.getProjectId(),MaterialType.APPLY_MATERIAL.getValue()) == null) {
+                throw new GlobalException(CodeMsg.KEY_PROJECT_APPLY_MATERIAL_EMPTY);
             }
 
             OperationRecord operationRecord = new OperationRecord();
