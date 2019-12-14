@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.sun.org.apache.xpath.internal.operations.Operation;
 import com.swpu.uchain.openexperiment.DTO.KeyProjectDTO;
 import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
@@ -104,17 +105,26 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         //验证项目状态合法性
         Long projectId = projectGroup.getId();
         if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue()) &&
-            !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())){
+                //被指导教师或者是实验室驳回就是这个状态
+            !projectGroup.getStatus().equals(ProjectStatus.KEY_PROJECT_APPLY.getValue())){
             throw new GlobalException(CodeMsg.PROJECT_IS_NOT_LAB_ALLOWED);
         }
-        //验证是否已经进行了重点项目申请
-        if (keyProjectStatusMapper.getStatusByProjectId(projectGroup.getId())!=null) {
+        //验证是否已经进行了重点项目申请和是否被驳回，被驳回重点项目状态的空的
+        Integer keyProjectStatus = keyProjectStatusMapper.getStatusByProjectId(projectGroup.getId());
+        if (keyProjectStatus !=null && !keyProjectStatus.equals(ProjectStatus.REJECT_MODIFY.getValue())) {
             throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
         }
         //将项目组表中的项目状态变为重点项目申请  （之后的状态查询都在重点项目状态表中查询）
         projectGroupMapper.updateProjectStatus(form.getProjectId(),ProjectStatus.KEY_PROJECT_APPLY.getValue());
-        keyProjectStatusMapper.insert(projectId, ProjectStatus.TO_DE_CONFIRMED.getValue(),
-                projectGroup.getSubordinateCollege(), Long.valueOf(user.getCode()));
+
+        if (keyProjectStatus == null) {
+            //不存在则插入
+            keyProjectStatusMapper.insert(projectId, ProjectStatus.TO_DE_CONFIRMED.getValue(),
+                    projectGroup.getSubordinateCollege(), Long.valueOf(user.getCode()));
+        }else {
+            //存在则更新
+            keyProjectStatusMapper.update(form.getProjectId(),ProjectStatus.TO_DE_CONFIRMED.getValue());
+        }
 
 
         //将重点项目上报的操作存入历史
@@ -201,13 +211,9 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     private ProjectStatus getNextStatusByRoleAndOperation(RoleType roleType, OperationType operationType){
         ProjectStatus keyProjectStatus;
-        //如果驳回的操作是老师或者实验室主任进行的话，则是驳回修改，其他的就是立项失败
-        if (operationType == OperationType.REJECT) {
-            if (roleType.equals(RoleType.LAB_ADMINISTRATOR) || roleType.equals(RoleType.MENTOR)) {
-                keyProjectStatus = ProjectStatus.REJECT_MODIFY;
-            }else {
-                keyProjectStatus = ProjectStatus.REJECT_MODIFY;
-            }
+        //如果是二级单位 则是立项失败
+        if (operationType == OperationType.REJECT && (roleType == RoleType.SECONDARY_UNIT || roleType == RoleType.FUNCTIONAL_DEPARTMENT)) {
+            keyProjectStatus = ProjectStatus.ESTABLISH_FAILED;
             return keyProjectStatus;
         }
 
@@ -289,7 +295,17 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
             idList.add(check.getProjectId());
         }
-        keyProjectStatusMapper.updateList(idList,getNextStatusByRoleAndOperation(roleType, operationType).getValue());
+        if (operationType == OperationType.REJECT && (roleType == RoleType.LAB_ADMINISTRATOR || roleType == RoleType.MENTOR)) {
+            for (KeyProjectCheck check:list
+            ) {
+                //删除重点项目，回到拟题通过状态
+                keyProjectStatusMapper.deleteByProjectId(check.getProjectId());
+                projectGroupMapper.updateProjectStatus(check.getProjectId(),ProjectStatus.LAB_ALLOWED.getValue());
+            }
+        }else {
+            Integer nextProjectStatus = getNextStatusByRoleAndOperation(roleType, operationType).getValue();
+            keyProjectStatusMapper.updateList(idList,nextProjectStatus);
+        }
         operationRecordMapper.multiInsert(operationRecordList);
         return Result.success();
     }
@@ -406,6 +422,10 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result rejectKeyProjectByLabAdministrator(List<KeyProjectCheck> list) {
+        UserRole userRole = userRoleMapper.selectByUserId(Long.valueOf(getUserService.getCurrentUser().getCode()));
+        if (!userRole.getRoleId().equals(RoleType.LAB_ADMINISTRATOR.getValue())) {
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR, OperationType.REJECT,list);
     }
 
