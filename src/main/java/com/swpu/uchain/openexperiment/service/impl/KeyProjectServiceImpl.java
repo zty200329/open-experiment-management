@@ -106,7 +106,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         Long projectId = projectGroup.getId();
         if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue()) &&
                 //被指导教师或者是实验室驳回就是这个状态
-            !projectGroup.getStatus().equals(ProjectStatus.KEY_PROJECT_APPLY.getValue())){
+            !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())){
             throw new GlobalException(CodeMsg.PROJECT_IS_NOT_LAB_ALLOWED);
         }
         //验证是否已经进行了重点项目申请和是否被驳回，被驳回重点项目状态的空的
