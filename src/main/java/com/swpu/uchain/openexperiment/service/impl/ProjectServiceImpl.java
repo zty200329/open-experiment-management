@@ -1235,7 +1235,7 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecord.setRelatedId(form.getProjectId());
             operationRecord.setOperationReason(form.getReason());
             operationRecord.setOperationUnit(OperationUnit.LAB_ADMINISTRATOR.getValue());
-            operationRecord.setOperationType(OperationType.AGREE.getValue());
+            operationRecord.setOperationType(OperationType.REPORT.getValue());
             operationRecord.setOperationCollege(user.getInstitute());
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
 
