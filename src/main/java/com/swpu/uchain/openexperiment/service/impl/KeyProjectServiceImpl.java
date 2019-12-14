@@ -422,10 +422,6 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result rejectKeyProjectByLabAdministrator(List<KeyProjectCheck> list) {
-        UserRole userRole = userRoleMapper.selectByUserId(Long.valueOf(getUserService.getCurrentUser().getCode()));
-        if (!userRole.getRoleId().equals(RoleType.LAB_ADMINISTRATOR.getValue())) {
-            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
-        }
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR, OperationType.REJECT,list);
     }
 

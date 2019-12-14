@@ -152,7 +152,6 @@ public class KeyProjectDTO {
     /**
      * 已选项目人数
      */
-    @Null
     private Integer numberOfTheSelected;
 
     /**
