@@ -573,13 +573,13 @@
             </if>
             <!--locate函数会比like的全局匹配更快-->
             <if test="limitMajor!=null">
-                and locate(#{limitMajor},project_group.limit_major) or limit_major = null
+                and locate(#{limitMajor},project_group.limit_major) or limit_major is null
             </if>
             <if test="limitCollege!=null">
-                and locate(#{limitCollege},project_group.limit_college) or limit_college = null
+                and locate(#{limitCollege},project_group.limit_college) or limit_college is null
             </if>
             <if test="limitGrade!=null">
-                and locate(#{limitGrade},project_group.limit_grade) or limit_grade = null
+                and locate(#{limitGrade},project_group.limit_grade) or limit_grade is null
             </if>
             <if test="projectName!=null">
                 and locate(#{projectName},project_group.project_name)
