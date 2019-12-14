@@ -274,9 +274,12 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(check.getProjectId(), Long.valueOf(user.getCode()));
 
             //验证属于该项目并且是该项目的指导教师
-            if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
-                throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+            if (!userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId().equals(RoleType.MENTOR.getValue())) {
+                if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
+                    throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+                }
             }
+
 
             if ( projectFileMapper.selectByProjectGroupIdAndMaterialType(check.getProjectId(),MaterialType.APPLY_MATERIAL.getValue()) == null) {
                 throw new GlobalException(CodeMsg.KEY_PROJECT_APPLY_MATERIAL_EMPTY);

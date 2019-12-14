@@ -1248,6 +1248,8 @@ public class ProjectServiceImpl implements ProjectService {
             //修改状态
             updateProjectStatus(form.getProjectId(), ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue());
 
+            projectGroupMapper.updateProjectType(form.getProjectId(),ProjectType.GENERAL);
+
             list.add(operationRecord);
         }
         recordMapper.multiInsert(list);

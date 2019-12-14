@@ -724,6 +724,9 @@
     <update id="updateProjectTempSerialNumber">
         update openexperiment.project_group set `temp_serial_number` = #{tempSerialNumber} where id = #{id}
     </update>
+    <update id="updateProjectType">
+        update openexperiment.project_group set project_type = #{type} where id = #{id}
+    </update>
     <select id="selectKeyHistoricalInfoByUnitAndOperation" resultMap="ProjectGroupResultMap">
         SELECT
         key_project_status.project_id as id,
