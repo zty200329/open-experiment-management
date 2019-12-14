@@ -235,7 +235,7 @@ public class UserProjectServiceImpl implements UserProjectService {
             return Result.error(CodeMsg.USER_GROUP_NOT_EXIST);
         }
         //判断指定用户是否是指导老师
-        if (userProjectGroup.getMemberRole().intValue() != MemberRole.GUIDANCE_TEACHER.getValue()){
+        if (userProjectGroup.getMemberRole().intValue() == MemberRole.GUIDANCE_TEACHER.getValue()){
             return Result.error(CodeMsg.CANT_AIM_TEACHER);
         }
 
