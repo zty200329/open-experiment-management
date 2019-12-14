@@ -274,7 +274,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(check.getProjectId(), Long.valueOf(user.getCode()));
 
             //验证属于该项目并且是该项目的指导教师
-            if (!userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId().equals(RoleType.MENTOR.getValue())) {
+            if (userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId().equals(RoleType.MENTOR.getValue())) {
                 if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
                     throw new GlobalException(CodeMsg.PERMISSION_DENNY);
                 }
