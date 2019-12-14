@@ -254,8 +254,9 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return keyProjectStatus;
     }
 
-    private Result operateKeyProjectOfSpecifiedRoleAndOperation(RoleType roleType, OperationType operationType,
-                                                                List<KeyProjectCheck> list){
+    @Transactional(rollbackFor = GlobalException.class)
+    public Result operateKeyProjectOfSpecifiedRoleAndOperation(RoleType roleType, OperationType operationType,
+                                                        List<KeyProjectCheck> list){
         User user = getUserService.getCurrentUser();
         if (user == null){
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
