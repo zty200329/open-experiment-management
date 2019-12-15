@@ -358,9 +358,6 @@
                         <id>Generate MyBatis Artifacts</id>
                         <!--指定运行阶段是开发阶段,避免在使用mvn进行打包时重写dao或model-->
                         <phase>deploy</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
                     </execution>
                 </executions>
                 <configuration>

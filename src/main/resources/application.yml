@@ -2,7 +2,11 @@ spring:
 #  resources:
 #    chain:
 #      cache: false
-#    static-locations:
+#    static-
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      enabled: true
   profiles:
     active: dev2
   datasource:

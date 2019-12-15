@@ -547,7 +547,7 @@
         select project_group.id
             from openexperiment.project_group
         <if test="creator!=null">
-            inner join openexperiment.user on user.code = project_group.creator_id where locate(#{creator},user.real_name)
+            inner join openexperiment.user on user.code = project_group.creator_id and locate(#{creator},user.real_name)
         </if>
         <where>
             <if test="status!=null">
