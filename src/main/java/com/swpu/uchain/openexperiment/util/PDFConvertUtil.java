@@ -6,7 +6,6 @@ import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConne
 import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
 import com.artofsolving.jodconverter.openoffice.converter.StreamOpenOfficeDocumentConverter;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
