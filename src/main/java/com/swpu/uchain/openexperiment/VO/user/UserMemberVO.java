@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.VO.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,4 +32,14 @@ public class UserMemberVO implements Serializable {
     private String major;
 
     private String grade;
+
+    private String phone;
+
+    public UserMemberVO(Long userId, String userName, Integer memberRole, String major, String grade) {
+        this.userId = userId;
+        this.userName = userName;
+        this.memberRole = memberRole;
+        this.major = major;
+        this.grade = grade;
+    }
 }

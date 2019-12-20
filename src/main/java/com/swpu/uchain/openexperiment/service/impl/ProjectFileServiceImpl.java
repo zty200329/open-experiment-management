@@ -432,7 +432,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
         // 4.设置表头，即每个列的列名
         String[] head = {"院/中心", "创建编号", "项目名称", "实验类型", "实验时数", "指导教师", "学生"
-                , "专业年级", "开始时间", "结束时间", "开放\r\n实验室", "实验室地点", "负责学生\r\n电话"
+                , "专业年级", "开始时间", "结束时间", "开放\r\n实验室", "实验室地点","负责学生姓名" ,"负责学生\r\n电话"
                 , "申请经费（元）", "建议\r\n评审分组","项目状态","上报编号"};
         // 4.1创建表头行
         XSSFRow row = sheet.createRow(index++);
@@ -454,25 +454,56 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 projectTableInfo.setProjectStatus(projectTableInfo.getKeyProjectStatus());
             }
 
+
+            //项目组组长
             List<UserMemberVO> userMemberVOList =
                     userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.PROJECT_GROUP_LEADER.getValue(),projectTableInfo.getId(),JoinStatus.JOINED.getValue());
             StringBuilder students = new StringBuilder("");
-            StringBuilder studentsMajorAndGrade = new StringBuilder("");
-            for (UserMemberVO userMemberVO : userMemberVOList) {
+            StringBuilder studentsMajorAndGrade = new StringBuilder();
+            StringBuilder leaderName = new StringBuilder();
+            StringBuilder leaderPhone = new StringBuilder();
+            StringBuilder guideTeachers = new StringBuilder();
+            for (int i = 0; i < userMemberVOList.size(); i++) {
+                UserMemberVO userMemberVO = userMemberVOList.get(i);
+                leaderName.append(userMemberVO.getUserName());
+                if (userMemberVO.getPhone()!=null) {
+                    leaderPhone.append(userMemberVO.getPhone());
+                }
+
                 students.append(userMemberVO.getUserName());
-                students.append("\r\n");
+                students.append(" \r\n");
                 studentsMajorAndGrade.append(ConvertUtil.getGradeAndMajorByNumber(userMemberVO.getGrade() + userMemberVO.getMajor()));
-                studentsMajorAndGrade.append("\r\n");
+                if (i != userMemberVOList.size() -1) {
+                    studentsMajorAndGrade.append(" \r\n");
+                }
             }
 
+
+            //项目成员
             List<UserMemberVO> userMemberVOList2 =
                     userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.NORMAL_MEMBER.getValue(),projectTableInfo.getId(),JoinStatus.JOINED.getValue());
-            for (UserMemberVO userMemberVO : userMemberVOList2) {
+            for (int i = 0; i < userMemberVOList2.size(); i++) {
+                UserMemberVO userMemberVO = userMemberVOList2.get(i);
                 students.append(userMemberVO.getUserName());
-                students.append(",\r\n");
+                students.append(" \r\n");
                 studentsMajorAndGrade.append(ConvertUtil.getGradeAndMajorByNumber(userMemberVO.getGrade() + userMemberVO.getMajor()));
-                studentsMajorAndGrade.append(",\r\n");
+                if (i != userMemberVOList2.size()-1) {
+                    studentsMajorAndGrade.append(" \r\n");
+                }
             }
+
+            //指导教师
+            List<UserMemberVO> userMemberVOList3 =
+                    userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectTableInfo.getId(),JoinStatus.JOINED.getValue());
+            for (int i = 0; i < userMemberVOList3.size(); i++) {
+                UserMemberVO userMemberVO = userMemberVOList3.get(i);
+                guideTeachers.append(userMemberVO.getUserName());
+                guideTeachers.append(" \r\n");
+                if (i != userMemberVOList3.size()-1) {
+                    studentsMajorAndGrade.append(" \r\n");
+                }
+            }
+
 
             //创建行
             row = sheet.createRow(index++);
@@ -484,21 +515,25 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             if (projectTableInfo.getTempSerialNumber() != null) {
                 row.createCell(1).setCellValue(projectTableInfo.getTempSerialNumber()+"T");
             }
+            //项目名称
             row.createCell(2).setCellValue(projectTableInfo.getProjectName());
+            //实验类型
             row.createCell(3).setCellValue(ConvertUtil.getStrExperimentType(projectTableInfo.getExperimentType()));
+
             row.createCell(4).setCellValue(projectTableInfo.getTotalHours());
-            row.createCell(5).setCellValue(projectTableInfo.getLeadTeacher());
+            row.createCell(5).setCellValue(guideTeachers.toString());
             row.createCell(6).setCellValue(students.toString());
             row.createCell(7).setCellValue(studentsMajorAndGrade.toString());
             row.createCell(8).setCellValue(projectTableInfo.getStartTime());
             row.createCell(9).setCellValue(projectTableInfo.getEndTime());
             row.createCell(10).setCellValue(projectTableInfo.getLabName());
             row.createCell(11).setCellValue(projectTableInfo.getAddress());
-            row.createCell(12).setCellValue(projectTableInfo.getLeadStudentPhone());
-            row.createCell(13).setCellValue(projectTableInfo.getApplyFunds());
-            row.createCell(14).setCellValue(ConvertUtil.getStringSuggestGroupType(projectTableInfo.getSuggestGroupType()));
-            row.createCell(15).setCellValue(projectTableInfo.getProjectStatus());
-            row.createCell(16).setCellValue(projectTableInfo.getSerialNumber());
+            row.createCell(12).setCellValue(leaderName.toString());
+            row.createCell(13).setCellValue(leaderPhone.length()==0?"":leaderPhone.toString());
+            row.createCell(14).setCellValue(projectTableInfo.getApplyFunds());
+            row.createCell(15).setCellValue(ConvertUtil.getStringSuggestGroupType(projectTableInfo.getSuggestGroupType()));
+            row.createCell(16).setCellValue(projectTableInfo.getProjectStatus());
+            row.createCell(17).setCellValue(projectTableInfo.getSerialNumber());
 
         }
 
