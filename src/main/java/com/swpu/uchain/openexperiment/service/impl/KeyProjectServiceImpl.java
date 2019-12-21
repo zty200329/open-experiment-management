@@ -303,7 +303,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             for (KeyProjectCheck check:list
             ) {
                 //删除重点项目，回到拟题通过状态
-                keyProjectStatusMapper.deleteByProjectId(check.getProjectId());
+                keyProjectStatusMapper.update(check.getProjectId(),ProjectStatus.KEY_PROJECT_APPLY.getValue());
                 projectGroupMapper.updateProjectStatus(check.getProjectId(),ProjectStatus.LAB_ALLOWED.getValue());
             }
         }else {
