@@ -8,6 +8,7 @@ import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import com.swpu.uchain.openexperiment.enums.*;
+import com.swpu.uchain.openexperiment.mapper.KeyProjectStatusMapper;
 import com.swpu.uchain.openexperiment.mapper.ProjectFileMapper;
 import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
@@ -62,6 +63,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     private ConvertUtil convertUtil;
     @Autowired
     private ProjectGroupMapper projectGroupMapper;
+    @Autowired
+    private KeyProjectStatusMapper keyProjectStatusMapper;
 
     @Autowired
     private UserProjectGroupMapper userProjectGroupMapper;
@@ -116,9 +119,11 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         }
 
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectGroupId);
-        //验证项目状态合法性
+        //验证项目状态合法性，为其中之一的状态均可以通过
         if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue()) &&
-                !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())){
+                !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())
+                //判定是否为重点项目驳回状态,该状态可进行文件提交
+            && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.TO_DE_CONFIRMED.getValue())){
             throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
         }
 
@@ -135,9 +140,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 uploadConfig.getApplyFileName() + getFileSuffix(headFile.getOriginalFilename()));
 
         //项目基本信息doc路径
-        String headDocPath = FileUtil.getFileRealPath(projectGroupId,
-                uploadConfig.getApplyDir2(),
-                uploadConfig.getApplyFileName() + ".doc");
         //如果存在则覆盖
         File dest = new File(bodyDocPath);
         dest.delete();

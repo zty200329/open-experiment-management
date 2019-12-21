@@ -28,8 +28,9 @@ public class KeyProjectInvokeController {
 
 
     @Autowired
-    public KeyProjectInvokeController(KeyProjectService keyProjectService) {
+    public KeyProjectInvokeController(KeyProjectService keyProjectService, GetUserService getUserService) {
         this.keyProjectService = keyProjectService;
+        this.getUserService = getUserService;
     }
 
     @ApiOperation("重点项目申请接口")
