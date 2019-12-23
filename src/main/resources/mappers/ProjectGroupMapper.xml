@@ -571,6 +571,7 @@
     <select id="selectHistoricalInfoByUnitCollegeAndOperation" resultMap="ProjectGroupResultMap"
             resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         SELECT
+            distinct
             project_group.id,
             project_group.serial_number,
             project_group.address,
@@ -714,6 +715,7 @@
     </update>
     <select id="selectKeyHistoricalInfoByUnitAndOperation" resultMap="ProjectGroupResultMap">
         SELECT
+        distinct
         key_project_status.project_id as id,
         project_group.serial_number,
         project_group.address,
