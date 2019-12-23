@@ -93,5 +93,5 @@ public interface ProjectGroupMapper {
 
     Integer getCountOfSpecifiedStatusAndProjectProject(@Param("status") Integer status,@Param("college")Integer college);
 
-    void updateProjectType(@Param("id") Long projectId,@Param("type") ProjectType general);
+    void updateProjectType(@Param("id") Long projectId,@Param("type") Integer type);
 }
