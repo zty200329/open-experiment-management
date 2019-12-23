@@ -873,7 +873,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (info.getOperationUnit().equals(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue())) {
             college = null;
         }
-        List<ProjectGroup> list = projectGroupMapper.selectHistoricalInfoByUnitCollegeAndOperation(info.getOperationUnit(), info.getOperationType(),college);
+        List<ProjectGroup> list = projectGroupMapper.selectHistoricalInfoByUnitCollegeAndOperation(info.getOperationUnit(), info.getOperationType(),college,ProjectType.GENERAL.getValue());
         for (ProjectGroup projectGroup : list
         ) {
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(), null));

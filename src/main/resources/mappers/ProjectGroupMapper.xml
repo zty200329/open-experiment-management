@@ -599,6 +599,10 @@
         <if test="college!=null">
             and operation_college = #{college}
         </if>
+        <if test="projectType!=null">
+            and project_type = #{projectType}
+        </if>
+
     </select>
     <select id="getMaxSerialNumberByCollege" resultType="java.lang.String">
         select  max(serial_number) from openexperiment.project_group where subordinate_college = #{college}
