@@ -409,6 +409,14 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             college = null;
         }
 
+        //标记是否排除立项失败的，为null不排除
+        Boolean establishFailed = null;
+        if (info.getOperationType().equals(OperationType.AGREE.getValue())
+                || info.getOperationType().equals(OperationType.REPORT.getValue())) {
+            //排除立项失败的
+            establishFailed = true;
+        }
+
         List<ProjectGroup> list = projectGroupMapper.selectKeyHistoricalInfoByUnitAndOperation(info.getOperationUnit(),info.getOperationType(),college);
         for (ProjectGroup projectGroup:list
         ) {

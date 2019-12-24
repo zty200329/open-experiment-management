@@ -873,10 +873,20 @@ public class ProjectServiceImpl implements ProjectService {
         if (info.getOperationUnit().equals(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue())) {
             college = null;
         }
-        List<ProjectGroup> list = projectGroupMapper.selectHistoricalInfoByUnitCollegeAndOperation(info.getOperationUnit(), info.getOperationType(),college,ProjectType.GENERAL.getValue());
+
+        //标记是否排除立项失败的，为null不排除
+        Boolean establishFailed = null;
+        if (info.getOperationType().equals(OperationType.AGREE.getValue())
+            || info.getOperationType().equals(OperationType.REPORT.getValue())) {
+            //排除立项失败的
+            establishFailed = true;
+        }
+
+        List<ProjectGroup> list = projectGroupMapper.selectHistoricalInfoByUnitCollegeAndOperation(info.getOperationUnit(), info.getOperationType(),
+                college,ProjectType.GENERAL.getValue(),establishFailed);
         for (ProjectGroup projectGroup : list
         ) {
-            projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(), null));
+            projectGroup.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(projectGroup.getId(),JoinStatus.JOINED.getValue()));
             projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(), projectGroup.getId(),JoinStatus.JOINED.getValue()));
         }
         return Result.success(list);

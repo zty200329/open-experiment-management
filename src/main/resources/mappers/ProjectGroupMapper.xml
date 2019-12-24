@@ -603,6 +603,9 @@
         <if test="projectType!=null">
             and project_type = #{projectType}
         </if>
+        <if test="establishFailed!=null">
+            and project_group.`status`!= -3
+        </if>
 
     </select>
     <select id="getMaxSerialNumberByCollege" resultType="java.lang.String">
@@ -744,6 +747,9 @@
         WHERE operation_record.operation_unit = #{unit} AND operation_record.operation_type = #{type} AND operation_record.status = 'Y'
         <if test="college!=null">
             and operation_college = #{college}
+        </if>
+        <if test="establishFailed!=null">
+            and key_project_status.status!= -3
         </if>
     </select>
     <select id="getCountOfSpecifiedStatusAndProjectProject" resultType="java.lang.Integer">
