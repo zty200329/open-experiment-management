@@ -1,12 +1,15 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.domain.TimeLimit;
+import com.swpu.uchain.openexperiment.domain.UserRole;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.CollegeType;
+import com.swpu.uchain.openexperiment.enums.RoleType;
 import com.swpu.uchain.openexperiment.enums.TimeLimitType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.time.TimeLimitForm;
 import com.swpu.uchain.openexperiment.mapper.TimeLimitMapper;
+import com.swpu.uchain.openexperiment.mapper.UserRoleMapper;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.TimeLimitKey;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -30,13 +33,15 @@ public class TimeLimitServiceImpl implements TimeLimitService {
     private TimeLimitMapper timeLimitMapper;
     private RedisService redisService;
     private GetUserService getUserService;
+    private UserRoleMapper userRoleMapper;
 
     @Autowired
     public TimeLimitServiceImpl(TimeLimitMapper timeLimitMapper, RedisService redisService,
-                                GetUserService getUserService) {
+                                GetUserService getUserService,UserRoleMapper userRoleMapper) {
         this.timeLimitMapper = timeLimitMapper;
         this.redisService = redisService;
         this.getUserService = getUserService;
+        this.userRoleMapper = userRoleMapper;
     }
 
     @Override
@@ -65,6 +70,11 @@ public class TimeLimitServiceImpl implements TimeLimitService {
 
     @Override
     public Result update(TimeLimitForm form) {
+        Long userId = Long.valueOf(getUserService.getCurrentUser().getCode());
+        if (!userRoleMapper.selectByUserId(userId).getRoleId().equals(RoleType.FUNCTIONAL_DEPARTMENT.getValue())
+        &&form.getTimeLimitType() >= TimeLimitType.SECONDARY_UNIT_CHECK_LIMIT.getValue()) {
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
         TimeLimit timeLimit = new TimeLimit();
         BeanUtils.copyProperties(form,timeLimit);
         timeLimit.setLimitCollege(getUserService.getCurrentUser().getInstitute());
