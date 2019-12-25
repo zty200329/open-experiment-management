@@ -786,7 +786,7 @@
         FROM openexperiment.project_group
         <where>
             <if test="college!=null">
-                and operation_college = #{college}
+                and project_group.subordinate_college = #{college}
             </if>
             <if  test="status!=null">
                 and  project_group.`status` &gt;= #{status} and project_group.`status` != -3

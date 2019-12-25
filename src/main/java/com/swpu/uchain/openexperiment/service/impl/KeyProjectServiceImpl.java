@@ -418,8 +418,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         }
 
         List<ProjectGroup> list = projectGroupMapper.selectKeyHistoricalInfoByUnitAndOperation(info.getOperationUnit(),info.getOperationType(),college,establishFailed);
-        for (ProjectGroup projectGroup:list
-        ) {
+        for (ProjectGroup projectGroup:list) {
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(),null));
             projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectGroup.getId(),JoinStatus.JOINED.getValue()));
         }
