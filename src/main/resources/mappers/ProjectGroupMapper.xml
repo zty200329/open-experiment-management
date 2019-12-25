@@ -89,6 +89,7 @@
     <resultMap id="ProjectGroupResultMap" type="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
+        <result column="subordinate_college" property="subordinateCollege"/>
         <result column="address" jdbcType="VARCHAR" property="address" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="creator_id" jdbcType="BIGINT" property="creatorId" />

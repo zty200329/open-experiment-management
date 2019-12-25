@@ -224,7 +224,7 @@ public class ProjectServiceImpl implements ProjectService {
         //设置项目创建编号
         String maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(college);
         //计算编号并在数据库中插入编号
-        projectGroupMapper.updateProjectTempSerialNumber(projectGroup.getId(), SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), maxTempSerialNumber));
+        projectGroupMapper.updateProjectTempSerialNumber(projectGroup.getId(), SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.GENERAL.getValue(), maxTempSerialNumber));
 
 
         String[] teacherArray = new String[1];
@@ -798,7 +798,7 @@ public class ProjectServiceImpl implements ProjectService {
         for (Long id : projectGroupIdList) {
             String serialNumber = projectGroupMapper.selectByPrimaryKey(id).getSerialNumber();
             //计算编号并在数据库中插入编号
-            projectGroupMapper.updateProjectSerialNumber(id, SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), serialNumber));
+            projectGroupMapper.updateProjectSerialNumber(id, SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.GENERAL.getValue(), serialNumber));
         }
 
 
