@@ -36,7 +36,7 @@
                limit_college as  limitCollege
         from openexperiment.time_limit
         <if test="college!=null">
-            where limit_college =#{limit_college}
+            where limit_college = #{college}
         </if>
     </select>
 </mapper>
