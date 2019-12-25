@@ -895,6 +895,10 @@ public class ProjectServiceImpl implements ProjectService {
                 }else {
                     status = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
                 }
+            }else if (info.getOperationUnit().equals(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue())) {
+                college = null;
+                //职能部门获取已经通过的，只要是立项的即可，驳回的状态为-3，会被直接筛选掉
+                status = ProjectStatus.ESTABLISH.getValue();
             }
             list =projectGroupMapper.selectGeneralPassedProjectList(college,status);
         }else {
