@@ -758,7 +758,8 @@
     <select id="getMaxTempSerialNumberByCollege" resultType="java.lang.String">
         select  max(temp_serial_number) from openexperiment.project_group where subordinate_college = #{college}
     </select>
-    <select id="selectGeneralPassedProjectList" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
+    <select id="selectGeneralPassedProjectList" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup"
+            resultMap="ProjectGroupResultMap">
         SELECT
         distinct
         project_group.id,
