@@ -86,9 +86,16 @@ public interface ProjectGroupMapper {
 
     List<Long> conditionQueryOfKeyProject(QueryConditionForm form);
 
+    /**
+     * 用于查询已经驳回的项目 --舍弃
+     * @param operationUnit
+     * @param operationType
+     * @param college
+     * @param type
+     * @return
+     */
     List<ProjectGroup> selectHistoricalInfoByUnitCollegeAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType,
-                                                                     @Param("college")Integer college,@Param("projectType")Integer type,
-                                                                     @Param("establishFailed")Boolean establishFailed);
+                                                                     @Param("college")Integer college,@Param("projectType")Integer type);
 
     /**
      * 获取普通的已通过的项目
@@ -97,8 +104,21 @@ public interface ProjectGroupMapper {
      */
     List<ProjectGroup> selectGeneralPassedProjectList(@Param("college")Integer college,@Param("status")Integer projectStatus);
 
+
+    /**
+     * 获取重点已通过的项目
+     */
+    List<ProjectGroup> selectKeyPassedProjectList(@Param("college")Integer college,@Param("status")Integer projectStatus);
+
+    /**
+     * 获取被驳回的重点项目 --舍弃
+     * @param operationUnit
+     * @param operationType
+     * @param college
+     * @return
+     */
     List<ProjectGroup> selectKeyHistoricalInfoByUnitAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType,
-                                                                 @Param("college")Integer college,@Param("establishFailed")Boolean establishFailed);
+                                                                 @Param("college")Integer college);
 
     Integer getCountOfSpecifiedStatusAndProjectProject(@Param("status") Integer status,@Param("college")Integer college);
 

@@ -216,15 +216,19 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private ProjectStatus getNextStatusByRoleAndOperation(RoleType roleType, OperationType operationType){
         ProjectStatus keyProjectStatus;
         //如果是二级单位 则是立项失败
-        if (operationType == OperationType.REJECT && (roleType == RoleType.SECONDARY_UNIT || roleType == RoleType.FUNCTIONAL_DEPARTMENT)) {
-            keyProjectStatus = ProjectStatus.ESTABLISH_FAILED;
-            return keyProjectStatus;
+        if (operationType == OperationType.REJECT) {
+            if ((roleType == RoleType.SECONDARY_UNIT || roleType == RoleType.FUNCTIONAL_DEPARTMENT)) {
+                keyProjectStatus = ProjectStatus.ESTABLISH_FAILED;
+                return keyProjectStatus;
+            }
         }
 
         //如果是二级单位和职能部门上报驳回则是立项失败
-        if (operationType == OperationType.REPORT_REJECT && (roleType == RoleType.SECONDARY_UNIT ||
-                roleType == RoleType.FUNCTIONAL_DEPARTMENT)) {
-            return ProjectStatus.ESTABLISH_FAILED;
+        if (operationType == OperationType.REPORT_REJECT ) {
+            if (roleType == RoleType.SECONDARY_UNIT ||
+                    roleType == RoleType.FUNCTIONAL_DEPARTMENT)  {
+                return ProjectStatus.ESTABLISH_FAILED;
+            }
         }
 
         switch (roleType.getValue()){
@@ -303,15 +307,18 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
             idList.add(check.getProjectId());
         }
-        if (operationType == OperationType.REJECT && (roleType == RoleType.LAB_ADMINISTRATOR || roleType == RoleType.MENTOR)) {
-            for (KeyProjectCheck check:list
-            ) {
-                //更新重点项目，回到拟题通过状态
-                keyProjectStatusMapper.update(check.getProjectId(),ProjectStatus.TO_DE_CONFIRMED.getValue());
-                //进行重点项目申请的时候该状态也会被改变
-                projectGroupMapper.updateProjectStatus(check.getProjectId(),ProjectStatus.LAB_ALLOWED.getValue());
+        if (operationType == OperationType.REJECT ) {
+            if (roleType == RoleType.LAB_ADMINISTRATOR || roleType == RoleType.MENTOR) {
+                for (KeyProjectCheck check:list
+                ) {
+                    //更新重点项目，回到拟题通过状态
+                    keyProjectStatusMapper.update(check.getProjectId(),ProjectStatus.TO_DE_CONFIRMED.getValue());
+                    //进行重点项目申请的时候该状态也会被改变
+                    projectGroupMapper.updateProjectStatus(check.getProjectId(),ProjectStatus.LAB_ALLOWED.getValue());
+                }
             }
         }else {
+            //获取下一个状态
             Integer nextProjectStatus = getNextStatusByRoleAndOperation(roleType, operationType).getValue();
             keyProjectStatusMapper.updateList(idList,nextProjectStatus);
         }
@@ -409,15 +416,35 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             college = null;
         }
 
-        //标记是否排除立项失败的，为null不排除
-        Boolean establishFailed = null;
+        List<ProjectGroup> list;
+
+        //判断是否为已通过的  筛选出大于当前状态的
         if (info.getOperationType().equals(OperationType.AGREE.getValue())
                 || info.getOperationType().equals(OperationType.REPORT.getValue())) {
             //排除立项失败的
-            establishFailed = true;
+            Integer status = 0;
+            if (info.getOperationUnit().equals(OperationUnit.LAB_ADMINISTRATOR.getValue())) {
+                if (info.getOperationType().equals(OperationType.AGREE.getValue())) {
+                    status = ProjectStatus.LAB_ALLOWED.getValue();
+                }else {
+                    status = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
+                }
+            }else if (info.getOperationUnit().equals(OperationUnit.SECONDARY_UNIT.getValue())) {
+                if (info.getOperationType().equals(OperationType.AGREE.getValue())) {
+                    status = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
+                }else {
+                    status = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
+                }
+            }else if (info.getOperationUnit().equals(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue())) {
+                college = null;
+                //职能部门获取已经通过的，只要是立项的即可，驳回的状态为-3，会被直接筛选掉
+                status = ProjectStatus.ESTABLISH.getValue();
+            }
+            list =projectGroupMapper.selectKeyPassedProjectList(college,status);
+        }else {
+            list  = projectGroupMapper.selectKeyHistoricalInfoByUnitAndOperation(info.getOperationUnit(), info.getOperationType(),
+                    college);
         }
-
-        List<ProjectGroup> list = projectGroupMapper.selectKeyHistoricalInfoByUnitAndOperation(info.getOperationUnit(),info.getOperationType(),college,establishFailed);
         for (ProjectGroup projectGroup:list
         ) {
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(),null));

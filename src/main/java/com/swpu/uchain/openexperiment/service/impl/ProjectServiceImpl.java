@@ -876,8 +876,6 @@ public class ProjectServiceImpl implements ProjectService {
 
         List<ProjectGroup> list;
 
-        //标记是否排除立项失败的，为null不排除
-        Boolean establishFailed = null;
         //判断是否为已通过的  筛选出大于当前状态的
         if (info.getOperationType().equals(OperationType.AGREE.getValue())
             || info.getOperationType().equals(OperationType.REPORT.getValue())) {
@@ -903,7 +901,7 @@ public class ProjectServiceImpl implements ProjectService {
             list =projectGroupMapper.selectGeneralPassedProjectList(college,status);
         }else {
             list  = projectGroupMapper.selectHistoricalInfoByUnitCollegeAndOperation(info.getOperationUnit(), info.getOperationType(),
-                    college,ProjectType.GENERAL.getValue(),establishFailed);
+                    college,ProjectType.GENERAL.getValue());
         }
 
         for (ProjectGroup projectGroup : list
