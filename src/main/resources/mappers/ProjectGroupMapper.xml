@@ -767,6 +767,7 @@
         project_group.end_time,
         project_group.is_open_topic,
         project_group.experiment_condition,
+        project_group.subordinate_college,
         project_group.suggest_group_type,
         project_group.experiment_type,
         project_group.achievement_check,
@@ -776,6 +777,7 @@
         project_group.fit_people_num,
         project_group.total_hours,
         project_group.lab_name,
+        project_group.apply_funds,
         project_group.project_name,
         project_group.project_type,
         project_group.start_time,
@@ -805,6 +807,7 @@
         project_group.suggest_group_type,
         project_group.experiment_type,
         project_group.achievement_check,
+        project_group.subordinate_college,
         project_group.limit_college,
         project_group.limit_major,
         project_group.limit_grade,
@@ -814,6 +817,7 @@
         project_group.project_name,
         project_group.project_type,
         project_group.start_time,
+        project_group.apply_funds,
         key_project_status.`status`,
         project_group.main_Content
         FROM openexperiment.project_group
@@ -827,5 +831,8 @@
                   and key_project_status.`status` != -3
             </if>
         </where>
+    </select>
+    <select id="selectGeneralRejectedProjectList"
+            resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup" resultMap="ProjectGroupResultMap">
     </select>
 </mapper>

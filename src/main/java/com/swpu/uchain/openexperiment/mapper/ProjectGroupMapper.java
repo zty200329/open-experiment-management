@@ -97,12 +97,21 @@ public interface ProjectGroupMapper {
     List<ProjectGroup> selectHistoricalInfoByUnitCollegeAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType,
                                                                      @Param("college")Integer college,@Param("projectType")Integer type);
 
-    /**
+       /**
      * 获取普通的已通过的项目
      * @param college
      * @return
      */
     List<ProjectGroup> selectGeneralPassedProjectList(@Param("college")Integer college,@Param("status")Integer projectStatus);
+
+
+    /**
+     * 获取普通的已驳回的项目
+     * @param college
+     * @return
+     */
+    List<ProjectGroup> selectGeneralRejectedProjectList(@Param("college")Integer college,@Param("status")Integer projectStatus);
+
 
 
     /**
@@ -119,6 +128,8 @@ public interface ProjectGroupMapper {
      */
     List<ProjectGroup> selectKeyHistoricalInfoByUnitAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType,
                                                                  @Param("college")Integer college);
+
+
 
     Integer getCountOfSpecifiedStatusAndProjectProject(@Param("status") Integer status,@Param("college")Integer college);
 
