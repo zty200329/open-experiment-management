@@ -1030,7 +1030,10 @@ public class ProjectServiceImpl implements ProjectService {
         TimeLimit timeLimit = timeLimitService.getTimeLimitByTypeAndCollege(TimeLimitType.JOIN_APPLY_LIMIT,college);
         //不在时间范围内
         if (timeLimit.getEndTime().before(new Date()) || timeLimit.getStartTime().after(new Date())) {
-            return Result.success();
+            //身份为学生，不可见
+            if (userRoleMapper.selectByUserId(Long.valueOf(currentUser.getCode())).getRoleId() < (RoleType.MENTOR.getValue())){
+                return Result.success();
+            }
         }
 
         List<OpenTopicInfo> list = projectGroupMapper.getAllOpenTopic(null);
