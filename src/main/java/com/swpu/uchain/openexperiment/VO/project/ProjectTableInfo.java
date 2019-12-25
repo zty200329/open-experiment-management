@@ -64,13 +64,13 @@ public class ProjectTableInfo {
     /**
      * 实验开始时间
      */
-    @JsonFormat(timezone = "GMT+8")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private String startTime;
 
     /**
      * 实验截止时间
      */
-    @JsonFormat(timezone = "GMT+8")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private String endTime;
 
     /**

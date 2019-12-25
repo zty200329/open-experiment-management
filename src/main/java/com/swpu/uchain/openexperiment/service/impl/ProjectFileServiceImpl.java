@@ -527,9 +527,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             row.createCell(5).setCellValue(guideTeachers.toString());
             row.createCell(6).setCellValue(students.toString());
             row.createCell(7).setCellValue(studentsMajorAndGrade.toString());
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            row.createCell(8).setCellValue(format.format(projectTableInfo.getStartTime()));
-            row.createCell(9).setCellValue(format.format(projectTableInfo.getEndTime()));
+            row.createCell(8).setCellValue(projectTableInfo.getStartTime().substring(0,10));
+            row.createCell(9).setCellValue(projectTableInfo.getEndTime().substring(0,10));
             row.createCell(10).setCellValue(projectTableInfo.getLabName());
             row.createCell(11).setCellValue(projectTableInfo.getAddress());
             row.createCell(12).setCellValue(leaderName.toString());
