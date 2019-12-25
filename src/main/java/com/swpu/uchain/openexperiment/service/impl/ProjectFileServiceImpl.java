@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -473,10 +474,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 }
 
                 students.append(userMemberVO.getUserName());
-                students.append(" \r\n");
+                students.append("\r\n ");
                 studentsMajorAndGrade.append(ConvertUtil.getGradeAndMajorByNumber(userMemberVO.getGrade() + userMemberVO.getMajor()));
                 if (i != userMemberVOList.size() -1) {
-                    studentsMajorAndGrade.append(" \r\n");
+                    studentsMajorAndGrade.append("\r\n ");
                 }
             }
 
@@ -487,10 +488,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             for (int i = 0; i < userMemberVOList2.size(); i++) {
                 UserMemberVO userMemberVO = userMemberVOList2.get(i);
                 students.append(userMemberVO.getUserName());
-                students.append(" \r\n");
+                students.append("\r\n ");
                 studentsMajorAndGrade.append(ConvertUtil.getGradeAndMajorByNumber(userMemberVO.getGrade() + userMemberVO.getMajor()));
                 if (i != userMemberVOList2.size()-1) {
-                    studentsMajorAndGrade.append(" \r\n");
+                    studentsMajorAndGrade.append("\r\n ");
                 }
             }
 
@@ -500,9 +501,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             for (int i = 0; i < userMemberVOList3.size(); i++) {
                 UserMemberVO userMemberVO = userMemberVOList3.get(i);
                 guideTeachers.append(userMemberVO.getUserName());
-                guideTeachers.append(" \r\n");
+                guideTeachers.append("\r\n ");
                 if (i != userMemberVOList3.size()-1) {
-                    studentsMajorAndGrade.append(" \r\n");
+                    studentsMajorAndGrade.append("\r\n ");
                 }
             }
 
@@ -526,8 +527,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             row.createCell(5).setCellValue(guideTeachers.toString());
             row.createCell(6).setCellValue(students.toString());
             row.createCell(7).setCellValue(studentsMajorAndGrade.toString());
-            row.createCell(8).setCellValue(projectTableInfo.getStartTime());
-            row.createCell(9).setCellValue(projectTableInfo.getEndTime());
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            row.createCell(8).setCellValue(format.format(projectTableInfo.getStartTime()));
+            row.createCell(9).setCellValue(format.format(projectTableInfo.getEndTime()));
             row.createCell(10).setCellValue(projectTableInfo.getLabName());
             row.createCell(11).setCellValue(projectTableInfo.getAddress());
             row.createCell(12).setCellValue(leaderName.toString());
