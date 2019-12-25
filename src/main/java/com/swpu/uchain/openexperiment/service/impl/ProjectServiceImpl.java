@@ -874,16 +874,34 @@ public class ProjectServiceImpl implements ProjectService {
             college = null;
         }
 
+        List<ProjectGroup> list;
+
         //标记是否排除立项失败的，为null不排除
         Boolean establishFailed = null;
+        //判断是否为已通过的  筛选出大于当前状态的
         if (info.getOperationType().equals(OperationType.AGREE.getValue())
             || info.getOperationType().equals(OperationType.REPORT.getValue())) {
             //排除立项失败的
-            establishFailed = true;
+            Integer status = 0;
+            if (info.getOperationUnit().equals(OperationUnit.LAB_ADMINISTRATOR.getValue())) {
+                if (info.getOperationType().equals(OperationType.AGREE.getValue())) {
+                    status = ProjectStatus.LAB_ALLOWED.getValue();
+                }else {
+                    status = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
+                }
+            }else if (info.getOperationUnit().equals(OperationUnit.SECONDARY_UNIT.getValue())) {
+                if (info.getOperationType().equals(OperationType.AGREE.getValue())) {
+                    status = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
+                }else {
+                    status = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
+                }
+            }
+            list =projectGroupMapper.selectGeneralPassedProjectList(college,status);
+        }else {
+            list  = projectGroupMapper.selectHistoricalInfoByUnitCollegeAndOperation(info.getOperationUnit(), info.getOperationType(),
+                    college,ProjectType.GENERAL.getValue(),establishFailed);
         }
 
-        List<ProjectGroup> list = projectGroupMapper.selectHistoricalInfoByUnitCollegeAndOperation(info.getOperationUnit(), info.getOperationType(),
-                college,ProjectType.GENERAL.getValue(),establishFailed);
         for (ProjectGroup projectGroup : list
         ) {
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(projectGroup.getId(),JoinStatus.JOINED.getValue()));

@@ -604,7 +604,7 @@
             and project_type = #{projectType}
         </if>
         <if test="establishFailed!=null">
-            and project_group.`status`!= -3
+            and project_group.`status` != -3
         </if>
 
     </select>
@@ -757,5 +757,40 @@
     </select>
     <select id="getMaxTempSerialNumberByCollege" resultType="java.lang.String">
         select  max(temp_serial_number) from openexperiment.project_group where subordinate_college = #{college}
+    </select>
+    <select id="selectGeneralPassedProjectList" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
+        SELECT
+        distinct
+        project_group.id,
+        project_group.serial_number,
+        project_group.address,
+        project_group.create_time,
+        project_group.creator_id,
+        project_group.end_time,
+        project_group.is_open_topic,
+        project_group.experiment_condition,
+        project_group.suggest_group_type,
+        project_group.experiment_type,
+        project_group.achievement_check,
+        project_group.limit_college,
+        project_group.limit_major,
+        project_group.limit_grade,
+        project_group.fit_people_num,
+        project_group.total_hours,
+        project_group.lab_name,
+        project_group.project_name,
+        project_group.project_type,
+        project_group.start_time,
+        project_group.`status`,
+        project_group.main_Content
+        FROM openexperiment.project_group
+        <where>
+            <if test="college!=null">
+                and operation_college = #{college}
+            </if>
+            <if  test="status!=null">
+                and  project_group.`status` &gt;= #{status}
+            </if>
+        </where>
     </select>
 </mapper>

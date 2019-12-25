@@ -90,6 +90,13 @@ public interface ProjectGroupMapper {
                                                                      @Param("college")Integer college,@Param("projectType")Integer type,
                                                                      @Param("establishFailed")Boolean establishFailed);
 
+    /**
+     * 获取普通的已通过的项目
+     * @param college
+     * @return
+     */
+    List<ProjectGroup> selectGeneralPassedProjectList(@Param("college")Integer college,@Param("status")Integer projectStatus);
+
     List<ProjectGroup> selectKeyHistoricalInfoByUnitAndOperation(@Param("unit") Integer operationUnit,@Param("type") Integer operationType,
                                                                  @Param("college")Integer college,@Param("establishFailed")Boolean establishFailed);
 
