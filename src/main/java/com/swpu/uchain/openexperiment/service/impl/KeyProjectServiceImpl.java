@@ -417,7 +417,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             establishFailed = true;
         }
 
-        List<ProjectGroup> list = projectGroupMapper.selectKeyHistoricalInfoByUnitAndOperation(info.getOperationUnit(),info.getOperationType(),college);
+        List<ProjectGroup> list = projectGroupMapper.selectKeyHistoricalInfoByUnitAndOperation(info.getOperationUnit(),info.getOperationType(),college,establishFailed);
         for (ProjectGroup projectGroup:list
         ) {
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(projectGroup.getId(),null));
