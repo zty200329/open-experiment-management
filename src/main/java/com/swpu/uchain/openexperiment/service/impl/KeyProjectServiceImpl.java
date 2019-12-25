@@ -442,8 +442,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             }
             list =projectGroupMapper.selectKeyPassedProjectList(college,status);
         }else {
-            list  = projectGroupMapper.selectKeyHistoricalInfoByUnitAndOperation(info.getOperationUnit(), info.getOperationType(),
-                    college);
+            list  = projectGroupMapper.selectKeyRejectedProjectList(college);
         }
         for (ProjectGroup projectGroup:list
         ) {
@@ -510,9 +509,4 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return Result.success(list);
     }
 
-    private void validProjectStatus(Integer currentStatus,Integer rightStatus){
-        if (!rightStatus.equals(currentStatus)){
-            throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
-        }
-    }
 }

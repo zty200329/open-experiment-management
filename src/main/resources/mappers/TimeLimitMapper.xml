@@ -29,11 +29,14 @@
         from openexperiment.time_limit
         where  limit_type = #{type} and limit_college = #{college} limit 1
     </select>
-    <select id="getAll" resultType="com.swpu.uchain.openexperiment.domain.TimeLimit">
+    <select id="getAllByCollege" resultType="com.swpu.uchain.openexperiment.domain.TimeLimit">
         select limit_type as timeLimitType,
                start_time as startTime,
                end_time as endTime,
                limit_college as  limitCollege
         from openexperiment.time_limit
+        <if test="college!=null">
+            where limit_college =#{limit_college}
+        </if>
     </select>
 </mapper>

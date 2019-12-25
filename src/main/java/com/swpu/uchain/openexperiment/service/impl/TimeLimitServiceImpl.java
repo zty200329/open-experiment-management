@@ -88,7 +88,8 @@ public class TimeLimitServiceImpl implements TimeLimitService {
 
     @Override
     public Result getTimeLimitList() {
-        return Result.success(timeLimitMapper.getAll());
+        Integer college = getUserService.getCurrentUser().getInstitute();
+        return Result.success(timeLimitMapper.getAllByCollege(college));
     }
 
     public TimeLimit getTimeLimitByType(Integer type, Integer college) {

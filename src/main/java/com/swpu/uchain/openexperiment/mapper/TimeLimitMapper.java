@@ -21,5 +21,5 @@ public interface TimeLimitMapper {
 
     TimeLimit getTimeLimitByTypeAndCollege(@Param("type") Integer type,@Param("college") Integer college);
 
-    List<TimeLimit> getAll();
+    List<TimeLimit> getAllByCollege(@Param("college") Integer college);
 }

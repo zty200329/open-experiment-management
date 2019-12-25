@@ -900,8 +900,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
             list =projectGroupMapper.selectGeneralPassedProjectList(college,status);
         }else {
-            list  = projectGroupMapper.selectHistoricalInfoByUnitCollegeAndOperation(info.getOperationUnit(), info.getOperationType(),
-                    college,ProjectType.GENERAL.getValue());
+            list  = projectGroupMapper.selectGeneralRejectedProjectList(college);
         }
 
         for (ProjectGroup projectGroup : list
