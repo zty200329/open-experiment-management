@@ -69,6 +69,11 @@ public class TimeLimitServiceImpl implements TimeLimitService {
     }
 
     @Override
+    public TimeLimit getTimeLimitByTypeAndCollege(TimeLimitType timeLimitType, Integer college) {
+        return timeLimitMapper.getTimeLimitByTypeAndCollege(timeLimitType.getValue(),college);
+    }
+
+    @Override
     public Result update(TimeLimitForm form) {
         Long userId = Long.valueOf(getUserService.getCurrentUser().getCode());
         if (!userRoleMapper.selectByUserId(userId).getRoleId().equals(RoleType.FUNCTIONAL_DEPARTMENT.getValue())

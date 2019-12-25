@@ -1024,6 +1024,15 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getAllOpenTopic() {
+        //筛选  学生如果不在要求的时间内，项目不显示
+        User currentUser = getUserService.getCurrentUser();
+        Integer college = currentUser.getInstitute();
+        TimeLimit timeLimit = timeLimitService.getTimeLimitByTypeAndCollege(TimeLimitType.JOIN_APPLY_LIMIT,college);
+        //不在时间范围内
+        if (timeLimit.getEndTime().before(new Date()) || timeLimit.getStartTime().after(new Date())) {
+            return Result.success();
+        }
+
         List<OpenTopicInfo> list = projectGroupMapper.getAllOpenTopic(null);
         for (OpenTopicInfo info : list
         ) {
