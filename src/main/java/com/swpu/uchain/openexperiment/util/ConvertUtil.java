@@ -344,6 +344,14 @@ public class ConvertUtil {
                 return "数据科学与大数据技术";
             case 29:
                 return "网络空间安全";
+            case 30:
+                return "自动化";
+            case 31:
+                return "电子信息工程";
+            case 32:
+                return "电气工程及其自动化";
+            case 33:
+                return "通信工程";
             default:
                 return "未知专业";
         }

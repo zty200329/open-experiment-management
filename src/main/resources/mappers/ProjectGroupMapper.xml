@@ -409,9 +409,9 @@
                project_group.`status`,
                project_group.update_time,
                project_group.main_Content
-        from openexperiment.project_group where status = #{projectStatus}
+        from openexperiment.project_group where status = #{projectStatus} and project_group.project_type = 1
         <if test="college!=null">
-            and project_group.limit_college = #{college}
+            and project_group.subordinate_college = #{college}
         </if>
     </select>
 
