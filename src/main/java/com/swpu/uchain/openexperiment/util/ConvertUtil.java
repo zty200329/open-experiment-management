@@ -91,12 +91,12 @@ public class ConvertUtil {
                 return "C";
 
             case 4:
-                return "D";
+                return "E";
 
             case 5:
-                return "E";
-            case 6:
                 return "F";
+            case 6:
+                return "D";
             default:
                 return "";
         }
