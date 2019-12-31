@@ -340,14 +340,16 @@ public class ProjectServiceImpl implements ProjectService {
             Integer numberOfSelectedStu = userProjectGroupMapper.selectStuCount(projectGroup.getId(), JoinStatus.JOINED.getValue());
             MyProjectVO myProjectVO = new MyProjectVO();
             Integer status = keyProjectStatusMapper.getStatusByProjectId(projectGroup.getId());
-            if (status != null) {
-                myProjectVO.setStatus(status);
-            }
+
+
             BeanUtils.copyProperties(projectGroup, myProjectVO);
             myProjectVO.setMemberRole(userProjectGroupMapper.selectByProjectIdAndUserId(projectGroup.getId(), Long.valueOf(currentUser.getCode())).getMemberRole());
             myProjectVO.setId(projectGroup.getId());
             myProjectVO.setNumberOfTheSelected(numberOfSelectedStu);
             myProjectVO.setProjectDetails(getProjectDetails(projectGroup));
+            if (status != null) {
+                myProjectVO.setStatus(status);
+            }
             projectVOS.add(myProjectVO);
         }
         return Result.success(projectVOS);

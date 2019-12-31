@@ -516,7 +516,7 @@
               project_group.status = #{status} or key_project_status.status =  #{status}
             </if>
 
-            <if test="college!=null and college != ''">
+            <if test="college!=null">
                 and  project_group.subordinate_college = #{college}
             </if>
         </where>
