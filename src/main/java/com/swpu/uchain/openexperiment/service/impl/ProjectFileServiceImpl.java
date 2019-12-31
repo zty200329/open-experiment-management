@@ -436,7 +436,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         // 4.设置表头，即每个列的列名
         String[] head = {"院/中心", "创建编号", "项目名称", "实验类型", "实验时数", "指导教师", "学生"
                 , "专业年级", "开始时间", "结束时间", "开放\r\n实验室", "实验室地点","负责学生姓名" ,"负责学生\r\n电话"
-                , "申请经费（元）", "建议\r\n评审分组","项目状态","上报编号"};
+                , "申请经费（元）", "建议\r\n评审分组","项目状态","上报编号","项目类型"};
         // 4.1创建表头行
         XSSFRow row = sheet.createRow(index++);
 
@@ -537,6 +537,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             row.createCell(15).setCellValue(ConvertUtil.getStringSuggestGroupType(projectTableInfo.getSuggestGroupType()));
             row.createCell(16).setCellValue(projectTableInfo.getProjectStatus());
             row.createCell(17).setCellValue(projectTableInfo.getSerialNumber());
+            row.createCell(18).setCellValue(ConvertUtil.getStrProjectType(projectTableInfo.getProjectType()));
 
         }
 

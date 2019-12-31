@@ -129,6 +129,7 @@
         <result column="project_name" jdbcType="VARCHAR" property="projectName" />
         <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
         <result column="apply_funds" property="applyFunds"/>
+        <result column="project_type" property="projectType"/>
 
     </resultMap>
 
@@ -492,6 +493,7 @@
             project_group.project_name,
             project_group.lab_name,
             project_group.apply_funds,
+            project_group.project_type,
             project_group.experiment_type,
             project_group.suggest_group_type,
             project_group.subordinate_college  AS college,
@@ -514,7 +516,7 @@
                 project_group.subordinate_college = #{college}
             </if>
             <if test="status!=null">
-                and project_group.status = #{status}
+                and project_group.status = #{status} or key_project_status.status =  #{status}
             </if>
         </where>
     </select>

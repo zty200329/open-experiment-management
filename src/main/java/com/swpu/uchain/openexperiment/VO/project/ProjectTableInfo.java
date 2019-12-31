@@ -109,6 +109,11 @@ public class ProjectTableInfo {
     private String projectStatus;
 
     /**
+     * 项目类型
+     */
+    private Integer projectType;
+
+    /**
      * 重点项目状态
      */
     private String keyProjectStatus;
