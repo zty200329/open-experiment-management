@@ -402,9 +402,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
         Integer college = user.getInstitute();
-        if (college == null) {
-            throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
-        }
         List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(college, projectStatus);
         // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
         XSSFWorkbook wb = new XSSFWorkbook();
