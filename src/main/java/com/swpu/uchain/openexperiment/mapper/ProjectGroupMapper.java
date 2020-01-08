@@ -29,10 +29,26 @@ public interface ProjectGroupMapper {
      */
     int updateProjectSerialNumber(@Param("id") Long projectId,@Param("serialNumber")String serialNumber);
 
+    /**
+     * 通过学院获取最大的编号 -- 获取用于计算下一个编号
+     * @param college
+     * @return
+     */
     String getMaxSerialNumberByCollege(@Param("college")Integer college);
 
+    /**
+     * 通过学院获取最大的临时编号（即创建编号） -- 获取用于计算下一个编号
+     * @param college
+     * @return
+     */
     String getMaxTempSerialNumberByCollege(@Param("college")Integer college);
 
+    /**
+     * 更新项目编号
+     * @param projectId
+     * @param serialNumber
+     * @return
+     */
     int updateProjectTempSerialNumber(@Param("id") Long projectId,@Param("tempSerialNumber")String serialNumber);
 
 
@@ -44,12 +60,24 @@ public interface ProjectGroupMapper {
 
     ProjectGroup selectByPrimaryProjectName(@Param("projectName") String projectName);
 
+    /**
+     * 项目通过条件查询返回的结果
+     * @param list 满足筛选条件的id集合
+     * @return
+     */
     List<ProjectGroup> selectAllByList(List<Long> list);
 
     int updateByPrimaryKey(ProjectGroup record);
 
     ProjectGroup selectByName(String projectName);
 
+    /**
+     * 通过用于ID和项目状态获取所有的项目 （用于查询个人所在的项目信息）
+     * @param userId
+     * @param projectStatus
+     * @param joinStatus
+     * @return
+     */
     List<ProjectGroup>  selectByUserIdAndStatus(@Param("userId") Long userId,@Param("projectStatus") Integer projectStatus,@Param("status")Integer joinStatus);
 
     List<ProjectGroup> selectByCollegeIdAndStatus(@Param("college") String college,@Param("projectStatus") Integer projectStatus);
@@ -58,6 +86,11 @@ public interface ProjectGroupMapper {
 
     List<SelectProjectVO> selectByFuzzyName(@Param("name") String name);
 
+    /**
+     * 用于Excel导出，结题的Excel
+     * @param college
+     * @return
+     */
     List<ConclusionDTO> selectConclusionDTOs(@Param("college")Integer college);
 
     /**
@@ -66,6 +99,11 @@ public interface ProjectGroupMapper {
      */
     List<OpenTopicInfo> getAllOpenTopic(List<Long> list);
 
+    /**
+     * 通过ID获取项目详情
+     * @param projectId
+     * @return
+     */
     ProjectGroupDetailVO getProjectGroupDetailVOByProjectId(@Param("projectId")Long projectId);
 
     /**
@@ -82,6 +120,11 @@ public interface ProjectGroupMapper {
 
     int selectSpecifiedProjectList(@Param("list") List<Long> projectIdList,@Param("status")Integer status);
 
+    /**
+     * 条件筛选  与 selectAllByList配合使用
+     * @param form
+     * @return
+     */
     List<Long> conditionQuery(QueryConditionForm form);
 
     List<Long> conditionQueryOfKeyProject(QueryConditionForm form);
@@ -136,7 +179,18 @@ public interface ProjectGroupMapper {
     List<ProjectGroup> selectKeyRejectedProjectList(@Param("college")Integer college);
 
 
+    /**
+     * 获取指定项目状态的项目数量 -- 用于上报操作的限制
+     * @param status
+     * @param college
+     * @return
+     */
     Integer getCountOfSpecifiedStatusAndProjectProject(@Param("status") Integer status,@Param("college")Integer college);
 
+    /**
+     * 更新项目类型，用于将重点项目转化为普通项目
+     * @param projectId
+     * @param type
+     */
     void updateProjectType(@Param("id") Long projectId,@Param("type") Integer type);
 }

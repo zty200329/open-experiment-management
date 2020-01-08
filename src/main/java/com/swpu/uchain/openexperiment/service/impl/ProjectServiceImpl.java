@@ -804,6 +804,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
 
+
         AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(college, ProjectType.GENERAL.getValue(), RoleType.SECONDARY_UNIT.getValue());
         Integer currentAmount = projectGroupMapper.getCountOfSpecifiedStatusAndProjectProject(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue(), college);
         if (currentAmount + projectGroupIdList.size() > amountAndTypeVO.getMaxAmount()) {
