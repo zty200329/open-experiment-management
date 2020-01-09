@@ -7,6 +7,11 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+/**
+ *
+ * 重点项目历史查询条件，与普通项目历史查询条件一致
+ * @author panghu
+ */
 @Data
 public class HistoryQueryKeyProjectInfo {
 

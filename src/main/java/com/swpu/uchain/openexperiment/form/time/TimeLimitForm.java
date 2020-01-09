@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
+ * 时间限制
  * @author dengg
  */
 @Data

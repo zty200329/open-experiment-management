@@ -1,6 +1,12 @@
 # OpenExperiment
 开放性实验管理平台
 ## 需求分析
+### 系统思维导图
+![lW3VFf.png](https://s2.ax1x.com/2020/01/09/lW3VFf.png)
+
+### 立项流程图
+![lWUBvT.png](https://s2.ax1x.com/2020/01/09/lWUBvT.png)
+
 ### 用户模块
 * 角色:
     * 学生

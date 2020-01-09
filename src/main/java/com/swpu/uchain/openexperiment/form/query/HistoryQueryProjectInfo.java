@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * @author dengg
+ * 重点项目历史查询条件，与普通项目历史查询条件一致
  */
 @Data
 public class HistoryQueryProjectInfo {

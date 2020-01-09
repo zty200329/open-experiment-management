@@ -9,6 +9,7 @@ import javax.validation.constraints.Null;
 import java.util.Date;
 
 /**
+ * 条件筛选查询
  * @author dengg
  */
 @Data
