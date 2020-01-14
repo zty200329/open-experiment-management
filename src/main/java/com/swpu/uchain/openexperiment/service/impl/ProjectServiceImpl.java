@@ -1336,7 +1336,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param formList 项目拒绝信息集合
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = GlobalException.class)
     Result rejectProjectApply(List<ProjectCheckForm> formList, OperationUnit operationUnit, OperationType operationType) {
         User user = getUserService.getCurrentUser();
         List<OperationRecord> list = new LinkedList<>();
