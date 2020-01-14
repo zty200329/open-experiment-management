@@ -16,6 +16,7 @@ import java.util.List;
  * 用户项目关系模块
  */
 public interface UserProjectService {
+
     /**
      * 插入新的用户项目关系
      * @param userProjectGroup

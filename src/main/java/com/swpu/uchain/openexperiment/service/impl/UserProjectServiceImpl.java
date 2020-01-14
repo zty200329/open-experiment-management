@@ -11,10 +11,7 @@ import com.swpu.uchain.openexperiment.mapper.UserRoleMapper;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.UserProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
-import com.swpu.uchain.openexperiment.service.GetUserService;
-import com.swpu.uchain.openexperiment.service.TimeLimitService;
-import com.swpu.uchain.openexperiment.service.UserProjectService;
-import com.swpu.uchain.openexperiment.service.UserService;
+import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.CountUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +41,7 @@ public class UserProjectServiceImpl implements UserProjectService {
     @Autowired
     private TimeLimitService timeLimitService;
     @Autowired
-    private UserRoleMapper userRoleMapper;
+    private UserRoleService userRoleService;
 
     @Override
     public boolean insert(UserProjectGroup userProjectGroup) {
@@ -116,7 +113,7 @@ public class UserProjectServiceImpl implements UserProjectService {
         }
 
         //验证成员身份
-        if (!userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId().equals(RoleType.NORMAL_STU.getValue())) {
+        if (!userRoleService.validContainsUserRole(RoleType.NORMAL_STU)) {
             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
         }
 

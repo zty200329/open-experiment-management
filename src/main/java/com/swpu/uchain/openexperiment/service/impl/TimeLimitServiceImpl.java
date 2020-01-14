@@ -1,9 +1,7 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.domain.TimeLimit;
-import com.swpu.uchain.openexperiment.domain.UserRole;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
-import com.swpu.uchain.openexperiment.enums.CollegeType;
 import com.swpu.uchain.openexperiment.enums.RoleType;
 import com.swpu.uchain.openexperiment.enums.TimeLimitType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
@@ -15,6 +13,7 @@ import com.swpu.uchain.openexperiment.redis.key.TimeLimitKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.TimeLimitService;
+import com.swpu.uchain.openexperiment.service.UserRoleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,14 +33,17 @@ public class TimeLimitServiceImpl implements TimeLimitService {
     private RedisService redisService;
     private GetUserService getUserService;
     private UserRoleMapper userRoleMapper;
+    private UserRoleService userRoleService;
 
     @Autowired
     public TimeLimitServiceImpl(TimeLimitMapper timeLimitMapper, RedisService redisService,
-                                GetUserService getUserService,UserRoleMapper userRoleMapper) {
+                                GetUserService getUserService,UserRoleMapper userRoleMapper,
+                                UserRoleService userRoleService) {
         this.timeLimitMapper = timeLimitMapper;
         this.redisService = redisService;
         this.getUserService = getUserService;
         this.userRoleMapper = userRoleMapper;
+        this.userRoleService = userRoleService;
     }
 
     @Override
@@ -75,8 +77,7 @@ public class TimeLimitServiceImpl implements TimeLimitService {
 
     @Override
     public Result update(TimeLimitForm form) {
-        Long userId = Long.valueOf(getUserService.getCurrentUser().getCode());
-        if (!userRoleMapper.selectByUserId(userId).getRoleId().equals(RoleType.FUNCTIONAL_DEPARTMENT.getValue())
+        if (!userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT)
         &&form.getTimeLimitType() >= TimeLimitType.SECONDARY_UNIT_CHECK_LIMIT.getValue()) {
             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
         }

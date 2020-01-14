@@ -6,16 +6,10 @@ import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
 import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
-import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
+import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
-import com.swpu.uchain.openexperiment.mapper.KeyProjectStatusMapper;
-import com.swpu.uchain.openexperiment.mapper.ProjectFileMapper;
-import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
-import com.swpu.uchain.openexperiment.domain.ProjectFile;
-import com.swpu.uchain.openexperiment.domain.ProjectGroup;
-import com.swpu.uchain.openexperiment.domain.User;
+import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
-import com.swpu.uchain.openexperiment.mapper.UserProjectGroupMapper;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.FileKey;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -70,8 +64,33 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Autowired
     private UserProjectGroupMapper userProjectGroupMapper;
 
+    @Autowired
+    private UserRoleMapper userRoleMapper;
+
     @Value(value = "${file.ip-address}")
     private String ipAddress;
+
+    /**
+     * 多角色身份验证
+     * @param roleType 需要的角色
+     * @return
+     */
+    private boolean validContainsUserRole(RoleType roleType) {
+        User user  = getUserService.getCurrentUser();
+        //用户角色组
+        List<UserRole> list = userRoleMapper.selectByUserId(Long.valueOf(user.getCode()));
+        if (list == null || list.size() == 0) {
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
+
+        for (UserRole userRole:list
+        ) {
+            if (roleType.getValue().equals(userRole.getRoleId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean insert(ProjectFile projectFile) {
         ProjectFile projectFile1 = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectFile.getProjectGroupId(), projectFile.getMaterialType());
@@ -119,14 +138,20 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
 
+        User user = getUserService.getCurrentUser();
+
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectGroupId);
-        //验证项目状态合法性，为其中之一的状态均可以通过
-        if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue()) &&
-                !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())
-                //判定是否为重点项目驳回状态,该状态可进行文件提交
-            && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.TO_DE_CONFIRMED.getValue())){
-            throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
-        }
+
+        //如果是职能部门，不需要验证项目的状态
+        if (validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT)) {
+            log.info("职能部门对进行项目编号为"+projectGroupId+"的项目进行正文修改");
+            //验证项目状态合法性，为其中之一的状态均可以通过
+        }else if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue()) &&
+                    !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())
+                    //判定是否为重点项目驳回状态,该状态可进行文件提交
+                    && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.TO_DE_CONFIRMED.getValue())){
+                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+            }
 
         if (!getFileSuffix(file.getOriginalFilename()).equals(".doc") || !getFileSuffix(headFile.getOriginalFilename()).equals(".html")) {
             throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
@@ -150,7 +175,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (!checkFileFormat(file, FileType.WORD.getValue())) {
             return Result.error(CodeMsg.FORMAT_UNSUPPORTED);
         }
-        User user = getUserService.getCurrentUser();
 
         //校验当前用户是否有权进行上传
         UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, Long.valueOf(user.getCode()));

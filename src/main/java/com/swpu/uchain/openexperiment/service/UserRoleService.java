@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.UserRole;
+import com.swpu.uchain.openexperiment.enums.RoleType;
 import com.swpu.uchain.openexperiment.form.permission.UserRoleForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
@@ -13,6 +14,12 @@ import java.util.List;
  * 用户权限模块
  */
 public interface UserRoleService {
+
+    /**
+     * 验证是否拥有该角色
+     */
+    boolean validContainsUserRole(RoleType roleType);
+
     /**
      * 插入UserRole
      * @param userRole

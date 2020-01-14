@@ -39,10 +39,10 @@
     select id, user_id, role_id from user_role where user_id = #{param1} and role_id = #{param2}
   </select>
   <select id="selectByRoleId" resultMap="BaseResultMap">
-    select id, user_id, role_id from user_role where role_id = #{roleId}
+    select id, user_id, role_id from openexperiment.user_role where role_id = #{roleId}
   </select>
   <select id="selectByUserId" resultType="com.swpu.uchain.openexperiment.domain.UserRole">
-    select id, user_id as userId, role_id as roleId from user_role where user_id = #{userId}
+    select id, user_id as userId, role_id as roleId from openexperiment.user_role where user_id = #{userId}
   </select>
     <select id="getUserInfoByRole" resultType="com.swpu.uchain.openexperiment.VO.user.RoleUserVO">
       SELECT

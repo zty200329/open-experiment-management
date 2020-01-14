@@ -21,7 +21,7 @@ public interface UserRoleMapper {
      * @param userId 工号
      * @return
      */
-    UserRole selectByUserId(@Param("userId") Long userId);
+    List<UserRole> selectByUserId(@Param("userId") Long userId);
 
     List<UserRole> selectAll();
 

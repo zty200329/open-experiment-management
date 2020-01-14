@@ -52,7 +52,7 @@ public class ProjectServiceImpl implements ProjectService {
     private GetUserService getUserService;
     private UserProjectGroupMapper userProjectGroupMapper;
     private RoleMapper roleMapper;
-    private UserRoleMapper userRoleMapper;
+    private UserRoleService userRoleService;
     private OperationRecordMapper recordMapper;
     private UserMapper userMapper;
     private KeyProjectStatusMapper keyProjectStatusMapper;
@@ -70,7 +70,7 @@ public class ProjectServiceImpl implements ProjectService {
                               RoleMapper roleMapper, AmountLimitMapper amountLimitMapper,
                               UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper,
                               KeyProjectStatusMapper keyProjectStatusMapper, ProjectFileMapper projectFileMapper,
-                              TimeLimitService timeLimitService,UserRoleMapper userRoleMapper) {
+                              TimeLimitService timeLimitService,UserRoleService userRoleService) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -88,7 +88,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectFileMapper = projectFileMapper;
         this.timeLimitService = timeLimitService;
         this.amountLimitMapper = amountLimitMapper;
-        this.userRoleMapper = userRoleMapper;
+        this.userRoleService = userRoleService;
     }
 
     @Override
@@ -195,7 +195,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         //判断用户类型
-        if (!userRoleMapper.selectByUserId(Long.valueOf(currentUser.getCode())).getRoleId().equals(RoleType.MENTOR.getValue())) {
+        if (!userRoleService.validContainsUserRole(RoleType.MENTOR)) {
             throw new GlobalException(CodeMsg.ONLY_TEACHER_CAN_APPLY);
         }
 
@@ -1034,7 +1034,7 @@ public class ProjectServiceImpl implements ProjectService {
         //不在时间范围内
         if (timeLimit.getEndTime().before(new Date()) || timeLimit.getStartTime().after(new Date())) {
             //身份为学生，不可见
-            if (userRoleMapper.selectByUserId(Long.valueOf(currentUser.getCode())).getRoleId() < (RoleType.MENTOR.getValue())){
+            if (userRoleService.validContainsUserRole(RoleType.NORMAL_STU)){
                 return Result.success();
             }
         }

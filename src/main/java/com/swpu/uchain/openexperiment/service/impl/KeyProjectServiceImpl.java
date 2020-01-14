@@ -20,6 +20,7 @@ import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.KeyProjectService;
 import com.swpu.uchain.openexperiment.service.TimeLimitService;
+import com.swpu.uchain.openexperiment.service.UserRoleService;
 import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
 import io.swagger.models.auth.In;
 import net.sf.jsqlparser.statement.select.Join;
@@ -47,14 +48,15 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private TimeLimitService timeLimitService;
     private AmountLimitMapper amountLimitMapper;
     private ProjectFileMapper projectFileMapper;
-    private UserRoleMapper userRoleMapper;
+    private UserRoleService userRoleService;
+
 
     @Autowired
     public KeyProjectServiceImpl(ProjectGroupMapper projectGroupMapper, UserProjectGroupMapper userProjectGroupMapper,
                                  KeyProjectStatusMapper keyProjectStatusMapper,GetUserService getUserService,
                                  OperationRecordMapper operationRecordMapper,TimeLimitService timeLimitService,
                                  AmountLimitMapper amountLimitMapper,ProjectFileMapper projectFileMapper,
-                                 UserRoleMapper userRoleMapper) {
+                                 UserRoleService userRoleService) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
@@ -63,8 +65,9 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         this.timeLimitService = timeLimitService;
         this.amountLimitMapper = amountLimitMapper;
         this.projectFileMapper = projectFileMapper;
-        this.userRoleMapper = userRoleMapper;
+        this.userRoleService = userRoleService;
     }
+
 
     @Transactional(rollbackFor = GlobalException.class)
     @Override
@@ -169,27 +172,18 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result getKeyProjectApplyingListByLabAdmin() {
          User user  = getUserService.getCurrentUser();
-         if ( !userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId().equals(RoleType.LAB_ADMINISTRATOR.getValue())) {
-             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
-         }
          return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.GUIDE_TEACHER_ALLOWED,user.getInstitute());
     }
 
     @Override
     public Result getKeyProjectApplyingListBySecondaryUnit() {
         User user  = getUserService.getCurrentUser();
-        if ( !userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId().equals(RoleType.SECONDARY_UNIT.getValue())) {
-            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
-        }
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.LAB_ALLOWED_AND_REPORTED,user.getInstitute());
     }
 
     @Override
     public Result getKeyProjectApplyingListByFunctionalDepartment() {
         User user  = getUserService.getCurrentUser();
-        if ( !userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId().equals(RoleType.SECONDARY_UNIT.getValue())) {
-            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
-        }
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED,null);
     }
 
@@ -283,7 +277,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(check.getProjectId(), Long.valueOf(user.getCode()));
 
             //验证属于该项目并且是该项目的指导教师
-            if (userRoleMapper.selectByUserId(Long.valueOf(user.getCode())).getRoleId().equals(RoleType.MENTOR.getValue())) {
+            if (userRoleService.validContainsUserRole(RoleType.MENTOR)) {
                 if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
                     throw new GlobalException(CodeMsg.PERMISSION_DENNY);
                 }
