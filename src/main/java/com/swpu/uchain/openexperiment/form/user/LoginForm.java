@@ -18,4 +18,6 @@ public class LoginForm {
     private String password;
     @NotNull(message = "验证码不能为空")
     private String verifyCode;
+    @NotNull
+    private Integer role;
 }
