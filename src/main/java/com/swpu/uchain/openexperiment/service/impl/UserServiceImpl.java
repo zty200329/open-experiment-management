@@ -66,13 +66,15 @@ public class UserServiceImpl implements UserService {
     private UserProjectGroupMapper userProjectGroupMapper;
     private ConvertUtil convertUtil;
     private GetUserService getUserService;
+    private UserRoleService userRoleService;
 
     @Autowired
     public UserServiceImpl(UserMapper userMapper, RedisService redisService,
                            RoleService roleService,GetUserService getUserService,
                            AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil,
                            AclService aclService,UserProjectGroupMapper userProjectGroupMapper,
-                           PasswordEncoder passwordEncoder,ConvertUtil convertUtil) {
+                           PasswordEncoder passwordEncoder,ConvertUtil convertUtil,
+                           UserRoleService userRoleService) {
         this.userMapper = userMapper;
         this.redisService = redisService;
         this.roleService = roleService;
@@ -83,6 +85,7 @@ public class UserServiceImpl implements UserService {
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.convertUtil = convertUtil;
         this.getUserService = getUserService;
+        this.userRoleService = userRoleService;
     }
 
     @Override
@@ -122,8 +125,10 @@ public class UserServiceImpl implements UserService {
         if (!checkVerifyCode(clientIp, loginForm.getVerifyCode())){
             return Result.error(CodeMsg.VERIFY_CODE_ERROR);
         }
-        User user = getUserService.selectByUserCode(loginForm.getUserCode());
-        if (user == null){
+        User user = getUserService.selectByUserCodeAndRole(loginForm.getUserCode(),loginForm.getRole());
+
+        //验证用户密码及其角色是否存在
+        if (user == null) {
             return Result.error(CodeMsg.USER_NO_EXIST);
         }
         log.info("=============校验用户的密码================");

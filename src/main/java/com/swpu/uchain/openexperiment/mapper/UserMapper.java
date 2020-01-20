@@ -20,6 +20,8 @@ public interface UserMapper {
 
     User selectByUserCode(String userCode);
 
+    User selectByUserCodeAndRole(@Param("userCode") String userCode,@Param("role") Integer role);
+
     List<User> selectProjectJoinedUsers(Long projectId);
 
     List<User> selectByRandom(@Param("keyWord") String keyWord,@Param("isTeacher") boolean isTeacher);

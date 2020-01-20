@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.form.user;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -18,6 +19,7 @@ public class LoginForm {
     private String password;
     @NotNull(message = "验证码不能为空")
     private String verifyCode;
+    @ApiModelProperty("用户角色选择")
     @NotNull
     private Integer role;
 }

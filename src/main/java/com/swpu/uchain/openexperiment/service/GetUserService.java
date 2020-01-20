@@ -38,4 +38,8 @@ public class GetUserService {
         return userMapper.selectByUserCode(userCode);
     }
 
+    public User selectByUserCodeAndRole(String userCode,Integer role) {
+        return userMapper.selectByUserCodeAndRole(userCode,role);
+    }
+
 }
