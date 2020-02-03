@@ -117,7 +117,7 @@ public class Word2Html {
         OutputStream outputStream = null;
         try {
             /**
-             String userDir = System.getProperty("user.dir");
+             String userDir = System.getProperty("u_stu.dir");
              String path = userDir + "/bin/file.xml";
              inputStream = new FileInputStream(path);
              */

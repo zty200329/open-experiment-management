@@ -77,9 +77,9 @@
   </select>
   <select id="selectAttachmentFiles" resultMap="AttachmentFileDTOMap">
     select project_file.id, project_file.project_group_id, project_file.download_times, project_file.file_name,
-    project_file.file_type, project_file.`size`, project_file.upload_time, project_file.upload_user_id, user.real_name
+    project_file.file_type, project_file.`size`, project_file.upload_time, project_file.upload_user_id, u_stu.real_name
     from openexperiment.project_file
-    inner join openexperiment.user where user.id = openexperiment.project_file.upload_user_id
+    inner join openexperiment.u_stu where u_stu.id = openexperiment.project_file.upload_user_id
     and project_group_id is null
   </select>
 </mapper>

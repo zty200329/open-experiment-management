@@ -339,9 +339,9 @@
     order by create_time desc
   </select>
   <select id="selectByFuzzyName" resultMap="SelectProjectMap">
-    select openexperiment.project_group.id, openexperiment.project_group.project_name, user.real_name
+    select openexperiment.project_group.id, openexperiment.project_group.project_name, u_stu.real_name
     from openexperiment.project_group
-           inner join openexperiment.user on project_group.creator_id = user.id
+           inner join openexperiment.u_stu on project_group.creator_id = u_stu.id
     where project_group.project_name like '%${name}%'
   </select>
     <select id="getAllOpenTopic" resultMap="OpenTopicInfoResultMap">
@@ -369,16 +369,16 @@
              project_group.update_time,
              project_group.main_Content,
              user_project_group.user_id,
-             user.fix_phone as t_fix_phone,
-             user.mobile_phone as t_mobile_phone,
-             user.qq_num as t_qq_num,
-             user.sex as t_sex,
-             user.email as t_email,
-             user.real_name as t_real_name,
-             user.code as t_user_id
+             u_stu.fix_phone as t_fix_phone,
+             u_stu.mobile_phone as t_mobile_phone,
+             u_stu.qq_num as t_qq_num,
+             u_stu.sex as t_sex,
+             u_stu.email as t_email,
+             u_stu.real_name as t_real_name,
+             u_stu.code as t_user_id
       from openexperiment.project_group
              inner join openexperiment.user_project_group on openexperiment.project_group.id = user_project_group.project_group_id <!--and user_project_group.status = 2-->
-             inner join openexperiment.user on user_project_group.user_id = user.code
+             inner join openexperiment.u_stu on user_project_group.user_id = u_stu.code
         where project_group.status = 1<!--1指的是实验室审核通过-->  and project_group.is_open_topic !=2 and member_role = 1<!--2是指不开放-->
         <if test="list!=null">
             and project_group.id in
@@ -450,20 +450,20 @@
                user_project_group.member_role    as u_member_role,
                user_project_group.personal_judge as u_personal_judge,
                user_project_group.join_time      as u_join_time,
-               user.user_type                    as u_user_type,
-               user.real_name                    as u_real_name,
-               user.sex                          as u_sex,
-               user.qq_num                       as u_qq_num,
-               user.fix_phone                    as u_fix_phone,
-               user.mobile_phone                 as u_mobile_phone,
-               user.institute                    as u_institute,
-               user.grade                        as u_grade,
-               user.major                        as u_major,
-               user.email                        as u_email
+               u_stu.user_type                    as u_user_type,
+               u_stu.real_name                    as u_real_name,
+               u_stu.sex                          as u_sex,
+               u_stu.qq_num                       as u_qq_num,
+               u_stu.fix_phone                    as u_fix_phone,
+               u_stu.mobile_phone                 as u_mobile_phone,
+               u_stu.institute                    as u_institute,
+               u_stu.grade                        as u_grade,
+               u_stu.major                        as u_major,
+               u_stu.email                        as u_email
         from openexperiment.project_group
                  inner join openexperiment.user_project_group on user_project_group.project_group_id = project_group.id
                                                                      and user_project_group.status = 2 <!--2表示加入-->
-                 inner join openexperiment.user on user_project_group.user_id = user.code
+                 inner join openexperiment.u_stu on user_project_group.user_id = u_stu.code
                  left join openexperiment.key_project_status on key_project_status.project_id = project_group_id
         where project_group.id = #{projectId}
     </select>
@@ -532,7 +532,7 @@
         select project_group.id
             from openexperiment.project_group
         <if test="creator!=null">
-            inner join openexperiment.user on user.code = project_group.creator_id and locate(#{creator},user.real_name)
+            inner join openexperiment.u_stu on u_stu.code = project_group.creator_id and locate(#{creator},u_stu.real_name)
         </if>
         <where>
             <if test="status!=null">

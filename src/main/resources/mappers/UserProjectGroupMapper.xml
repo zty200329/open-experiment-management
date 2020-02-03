@@ -115,7 +115,7 @@
 
   </select>
   <select id="selectUserCodesByProjectGroupId" resultType="java.lang.String">
-    select user.code from openexperiment.user_project_group inner join openexperiment.user on user.id = user_project_group.user_id where user_project_group.project_group_id = #{projectGroupId}
+    select u_stu.code from openexperiment.user_project_group inner join openexperiment.u_stu on u_stu.id = user_project_group.user_id where user_project_group.project_group_id = #{projectGroupId}
   </select>
   <select id="selectProjectGroupIdByUserIdAndMemberRole" resultType="long">
     select project_group_id
@@ -135,11 +135,11 @@
         select
                 user_project_group.user_id as userId,
                 user_project_group.member_role as memberRole,
-                user.real_name as userName,
-                user.major as major,
-                user.grade as grade,
-                user.mobile_phone as phone
-         from openexperiment.user_project_group inner join openexperiment.user on user_project_group.user_id = user.code
+                u_stu.real_name as userName,
+                u_stu.major as major,
+                u_stu.grade as grade,
+                u_stu.mobile_phone as phone
+         from openexperiment.user_project_group inner join openexperiment.u_stu on user_project_group.user_id = u_stu.code
          where user_project_group.project_group_id = #{projectId}
             <if test="memberRole!=null">
                 and user_project_group.member_role = #{memberRole}

@@ -20,11 +20,11 @@
     <result column="class_num" jdbcType="INTEGER" property="classNum" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from user
+    delete from openexperiment.u_stu
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.User">
-    insert into user (id, code, email, 
+    insert into openexperiment.u_stu (id, code, email,
       fix_phone, id_card, mobile_phone, 
       `password`, qq_num, real_name, 
       sex, user_type, institute, 
@@ -38,7 +38,7 @@
       #{classNum,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.User">
-    update openexperiment.user
+    update openexperiment.u_stu
     set code = #{code,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
       fix_phone = #{fixPhone,jdbcType=VARCHAR},
@@ -59,95 +59,86 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select id, code, email, fix_phone, id_card, mobile_phone, `password`, qq_num, real_name, 
     sex, user_type, institute, major, grade, work_unit, class_num
-    from user
+    from openexperiment.u_stu
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" resultMap="BaseResultMap">
     select id, code, email, fix_phone, id_card, mobile_phone, `password`, qq_num, real_name, 
     sex, user_type, institute, major, grade, work_unit, class_num
-    from openexperiment.user
+    from openexperiment.u_stu
   </select>
   <select id="selectByUserCode" resultMap="BaseResultMap">
     select
-          user.id,
-          user.code,
-          user.email,
-          user.fix_phone,
-          user.id_card,
-          user.mobile_phone,
-          user.`password`,
-          user.qq_num,
-          user.real_name,
-          user.sex,
-          user.user_type,
-          user.institute,
-          user.major,
-          user.grade,
-          user.class_num
-    from openexperiment.user where code = #{userCode}
+          u_stu.id,
+          u_stu.code,
+          u_stu.email,
+          u_stu.fix_phone,
+          u_stu.id_card,
+          u_stu.mobile_phone,
+          u_stu.`password`,
+          u_stu.qq_num,
+          u_stu.real_name,
+          u_stu.sex,
+          u_stu.user_type,
+          u_stu.institute,
+          u_stu.major,
+          u_stu.grade,
+          u_stu.class_num
+    from openexperiment.u_stu where code = #{userCode}
   </select>
   <select id="selectProjectJoinedUsers" resultMap="BaseResultMap">
-    select user.id,
-           user.code,
-           user.email,
-           user.fix_phone,
-           user.id_card,
-           user.mobile_phone,
-           user.`password`,
-           user.qq_num,
-           user.real_name,
-           user.sex,
-           user.user_type,
-           user.institute,
-           user.major,
-           user.grade,
-           user.class_num
-    from openexperiment.user
+    select u_stu.id,
+           u_stu.code,
+           u_stu.email,
+           u_stu.fix_phone,
+           u_stu.id_card,
+           u_stu.mobile_phone,
+           u_stu.`password`,
+           u_stu.qq_num,
+           u_stu.real_name,
+           u_stu.sex,
+           u_stu.user_type,
+           u_stu.institute,
+           u_stu.major,
+           u_stu.grade,
+           u_stu.class_num
+    from openexperiment.u_stu
            inner join openexperiment.user_project_group
-                      on user.code = user_project_group.user_id
+                      on u_stu.code = user_project_group.user_id
     where user_project_group.project_group_id = #{projectId}
       and user_project_group.status = 2
   </select>
   <select id="selectByRandom" resultMap="BaseResultMap">
-    select user.id, code, real_name, institute, major, email, fix_phone, id_card, mobile_phone, password, qq_num, sex, user_type, grade, work_unit, class_num from openexperiment.user
+    select u_stu.id, code, real_name, institute, major, email, fix_phone, id_card, mobile_phone, password, qq_num, sex, user_type, grade, work_unit, class_num from openexperiment.u_stu
     inner join openexperiment.user_role on code = user_role.user_id
     where locate(#{keyWord},`code`)
-    or locate(#{keyWord},`real_name`)
-      <choose>
-      <when test="isTeacher == true">
-        and user_role.role_id=3
-      </when>
-      <otherwise>
-        and user_role.role_id!=3
-      </otherwise>
-    </choose>
     limit 50
   </select>
   <select id="selectGroupLeader" resultMap="BaseResultMap">
-    select user.id, user.code, user.email, user.fix_phone, user.id_card, user.mobile_phone, user.`password`,
-    user.qq_num, user.real_name, user.sex, user.user_type, user.institute, user.major, user.grade, user.class_num
-    from openexperiment.user inner join openexperiment.user_project_group
+    select u_stu.id, u_stu.code, u_stu.email, u_stu.fix_phone, u_stu.id_card, u_stu.mobile_phone, u_stu.`password`,
+    u_stu.qq_num, u_stu.real_name, u_stu.sex, u_stu.user_type, u_stu.institute, u_stu.major, u_stu.grade, u_stu.class_num
+    from openexperiment.u_stu inner join openexperiment.user_project_group
     on  user_project_group.member_role = 2 and user_project_group.project_group_id = #{projectGroupId} limit 1
   </select>
     <select id="selectByUserCodeAndRole" resultType="com.swpu.uchain.openexperiment.domain.User"
             resultMap="BaseResultMap">
         select
-            user.id,
-            user.code,
-            user.email,
-            user.fix_phone,
-            user.id_card,
-            user.mobile_phone,
-            user.`password`,
-            user.qq_num,
-            user.real_name,
-            user.sex,
-            user.user_type,
-            user.institute,
-            user.major,
-            user.grade,
-            user.class_num
-        from openexperiment.user inner join openexperiment.user_role on user.code = user_role.user_id
-        where user.code = #{userCode} and user_role.role_id = #{role}
+            u_stu.id,
+            u_stu.code,
+            u_stu.email,
+            u_stu.fix_phone,
+            u_stu.id_card,
+            u_stu.mobile_phone,
+            u_stu.`password`,
+            u_stu.qq_num,
+            u_stu.real_name,
+            u_stu.sex,
+            u_stu.user_type,
+            u_stu.institute,
+            u_stu.major,
+            u_stu.grade,
+            u_stu.class_num
+        from openexperiment.u_stu inner join openexperiment.user_role on u_stu.code = user_role.user_id
+        where u_stu.code = #{userCode} and user_role.role_id = #{role}
     </select>
 </mapper>

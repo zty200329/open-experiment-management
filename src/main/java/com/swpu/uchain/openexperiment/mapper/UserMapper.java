@@ -24,6 +24,12 @@ public interface UserMapper {
 
     List<User> selectProjectJoinedUsers(Long projectId);
 
+    /**
+     * 调整数据库结构，水平拆分表，分离学生表和教师表
+     * @param keyWord
+     * @param isTeacher
+     * @return
+     */
     List<User> selectByRandom(@Param("keyWord") String keyWord,@Param("isTeacher") boolean isTeacher);
 
     User selectGroupLeader(Long projectGroupId);

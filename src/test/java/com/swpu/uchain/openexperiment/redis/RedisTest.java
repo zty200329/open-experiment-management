@@ -48,7 +48,7 @@ public class RedisTest {
         log.info(jsonStr);
         redisService.setList(UserKey.getByKeyWord, 1 + "",users);
         List<User> arraylist = (List<User>) redisService.getList(UserKey.getByKeyWord, 1 + "");
-        log.info("user.name:{}", arraylist.get(0).getRealName());
+        log.info("u_stu.name:{}", arraylist.get(0).getRealName());
     }
 
     @Test
