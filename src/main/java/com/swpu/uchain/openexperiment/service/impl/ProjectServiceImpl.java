@@ -1325,6 +1325,7 @@ public class ProjectServiceImpl implements ProjectService {
         return rejectProjectApply(list, OperationUnit.FUNCTIONAL_DEPARTMENT, OperationType.CONCLUSION_REJECT);
     }
 
+
     @Override
     public Result rejectToBeConcludingProject(List<ProjectCheckForm> list) {
         return rejectProjectApply(list, OperationUnit.FUNCTIONAL_DEPARTMENT, OperationType.CONCLUSION_REJECT);
