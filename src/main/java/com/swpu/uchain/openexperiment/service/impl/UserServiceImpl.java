@@ -4,6 +4,7 @@ import com.swpu.uchain.openexperiment.DTO.VerifyCode;
 import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
+import com.swpu.uchain.openexperiment.domain.Teacher;
 import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.domain.Role;
 import com.swpu.uchain.openexperiment.domain.User;
@@ -67,14 +68,15 @@ public class UserServiceImpl implements UserService {
     private ConvertUtil convertUtil;
     private GetUserService getUserService;
     private UserRoleService userRoleService;
+    private TeacherMapper teacherMapper;
 
     @Autowired
     public UserServiceImpl(UserMapper userMapper, RedisService redisService,
-                           RoleService roleService,GetUserService getUserService,
+                           RoleService roleService, GetUserService getUserService,
                            AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil,
-                           AclService aclService,UserProjectGroupMapper userProjectGroupMapper,
-                           PasswordEncoder passwordEncoder,ConvertUtil convertUtil,
-                           UserRoleService userRoleService) {
+                           AclService aclService, UserProjectGroupMapper userProjectGroupMapper,
+                           PasswordEncoder passwordEncoder, ConvertUtil convertUtil,
+                           UserRoleService userRoleService, TeacherMapper teacherMapper) {
         this.userMapper = userMapper;
         this.redisService = redisService;
         this.roleService = roleService;
@@ -86,6 +88,7 @@ public class UserServiceImpl implements UserService {
         this.convertUtil = convertUtil;
         this.getUserService = getUserService;
         this.userRoleService = userRoleService;
+        this.teacherMapper = teacherMapper;
     }
 
     @Override
@@ -285,8 +288,12 @@ public class UserServiceImpl implements UserService {
         if (currentUser == null){
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
-
-        return Result.success(userMapper.selectByUserCode(currentUser.getCode()));
+        User userInfo = userMapper.selectByUserCode(currentUser.getCode());
+        if (userInfo != null) {
+            return Result.success(userInfo);
+        }else {
+            return Result.success(teacherMapper.selectByUserCode(currentUser.getCode()));
+        }
     }
 
     @Override

@@ -11,7 +11,6 @@ public enum RoleType {
     /**
      *
      */
-    ADMIN(0,"超级管理员"),
     NORMAL_STU(1,"学生"),
     PROJECT_LEADER(2,"学生(项目组长)"),
     MENTOR(3,"指导教师"),

@@ -32,6 +32,11 @@ public interface UserMapper {
      */
     List<User> selectByRandom(@Param("keyWord") String keyWord,@Param("isTeacher") boolean isTeacher);
 
+    /**
+     * 根据角色进行筛选  @desperate
+     * @param projectGroupId
+     * @return
+     */
     User selectGroupLeader(Long projectGroupId);
 
 }
