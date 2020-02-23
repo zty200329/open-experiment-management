@@ -6,6 +6,7 @@ import com.swpu.uchain.openexperiment.form.user.LoginForm;
 import com.swpu.uchain.openexperiment.form.user.UserUpdateForm;
 import com.swpu.uchain.openexperiment.result.Result;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -43,6 +44,8 @@ public interface UserService {
      * @return
      */
     Result login(String clientIp, LoginForm loginForm);
+
+
 
     /**
      * 发送验证码
@@ -121,4 +124,5 @@ public interface UserService {
     Result getManageUsersByKeyWord(String keyWord);
 
     Result getUserInfoByUserId(Long userId);
+
 }

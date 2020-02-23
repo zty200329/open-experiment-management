@@ -15,10 +15,6 @@ import javax.validation.constraints.NotNull;
 public class LoginForm {
     @NotNull(message = "学号或工号不能为空")
     private String userCode;
-    @NotNull(message = "密码不能为空")
-    private String password;
-    @NotNull(message = "验证码不能为空")
-    private String verifyCode;
     @ApiModelProperty("用户角色选择")
     @NotNull
     private Integer role;

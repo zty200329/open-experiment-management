@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -67,8 +68,10 @@ public class UserServiceImpl implements UserService {
     private UserProjectGroupMapper userProjectGroupMapper;
     private ConvertUtil convertUtil;
     private GetUserService getUserService;
-    private UserRoleService userRoleService;
+    private UserRoleMapper userRoleMapper;
     private TeacherMapper teacherMapper;
+
+    private static String PASSWORD = "open_experiment";
 
     @Autowired
     public UserServiceImpl(UserMapper userMapper, RedisService redisService,
@@ -76,7 +79,8 @@ public class UserServiceImpl implements UserService {
                            AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil,
                            AclService aclService, UserProjectGroupMapper userProjectGroupMapper,
                            PasswordEncoder passwordEncoder, ConvertUtil convertUtil,
-                           UserRoleService userRoleService, TeacherMapper teacherMapper) {
+                           UserRoleMapper userRoleMapper, TeacherMapper teacherMapper
+                           ) {
         this.userMapper = userMapper;
         this.redisService = redisService;
         this.roleService = roleService;
@@ -87,7 +91,7 @@ public class UserServiceImpl implements UserService {
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.convertUtil = convertUtil;
         this.getUserService = getUserService;
-        this.userRoleService = userRoleService;
+        this.userRoleMapper = userRoleMapper;
         this.teacherMapper = teacherMapper;
     }
 
@@ -122,12 +126,10 @@ public class UserServiceImpl implements UserService {
         userMapper.deleteByPrimaryKey(id);
     }
 
+
     @Override
     public Result login(String clientIp, LoginForm loginForm) {
         log.info("当前请求ip : {}",clientIp);
-        if (!checkVerifyCode(clientIp, loginForm.getVerifyCode())){
-            return Result.error(CodeMsg.VERIFY_CODE_ERROR);
-        }
         User user = getUserService.selectByUserCodeAndRole(loginForm.getUserCode(),loginForm.getRole());
 
         //验证用户密码及其角色是否存在
@@ -135,27 +137,21 @@ public class UserServiceImpl implements UserService {
             return Result.error(CodeMsg.USER_NO_EXIST);
         }
         log.info("=============校验用户的密码================");
-        Authentication token = new UsernamePasswordAuthenticationToken(loginForm.getUserCode(), loginForm.getPassword());
+        Authentication token = new UsernamePasswordAuthenticationToken(loginForm.getUserCode(), PASSWORD);
         Authentication authentication = authenticationManager.authenticate(token);
         //认证通过放入容器中
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final UserDetails userDetails;
-        User user1 = getUserService.selectByUserCode(loginForm.getUserCode());
-        if (user1==null) {
-            log.info("认证邮箱信息不存在");
-            throw new UsernameNotFoundException(String.format(" user not exist with stuId ='%s'.", loginForm.getUserCode()));
-        } else {
-            //若存在则返回userDetails对象
-            List<String> aclUrl = aclService.getUserAclUrl(Long.valueOf(user.getCode()));
-            userDetails =new JwtUser(loginForm.getUserCode(), passwordEncoder.encode(user.getPassword()), aclUrl);
-        }
+       List<String> aclUrl = aclService.getUserAclUrl(Long.valueOf(user.getCode()));
+         userDetails =new JwtUser(loginForm.getUserCode(), passwordEncoder.encode(user.getPassword()), aclUrl);
         log.info("加载数据库中的userDetails: {}", userDetails);
         //生成真正的token
         final String realToken = jwtTokenUtil.generateToken(userDetails);
-        Role role = roleService.getUserRoles(Long.valueOf(user1.getCode()));
+        //获取用户的所有角色
+        List<Integer> roles = userRoleMapper.selectUserRolesById(Long.valueOf(loginForm.getUserCode()));
         Map<String, Object> map = new HashMap<>(8);
         map.put("token",realToken);
-        map.put("roles",role);
+        map.put("roles",roles);
         map.put("userId",user.getCode());
         map.put("name",user.getRealName());
         redisService.delete(VerifyCodeKey.getByClientIp, clientIp);
