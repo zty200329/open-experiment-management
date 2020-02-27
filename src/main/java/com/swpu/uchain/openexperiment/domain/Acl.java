@@ -5,10 +5,19 @@ import java.io.Serializable;
 public class Acl implements Serializable {
     private Long id;
 
+    /**
+     * 对权限的具体描述
+     */
     private String description;
 
+    /**
+     * 权限名称
+     */
     private String name;
 
+    /**
+     * 具体接口url
+     */
     private String url;
 
     private static final long serialVersionUID = 1L;

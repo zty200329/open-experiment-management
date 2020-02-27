@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 
-@Configuration
+//@Configuration
 public class CASConfig {
 
     @Autowired

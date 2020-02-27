@@ -12,7 +12,7 @@ import java.util.List;
  * @Modified By:
  */
 @ConfigurationProperties(prefix = "spring.cas")
-@Component
+//@Component
 public class SpringCasAutoconfig {
 
     static final String separator = ",";
