@@ -126,7 +126,17 @@ public enum CodeMsg {
     PAGE_NUM_ERROR(1809, "分页数目异常"),
     INPUT_INFO_HAS_EXISTED(1810,"信息已经存在"),
     UPDATE_ERROR(1807, "更新数据库失败"),
-    DELETE_ERROR(1808,"信息不存在，删除失败");
+    DELETE_ERROR(1808,"信息不存在，删除失败"),
+
+    /**
+     * 证书相关 1901-2000
+     */
+    SERVICE_NOT_ENABLED(1901,"证书申领服务未打开"),
+    SERVICE_IS_OPEN(1902,"服务已经开启了"),
+    INPUT_YEAR(1903,"请输入要开放申领的批次"),
+    OPEN_ERROR(1904,"打开失败 请重试"),
+    CLOSE_ERROR(1905,"关闭失败 请重试"),
+    CHOICE_IS_NULL(1906,"选择不能为空");
 
     private Integer code;
     private String msg;

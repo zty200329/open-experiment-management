@@ -158,6 +158,7 @@
     <result column="real_name" jdbcType="VARCHAR" property="creatorName"/>
     </resultMap>
 
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from openexperiment.project_group
     where id = #{id,jdbcType=BIGINT}
@@ -310,6 +311,8 @@
     </if>
     </where>
   </select>
+    
+    
   <select id="selectApplyOrderByTime" resultMap="CheckProjectResultMap">
     select openexperiment.project_group.limit_college,
            openexperiment.project_group.is_open_topic,
@@ -631,6 +634,7 @@
                 INNER JOIN openexperiment.user_project_group ON project_group.id = user_project_group.project_group_id
                 INNER JOIN openexperiment.`user` on user_project_group.user_id = `user`.`code`;
     </select>
+
     <select id="selectAllByList" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
         select project_group.id as id,
             project_group.serial_number as serialNumber,

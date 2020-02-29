@@ -5,6 +5,7 @@ import com.swpu.uchain.openexperiment.VO.project.CheckProjectVO;
 import com.swpu.uchain.openexperiment.VO.project.OpenTopicInfo;
 import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
 import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
+import com.swpu.uchain.openexperiment.domain.Certificate;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.VO.project.ProjectGroupDetailVO;
 import com.swpu.uchain.openexperiment.enums.ProjectType;
@@ -193,4 +194,5 @@ public interface ProjectGroupMapper {
      * @param type
      */
     void updateProjectType(@Param("id") Long projectId,@Param("type") Integer type);
+
 }

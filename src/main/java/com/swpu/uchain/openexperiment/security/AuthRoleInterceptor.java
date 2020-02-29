@@ -52,8 +52,10 @@ public class AuthRoleInterceptor extends HandlerInterceptorAdapter {
             }
         }
         log.error("............权限不足...........");
-//        response.getWriter().append(json);
-        return true;
+        String json = JSON.toJSONString(Result.error(CodeMsg.PERMISSION_DENNY));
+
+        response.getWriter().append(json);
+        return false;
     }
 
 }
