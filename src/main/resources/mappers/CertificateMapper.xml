@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swpu.uchain.openexperiment.mapper.CertificateMapper" >
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.Certificate" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="project_type" property="projectType" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="member_role" property="memberRole" jdbcType="SMALLINT" />
+    <result column="experiment_type" property="experimentType" jdbcType="INTEGER" />
+    <result column="project_name" property="projectName" jdbcType="VARCHAR" />
+    <result column="subordinate_college" property="subordinateCollege" jdbcType="VARCHAR" />
+    <result column="is_need" property="isNeed" jdbcType="BIT" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from certificate_request
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.Certificate" >
+    insert into certificate_request (serial_number, project_type,
+      user_id, member_role, experiment_type, 
+      project_name, subordinate_college
+      )
+    values ( #{serialNumber,jdbcType=VARCHAR}, #{projectType,jdbcType=INTEGER},
+      #{userId,jdbcType=BIGINT}, #{memberRole,jdbcType=SMALLINT}, #{experimentType,jdbcType=INTEGER}, 
+      #{projectName,jdbcType=VARCHAR}, #{subordinateCollege,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.Certificate" >
+    update certificate_request
+    set serial_number = #{serialNumber,jdbcType=VARCHAR},
+      project_type = #{projectType,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=BIGINT},
+      member_role = #{memberRole,jdbcType=SMALLINT},
+      experiment_type = #{experimentType,jdbcType=INTEGER},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      subordinate_college = #{subordinateCollege,jdbcType=VARCHAR},
+      is_need = #{isNeed,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, serial_number, project_type, user_id, member_role, experiment_type, project_name, 
+    subordinate_college, is_need
+    from certificate_request
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, serial_number, project_type, user_id, member_role, experiment_type, project_name, 
+    subordinate_college, is_need
+    from certificate_request
+  </select>
+  <select id="totalLine" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select IFFULL(count(*),0) from certificate_request
+  </select>
+  <select id="selectByProjectStatus"  resultType="com.swpu.uchain.openexperiment.domain.Certificate">
+        SELECT
+            project_group.temp_serial_number AS serialNumber,
+            project_group.project_type AS projectType,
+            project_group.experiment_type AS experimentType,
+            project_group.project_name AS projectName,
+            project_group.subordinate_college AS subordinateCollege,
+            `user_project_group`.user_id As userId,
+            `user_project_group`.member_role AS memberRole
+        FROM
+            openexperiment.project_group
+                INNER JOIN openexperiment.user_project_group ON project_group.id = user_project_group.project_group_id
+                WHERE project_group.status = 7 AND user_project_group.member_role != 1 AND project_group.temp_serial_number LIKE #{year}
+    </select>
+  <delete id="deleteRequest" parameterType="java.lang.Integer" >
+    delete from certificate_request
+  </delete>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select id, serial_number, project_type, user_id, member_role, experiment_type, project_name,
+    subordinate_college, is_need
+    from certificate_request
+    where user_id = #{userId,jdbcType=BIGINT} and is_need = 0
+  </select>
+  <insert id="insertFinally" parameterType="com.swpu.uchain.openexperiment.domain.Certificate" >
+    insert into certificate_finally (serial_number, project_type,
+      user_id, member_role, experiment_type,
+      project_name, subordinate_college , is_need
+      )
+    values ( #{serialNumber,jdbcType=VARCHAR}, #{projectType,jdbcType=INTEGER},
+      #{userId,jdbcType=BIGINT}, #{memberRole,jdbcType=SMALLINT}, #{experimentType,jdbcType=INTEGER},
+      #{projectName,jdbcType=VARCHAR}, #{subordinateCollege,jdbcType=VARCHAR}, #{isNeed,jdbcType=BIT}
+      )
+  </insert>
+  <select id="slecetFinalByYear" resultMap="BaseResultMap" >
+    select id, serial_number, project_type, user_id, member_role, experiment_type, project_name,
+    subordinate_college, is_need
+    from certificate_request
+    where project_group.temp_serial_number LIKE #{year}
+  </select>
+</mapper>
