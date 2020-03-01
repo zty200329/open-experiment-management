@@ -23,6 +23,13 @@ public interface UserRoleMapper {
      */
     List<UserRole> selectByUserId(@Param("userId") Long userId);
 
+    /**
+     * 用户用户角色集合
+     * @param userId
+     * @return
+     */
+    List<Integer> selectUserRolesById(@Param("userId") Long userId);
+
     List<UserRole> selectAll();
 
     int updateByPrimaryKey(UserRole record);

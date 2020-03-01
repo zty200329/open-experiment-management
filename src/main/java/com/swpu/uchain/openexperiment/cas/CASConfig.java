@@ -58,10 +58,11 @@ public class CASConfig {
         LogoutFilter logoutFilter = new LogoutFilter(autoconfig.getCasServerUrlPrefix() + "/logout?service=" + autoconfig.getServerName(),new SecurityContextLogoutHandler());
         filterRegistration.setFilter(logoutFilter);
         filterRegistration.setEnabled(casEnabled);
-        if(autoconfig.getSignOutFilters().size()>0)
+        if(autoconfig.getSignOutFilters().size()>0) {
             filterRegistration.setUrlPatterns(autoconfig.getSignOutFilters());
-        else
+        } else {
             filterRegistration.addUrlPatterns("/logout");
+        }
         filterRegistration.addInitParameter("casServerUrlPrefix", autoconfig.getCasServerUrlPrefix());
         filterRegistration.addInitParameter("serverName", autoconfig.getServerName());
         filterRegistration.setOrder(2);
@@ -95,10 +96,11 @@ public class CASConfig {
         FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
         filterRegistration.setFilter(new AuthenticationFilter());
         filterRegistration.setEnabled(casEnabled);
-        if(autoconfig.getAuthFilters().size()>0)
+        if(autoconfig.getAuthFilters().size()>0) {
             filterRegistration.setUrlPatterns(autoconfig.getAuthFilters());
-        else
+        } else {
             filterRegistration.addUrlPatterns("/*");
+        }
         //casServerLoginUrl:cas服务的登陆url
         filterRegistration.addInitParameter("casServerLoginUrl", autoconfig.getCasServerLoginUrl());
         //本项目登录ip+port
@@ -119,10 +121,11 @@ public class CASConfig {
         cas20ProxyReceivingTicketValidationFilter.setServerName(autoconfig.getServerName());
         filterRegistration.setFilter(cas20ProxyReceivingTicketValidationFilter);
         filterRegistration.setEnabled(casEnabled);
-        if(autoconfig.getValidateFilters().size()>0)
+        if(autoconfig.getValidateFilters().size()>0) {
             filterRegistration.setUrlPatterns(autoconfig.getValidateFilters());
-        else
+        } else {
             filterRegistration.addUrlPatterns("/*");
+        }
         filterRegistration.addInitParameter("casServerUrlPrefix", autoconfig.getCasServerUrlPrefix());
         filterRegistration.addInitParameter("serverName", autoconfig.getServerName());
         filterRegistration.setOrder(5);
@@ -139,10 +142,11 @@ public class CASConfig {
         FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
         filterRegistration.setFilter(new HttpServletRequestWrapperFilter());
         filterRegistration.setEnabled(true);
-        if(autoconfig.getRequestWrapperFilters().size()>0)
+        if(autoconfig.getRequestWrapperFilters().size()>0) {
             filterRegistration.setUrlPatterns(autoconfig.getRequestWrapperFilters());
-        else
+        } else {
             filterRegistration.addUrlPatterns("/login");
+        }
         filterRegistration.setOrder(6);
         return filterRegistration;
     }
@@ -157,10 +161,11 @@ public class CASConfig {
         FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
         filterRegistration.setFilter(new AssertionThreadLocalFilter());
         filterRegistration.setEnabled(true);
-        if(autoconfig.getAssertionFilters().size()>0)
+        if(autoconfig.getAssertionFilters().size()>0) {
             filterRegistration.setUrlPatterns(autoconfig.getAssertionFilters());
-        else
+        } else {
             filterRegistration.addUrlPatterns("/*");
+        }
         filterRegistration.setOrder(7);
         return filterRegistration;
     }
