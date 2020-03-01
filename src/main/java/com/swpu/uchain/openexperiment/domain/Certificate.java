@@ -1,5 +1,7 @@
 package com.swpu.uchain.openexperiment.domain;
 
+import com.swpu.uchain.openexperiment.accessctro.ExcelResources;
+
 import java.io.Serializable;
 
 /**
@@ -58,6 +60,7 @@ public class Certificate implements Serializable {
         this.id = id;
     }
 
+    @ExcelResources(title = "项目编号" ,order = 2)
     public String getSerialNumber() {
         return serialNumber;
     }
@@ -66,6 +69,7 @@ public class Certificate implements Serializable {
         this.serialNumber = serialNumber == null ? null : serialNumber.trim();
     }
 
+    @ExcelResources(title = "项目类型" ,order = 4)
     public Integer getProjectType() {
         return projectType;
     }
@@ -74,6 +78,7 @@ public class Certificate implements Serializable {
         this.projectType = projectType;
     }
 
+    @ExcelResources(title = "学号" ,order = 1)
     public Long getUserId() {
         return userId;
     }
@@ -82,6 +87,7 @@ public class Certificate implements Serializable {
         this.userId = userId;
     }
 
+    @ExcelResources(title = "成员身份" ,order = 5)
     public Short getMemberRole() {
         return memberRole;
     }
@@ -90,6 +96,7 @@ public class Certificate implements Serializable {
         this.memberRole = memberRole;
     }
 
+    @ExcelResources(title = "实验类型" ,order = 6)
     public Integer getExperimentType() {
         return experimentType;
     }
@@ -98,6 +105,7 @@ public class Certificate implements Serializable {
         this.experimentType = experimentType;
     }
 
+    @ExcelResources(title = "项目名" ,order = 3)
     public String getProjectName() {
         return projectName;
     }
@@ -106,6 +114,7 @@ public class Certificate implements Serializable {
         this.projectName = projectName == null ? null : projectName.trim();
     }
 
+    @ExcelResources(title = "所属学院" ,order = 7)
     public String getSubordinateCollege() {
         return subordinateCollege;
     }

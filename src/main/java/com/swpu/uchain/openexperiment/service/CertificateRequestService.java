@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.service;
 import com.swpu.uchain.openexperiment.domain.Certificate;
 import com.swpu.uchain.openexperiment.result.Result;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -44,4 +45,6 @@ public interface CertificateRequestService {
      * @return
      */
     Result getFinalList(Integer year);
+
+    void downloadList(Integer year , HttpServletResponse response);
 }

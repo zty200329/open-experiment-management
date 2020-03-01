@@ -10,13 +10,22 @@ import com.swpu.uchain.openexperiment.mapper.CertificateOpenMapper;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.CertificateRequestService;
 import com.swpu.uchain.openexperiment.service.GetUserService;
+import com.swpu.uchain.openexperiment.util.FileUtil;
 import com.swpu.uchain.openexperiment.util.RedisUtil;
+import com.swpu.uchain.openexperiment.util.excel.ExcelUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -36,6 +45,8 @@ public class CertificateRequestServiceImpl implements CertificateRequestService 
     @Autowired
     private GetUserService getUserService;
 
+    @Value("${download.certificate-excel-download}")
+    private String excelExportPath;
     @Override
     public Result judgeInterface() {
 
@@ -176,6 +187,10 @@ public class CertificateRequestServiceImpl implements CertificateRequestService 
     @Transactional(rollbackFor = GlobalException.class)
     @Override
     public Result choseCertificate(Integer[] primaryKey) {
+        if(!isOpen())
+        {
+            return Result.error(CodeMsg.SERVICE_NOT_ENABLED);
+        }
         if(primaryKey == null){
             throw new GlobalException(CodeMsg.CHOICE_IS_NULL);
         }
@@ -201,5 +216,47 @@ public class CertificateRequestServiceImpl implements CertificateRequestService 
         List<Certificate> certificates = certificateMapper.slecetFinalByYear(year+"%");
 
         return Result.success(certificates);
+    }
+
+    public boolean createExcel(Integer year) throws FileNotFoundException {
+        List<Certificate> list = certificateMapper.slecetFinalByYear(year+"%");
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("title", year+"年-"+(year+1)+"年开放性实验结题证书申报名单表");
+        map.put("total", list.size()+" 条");
+        map.put("date", getDate());
+
+        ExcelUtil.getInstance().exportObj2ExcelByTemplate(map, "demo.xls",
+                new FileOutputStream(excelExportPath + "/" + year + "年-" + (year+1) + "年度名单.xls"),
+                list, Certificate.class, true);
+        return true;
+    }
+
+    private String getDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+        return sdf.format(new Date());
+    }
+    @Override
+    public void downloadList(Integer year, HttpServletResponse response) {
+        if(!isOpen())
+        {
+            throw new GlobalException(CodeMsg.SERVICE_NOT_ENABLED);
+        }
+        try {
+            boolean isDownload = createExcel(year);
+            if (!isDownload){
+                throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        log.info("下载路径："+excelExportPath);
+        String fileUrl = excelExportPath;
+        String fileName = year+"年-"+(year+1)+"年度名单.xls";
+        String realPath = fileUrl + "/" + fileName;
+
+        if (FileUtil.downloadFile(response, realPath)) {
+            throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
+        }
+
     }
 }

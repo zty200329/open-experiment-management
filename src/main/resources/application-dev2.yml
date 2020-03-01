@@ -21,7 +21,8 @@ upload:
   pdf-temp-dir: "/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/pdf_temp_dir"
   conclusion-dir: "/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/conclusion_dir"
   material_sample: "/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/material_sample"
-
+download:
+  certificate-excel-download: "/home/zty/test"
 file:
 #  ip-address: "http://192.168.43.153:8083"
   ip-address: "http://10.20.0.56:8083"

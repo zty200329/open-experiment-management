@@ -88,7 +88,7 @@
   <select id="slecetFinalByYear" resultMap="BaseResultMap" >
     select id, serial_number, project_type, user_id, member_role, experiment_type, project_name,
     subordinate_college, is_need
-    from certificate_request
-    where project_group.temp_serial_number LIKE #{year}
+    from certificate_finally
+    where certificate_finally.serial_number LIKE #{year}
   </select>
 </mapper>
