@@ -1,5 +1,12 @@
 # OpenExperiment
 开放性实验管理平台
+## 使用的技术栈
+### 项目开发
+SpringBoot+Mybatis+Redis+OpenOffice
+### 项目构建
+Gradle
+### 项目部署
+Nginx
 ## 需求分析
 ### 系统思维导图
 ![lW3VFf.png](https://s2.ax1x.com/2020/01/09/lW3VFf.png)
