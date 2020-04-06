@@ -277,6 +277,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
         }
 
+        //记录操作
         List<OperationRecord> operationRecordList = new LinkedList<>();
         List<Long> idList = new LinkedList<>();
         for (KeyProjectCheck check:list) {
@@ -351,7 +352,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     /**
-     * 中期检查
+     * 同意中期检查
      * @param list
      * @return
      */
