@@ -256,6 +256,13 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return keyProjectStatus;
     }
 
+    /**
+     *
+     * @param roleType 职能部门
+     * @param operationType 线下检查通过
+     * @param list
+     * @return
+     */
     @Transactional(rollbackFor = GlobalException.class)
     public Result operateKeyProjectOfSpecifiedRoleAndOperation(RoleType roleType, OperationType operationType,
                                                         List<KeyProjectCheck> list){
@@ -272,8 +279,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
         List<OperationRecord> operationRecordList = new LinkedList<>();
         List<Long> idList = new LinkedList<>();
-        for (KeyProjectCheck check:list
-        ) {
+        for (KeyProjectCheck check:list) {
             UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(check.getProjectId(), Long.valueOf(user.getCode()));
 
             //验证属于该项目并且是该项目的指导教师
