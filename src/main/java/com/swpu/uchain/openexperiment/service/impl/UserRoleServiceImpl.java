@@ -61,8 +61,7 @@ public class UserRoleServiceImpl implements UserRoleService {
             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
         }
 
-        for (UserRole userRole:list
-        ) {
+        for (UserRole userRole:list) {
             if (roleType.getValue().equals(userRole.getRoleId())) {
                 return true;
             }

@@ -599,6 +599,8 @@ public class ProjectServiceImpl implements ProjectService {
         return getCheckInfo(ProjectStatus.MID_TERM_INSPECTION);
     }
 
+//    public Result get
+
     private Result getReportInfo(Integer role) {
 
         User currentUser = getUserService.getCurrentUser();

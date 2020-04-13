@@ -187,10 +187,16 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED,null);
     }
 
+    /**
+     * 获取待中期检查的项目
+     * @param college
+     * @return
+     */
     @Override
     public Result getIntermediateInspectionKeyProject(Integer college) {
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.ESTABLISH,college);
     }
+
 
     @Override
     public Result getToBeConcludingKeyProject(Integer college) {
@@ -199,8 +205,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     private Result getKeyProjectDTOListByStatusAndCollege(ProjectStatus status, Integer college){
         List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(status.getValue(),college);
-        for (KeyProjectDTO keyProjectDTO :list
-             ) {
+        for (KeyProjectDTO keyProjectDTO :list) {
             keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(keyProjectDTO.getId(),JoinStatus.JOINED.getValue()) );
             keyProjectDTO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId(),JoinStatus.JOINED.getValue()));
         }
@@ -209,7 +214,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     private ProjectStatus getNextStatusByRoleAndOperation(RoleType roleType, OperationType operationType){
         ProjectStatus keyProjectStatus;
-        //如果是二级单位 则是立项失败
+        //如果是二级单位或者职能部门 则是立项失败
         if (operationType == OperationType.REJECT) {
             if ((roleType == RoleType.SECONDARY_UNIT || roleType == RoleType.FUNCTIONAL_DEPARTMENT)) {
                 keyProjectStatus = ProjectStatus.ESTABLISH_FAILED;
@@ -256,13 +261,6 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return keyProjectStatus;
     }
 
-    /**
-     *
-     * @param roleType 职能部门
-     * @param operationType 线下检查通过
-     * @param list
-     * @return
-     */
     @Transactional(rollbackFor = GlobalException.class)
     public Result operateKeyProjectOfSpecifiedRoleAndOperation(RoleType roleType, OperationType operationType,
                                                         List<KeyProjectCheck> list){

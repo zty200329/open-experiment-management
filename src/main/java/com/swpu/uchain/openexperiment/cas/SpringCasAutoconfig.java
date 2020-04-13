@@ -11,7 +11,7 @@ import java.util.List;
  * @Date: Created in 19:28 2020/2/4
  * @Modified By:
  */
-@ConfigurationProperties(prefix = "spring.cas")
+//@ConfigurationProperties(prefix = "spring.cas")
 //@Component
 public class SpringCasAutoconfig {
 

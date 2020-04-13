@@ -51,7 +51,7 @@ public class KeyProjectQueryController {
         return keyProjectService.getKeyProjectApplyingListByFunctionalDepartment();
     }
 
-    @ApiOperation("职能部门获取待中期检查的项目 -- 参数可不传")
+    @ApiOperation("职能部门获取待中期检查的项目 -- 参数可不传 (接口正确)")
     @GetMapping(value = "getIntermediateInspectionKeyProject")
     public Result getIntermediateInspectionKeyProject (Integer college){
         return keyProjectService.getIntermediateInspectionKeyProject(college);
