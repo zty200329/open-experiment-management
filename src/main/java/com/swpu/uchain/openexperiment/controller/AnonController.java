@@ -34,9 +34,9 @@ public class AnonController {
 
     @ApiOperation("登录接口")
     @PostMapping(value = "/login", name = "登录接口")
-    public Object login(HttpServletRequest request){
+    public Object login(HttpServletRequest request, @RequestBody LoginForm form){
         String ip = ClientUtil.getClientIpAddress(request);
-        LoginForm form = CASUtil.sessionUserToLoginForm(CASUtil.getUserInfoFromSession(request));
+//        LoginForm form = CASUtil.sessionUserToLoginForm(CASUtil.getUserInfoFromSession(request));
         return userService.login(ip,form);
     }
 

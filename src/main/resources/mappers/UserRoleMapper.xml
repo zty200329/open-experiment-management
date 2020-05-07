@@ -62,6 +62,7 @@
         user_role.role_id DESC
     </select>
     <select id="selectUserRolesById" resultType="java.lang.Integer">
-      select role_id from openexperiment.user_role;
+      select role_id from openexperiment.user_role
+      where user_id = #{userId}
     </select>
 </mapper>
