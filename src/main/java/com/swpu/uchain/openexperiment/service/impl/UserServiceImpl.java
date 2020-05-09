@@ -163,7 +163,7 @@ public class UserServiceImpl implements UserService {
         if (!checkVerifyCode(clientIp, loginForm.getVerifyCode())){
             return Result.error(CodeMsg.VERIFY_CODE_ERROR);
         }
-        User user = getUserService.selectByUserCodeAndRole(loginForm.getUserCode(),loginForm.getRole());
+        User user = getUserService.selectByUserCodeAndRole(loginForm.getUserCode(),1);
 
         //验证用户密码及其角色是否存在
         if (user == null) {
