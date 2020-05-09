@@ -476,6 +476,7 @@ public class ProjectServiceImpl implements ProjectService {
         return setProjectStatusAndRecord(list, OperationType.CONCLUSION, OperationUnit.FUNCTIONAL_DEPARTMENT);
     }
 
+
     private Result setProjectStatusAndRecord(List<ProjectCheckForm> list, OperationType operationType, OperationUnit operationUnit) {
         List<OperationRecord> operationRecordS = new LinkedList<>();
         for (ProjectCheckForm projectCheckForm : list) {
@@ -597,6 +598,8 @@ public class ProjectServiceImpl implements ProjectService {
     public Result getIntermediateInspectionProject() {
         return getCheckInfo(ProjectStatus.MID_TERM_INSPECTION);
     }
+
+//    public Result get
 
     private Result getReportInfo(Integer role) {
 

@@ -4,7 +4,6 @@ import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.user.LoginForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.UserService;
-import com.swpu.uchain.openexperiment.util.CASUtil;
 import com.swpu.uchain.openexperiment.util.ClientUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,7 +33,7 @@ public class AnonController {
 
     @ApiOperation("登录接口")
     @PostMapping(value = "/login", name = "登录接口")
-    public Object login(HttpServletRequest request, @RequestBody LoginForm form){
+    public Object login(@Valid@RequestBody LoginForm form, HttpServletRequest request){
         String ip = ClientUtil.getClientIpAddress(request);
 //        LoginForm form = CASUtil.sessionUserToLoginForm(CASUtil.getUserInfoFromSession(request));
         return userService.login(ip,form);

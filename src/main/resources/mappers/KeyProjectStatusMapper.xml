@@ -48,13 +48,13 @@
             project_group.total_hours AS totalHours,
             project_group.start_time AS startTime,
             project_group.is_open_topic AS isOpenTopic,
-            `user`.real_name AS creatorName,
-            `user`.`code` AS userid,
+            `u_stu`.real_name AS creatorName,
+            `u_stu`.`code` AS userid,
             project_file.id AS projectFileId
         FROM
             openexperiment.key_project_status
         INNER JOIN openexperiment.project_group ON key_project_status.project_id = project_group.id
-        left join openexperiment.`user` ON key_project_status.creator_id = `user`.`code`
+        left join openexperiment.`u_stu` ON key_project_status.creator_id = `u_stu`.`code`
         left join openexperiment.project_file ON project_file.project_group_id = key_project_status.project_id
         <where>
             <if test="status!=null">

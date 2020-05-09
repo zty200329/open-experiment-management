@@ -187,10 +187,16 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED,null);
     }
 
+    /**
+     * 获取待中期检查的项目
+     * @param college
+     * @return
+     */
     @Override
     public Result getIntermediateInspectionKeyProject(Integer college) {
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.ESTABLISH,college);
     }
+
 
     @Override
     public Result getToBeConcludingKeyProject(Integer college) {
@@ -199,8 +205,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     private Result getKeyProjectDTOListByStatusAndCollege(ProjectStatus status, Integer college){
         List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(status.getValue(),college);
-        for (KeyProjectDTO keyProjectDTO :list
-             ) {
+        for (KeyProjectDTO keyProjectDTO :list) {
             keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(keyProjectDTO.getId(),JoinStatus.JOINED.getValue()) );
             keyProjectDTO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId(),JoinStatus.JOINED.getValue()));
         }
@@ -209,7 +214,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     private ProjectStatus getNextStatusByRoleAndOperation(RoleType roleType, OperationType operationType){
         ProjectStatus keyProjectStatus;
-        //如果是二级单位 则是立项失败
+        //如果是二级单位或者职能部门 则是立项失败
         if (operationType == OperationType.REJECT) {
             if ((roleType == RoleType.SECONDARY_UNIT || roleType == RoleType.FUNCTIONAL_DEPARTMENT)) {
                 keyProjectStatus = ProjectStatus.ESTABLISH_FAILED;
@@ -270,10 +275,10 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
         }
 
+        //记录操作
         List<OperationRecord> operationRecordList = new LinkedList<>();
         List<Long> idList = new LinkedList<>();
-        for (KeyProjectCheck check:list
-        ) {
+        for (KeyProjectCheck check:list) {
             UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(check.getProjectId(), Long.valueOf(user.getCode()));
 
             //验证属于该项目并且是该项目的指导教师
@@ -345,7 +350,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     /**
-     * 中期检查
+     * 同意中期检查
      * @param list
      * @return
      */
