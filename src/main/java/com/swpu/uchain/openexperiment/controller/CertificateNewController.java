@@ -2,13 +2,14 @@ package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.form.certificate.ApplyCertificate;
 import com.swpu.uchain.openexperiment.result.Result;
+import com.swpu.uchain.openexperiment.service.CertificateNewService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * @author zty
@@ -22,10 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "证书申领接口(用这个)")
 public class CertificateNewController {
 
+    @Autowired
+    private CertificateNewService certificateNewService;
     @ApiOperation("学生申领")
-    @GetMapping(value = "/applyCertificate")
-    public Result applyCertificate(ApplyCertificate applyCertificate){
-        return null;
+    @PostMapping(value = "/applyCertificate")
+    public Result applyCertificate(@Valid ApplyCertificate applyCertificate){
+        return certificateNewService.applyCertificate(applyCertificate);
     }
 
 }

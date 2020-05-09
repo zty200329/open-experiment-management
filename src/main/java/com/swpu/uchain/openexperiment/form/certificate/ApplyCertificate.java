@@ -21,6 +21,12 @@ public class ApplyCertificate {
     private String serialNumber;
 
     /**
+     * 姓名
+     */
+    @NotNull(message = "姓名不能为空")
+    @ApiModelProperty("姓名")
+    private String name;
+    /**
      * 项目名称
      */
     @NotNull(message = "项目名称不能为空")
@@ -45,21 +51,15 @@ public class ApplyCertificate {
      * 成员身份：1.指导教师2.项目组长3.普通成员
      */
     @NotNull(message = "成员身份不能为空")
-    @ApiModelProperty("成员身份：1.指导教师2.项目组长3.普通成员")
+    @ApiModelProperty("成员身份：2.项目组长3.普通成员")
     private Short memberRole;
 
-    /**
-     * 实验类型：1.科研，2.科技活动，3.自选课题，4.计算机应用，5.人文素质
-     */
-    @NotNull(message = "实验类型不能为空")
-    @ApiModelProperty("实验类型：1.科研，2.科技活动，3.自选课题，4.计算机应用，5.人文素质")
-    private Integer experimentType;
 
     /**
      * 项目所属学院
      */
-    @NotNull(message = "编号不能为空")
-    @ApiModelProperty("立项编号")
-    private String subordinateCollege;
+    @NotNull(message = "项目所属学院为空")
+    @ApiModelProperty("项目所属学院")
+    private String subordinateCollage;
 
 }

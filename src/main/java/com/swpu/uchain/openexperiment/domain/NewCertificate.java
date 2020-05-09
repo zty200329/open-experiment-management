@@ -5,6 +5,8 @@ import java.io.Serializable;
 public class NewCertificate implements Serializable {
     private Long id;
 
+    private String name;
+
     private String serialNumber;
 
     private String projectName;
@@ -14,8 +16,6 @@ public class NewCertificate implements Serializable {
     private Long userId;
 
     private String memberRole;
-
-    private String experimentType;
 
     private String subordinateCollage;
 
@@ -29,6 +29,14 @@ public class NewCertificate implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
     }
 
     public String getSerialNumber() {
@@ -71,14 +79,6 @@ public class NewCertificate implements Serializable {
         this.memberRole = memberRole == null ? null : memberRole.trim();
     }
 
-    public String getExperimentType() {
-        return experimentType;
-    }
-
-    public void setExperimentType(String experimentType) {
-        this.experimentType = experimentType == null ? null : experimentType.trim();
-    }
-
     public String getSubordinateCollage() {
         return subordinateCollage;
     }
@@ -102,12 +102,12 @@ public class NewCertificate implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", name=").append(name);
         sb.append(", serialNumber=").append(serialNumber);
         sb.append(", projectName=").append(projectName);
         sb.append(", projectType=").append(projectType);
         sb.append(", userId=").append(userId);
         sb.append(", memberRole=").append(memberRole);
-        sb.append(", experimentType=").append(experimentType);
         sb.append(", subordinateCollage=").append(subordinateCollage);
         sb.append(", isTrue=").append(isTrue);
         sb.append(", serialVersionUID=").append(serialVersionUID);
