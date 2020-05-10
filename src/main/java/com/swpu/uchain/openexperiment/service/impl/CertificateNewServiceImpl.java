@@ -38,8 +38,6 @@ public class CertificateNewServiceImpl implements CertificateNewService {
     private RedisUtil redisUtil;
 
     public boolean isOpen(){
-        String s = ""
-        if(redisUtil.get())
         CertificateOpen certificateOpen = certificateOpenMapper.selectByPrimaryKey(1);
         Boolean isOpen = certificateOpen.getIsOpen();
         if(isOpen)
@@ -52,9 +50,9 @@ public class CertificateNewServiceImpl implements CertificateNewService {
     @Override
     public Result applyCertificate(ApplyCertificate applyCertificate) {
         Boolean isOpen = isOpen();
-        if(isOpen)
+        if(!isOpen)
         {
-            return Result.error(CodeMsg.SERVICE_IS_OPEN);
+            return Result.error(CodeMsg.SERVICE_NOT_ENABLED);
         }
         if(applyCertificate.getUserId().length()!=12){
             throw new GlobalException(CodeMsg.USER_ID_LENGTH);
@@ -96,6 +94,25 @@ public class CertificateNewServiceImpl implements CertificateNewService {
 
     @Override
     public Result openApply() {
-        return null;
+        if(isOpen())
+        {
+            return Result.error(CodeMsg.SERVICE_IS_OPEN);
+        }
+        CertificateOpen certificateOpen = certificateOpenMapper.selectByPrimaryKey(1);
+        certificateOpen.setIsOpen(true);
+        certificateOpenMapper.updateByPrimaryKey(certificateOpen);
+        return Result.success();
+    }
+
+    @Override
+    public Result closeApply() {
+        if(!isOpen())
+        {
+            return Result.error(CodeMsg.SERVICE_NOT_ENABLED);
+        }
+        CertificateOpen certificateOpen = certificateOpenMapper.selectByPrimaryKey(1);
+        certificateOpen.setIsOpen(false);
+        certificateOpenMapper.updateByPrimaryKey(certificateOpen);
+        return Result.success();
     }
 }

@@ -34,4 +34,10 @@ public interface CertificateNewService {
      * @return
      */
     Result openApply();
+
+    /**
+     * 管理员关闭申领
+     * @return
+     */
+    Result closeApply();
 }

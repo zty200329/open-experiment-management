@@ -46,7 +46,13 @@ public class CertificateNewController {
     @ApiOperation("管理员开启申请功能")
     @PostMapping("/openApply")
     public Result openApply(){
-        return null;
+        return certificateNewService.openApply();
+    }
+
+    @ApiOperation("管理员关闭申请功能")
+    @PostMapping("/closeApply")
+    public Result closeApply(){
+        return certificateNewService.closeApply();
     }
 
 
