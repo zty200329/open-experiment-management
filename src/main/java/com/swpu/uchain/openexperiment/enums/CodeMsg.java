@@ -136,7 +136,8 @@ public enum CodeMsg {
     INPUT_YEAR(1903,"请输入要开放申领的批次"),
     OPEN_ERROR(1904,"打开失败 请重试"),
     CLOSE_ERROR(1905,"关闭失败 请重试"),
-    CHOICE_IS_NULL(1906,"选择不能为空");
+    CHOICE_IS_NULL(1906,"选择不能为空"),
+    USER_ID_LENGTH(1907,"学号长度不合法");
 
     private Integer code;
     private String msg;

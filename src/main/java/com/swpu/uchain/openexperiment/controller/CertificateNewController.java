@@ -27,8 +27,28 @@ public class CertificateNewController {
     private CertificateNewService certificateNewService;
     @ApiOperation("学生申领")
     @PostMapping(value = "/applyCertificate")
-    public Result applyCertificate(@Valid ApplyCertificate applyCertificate){
+    public Result applyCertificate(@RequestBody @Valid ApplyCertificate applyCertificate){
         return certificateNewService.applyCertificate(applyCertificate);
     }
+
+    @ApiOperation("查看自己申请的证书")
+    @PostMapping(value = "/viewMyApplication")
+    public Result viewMyApplication(){
+        return certificateNewService.viewMyApplication();
+    }
+
+    @ApiOperation("删除自己申请的证书")
+    @PostMapping(value = "/deleteMyApplication")
+    public Result deleteMyApplication(Long[] id){
+        return certificateNewService.deleteMyApplication(id);
+    }
+
+    @ApiOperation("管理员开启申请功能")
+    @PostMapping("/openApply")
+    public Result openApply(){
+        return null;
+    }
+
+
 
 }

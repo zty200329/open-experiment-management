@@ -14,5 +14,7 @@ public interface NewCertificateMapper {
 
     List<NewCertificate> selectAll();
 
+    List<NewCertificate> selectByUserId(Long userId);
+
     int updateByPrimaryKey(NewCertificate record);
 }

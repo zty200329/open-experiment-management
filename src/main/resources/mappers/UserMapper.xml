@@ -122,43 +122,43 @@
   </select>
     <select id="selectByUserCodeAndRole" resultType="com.swpu.uchain.openexperiment.domain.User"
             resultMap="BaseResultMap">
-        <if test="role &lt; 3" >
-            select
-                u_stu.id,
-                u_stu.code,
-                u_stu.email,
-                u_stu.fix_phone,
-                u_stu.id_card,
-                u_stu.mobile_phone,
-                u_stu.`password`,
-                u_stu.qq_num,
-                u_stu.real_name,
-                u_stu.sex,
-                u_stu.user_type,
-                u_stu.institute,
-                u_stu.major,
-                u_stu.grade,
-                u_stu.class_num
-            from openexperiment.u_stu inner join openexperiment.user_role on u_stu.code = user_role.user_id
-            where u_stu.code = #{userCode} and user_role.role_id = #{role}
-        </if>
-        <if test="role &gt;= 3">
-            select
-            u_teach.code,
-            u_teach.email,
-            u_teach.fix_phone,
-            u_teach.id_card,
-            u_teach.mobile_phone,
-            u_teach.`password`,
-            u_teach.qq_num,
-            u_teach.real_name,
-            u_teach.sex,
-            u_teach.user_type,
-            u_teach.institute,
-            u_teach.major,
-            u_teach.grade,
-            from openexperiment.u_teach inner join openexperiment.user_role on u_teach.code = user_role.user_id
-            where u_teach.code = #{userCode} and user_role.role_id = #{role}
-        </if>
+        <!--           <if test="role &lt;= 7" >-->
+                    select
+                        u_stu.id,
+                        u_stu.code,
+                        u_stu.email,
+                        u_stu.fix_phone,
+                        u_stu.id_card,
+                        u_stu.mobile_phone,
+                        u_stu.`password`,
+                        u_stu.qq_num,
+                        u_stu.real_name,
+                        u_stu.sex,
+                        u_stu.user_type,
+                        u_stu.institute,
+                        u_stu.major,
+                        u_stu.grade,
+                        u_stu.class_num
+                    from openexperiment.u_stu inner join openexperiment.user_role on u_stu.code = user_role.user_id
+                    where u_stu.code = #{userCode} and user_role.role_id = #{role}
+        <!--        </if>-->
+<!--        <if test="role &gt;= 3">-->
+<!--            select-->
+<!--            u_teach.code,-->
+<!--            u_teach.email,-->
+<!--            u_teach.fix_phone,-->
+<!--            u_teach.id_card,-->
+<!--            u_teach.mobile_phone,-->
+<!--            u_teach.`password`,-->
+<!--            u_teach.qq_num,-->
+<!--            u_teach.real_name,-->
+<!--            u_teach.sex,-->
+<!--            u_teach.user_type,-->
+<!--            u_teach.institute,-->
+<!--            u_teach.major,-->
+<!--            u_teach.grade,-->
+<!--            from openexperiment.u_teach inner join openexperiment.user_role on u_teach.code = user_role.user_id-->
+<!--            where u_teach.code = #{userCode} and user_role.role_id = #{role}-->
+<!--        </if>-->
     </select>
 </mapper>

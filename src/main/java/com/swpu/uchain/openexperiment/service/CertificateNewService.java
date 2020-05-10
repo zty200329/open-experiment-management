@@ -15,4 +15,23 @@ public interface CertificateNewService {
      * @return
      */
     Result applyCertificate(ApplyCertificate applyCertificate);
+
+    /**
+     * 查看我的申请
+     * @return
+     */
+    Result viewMyApplication();
+
+    /**
+     * 删除我的申请
+     * @param id
+     * @return
+     */
+    Result deleteMyApplication(Long[] id);
+
+    /**
+     * 管理员打开申请
+     * @return
+     */
+    Result openApply();
 }

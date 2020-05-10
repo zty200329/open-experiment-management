@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * @author zty
@@ -45,7 +46,7 @@ public class ApplyCertificate {
      */
     @NotNull(message = "学号不能为空")
     @ApiModelProperty("学号")
-    private Long userId;
+    private String userId;
 
     /**
      * 成员身份：1.指导教师2.项目组长3.普通成员
