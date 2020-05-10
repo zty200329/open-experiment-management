@@ -1,7 +1,11 @@
 package com.swpu.uchain.openexperiment.service;
 
-import com.swpu.uchain.openexperiment.form.certificate.ApplyCertificate;
+import com.swpu.uchain.openexperiment.form.certificate.ApplyCertificateForm;
+import com.swpu.uchain.openexperiment.form.certificate.DeleteCertificateForm;
 import com.swpu.uchain.openexperiment.result.Result;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author zty
@@ -14,7 +18,7 @@ public interface CertificateNewService {
      * @param applyCertificate
      * @return
      */
-    Result applyCertificate(ApplyCertificate applyCertificate);
+    Result applyCertificate(ApplyCertificateForm applyCertificate);
 
     /**
      * 查看我的申请
@@ -24,10 +28,10 @@ public interface CertificateNewService {
 
     /**
      * 删除我的申请
-     * @param id
+     * @param deleteCertificate
      * @return
      */
-    Result deleteMyApplication(Long[] id);
+    Result deleteMyApplication(DeleteCertificateForm deleteCertificate);
 
     /**
      * 管理员打开申请
@@ -40,4 +44,17 @@ public interface CertificateNewService {
      * @return
      */
     Result closeApply();
+
+    /**
+     * 下载excel
+     * @param response
+     */
+    void downloadList(HttpServletResponse response);
+
+    /**
+     * 清空数据库
+     * @return
+     */
+    Result emptyTheTable();
+
 }

@@ -105,6 +105,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/anon/*").permitAll()
                 .antMatchers("/api/uchain/shutdown").permitAll()
                 .antMatchers("/druid/**").permitAll()
+                .antMatchers("/api/**").permitAll()
                 .anyRequest().authenticated();
 
         //配置自己的验证过滤器

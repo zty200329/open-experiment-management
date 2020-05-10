@@ -1,5 +1,7 @@
 package com.swpu.uchain.openexperiment.domain;
 
+import com.swpu.uchain.openexperiment.accessctro.ExcelResources;
+
 import java.io.Serializable;
 
 public class NewCertificate implements Serializable {
@@ -31,6 +33,7 @@ public class NewCertificate implements Serializable {
         this.id = id;
     }
 
+    @ExcelResources(title = "姓名",order = 2)
     public String getName() {
         return name;
     }
@@ -39,6 +42,7 @@ public class NewCertificate implements Serializable {
         this.name = name == null ? null : name.trim();
     }
 
+    @ExcelResources(title = "立项编号",order = 1)
     public String getSerialNumber() {
         return serialNumber;
     }
@@ -47,6 +51,7 @@ public class NewCertificate implements Serializable {
         this.serialNumber = serialNumber == null ? null : serialNumber.trim();
     }
 
+    @ExcelResources(title = "项目名称" ,order = 4)
     public String getProjectName() {
         return projectName;
     }
@@ -55,6 +60,7 @@ public class NewCertificate implements Serializable {
         this.projectName = projectName == null ? null : projectName.trim();
     }
 
+    @ExcelResources(title = "项目类型" ,order = 5)
     public String getProjectType() {
         return projectType;
     }
@@ -63,6 +69,7 @@ public class NewCertificate implements Serializable {
         this.projectType = projectType == null ? null : projectType.trim();
     }
 
+    @ExcelResources(title = "学号" ,order = 3)
     public Long getUserId() {
         return userId;
     }
@@ -71,6 +78,7 @@ public class NewCertificate implements Serializable {
         this.userId = userId;
     }
 
+    @ExcelResources(title = "成员身份" ,order = 6)
     public String getMemberRole() {
         return memberRole;
     }
@@ -79,6 +87,7 @@ public class NewCertificate implements Serializable {
         this.memberRole = memberRole == null ? null : memberRole.trim();
     }
 
+    @ExcelResources(title = "所属学院" ,order = 7)
     public String getSubordinateCollage() {
         return subordinateCollage;
     }

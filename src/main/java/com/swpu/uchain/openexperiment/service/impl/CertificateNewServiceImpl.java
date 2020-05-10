@@ -1,24 +1,36 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.swpu.uchain.openexperiment.domain.Certificate;
 import com.swpu.uchain.openexperiment.domain.CertificateOpen;
 import com.swpu.uchain.openexperiment.domain.NewCertificate;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
-import com.swpu.uchain.openexperiment.form.certificate.ApplyCertificate;
+import com.swpu.uchain.openexperiment.form.certificate.ApplyCertificateForm;
+import com.swpu.uchain.openexperiment.form.certificate.DeleteCertificateForm;
 import com.swpu.uchain.openexperiment.mapper.CertificateOpenMapper;
 import com.swpu.uchain.openexperiment.mapper.NewCertificateMapper;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.CertificateNewService;
 import com.swpu.uchain.openexperiment.service.GetUserService;
+import com.swpu.uchain.openexperiment.util.FileUtil;
 import com.swpu.uchain.openexperiment.util.RedisUtil;
+import com.swpu.uchain.openexperiment.util.excel.ExcelUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zty
@@ -37,6 +49,8 @@ public class CertificateNewServiceImpl implements CertificateNewService {
     @Autowired
     private RedisUtil redisUtil;
 
+    @Value("${download.certificate-excel-download}")
+    private String excelExportPath;
     public boolean isOpen(){
         CertificateOpen certificateOpen = certificateOpenMapper.selectByPrimaryKey(1);
         Boolean isOpen = certificateOpen.getIsOpen();
@@ -48,7 +62,7 @@ public class CertificateNewServiceImpl implements CertificateNewService {
     }
     @Transactional(rollbackFor = GlobalException.class)
     @Override
-    public Result applyCertificate(ApplyCertificate applyCertificate) {
+    public Result applyCertificate(ApplyCertificateForm applyCertificate) {
         Boolean isOpen = isOpen();
         if(!isOpen)
         {
@@ -84,10 +98,10 @@ public class CertificateNewServiceImpl implements CertificateNewService {
 
     @Transactional(rollbackFor = GlobalException.class)
     @Override
-    public Result deleteMyApplication(Long[] id) {
-        for (Long aLong : id) {
-            newCertificateMapper.deleteByPrimaryKey(aLong);
-        }
+    public Result deleteMyApplication(DeleteCertificateForm deleteCertificate) {
+
+
+            newCertificateMapper.deleteByPrimaryKey(deleteCertificate.getId());
 
         return Result.success();
     }
@@ -113,6 +127,53 @@ public class CertificateNewServiceImpl implements CertificateNewService {
         CertificateOpen certificateOpen = certificateOpenMapper.selectByPrimaryKey(1);
         certificateOpen.setIsOpen(false);
         certificateOpenMapper.updateByPrimaryKey(certificateOpen);
+        return Result.success();
+    }
+    private String getDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+        return sdf.format(new Date());
+    }
+    public boolean createExcel() throws FileNotFoundException {
+        List<NewCertificate> list = newCertificateMapper.selectAll();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("title", "开放性实验结题证书申报名单表");
+        map.put("total", list.size()+" 条");
+        map.put("date", getDate());
+
+        ExcelUtil.getInstance().exportObj2ExcelByTemplate(map, "demo.xls",
+                new FileOutputStream(excelExportPath + "/" + "年度名单.xls"),
+                list, NewCertificate.class, true);
+        return true;
+    }
+    @Override
+    public void downloadList(HttpServletResponse response) {
+        try {
+            boolean isDownload = createExcel();
+            if (!isDownload){
+                throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        log.info("下载路径："+excelExportPath);
+        String fileUrl = excelExportPath;
+        String fileName = "年度名单.xls";
+        String realPath = fileUrl + "/" + fileName;
+
+        if (FileUtil.downloadFile(response, realPath)) {
+            throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
+        }
+
+    }
+
+    @Transactional(rollbackFor = GlobalException.class)
+    @Override
+    public Result emptyTheTable() {
+        if(isOpen())
+        {
+            return Result.error(CodeMsg.CANNOT_BE_CLEARED_WHILE_THE_SYSTEM_IS_OPEN);
+        }
+        newCertificateMapper.truncateTable();
         return Result.success();
     }
 }

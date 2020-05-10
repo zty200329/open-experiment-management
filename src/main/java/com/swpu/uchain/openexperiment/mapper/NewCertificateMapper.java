@@ -17,4 +17,6 @@ public interface NewCertificateMapper {
     List<NewCertificate> selectByUserId(Long userId);
 
     int updateByPrimaryKey(NewCertificate record);
+
+    int truncateTable();
 }

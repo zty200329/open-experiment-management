@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
  * @description:
  */
 @Data
-public class ApplyCertificate {
+public class ApplyCertificateForm {
     /**
      * 项目编号
      */

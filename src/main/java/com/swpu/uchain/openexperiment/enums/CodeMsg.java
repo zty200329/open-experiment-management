@@ -137,7 +137,8 @@ public enum CodeMsg {
     OPEN_ERROR(1904,"打开失败 请重试"),
     CLOSE_ERROR(1905,"关闭失败 请重试"),
     CHOICE_IS_NULL(1906,"选择不能为空"),
-    USER_ID_LENGTH(1907,"学号长度不合法");
+    USER_ID_LENGTH(1907,"学号长度不合法"),
+    CANNOT_BE_CLEARED_WHILE_THE_SYSTEM_IS_OPEN(1908,"系统开放期间不能清除");
 
     private Integer code;
     private String msg;

@@ -1,6 +1,8 @@
 package com.swpu.uchain.openexperiment.controller;
 
-import com.swpu.uchain.openexperiment.form.certificate.ApplyCertificate;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.swpu.uchain.openexperiment.form.certificate.ApplyCertificateForm;
+import com.swpu.uchain.openexperiment.form.certificate.DeleteCertificateForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.CertificateNewService;
 import io.swagger.annotations.Api;
@@ -9,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author zty
@@ -27,7 +31,7 @@ public class CertificateNewController {
     private CertificateNewService certificateNewService;
     @ApiOperation("学生申领")
     @PostMapping(value = "/applyCertificate")
-    public Result applyCertificate(@RequestBody @Valid ApplyCertificate applyCertificate){
+    public Result applyCertificate(@RequestBody @Valid ApplyCertificateForm applyCertificate){
         return certificateNewService.applyCertificate(applyCertificate);
     }
 
@@ -39,8 +43,8 @@ public class CertificateNewController {
 
     @ApiOperation("删除自己申请的证书")
     @PostMapping(value = "/deleteMyApplication")
-    public Result deleteMyApplication(Long[] id){
-        return certificateNewService.deleteMyApplication(id);
+    public Result deleteMyApplication(@RequestBody DeleteCertificateForm deleteCertificate){
+        return certificateNewService.deleteMyApplication(deleteCertificate);
     }
 
     @ApiOperation("管理员开启申请功能")
@@ -55,6 +59,15 @@ public class CertificateNewController {
         return certificateNewService.closeApply();
     }
 
+    @ApiOperation("将需要的生成一份excel并下载")
+    @GetMapping("/downloadList")
+    public void downloadList(HttpServletResponse response){
+        certificateNewService.downloadList(response);
+    }
 
-
+    @ApiOperation("清空数据,关闭后和开启前进行 注意提示!")
+    @GetMapping("/emptyTheTable")
+    public Result emptyTheTable(){
+        return certificateNewService.emptyTheTable();
+    }
 }

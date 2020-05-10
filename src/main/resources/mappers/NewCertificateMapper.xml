@@ -55,4 +55,8 @@
     from new_certificate
     where user_id = #{userId,jdbcType=BIGINT}
   </select>
+  <update id="truncateTable">
+    truncate table new_certificate
+  </update>
+
 </mapper>
