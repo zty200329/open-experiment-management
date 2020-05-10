@@ -51,37 +51,37 @@ public class CertificateNewServiceImpl implements CertificateNewService {
 
     @Value("${download.certificate-excel-download}")
     private String excelExportPath;
-    public boolean isOpen(){
+
+    public boolean isOpen() {
         CertificateOpen certificateOpen = certificateOpenMapper.selectByPrimaryKey(1);
         Boolean isOpen = certificateOpen.getIsOpen();
-        if(isOpen)
-        {
+        if (isOpen) {
             return true;
         }
         return false;
     }
+
     @Transactional(rollbackFor = GlobalException.class)
     @Override
     public Result applyCertificate(ApplyCertificateForm applyCertificate) {
         Boolean isOpen = isOpen();
-        if(!isOpen)
-        {
+        if (!isOpen) {
             return Result.error(CodeMsg.SERVICE_NOT_ENABLED);
         }
-        if(applyCertificate.getUserId().length()!=12){
+        if (applyCertificate.getUserId().length() != 12) {
             throw new GlobalException(CodeMsg.USER_ID_LENGTH);
         }
         NewCertificate newCertificate = new NewCertificate();
-        BeanUtils.copyProperties(applyCertificate,newCertificate);
+        BeanUtils.copyProperties(applyCertificate, newCertificate);
         newCertificate.setUserId(Long.valueOf(applyCertificate.getUserId()));
-        if(applyCertificate.getProjectType()==1) {
+        if (applyCertificate.getProjectType() == 1) {
             newCertificate.setProjectType("普通");
-        }else {
+        } else {
             newCertificate.setProjectType("重点");
         }
-        if(applyCertificate.getMemberRole() == 2){
+        if (applyCertificate.getMemberRole() == 2) {
             newCertificate.setMemberRole("项目组长");
-        }else{
+        } else {
             newCertificate.setMemberRole("普通成员");
         }
         newCertificate.setIsTrue(true);
@@ -101,16 +101,18 @@ public class CertificateNewServiceImpl implements CertificateNewService {
     public Result deleteMyApplication(DeleteCertificateForm deleteCertificate) {
 
 
-            newCertificateMapper.deleteByPrimaryKey(deleteCertificate.getId());
+        newCertificateMapper.deleteByPrimaryKey(deleteCertificate.getId());
 
         return Result.success();
     }
 
     @Override
     public Result openApply() {
-        if(isOpen())
-        {
+        if (isOpen()) {
             return Result.error(CodeMsg.SERVICE_IS_OPEN);
+        }
+        if (isTableEmpty()) {
+            throw new GlobalException(CodeMsg.TABLE_IS_NOT_EMPTY);
         }
         CertificateOpen certificateOpen = certificateOpenMapper.selectByPrimaryKey(1);
         certificateOpen.setIsOpen(true);
@@ -120,8 +122,7 @@ public class CertificateNewServiceImpl implements CertificateNewService {
 
     @Override
     public Result closeApply() {
-        if(!isOpen())
-        {
+        if (!isOpen()) {
             return Result.error(CodeMsg.SERVICE_NOT_ENABLED);
         }
         CertificateOpen certificateOpen = certificateOpenMapper.selectByPrimaryKey(1);
@@ -129,15 +130,17 @@ public class CertificateNewServiceImpl implements CertificateNewService {
         certificateOpenMapper.updateByPrimaryKey(certificateOpen);
         return Result.success();
     }
+
     private String getDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
         return sdf.format(new Date());
     }
+
     public boolean createExcel() throws FileNotFoundException {
         List<NewCertificate> list = newCertificateMapper.selectAll();
         Map<String, String> map = new HashMap<String, String>();
         map.put("title", "开放性实验结题证书申报名单表");
-        map.put("total", list.size()+" 条");
+        map.put("total", list.size() + " 条");
         map.put("date", getDate());
 
         ExcelUtil.getInstance().exportObj2ExcelByTemplate(map, "demo.xls",
@@ -145,17 +148,18 @@ public class CertificateNewServiceImpl implements CertificateNewService {
                 list, NewCertificate.class, true);
         return true;
     }
+
     @Override
     public void downloadList(HttpServletResponse response) {
         try {
             boolean isDownload = createExcel();
-            if (!isDownload){
+            if (!isDownload) {
                 throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        log.info("下载路径："+excelExportPath);
+        log.info("下载路径：" + excelExportPath);
         String fileUrl = excelExportPath;
         String fileName = "年度名单.xls";
         String realPath = fileUrl + "/" + fileName;
@@ -169,11 +173,15 @@ public class CertificateNewServiceImpl implements CertificateNewService {
     @Transactional(rollbackFor = GlobalException.class)
     @Override
     public Result emptyTheTable() {
-        if(isOpen())
-        {
+        if (isOpen()) {
             return Result.error(CodeMsg.CANNOT_BE_CLEARED_WHILE_THE_SYSTEM_IS_OPEN);
         }
         newCertificateMapper.truncateTable();
         return Result.success();
+    }
+
+    private Boolean isTableEmpty() {
+        List<NewCertificate> newCertificates = newCertificateMapper.selectAll();
+        return newCertificates.size() != 0;
     }
 }
