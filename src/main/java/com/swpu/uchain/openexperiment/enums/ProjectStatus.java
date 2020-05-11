@@ -35,6 +35,9 @@ public enum ProjectStatus {
 
     ESTABLISH(5,"职能部门审核通过,立项"),
 
+    /**
+     * 取消中期, 退回修改,不通过
+     */
     MID_TERM_INSPECTION(6,"中期检查"),
 
     CONCLUDED(7,"结题项目"),

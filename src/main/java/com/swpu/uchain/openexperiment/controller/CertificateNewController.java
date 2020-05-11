@@ -61,8 +61,8 @@ public class CertificateNewController {
 
     @ApiOperation("将需要的生成一份excel并下载")
     @GetMapping("/downloadList")
-    public void downloadList(HttpServletResponse response){
-        certificateNewService.downloadList(response);
+    public Result downloadList(HttpServletResponse response){
+        return certificateNewService.downloadList(response);
     }
 
     @ApiOperation("清空数据,关闭后和开启前进行 注意提示!")

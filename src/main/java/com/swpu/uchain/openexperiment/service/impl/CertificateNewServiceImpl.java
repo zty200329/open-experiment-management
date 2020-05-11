@@ -150,7 +150,7 @@ public class CertificateNewServiceImpl implements CertificateNewService {
     }
 
     @Override
-    public void downloadList(HttpServletResponse response) {
+    public Result downloadList(HttpServletResponse response) {
         try {
             boolean isDownload = createExcel();
             if (!isDownload) {
@@ -168,6 +168,7 @@ public class CertificateNewServiceImpl implements CertificateNewService {
             throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
         }
 
+        return Result.success();
     }
 
     @Transactional(rollbackFor = GlobalException.class)

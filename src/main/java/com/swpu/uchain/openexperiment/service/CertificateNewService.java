@@ -49,7 +49,7 @@ public interface CertificateNewService {
      * 下载excel
      * @param response
      */
-    void downloadList(HttpServletResponse response);
+    Result downloadList(HttpServletResponse response);
 
     /**
      * 清空数据库
