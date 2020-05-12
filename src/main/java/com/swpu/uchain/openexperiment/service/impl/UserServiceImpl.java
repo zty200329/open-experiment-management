@@ -326,6 +326,7 @@ public class UserServiceImpl implements UserService {
         if (userInfo != null) {
             return Result.success(userInfo);
         }else {
+
             return Result.success(teacherMapper.selectByUserCode(currentUser.getCode()));
         }
     }
@@ -345,6 +346,12 @@ public class UserServiceImpl implements UserService {
         return Result.success(userMapper.selectByUserCode(String.valueOf(userId)));
     }
 
+    /**
+     * 模糊查询?
+     * @param keyWord
+     * @param isTeacher
+     * @return
+     */
     @Override
     public List<User> selectByKeyWord(String keyWord, boolean isTeacher) {
 

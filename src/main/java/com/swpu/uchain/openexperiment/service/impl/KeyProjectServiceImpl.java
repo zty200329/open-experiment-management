@@ -69,6 +69,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
 
+    /**
+     * 重点项目申请
+     * @param form 申请表单
+     * @return
+     */
     @Transactional(rollbackFor = GlobalException.class)
     @Override
     public Result createKeyApply(KeyProjectApplyForm form) {
@@ -188,7 +193,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     /**
-     * 获取待中期检查的项目
+     * 获取待中期检查的重点项目
      * @param college
      * @return
      */
@@ -344,6 +349,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT, OperationType.AGREE,list);
     }
 
+    /**
+     * 重点项目职能部门同意立项
+     * @param list
+     * @return
+     */
     @Override
     public Result agreeKeyProjectByFunctionalDepartment(List<KeyProjectCheck> list) {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.AGREE,list);

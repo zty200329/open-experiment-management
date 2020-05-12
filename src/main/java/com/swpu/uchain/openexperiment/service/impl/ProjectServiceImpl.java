@@ -1031,6 +1031,10 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success();
     }
 
+    /**
+     * 有报错
+     * @return
+     */
     @Override
     public Result getAllOpenTopic() {
         //筛选  学生如果不在要求的时间内，项目不显示
