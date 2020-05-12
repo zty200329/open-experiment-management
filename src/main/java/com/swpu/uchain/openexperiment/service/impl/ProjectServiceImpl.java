@@ -146,6 +146,7 @@ public class ProjectServiceImpl implements ProjectService {
     /**
      * 指导教师填写申请立项书
      *
+     * 提交
      * @param form 申请立项表单
      * @return 申请立项操作结果
      */
