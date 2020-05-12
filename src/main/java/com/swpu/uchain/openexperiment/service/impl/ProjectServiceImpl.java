@@ -590,6 +590,10 @@ public class ProjectServiceImpl implements ProjectService {
         return getCheckInfo(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED);
     }
 
+    /**
+     * 职能部门获取待结题项目
+     * @return
+     */
     @Override
     public Result getToBeConcludingProject() {
         return getCheckInfo(ProjectStatus.ESTABLISH);

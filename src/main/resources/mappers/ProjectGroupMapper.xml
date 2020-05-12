@@ -538,8 +538,9 @@
             inner join openexperiment.u_stu on u_stu.code = project_group.creator_id and locate(#{creator},u_stu.real_name)
         </if>
         <where>
+            project_group.project_type = 1
             <if test="status!=null">
-                project_group.status = #{status}
+                and project_group.status = #{status}
             </if>
             <if test="projectType!=null">
                 and project_group.project_type= #{projectType}

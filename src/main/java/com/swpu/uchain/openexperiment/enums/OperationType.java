@@ -20,7 +20,8 @@ public enum OperationType {
     OFFLINE_CHECK_REJECT(7,"线下检查不通过"),
     CONCLUSION_REJECT(8,"结题审核不通过"),
     REPORT_REJECT(0,"上报拒绝"),
-
+    INTERIM_RETURN(9,"中期退回"),
+    MIDTERM_REVIEW_PASSED(10,"中期复核通过"),
     ;
 
     private Integer value;

@@ -16,17 +16,17 @@ spring:
 upload:
   apply-file-name: "立项申请主要内容"
   concluding-file-name: "结题报告"
-  apply-dir: "/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/apply_dir"
-  apply-dir-2: "/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/apply_dir_2"
-  pdf-temp-dir: "/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/pdf_temp_dir"
-  conclusion-dir: "/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/conclusion_dir"
-  material_sample: "/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/material_sample"
+  apply-dir: "/home/zty/open-experiment-management-system/apply_dir"
+  apply-dir-2: "/home/zty/open-experiment-management-system/apply_dir_2"
+  pdf-temp-dir: "/home/zty/open-experiment-management-system/pdf_temp_dir"
+  conclusion-dir: "/home/zty/open-experiment-management-system/conclusion_dir"
+  material_sample: "/home/zty/open-experiment-management-system/material_sample"
 download:
   certificate-excel-download: "/home/zty/test"
 file:
+  ipaddress: "http://zty200329.nat300.top"
 #  ip-address: "http://192.168.43.153:8083"
-  ip-address: "http://10.20.0.56:8083"
-
+#  ip-address: "http://10.20.0.56:8083"
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
