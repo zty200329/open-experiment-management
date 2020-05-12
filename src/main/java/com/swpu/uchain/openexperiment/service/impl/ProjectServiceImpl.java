@@ -597,7 +597,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getIntermediateInspectionProject() {
-        return getCheckInfo(ProjectStatus.MID_TERM_INSPECTION);
+        //ESTABLISH
+//        return getCheckInfo(ProjectStatus.MID_TERM_INSPECTION);
+        return getCheckInfo(ProjectStatus.ESTABLISH);
     }
 
 //    public Result get

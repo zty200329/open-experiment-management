@@ -336,7 +336,7 @@
     <if test="projectType!=null">
         and project_type = #{projectType}
     </if>
-    <if  test="college!=null">
+    <if  test="college!=0">
         and subordinate_college = #{college}
     </if>
     order by create_time desc
