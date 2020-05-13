@@ -93,16 +93,5 @@ public class KeyProjectQueryController {
         return keyProjectService.conditionallyQueryOfKeyProject(form);
     }
 
-    @ApiOperation("中期检查重点项目退回")
-    @PostMapping("/midTermKeyProjectsFail")
-    public Result  midTermKeyProjectsFail(){
-        return null;
-    }
-
-    @ApiOperation("中期检查重点项目退回")
-    @PostMapping("midTermKeyProjectHitBack")
-    public Result  midTermKeyProjectHitBack(){
-        return null;
-    }
 
 }

@@ -41,7 +41,7 @@
             project_group.lab_name AS labName,
             project_group.address AS address,
             project_group.main_content AS mainContent,
-            project_group.serial_number AS serialNumber,
+            project_group.temp_serial_number AS serialNumber,
             project_group.limit_college AS limitCollege,
             project_group.limit_grade AS limitGrade,
             project_group.limit_major AS limitMajor,
