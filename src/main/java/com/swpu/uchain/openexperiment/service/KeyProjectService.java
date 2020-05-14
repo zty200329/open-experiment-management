@@ -1,11 +1,14 @@
 package com.swpu.uchain.openexperiment.service;
 
+import com.swpu.uchain.openexperiment.form.project.ProjectCheckForm;
 import com.swpu.uchain.openexperiment.form.query.HistoryQueryKeyProjectInfo;
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
 import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
 import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.result.Result;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -75,4 +78,5 @@ public interface KeyProjectService {
     Result rejectToBeConcludingKeyProject(List<KeyProjectCheck> list);
 
     Result rejectKeyProjectReportBySecondaryUnit(List<KeyProjectCheck> list);
+
 }

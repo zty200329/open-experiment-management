@@ -18,6 +18,7 @@ public class StaticResourceConfig implements WebMvcConfigurer {
     /**
      * 注册静态文件的自定义映射路径
      */
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //定义到硬盘

@@ -4,6 +4,7 @@ import com.swpu.uchain.openexperiment.security.AuthRoleInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 /**
  * @Author: clf
@@ -17,8 +18,15 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private AuthRoleInterceptor authRoleInterceptor;
 
+    String str = "/home/zty/open-experiment-management-system/document/";
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authRoleInterceptor);
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/document/**").addResourceLocations("file:" + str);
+        super.addResourceHandlers(registry);
     }
 }

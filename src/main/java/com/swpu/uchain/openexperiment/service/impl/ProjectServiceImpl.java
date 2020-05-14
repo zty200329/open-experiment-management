@@ -1315,6 +1315,12 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public Result midTermKeyProjectHitBack(List<ProjectCheckForm> list) {
+        return null;
+    }
+
+
+    @Override
     public Result rejectProjectApplyByLabAdministrator(List<ProjectCheckForm> formList) {
         return rejectProjectApply(formList, OperationUnit.LAB_ADMINISTRATOR, OperationType.REJECT);
     }
@@ -1336,7 +1342,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result rejectIntermediateInspectionProject(List<ProjectCheckForm> list) {
-        return rejectProjectApply(list, OperationUnit.FUNCTIONAL_DEPARTMENT, OperationType.CONCLUSION_REJECT);
+        return rejectProjectApply(list, OperationUnit.FUNCTIONAL_DEPARTMENT, OperationType.OFFLINE_CHECK_REJECT);
     }
 
 
@@ -1368,11 +1374,15 @@ public class ProjectServiceImpl implements ProjectService {
                 rightProjectStatus = ProjectStatus.ESTABLISH_FAILED.getValue();
                 break;
         }
+
         for (ProjectCheckForm form : formList
         ) {
             Integer status = projectGroupMapper.selectByPrimaryKey(form.getProjectId()).getStatus();
             //验证当前状态
-            if (!rightProjectStatus.equals(status) && operationUnit!= OperationUnit.LAB_ADMINISTRATOR ) {
+            /**
+             * 有改动 可能存在bug
+             */
+            if (!rightProjectStatus.equals(status) && operationUnit!= OperationUnit.LAB_ADMINISTRATOR && operationUnit!= OperationUnit.FUNCTIONAL_DEPARTMENT) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
             //批量插入数据

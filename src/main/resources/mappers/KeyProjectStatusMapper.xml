@@ -48,6 +48,7 @@
             project_group.total_hours AS totalHours,
             project_group.start_time AS startTime,
             project_group.is_open_topic AS isOpenTopic,
+            project_group.subordinate_college AS subordinateCollege,
             `u_stu`.real_name AS creatorName,
             `u_stu`.`code` AS userid,
             project_file.id AS projectFileId

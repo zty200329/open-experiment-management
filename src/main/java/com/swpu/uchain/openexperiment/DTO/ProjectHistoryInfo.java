@@ -10,7 +10,7 @@ import java.util.Date;
  * @author panghu
  */
 @Data
-public class    ProjectHistoryInfo {
+public class  ProjectHistoryInfo {
 
     /**
      * 主键

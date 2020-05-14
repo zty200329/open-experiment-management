@@ -146,7 +146,7 @@ public class KeyProjectDTO {
     /**
      * 所属学院  {@link CollegeType#getValue()}
      */
-    @JsonIgnore
+//    @JsonIgnore
     private Integer subordinateCollege;
 
     /**

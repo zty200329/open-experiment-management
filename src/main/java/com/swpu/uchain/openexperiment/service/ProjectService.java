@@ -269,4 +269,6 @@ public interface ProjectService {
     Result rejectProjectReportByLabAdministrator(List<ProjectCheckForm> formList);
 
     Result changeKeyProjectToGeneral(List<ProjectCheckForm> formList);
+
+    Result  midTermKeyProjectHitBack(List<ProjectCheckForm> list);
 }

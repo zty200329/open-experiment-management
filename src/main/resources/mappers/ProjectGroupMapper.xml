@@ -439,7 +439,7 @@
                project_group.project_type,
                project_group.start_time,
                project_group.end_time,
-               project_group.`status`,
+               project_group.status,
                project_group.update_time,
                project_group.main_Content,
                project_group.apply_funds,
