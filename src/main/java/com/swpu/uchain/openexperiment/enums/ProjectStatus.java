@@ -13,7 +13,7 @@ public enum ProjectStatus {
     /**
      *
      */
-    MIDTERM_FAILURE(-6,"中期检查不通过在"),
+//    MIDTERM_FAILURE(-6,"中期检查不通过在"),
 
     INTERIM_RETURN_MODIFICATION(-5,"中期打回修改"),
 

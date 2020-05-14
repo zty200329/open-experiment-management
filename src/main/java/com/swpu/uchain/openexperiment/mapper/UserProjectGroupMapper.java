@@ -87,4 +87,12 @@ public interface UserProjectGroupMapper {
      * @return
      */
     Integer geCountOfAppliedProject(@Param("userId")Long userId,@Param("projectType")Integer projectType);
+
+    /**
+     * 查找项目组长
+     * @param projectId
+     * @param memberRole
+     * @return
+     */
+    UserProjectGroup getProjectLeader(@Param("projectId")Long projectId,@Param("memberRole")Integer memberRole);
 }

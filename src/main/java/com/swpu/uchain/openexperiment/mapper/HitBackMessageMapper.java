@@ -1,8 +1,11 @@
 package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.domain.HitBackMessage;
-import java.util.List;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+@Repository
 public interface HitBackMessageMapper {
     int deleteByPrimaryKey(Long id);
 

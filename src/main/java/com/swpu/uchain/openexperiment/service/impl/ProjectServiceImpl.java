@@ -20,6 +20,7 @@ import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +40,7 @@ import java.util.List;
  * @author panghu
  */
 @Service
+@Slf4j
 public class ProjectServiceImpl implements ProjectService {
 
     private UserService userService;
@@ -59,6 +61,7 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectFileMapper projectFileMapper;
     private TimeLimitService timeLimitService;
     private AmountLimitMapper amountLimitMapper;
+    private HitBackMessageMapper hitBackMessageMapper;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -70,7 +73,7 @@ public class ProjectServiceImpl implements ProjectService {
                               RoleMapper roleMapper, AmountLimitMapper amountLimitMapper,
                               UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper,
                               KeyProjectStatusMapper keyProjectStatusMapper, ProjectFileMapper projectFileMapper,
-                              TimeLimitService timeLimitService,UserRoleService userRoleService) {
+                              TimeLimitService timeLimitService,UserRoleService userRoleService,HitBackMessageMapper hitBackMessageMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -89,6 +92,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.timeLimitService = timeLimitService;
         this.amountLimitMapper = amountLimitMapper;
         this.userRoleService = userRoleService;
+        this.hitBackMessageMapper = hitBackMessageMapper;
     }
 
     @Override
@@ -1314,11 +1318,53 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success();
     }
 
+    /**
+     * 中期打回
+     * @param list
+     * @return
+     */
     @Override
     public Result midTermKeyProjectHitBack(List<ProjectCheckForm> list) {
-        return null;
+        return ProjectHitBack(list,OperationUnit.FUNCTIONAL_DEPARTMENT,OperationType.INTERIM_RETURN);
     }
 
+    @Transactional(rollbackFor = GlobalException.class)
+    public Result ProjectHitBack(List<ProjectCheckForm> formList, OperationUnit operationUnit, OperationType operationType){
+        User user = getUserService.getCurrentUser();
+        List<OperationRecord> list = new LinkedList<>();
+        for(ProjectCheckForm form : formList){
+            Integer status = projectGroupMapper.selectByPrimaryKey(form.getProjectId()).getStatus();
+            if(!status.equals(ProjectStatus.ESTABLISH.getValue())){
+                throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+            }
+            //批量插入数据
+            OperationRecord operationRecord = new OperationRecord();
+
+            operationRecord.setRelatedId(form.getProjectId());
+            operationRecord.setOperationReason("中期退回修改");
+            operationRecord.setOperationUnit(operationUnit.getValue());
+            operationRecord.setOperationType(operationType.getValue());
+            operationRecord.setOperationCollege(user.getInstitute());
+            operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
+            updateProjectStatus(form.getProjectId(),ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue());
+            list.add(operationRecord);
+
+            //发送消息
+            HitBackMessage hitBackMessage = new HitBackMessage();
+            hitBackMessage.setReceiveUserId(userProjectGroupMapper.getProjectLeader(form.getProjectId(),MemberRole.PROJECT_GROUP_LEADER.getValue()).getUserId());
+            hitBackMessage.setContent(form.getReason());
+            hitBackMessage.setSender(user.getRealName());
+            Date date = new Date();
+            hitBackMessage.setSendTime(date);
+            hitBackMessage.setIsRead(false);
+            log.info(hitBackMessage.toString());
+            hitBackMessageMapper.insert(hitBackMessage);
+
+        }
+        recordMapper.multiInsert(list);
+
+        return Result.success();
+    }
 
     @Override
     public Result rejectProjectApplyByLabAdministrator(List<ProjectCheckForm> formList) {

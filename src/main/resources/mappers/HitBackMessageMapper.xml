@@ -14,9 +14,9 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.HitBackMessage" >
-    insert into hit_back_message (id, receive_user_id, sender, 
+    insert into hit_back_message (receive_user_id, sender,
       content, send_time, is_read)
-    values (#{id,jdbcType=BIGINT}, #{receiveUserId,jdbcType=BIGINT}, #{sender,jdbcType=VARCHAR}, 
+    values ( #{receiveUserId,jdbcType=BIGINT}, #{sender,jdbcType=VARCHAR},
       #{content,jdbcType=VARCHAR}, #{sendTime,jdbcType=DATE}, #{isRead,jdbcType=BIT})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.HitBackMessage" >
