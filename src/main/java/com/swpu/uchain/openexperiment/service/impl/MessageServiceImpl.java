@@ -67,4 +67,26 @@ public class MessageServiceImpl implements MessageService {
         List<HitBackMessage> hitBackMessages = hitBackMessageMapper.selectByUserIdAndNotRead(Long.valueOf(currentUser.getCode()));
         return Result.success(hitBackMessages);
     }
+
+    @Override
+    public Result getAllMyMessage() {
+        User currentUser = getUserService.getCurrentUser();
+        if (currentUser == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        List<HitBackMessage> hitBackMessages = hitBackMessageMapper.selectByUserId(Long.valueOf(currentUser.getCode()));
+        return Result.success(hitBackMessages);
+    }
+
+    @Override
+    public Result confirmReceiptOfMidtermReminder(Long id) {
+        User currentUser = getUserService.getCurrentUser();
+        if (currentUser == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        HitBackMessage hitBackMessage = hitBackMessageMapper.selectByPrimaryKey(id);
+        hitBackMessage.setIsRead(true);
+        hitBackMessageMapper.updateByPrimaryKey(hitBackMessage);
+        return Result.success();
+    }
 }

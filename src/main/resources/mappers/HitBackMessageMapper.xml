@@ -33,6 +33,11 @@
     from hit_back_message
     where receive_user_id = #{receiveUserId,jdbcType=BIGINT} and is_read = 0
   </select>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, receive_user_id, sender, content, send_time, is_read
+    from hit_back_message
+    where receive_user_id = #{receiveUserId,jdbcType=BIGINT}
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select id, receive_user_id, sender, content, send_time, is_read
     from hit_back_message

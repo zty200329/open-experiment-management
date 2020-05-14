@@ -18,5 +18,7 @@ public interface HitBackMessageMapper {
 
     List<HitBackMessage> selectByUserIdAndNotRead( Long userId);
 
+    List<HitBackMessage> selectByUserId( Long userId);
+
     int updateByPrimaryKey(HitBackMessage record);
 }

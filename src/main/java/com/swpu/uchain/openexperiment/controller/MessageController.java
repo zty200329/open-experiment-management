@@ -46,10 +46,16 @@ public class MessageController {
         return messageService.getMessageTips();
     }
 
-    @ApiOperation("用户")
+    @ApiOperation("用户获取自己所有消息")
     @GetMapping("/getAllMyMessage")
     public Result getAllMyMessage(){
-        return null;
+        return messageService.getAllMyMessage();
     }
 
+    @ApiOperation("确认收到中期驳回修改提示")
+    @GetMapping("/confirmReceiptOfMidtermReminder")
+    public Result confirmReceiptOfMidtermReminder(Long id){
+        return messageService.confirmReceiptOfMidtermReminder(id);
+
+    }
 }

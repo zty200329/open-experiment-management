@@ -16,4 +16,17 @@ public interface MessageService {
      * @return
      */
     Result getMessageTips();
+
+    /**
+     * 获取所有个人消息
+     * @return
+     */
+    Result getAllMyMessage();
+
+    /**
+     * 确认收到中期提示
+     * @param id
+     * @return
+     */
+    Result confirmReceiptOfMidtermReminder(Long id);
 }
