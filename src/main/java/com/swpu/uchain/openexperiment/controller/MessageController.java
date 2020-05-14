@@ -40,5 +40,16 @@ public class MessageController {
     }
 
 
+    @ApiOperation("用户获取自己的消息提示")
+    @GetMapping("/getMessageTips")
+    public Result getMessageTips(){
+        return messageService.getMessageTips();
+    }
+
+    @ApiOperation("用户")
+    @GetMapping("/getAllMyMessage")
+    public Result getAllMyMessage(){
+        return null;
+    }
 
 }

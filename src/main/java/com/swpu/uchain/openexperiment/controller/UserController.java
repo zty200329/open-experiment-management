@@ -5,6 +5,7 @@ import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import jdk.nashorn.internal.objects.annotations.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,6 @@ public class UserController {
         return userService.getMyInfo();
     }
 
-
     @ApiOperation("管理员根据关键字获取用户信息")
     @GetMapping(value = "manageUsers", name = "管理员获取用户信息")
     public Object manageUsers(String keyWord){
@@ -54,6 +54,5 @@ public class UserController {
     public Result getUserInfoByUserId(Long userId){
         return userService.getUserInfoByUserId(userId);
     }
-
 
 }

@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.domain.HitBackMessage;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -14,6 +15,8 @@ public interface HitBackMessageMapper {
     HitBackMessage selectByPrimaryKey(Long id);
 
     List<HitBackMessage> selectAll();
+
+    List<HitBackMessage> selectByUserIdAndNotRead( Long userId);
 
     int updateByPrimaryKey(HitBackMessage record);
 }

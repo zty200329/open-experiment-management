@@ -4,11 +4,8 @@ import com.swpu.uchain.openexperiment.DTO.VerifyCode;
 import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
-import com.swpu.uchain.openexperiment.domain.Teacher;
+import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.mapper.*;
-import com.swpu.uchain.openexperiment.domain.Role;
-import com.swpu.uchain.openexperiment.domain.User;
-import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.JoinStatus;
 import com.swpu.uchain.openexperiment.enums.MemberRole;
@@ -70,6 +67,7 @@ public class UserServiceImpl implements UserService {
     private GetUserService getUserService;
     private UserRoleMapper userRoleMapper;
     private TeacherMapper teacherMapper;
+    private HitBackMessageMapper hitBackMessageMapper;
 
     private static String PASSWORD = "open_experiment";
 
@@ -79,7 +77,8 @@ public class UserServiceImpl implements UserService {
                            AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil,
                            AclService aclService, UserProjectGroupMapper userProjectGroupMapper,
                            PasswordEncoder passwordEncoder, ConvertUtil convertUtil,
-                           UserRoleMapper userRoleMapper, TeacherMapper teacherMapper
+                           UserRoleMapper userRoleMapper, TeacherMapper teacherMapper,
+                           HitBackMessageMapper hitBackMessageMapper
                            ) {
         this.userMapper = userMapper;
         this.redisService = redisService;
@@ -93,6 +92,7 @@ public class UserServiceImpl implements UserService {
         this.getUserService = getUserService;
         this.userRoleMapper = userRoleMapper;
         this.teacherMapper = teacherMapper;
+        this.hitBackMessageMapper = hitBackMessageMapper;
     }
 
     @Override
@@ -163,7 +163,7 @@ public class UserServiceImpl implements UserService {
         if (!checkVerifyCode(clientIp, loginForm.getVerifyCode())){
             return Result.error(CodeMsg.VERIFY_CODE_ERROR);
         }
-        User user = getUserService.selectByUserCodeAndRole(loginForm.getUserCode(),6);
+        User user = getUserService.selectByUserCodeAndRole(loginForm.getUserCode(),1);
 
         //验证用户密码及其角色是否存在
         if (user == null) {
@@ -345,6 +345,8 @@ public class UserServiceImpl implements UserService {
     public Result getUserInfoByUserId(Long userId) {
         return Result.success(userMapper.selectByUserCode(String.valueOf(userId)));
     }
+
+
 
     /**
      * 模糊查询?
