@@ -1,14 +1,12 @@
 package com.swpu.uchain.openexperiment.controller;
 
+import com.swpu.uchain.openexperiment.form.message.MidTermReturnMessage;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.MessageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author panghu
@@ -53,9 +51,9 @@ public class MessageController {
     }
 
     @ApiOperation("确认收到中期驳回修改提示")
-    @GetMapping("/confirmReceiptOfMidtermReminder")
-    public Result confirmReceiptOfMidtermReminder(Long id){
-        return messageService.confirmReceiptOfMidtermReminder(id);
+    @PostMapping("/confirmReceiptOfMidtermReminder")
+    public Result confirmReceiptOfMidtermReminder(@RequestBody MidTermReturnMessage midTermReturnMessage){
+        return messageService.confirmReceiptOfMidtermReminder(midTermReturnMessage.getId());
 
     }
 }

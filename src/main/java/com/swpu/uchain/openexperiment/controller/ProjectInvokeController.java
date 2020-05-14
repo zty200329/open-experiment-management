@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.net.NetworkInterface;
 import java.util.List;
 
 
@@ -138,6 +139,10 @@ public class ProjectInvokeController {
         return projectService.approveProjectApplyBySecondaryUnit(list);
     }
 
+
+    public Result MidTermReviewPassed(){
+        return null;
+    }
 
 //    @ApiOperation("资金报账(职能部门使用)")
 //    @PostMapping(value = "/appendCreateApply", name = "追加立项申请内容")
