@@ -142,5 +142,10 @@ public class ProjectQueryController {
         return projectService.getHistoricalProjectInfo(info);
     }
 
+    @ApiOperation("查看中期打回的项目列表")
+    @PostMapping("/getMidTermReturnProject")
+    public Result getMidTermReturnProject(){
+        return projectService.getMidTermReturnProject();
+    }
 
 }

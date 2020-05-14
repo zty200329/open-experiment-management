@@ -610,7 +610,11 @@ public class ProjectServiceImpl implements ProjectService {
         return getCheckInfo(ProjectStatus.ESTABLISH);
     }
 
-//    public Result get
+    @Override
+    public Result getMidTermReturnProject() {
+        return getCheckInfo(ProjectStatus.INTERIM_RETURN_MODIFICATION);
+    }
+
 
     private Result getReportInfo(Integer role) {
 
@@ -1333,7 +1337,8 @@ public class ProjectServiceImpl implements ProjectService {
         User user = getUserService.getCurrentUser();
         List<OperationRecord> list = new LinkedList<>();
         for(ProjectCheckForm form : formList){
-            Integer status = projectGroupMapper.selectByPrimaryKey(form.getProjectId()).getStatus();
+            ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(form.getProjectId());
+            Integer status = projectGroup.getStatus();
             if(!status.equals(ProjectStatus.ESTABLISH.getValue())){
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
@@ -1352,7 +1357,7 @@ public class ProjectServiceImpl implements ProjectService {
             //发送消息
             HitBackMessage hitBackMessage = new HitBackMessage();
             hitBackMessage.setReceiveUserId(userProjectGroupMapper.getProjectLeader(form.getProjectId(),MemberRole.PROJECT_GROUP_LEADER.getValue()).getUserId());
-            hitBackMessage.setContent(form.getReason());
+            hitBackMessage.setContent("项目名:"+projectGroup.getProjectName()+"  意见:"+form.getReason());
             hitBackMessage.setSender(user.getRealName());
             Date date = new Date();
             hitBackMessage.setSendTime(date);

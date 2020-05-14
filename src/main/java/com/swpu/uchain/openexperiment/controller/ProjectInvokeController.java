@@ -207,7 +207,7 @@ public class ProjectInvokeController {
 //        return projectService.midTermKeyProjectsFail(list);
 //    }
 
-    @ApiOperation("中期检查普通项目退回")
+    @ApiOperation("中期检查项目退回")
     @PostMapping("/midTermKeyProjectHitBack")
     public Result  midTermKeyProjectHitBack(@Valid @RequestBody List<ProjectCheckForm> list){
         return projectService.midTermKeyProjectHitBack(list);

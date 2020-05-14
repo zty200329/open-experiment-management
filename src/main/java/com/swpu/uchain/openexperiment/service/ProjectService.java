@@ -254,6 +254,8 @@ public interface ProjectService {
 
     Result getIntermediateInspectionProject();
 
+    Result getMidTermReturnProject();
+
     Result agreeIntermediateInspectionProject(List<ProjectCheckForm> list);
 
     Result agreeToBeConcludingProject(List<ProjectCheckForm> list);
@@ -271,4 +273,6 @@ public interface ProjectService {
     Result changeKeyProjectToGeneral(List<ProjectCheckForm> formList);
 
     Result  midTermKeyProjectHitBack(List<ProjectCheckForm> list);
+
+
 }
