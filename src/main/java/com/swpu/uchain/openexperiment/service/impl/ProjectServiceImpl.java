@@ -1479,6 +1479,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Value(value = "${file.ip-address}")
     private String ipAddress;
 
+    /**
+     * 获取项目详情
+     * @param projectId
+     * @return
+     */
     @Override
     public Result getProjectGroupDetailVOByProjectId(Long projectId) {
         if (projectId == null) {
