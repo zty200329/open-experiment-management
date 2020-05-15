@@ -2,11 +2,14 @@ package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.UserType;
+import com.swpu.uchain.openexperiment.form.user.GetAllPermissions;
 import com.swpu.uchain.openexperiment.form.user.LoginForm;
 import com.swpu.uchain.openexperiment.form.user.UserUpdateForm;
 import com.swpu.uchain.openexperiment.result.Result;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -46,7 +49,12 @@ public interface UserService {
     Result login(String clientIp, LoginForm loginForm);
 
 
-
+    /**
+     * 获取用户权限
+     * @param getAllPermissions
+     * @return
+     */
+    Result getAllPermissions(GetAllPermissions getAllPermissions);
     /**
      * 发送验证码
      * @param clientIp

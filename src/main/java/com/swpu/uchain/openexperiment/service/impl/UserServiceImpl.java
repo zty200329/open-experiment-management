@@ -5,6 +5,7 @@ import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
 import com.swpu.uchain.openexperiment.domain.*;
+import com.swpu.uchain.openexperiment.form.user.GetAllPermissions;
 import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.JoinStatus;
@@ -163,7 +164,7 @@ public class UserServiceImpl implements UserService {
         if (!checkVerifyCode(clientIp, loginForm.getVerifyCode())){
             return Result.error(CodeMsg.VERIFY_CODE_ERROR);
         }
-        User user = getUserService.selectByUserCodeAndRole(loginForm.getUserCode(),6);
+        User user = getUserService.selectByUserCodeAndRole(loginForm.getUserCode(),loginForm.getRole());
 
         //验证用户密码及其角色是否存在
         if (user == null) {
@@ -196,6 +197,13 @@ public class UserServiceImpl implements UserService {
         redisService.delete(VerifyCodeKey.getByClientIp, clientIp);
         return Result.success(map);
     }
+
+    @Override
+    public Result getAllPermissions(GetAllPermissions getAllPermissions) {
+        List<Integer> roles = userRoleMapper.selectUserRolesById(Long.valueOf(getAllPermissions.getUserCode()));
+        return Result.success(roles);
+    }
+
     @Override
     public String sendVerifyCode(String clientIp) throws IOException {
         VerifyCode code = new VerifyCode();

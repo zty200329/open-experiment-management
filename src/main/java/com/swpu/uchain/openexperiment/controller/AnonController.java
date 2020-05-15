@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.form.user.GetAllPermissions;
 import com.swpu.uchain.openexperiment.form.user.LoginForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.UserService;
@@ -39,6 +40,12 @@ public class AnonController {
         return userService.login(ip,form);
     }
 
+    @ApiOperation("根据学号工号查看权限")
+    @PostMapping(value = "/getAllPermissions")
+    public Result getAllPermissions(@Valid@RequestBody GetAllPermissions getAllPermissions){
+        return userService.getAllPermissions(getAllPermissions);
+
+    }
     @ApiOperation("发送验证码接口")
     @GetMapping(value = "/sendVerifyCode", name = "发送验证码接口")
     public Object sendVerifyCode(HttpServletRequest request){
