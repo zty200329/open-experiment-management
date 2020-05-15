@@ -230,6 +230,8 @@ public interface ProjectService {
 
     Result approveProjectApplyBySecondaryUnit(List<ProjectCheckForm> list);
 
+    Result midTermReviewPassed(List<ProjectCheckForm> list);
+
     /**
      * 根据指定条件查询项目信息
      * @param form

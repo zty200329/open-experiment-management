@@ -471,6 +471,11 @@ public class ProjectServiceImpl implements ProjectService {
         return setProjectStatusAndRecord(list, OperationType.AGREE, OperationUnit.FUNCTIONAL_DEPARTMENT);
     }
 
+    /**
+     * 同意中期检查
+     * @param list
+     * @return
+     */
     @Override
     public Result agreeIntermediateInspectionProject(List<ProjectCheckForm> list) {
         return setProjectStatusAndRecord(list, OperationType.OFFLINE_CHECK, OperationUnit.FUNCTIONAL_DEPARTMENT);
@@ -880,6 +885,12 @@ public class ProjectServiceImpl implements ProjectService {
         }
         return approveProjectApply(list, RoleType.SECONDARY_UNIT.getValue());
     }
+
+    @Override
+    public Result midTermReviewPassed(List<ProjectCheckForm> list) {
+        return setProjectStatusAndRecord(list, OperationType.MIDTERM_REVIEW_PASSED, OperationUnit.FUNCTIONAL_DEPARTMENT);
+    }
+
 
     @Override
     public Result conditionallyQueryOfProject(QueryConditionForm form) {

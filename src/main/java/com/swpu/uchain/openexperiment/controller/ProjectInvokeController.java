@@ -139,11 +139,11 @@ public class ProjectInvokeController {
         return projectService.approveProjectApplyBySecondaryUnit(list);
     }
 
-
-    public Result MidTermReviewPassed(){
-        return null;
+    @ApiOperation("中期复核通过")
+    @PostMapping("/midTermReviewPassed")
+    public Result midTermReviewPassed(@RequestBody List<ProjectCheckForm> list){
+        return projectService.midTermReviewPassed(list);
     }
-
 
 //    @ApiOperation("资金报账(职能部门使用)")
 //    @PostMapping(value = "/appendCreateApply", name = "追加立项申请内容")
