@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
 import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
+import com.swpu.uchain.openexperiment.form.project.ProjectCheckForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.KeyProjectService;
@@ -129,6 +130,12 @@ public class KeyProjectInvokeController {
     @PostMapping(value = "/rejectToBeConcludingKeyProject")
     public Result rejectToBeConcludingKeyProject(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.rejectToBeConcludingKeyProject(list);
+    }
+
+    @ApiOperation("中期检查项目退回")
+    @PostMapping("/KeyProjectMidTermKeyProjectHitBack")
+    public Result midTermKeyProjectHitBack(@Valid @RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.midTermKeyProjectHitBack(list);
     }
 
 }

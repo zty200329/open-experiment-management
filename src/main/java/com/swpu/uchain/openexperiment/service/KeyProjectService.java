@@ -79,4 +79,11 @@ public interface KeyProjectService {
 
     Result rejectKeyProjectReportBySecondaryUnit(List<KeyProjectCheck> list);
 
+    /**
+     * 重点项目打回
+     * @param list
+     * @return
+     */
+    Result midTermKeyProjectHitBack(List<KeyProjectCheck> list);
+
 }

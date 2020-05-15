@@ -274,6 +274,11 @@ public interface ProjectService {
 
     Result changeKeyProjectToGeneral(List<ProjectCheckForm> formList);
 
+    /**
+     * 中期打回修改
+     * @param list
+     * @return
+     */
     Result  midTermKeyProjectHitBack(List<ProjectCheckForm> list);
 
 

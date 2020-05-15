@@ -235,6 +235,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             }
         }
 
+        if(operationType == OperationType.OFFLINE_CHECK_REJECT){
+            if((roleType==RoleType.FUNCTIONAL_DEPARTMENT||roleType == RoleType.FUNCTIONAL_DEPARTMENT_LEADER)){
+                return ProjectStatus.ESTABLISH_FAILED;
+            }
+        }
         switch (roleType.getValue()){
             //如果是指导老师
             case 3:
@@ -379,6 +384,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR, OperationType.REPORT,list);
     }
 
+    /**
+     * 拒绝中期检查项目
+     * @param list
+     * @return
+     */
     @Override
     public Result rejectIntermediateInspectionKeyProject(List<KeyProjectCheck> list) {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.OFFLINE_CHECK_REJECT,list);
@@ -490,6 +500,16 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result rejectKeyProjectReportBySecondaryUnit(List<KeyProjectCheck> list) {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT, OperationType.REPORT_REJECT,list);
+    }
+
+    /**
+     * 中期退回
+     * @param list
+     * @return
+     */
+    @Override
+    public Result midTermKeyProjectHitBack(List<KeyProjectCheck> list) {
+        return null;
     }
 
     @Override
