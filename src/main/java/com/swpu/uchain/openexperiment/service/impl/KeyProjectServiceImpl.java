@@ -235,9 +235,17 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             }
         }
 
+        //如果职能部门中期检查不合格则立项失败
         if(operationType == OperationType.OFFLINE_CHECK_REJECT){
             if((roleType==RoleType.FUNCTIONAL_DEPARTMENT||roleType == RoleType.FUNCTIONAL_DEPARTMENT_LEADER)){
                 return ProjectStatus.ESTABLISH_FAILED;
+            }
+        }
+
+        //如果职能部门中期检查不合格则立项失败
+        if(operationType == OperationType.INTERIM_RETURN){
+            if((roleType==RoleType.FUNCTIONAL_DEPARTMENT||roleType == RoleType.FUNCTIONAL_DEPARTMENT_LEADER)){
+                return ProjectStatus.INTERIM_RETURN_MODIFICATION;
             }
         }
         switch (roleType.getValue()){
@@ -509,7 +517,12 @@ public class KeyProjectServiceImpl implements KeyProjectService {
      */
     @Override
     public Result midTermKeyProjectHitBack(List<KeyProjectCheck> list) {
-        return null;
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.INTERIM_RETURN,list);
+    }
+
+    @Override
+    public Result getMidTermReturnProject() {
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.INTERIM_RETURN_MODIFICATION,null);
     }
 
     @Override

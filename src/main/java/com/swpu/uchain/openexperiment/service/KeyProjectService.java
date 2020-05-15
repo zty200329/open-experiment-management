@@ -73,6 +73,11 @@ public interface KeyProjectService {
 
     Result agreeToBeConcludingKeyProject(List<KeyProjectCheck> list);
 
+    /**
+     * 中期拒绝
+     * @param list
+     * @return
+     */
     Result rejectIntermediateInspectionKeyProject(List<KeyProjectCheck> list);
 
     Result rejectToBeConcludingKeyProject(List<KeyProjectCheck> list);
@@ -86,4 +91,9 @@ public interface KeyProjectService {
      */
     Result midTermKeyProjectHitBack(List<KeyProjectCheck> list);
 
+    /**
+     * 查看打回的列表
+     * @return
+     */
+    Result getMidTermReturnProject();
 }

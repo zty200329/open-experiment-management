@@ -93,5 +93,10 @@ public class KeyProjectQueryController {
         return keyProjectService.conditionallyQueryOfKeyProject(form);
     }
 
+    @ApiOperation("查看中期打回的重点项目列表")
+    @PostMapping("/getKeyProjectMidTermReturnProject")
+    public Result getMidTermReturnProject(){
+        return keyProjectService.getMidTermReturnProject();
+    }
 
 }
