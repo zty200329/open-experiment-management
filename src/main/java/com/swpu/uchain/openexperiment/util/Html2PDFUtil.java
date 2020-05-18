@@ -12,9 +12,10 @@ import com.lowagie.text.pdf.BaseFont;
 
 public class Html2PDFUtil {
 
+    //
     public static void main(String[] args) {
-        convertHtml2PDF("/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/pdf_temp_dir/94_立项申请主要内容.html",
-                "/home/panghu/桌面/IdeaProjects/OpenExperiment/src/main/resources/apply_dir_2/96_立项申请主要内容.pdf");
+        convertHtml2PDF("/home/zty/open-experiment-management-system/apply_dir_2/5_立项申请主要内容.html",
+                "/home/zty/open-experiment-management-system/apply_dir_2/454515154_立项申请主要内容.pdf");
     }
 
     public static void convertHtml2PDF(String htmlPath,String pdfPath) {
@@ -41,7 +42,7 @@ public class Html2PDFUtil {
             // 实际项目中，可以获取改字体所在真实的服务器的路径,这个方法是本地地址和网络地址都支持的
             // 这里面添加的是宋体
 //            fontResolver.addFont("/usr/share/fonts/chinese/simsun.ttc",
-            fontResolver.addFont("/home/zty/open-experiment-management-system//simsun.ttc",
+            fontResolver.addFont("/home/zty/open-experiment-management-system/simsun.ttc",
                     BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
 

@@ -487,6 +487,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
+    /**
+     * 复核通过
+     * @param list
+     * @param operationType
+     * @param operationUnit
+     * @return
+     */
     private Result setProjectStatusAndRecord(List<ProjectCheckForm> list, OperationType operationType, OperationUnit operationUnit) {
         List<OperationRecord> operationRecordS = new LinkedList<>();
         for (ProjectCheckForm projectCheckForm : list) {

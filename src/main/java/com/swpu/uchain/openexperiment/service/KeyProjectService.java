@@ -96,4 +96,11 @@ public interface KeyProjectService {
      * @return
      */
     Result getMidTermReturnProject();
+
+    /**
+     * 中期复核通过
+     * @param list
+     * @return
+     */
+    Result midTermReviewPassed(List<KeyProjectCheck> list);
 }

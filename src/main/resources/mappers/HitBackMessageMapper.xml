@@ -37,6 +37,7 @@
     select id, receive_user_id, sender, content, send_time, is_read
     from hit_back_message
     where receive_user_id = #{receiveUserId,jdbcType=BIGINT}
+    order by id desc
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select id, receive_user_id, sender, content, send_time, is_read

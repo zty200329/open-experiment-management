@@ -8,6 +8,7 @@ import com.swpu.uchain.openexperiment.VO.limit.AmountAndTypeVO;
 import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.form.amount.AmountAndType;
+import com.swpu.uchain.openexperiment.form.project.ProjectCheckForm;
 import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
@@ -49,6 +50,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private AmountLimitMapper amountLimitMapper;
     private ProjectFileMapper projectFileMapper;
     private UserRoleService userRoleService;
+    private HitBackMessageMapper hitBackMessageMapper;
 
 
     @Autowired
@@ -56,7 +58,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                                  KeyProjectStatusMapper keyProjectStatusMapper,GetUserService getUserService,
                                  OperationRecordMapper operationRecordMapper,TimeLimitService timeLimitService,
                                  AmountLimitMapper amountLimitMapper,ProjectFileMapper projectFileMapper,
-                                 UserRoleService userRoleService) {
+                                 UserRoleService userRoleService,HitBackMessageMapper hitBackMessageMapper) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
@@ -66,6 +68,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         this.amountLimitMapper = amountLimitMapper;
         this.projectFileMapper = projectFileMapper;
         this.userRoleService = userRoleService;
+        this.hitBackMessageMapper = hitBackMessageMapper;
     }
 
 
@@ -297,6 +300,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         List<OperationRecord> operationRecordList = new LinkedList<>();
         List<Long> idList = new LinkedList<>();
         for (KeyProjectCheck check:list) {
+            ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(check.getProjectId());
             UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(check.getProjectId(), Long.valueOf(user.getCode()));
 
             //验证属于该项目并且是该项目的指导教师
@@ -323,6 +327,17 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             operationRecordList.add(operationRecord);
 
             idList.add(check.getProjectId());
+            if(operationType == OperationType.INTERIM_RETURN){
+                //发送消息
+                HitBackMessage hitBackMessage = new HitBackMessage();
+                hitBackMessage.setReceiveUserId(userProjectGroupMapper.getProjectLeader(check.getProjectId(),MemberRole.PROJECT_GROUP_LEADER.getValue()).getUserId());
+                hitBackMessage.setContent("项目名:"+projectGroup.getProjectName()+"  意见:"+check.getReason());
+                hitBackMessage.setSender(user.getRealName());
+                Date date = new Date();
+                hitBackMessage.setSendTime(date);
+                hitBackMessage.setIsRead(false);
+                hitBackMessageMapper.insert(hitBackMessage);
+            }
         }
         if (operationType == OperationType.REJECT ) {
             if (roleType == RoleType.LAB_ADMINISTRATOR || roleType == RoleType.MENTOR) {
@@ -523,6 +538,16 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result getMidTermReturnProject() {
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.INTERIM_RETURN_MODIFICATION,null);
+    }
+
+    /**
+     * 中期重点复核通过
+     * @param list
+     * @return
+     */
+    @Override
+    public Result midTermReviewPassed(List<KeyProjectCheck> list) {
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.MIDTERM_REVIEW_PASSED,list);
     }
 
     @Override

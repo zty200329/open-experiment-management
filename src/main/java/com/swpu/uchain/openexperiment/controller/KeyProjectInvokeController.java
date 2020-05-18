@@ -138,4 +138,10 @@ public class KeyProjectInvokeController {
         return keyProjectService.midTermKeyProjectHitBack(list);
     }
 
+    @ApiOperation("重点项目中期复核通过")
+    @PostMapping("/KeyProjectMidTermReviewPassed")
+    public Result midTermReviewPassed(@RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.midTermReviewPassed(list);
+    }
+
 }
