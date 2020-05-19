@@ -70,6 +70,14 @@ public interface ProjectService {
     Result applyCreateProject(CreateProjectApplyForm form);
 
     /**
+     * 职能部门内定项目(暂时为普通)
+     * @param form
+     * @return
+     */
+    Result FunctionCreateCommonApply(FunctionCreateProjectApplyForm form);
+
+
+    /**
      * 更新项目组信息
      *
      * @param updateProjectApplyForm

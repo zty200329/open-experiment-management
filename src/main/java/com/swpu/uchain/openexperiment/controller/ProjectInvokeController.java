@@ -48,6 +48,12 @@ public class ProjectInvokeController {
         return projectService.applyCreateProject(form);
     }
 
+    @ApiOperation("职能部门内定")
+    @PostMapping("/FunctionCreateCommonApply")
+    public Result FunctionCreateCommonApply(@Valid FunctionCreateProjectApplyForm functionCreateProjectApplyForm){
+        return projectService.FunctionCreateCommonApply(functionCreateProjectApplyForm);
+    }
+
     @ApiOperation("修改立项申请")
     @PostMapping(value = "/updateApply", name = "修改立项申请")
     public Result updateApply(@Valid @RequestBody UpdateProjectApplyForm updateProjectApplyForm){

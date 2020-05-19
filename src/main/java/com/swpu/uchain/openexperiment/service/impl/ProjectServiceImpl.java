@@ -270,6 +270,23 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success();
     }
 
+    /**
+     * 职能部门内定 同指导教师相似
+     * @param form
+     * @return
+     */
+    @Override
+    public Result FunctionCreateCommonApply(FunctionCreateProjectApplyForm form) {
+        //时间限制省略
+
+        //验证人数限制
+        if (form.getFitPeopleNum() > 6 || form.getFitPeopleNum() < 2 ) {
+            throw new GlobalException(CodeMsg.FIT_PEOPLE_ERROR);
+        }
+
+        return null;
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm) {

@@ -64,13 +64,15 @@ public class FunctionCreateProjectApplyForm {
     @ApiModelProperty("是否开放选题  1.是,2否,3,开放部分")
     private Integer isOpenTopic;
 
-    @ApiModelProperty("指导老师编号--选填")
+    @ApiModelProperty("指导老师编号--必填")
+    @NotNull(message = "指导教师编号不能为空")
     private String TeacherCodes;
 
-    @ApiModelProperty("指导老师编号--选填")
+    @ApiModelProperty("第二指导老师编号--选填")
     private String anotherTeacherCodes;
 
     @ApiModelProperty("学生编号--选填,如果开放选题选择否则不能添加学生")
+    @NotNull(message = "参加学生不能为空模糊")
     private String[] stuCodes;
 
     @ApiModelProperty("限选专业--选填")
