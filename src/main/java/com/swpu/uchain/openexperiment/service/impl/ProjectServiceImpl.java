@@ -73,7 +73,7 @@ public class ProjectServiceImpl implements ProjectService {
                               RoleMapper roleMapper, AmountLimitMapper amountLimitMapper,
                               UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper,
                               KeyProjectStatusMapper keyProjectStatusMapper, ProjectFileMapper projectFileMapper,
-                              TimeLimitService timeLimitService,UserRoleService userRoleService,HitBackMessageMapper hitBackMessageMapper) {
+                              TimeLimitService timeLimitService, UserRoleService userRoleService, HitBackMessageMapper hitBackMessageMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -149,8 +149,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 指导教师填写申请立项书
-     *
+     * <p>
      * 提交
+     *
      * @param form 申请立项表单
      * @return 申请立项操作结果
      */
@@ -161,7 +162,7 @@ public class ProjectServiceImpl implements ProjectService {
         timeLimitService.validTime(TimeLimitType.DECLARE_LIMIT);
 
         //验证人数限制
-        if (form.getFitPeopleNum() > 6 || form.getFitPeopleNum() < 2 ) {
+        if (form.getFitPeopleNum() > 6 || form.getFitPeopleNum() < 2) {
             throw new GlobalException(CodeMsg.FIT_PEOPLE_ERROR);
         }
 
@@ -191,7 +192,7 @@ public class ProjectServiceImpl implements ProjectService {
             Date endTime;
             if (form.getProjectType().equals(ProjectType.GENERAL.getValue())) {
                 endTime = dateFormat.parse("2020-06-01");
-            }else {
+            } else {
                 endTime = dateFormat.parse("2020-11-01");
             }
             form.setEndTime(endTime);
@@ -229,7 +230,7 @@ public class ProjectServiceImpl implements ProjectService {
         //设置项目创建编号
         String maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(college);
         //计算编号并在数据库中插入编号
-        projectGroupMapper.updateProjectTempSerialNumber(projectGroup.getId(), SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.GENERAL.getValue(), maxTempSerialNumber));
+        projectGroupMapper.updateProjectTempSerialNumber(projectGroup.getId(), SerialNumberUtil.getSerialNumberOfProject(college, form.getProjectType(), maxTempSerialNumber));
 
 
         String[] teacherArray = new String[1];
@@ -272,6 +273,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 职能部门内定 同指导教师相似
+     *
      * @param form
      * @return
      */
@@ -280,11 +282,91 @@ public class ProjectServiceImpl implements ProjectService {
         //时间限制省略
 
         //验证人数限制
-        if (form.getFitPeopleNum() > 6 || form.getFitPeopleNum() < 2 ) {
+        if (form.getFitPeopleNum() > 6 || form.getFitPeopleNum() < 2) {
             throw new GlobalException(CodeMsg.FIT_PEOPLE_ERROR);
         }
 
-        return null;
+        User currentUser = getUserService.getCurrentUser();
+
+        //学院不验证
+
+        //上限不验证
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        //固定时间
+        try {
+            Date startTime = dateFormat.parse("2019-12-05");
+            form.setStartTime(startTime);
+            Date endTime;
+            if (form.getProjectType().equals(ProjectType.GENERAL.getValue())) {
+                endTime = dateFormat.parse("2020-06-01");
+            } else {
+                endTime = dateFormat.parse("2020-11-01");
+            }
+            form.setEndTime(endTime);
+        } catch (ParseException e) {
+            throw new GlobalException(CodeMsg.TIME_DEFINE_ERROR);
+        }
+
+        //判断用户类型 判断是否为职能部门或职能部门领导
+        if (!userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT) &&
+                !userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT_LEADER)) {
+            throw new GlobalException(CodeMsg.DOES_NOT_HAVE_DEFAULT_PROJECT_PERMISSIONS);
+        }
+
+        //时间设置出错
+        if (form.getStartTime().getTime() >= form.getEndTime().getTime()) {
+            throw new GlobalException(CodeMsg.TIME_DEFINE_ERROR);
+        }
+        ProjectGroup projectGroup = new ProjectGroup();
+        BeanUtils.copyProperties(form, projectGroup);
+        projectGroup.setStatus(ProjectStatus.ESTABLISH.getValue());
+        //强行关闭
+        projectGroup.setIsOpenTopic(2);
+
+        //设置申请人
+        projectGroup.setCreatorId(Long.valueOf(currentUser.getCode()));
+        projectGroup.setSubordinateCollege(form.getSubordinateCollege());
+        //插入数据
+        Result result = addProjectGroup(projectGroup);
+        if (result.getCode() != 0) {
+            throw new GlobalException(CodeMsg.ADD_PROJECT_GROUP_ERROR);
+        }
+        if(form.getProjectType() == 2){
+            keyProjectStatusMapper.insert(projectGroup.getId(), ProjectStatus.ESTABLISH.getValue(),
+                    projectGroup.getSubordinateCollege(), Long.valueOf(currentUser.getCode()));
+        }
+        String itemNumber = form.getItemNumber();
+        projectGroupMapper.updateProjectTempSerialNumber(projectGroup.getId(),itemNumber);
+
+        String[] teacherArray = new String[1];
+        teacherArray[0] = form.getTeacherCodes();
+        String secondTeacherCode = form.getAnotherTeacherCodes();
+        if (secondTeacherCode != null) {
+            teacherArray = new String[2];
+            teacherArray[0] = form.getTeacherCodes();
+            teacherArray[1] = secondTeacherCode;
+            //判定用户是否存在
+            if (userMapper.selectByUserCode(secondTeacherCode) == null) {
+                throw new GlobalException(CodeMsg.ADD_TEACHER_NOT_EXIST);
+            }
+        }
+
+        String[] stuCodes = form.getStuCodes();
+        //判定数量
+        if (stuCodes != null && stuCodes.length > form.getFitPeopleNum()) {
+            throw new GlobalException(CodeMsg.FIT_PEOPLE_LIMIT_ERROR);
+        }
+        userProjectService.addStuAndTeacherJoin(stuCodes, teacherArray, projectGroup.getId());
+
+        //记录申请信息
+        OperationRecord operationRecord = new OperationRecord();
+        operationRecord.setRelatedId(projectGroup.getId());
+        operationRecord.setOperationType(OperationType.AGREE.getValue());
+        operationRecord.setOperationUnit(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue());
+        operationRecord.setOperationExecutorId(Long.valueOf(currentUser.getCode()));
+        recordMapper.insert(operationRecord);
+        return Result.success();
     }
 
     @Override
@@ -305,7 +387,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         //状态不是申报或者退回修改不允许修改
         if (!(projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) ||
-                projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()) )) {
+                projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()))) {
             return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
         }
         //修改的话将状态修改为申报状态
@@ -321,7 +403,7 @@ public class ProjectServiceImpl implements ProjectService {
             Date endTime;
             if (updateProjectApplyForm.getProjectType().equals(ProjectType.GENERAL.getValue())) {
                 endTime = dateFormat.parse("2020-06-01");
-            }else {
+            } else {
                 endTime = dateFormat.parse("2020-11-01");
             }
             updateProjectApplyForm.setEndTime(endTime);
@@ -344,7 +426,7 @@ public class ProjectServiceImpl implements ProjectService {
         setOperationExecutor(operationRecord);
 
         //修改项目状态
-        projectGroupMapper.updateProjectStatus(projectGroup.getId(),ProjectStatus.DECLARE.getValue());
+        projectGroupMapper.updateProjectStatus(projectGroup.getId(), ProjectStatus.DECLARE.getValue());
 
         recordMapper.insert(operationRecord);
         return Result.success();
@@ -389,7 +471,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectDetails.setCreator(new UserMemberVO(
                 Long.valueOf(user.getCode()),
                 user.getRealName(),
-                userProjectGroup.getMemberRole(),null,null));
+                userProjectGroup.getMemberRole(), null, null));
         //设置项目的成员信息
         List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(projectGroup.getId());
         List<UserMemberVO> members = new ArrayList<>();
@@ -400,7 +482,7 @@ public class ProjectServiceImpl implements ProjectService {
                 projectDetails.setLeader(new UserMemberVO(
                         member.getId(),
                         member.getRealName(),
-                        userProject.getMemberRole(),null,null));
+                        userProject.getMemberRole(), null, null));
             }
             UserMemberVO userMemberVO = new UserMemberVO();
             userMemberVO.setUserId(member.getId());
@@ -439,7 +521,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
 
             //数量限制
-            Integer amountOfSelected = userProjectGroupMapper.selectStuCount(projectGroup.getId(),JoinStatus.JOINED.getValue());
+            Integer amountOfSelected = userProjectGroupMapper.selectStuCount(projectGroup.getId(), JoinStatus.JOINED.getValue());
             if (amountOfSelected >= projectGroup.getFitPeopleNum()) {
                 throw new GlobalException(CodeMsg.PROJECT_USER_MAX_ERROR);
             }
@@ -490,6 +572,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 同意中期检查
+     *
      * @param list
      * @return
      */
@@ -506,6 +589,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 复核通过
+     *
      * @param list
      * @param operationType
      * @param operationUnit
@@ -625,6 +709,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 职能部门获取待结题项目
+     *
      * @return
      */
     @Override
@@ -663,7 +748,7 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
         }
         //获取待上报的普通项目
-        List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus, ProjectType.GENERAL.getValue(),currentUser.getInstitute());
+        List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(projectStatus, ProjectType.GENERAL.getValue(), currentUser.getInstitute());
         for (CheckProjectVO checkProjectVO : checkProjectVOs) {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
             List<UserMemberVO> guidanceTeachers = new ArrayList<>();
@@ -679,7 +764,7 @@ public class ProjectServiceImpl implements ProjectService {
                 }
             }
             checkProjectVO.setGuidanceTeachers(guidanceTeachers);
-            checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(checkProjectVO.getId(),JoinStatus.JOINED.getValue()));
+            checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(checkProjectVO.getId(), JoinStatus.JOINED.getValue()));
         }
         return Result.success(checkProjectVOs);
     }
@@ -694,7 +779,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         User currentUser = getUserService.getCurrentUser();
 
-        List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(status, projectType,currentUser.getInstitute());
+        List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(status, projectType, currentUser.getInstitute());
         for (CheckProjectVO checkProjectVO : checkProjectVOs) {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
             checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(checkProjectVO.getId(), null));
@@ -737,8 +822,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 验证项目状态
+     *
      * @param projectIdList
-     * @param status 正确的项目状态
+     * @param status        正确的项目状态
      * @return
      */
     private boolean checkProjectStatus(List<Long> projectIdList, Integer status) {
@@ -810,8 +896,8 @@ public class ProjectServiceImpl implements ProjectService {
         for (ProjectCheckForm form : formList
         ) {
             //验证项目成员数量限制
-            Integer amount = userProjectGroupMapper.selectStuCount(form.getProjectId(),JoinStatus.JOINED.getValue());
-            if (amount < 3 || amount > 6){
+            Integer amount = userProjectGroupMapper.selectStuCount(form.getProjectId(), JoinStatus.JOINED.getValue());
+            if (amount < 3 || amount > 6) {
                 throw new GlobalException(CodeMsg.PROJECT_FIT_PEOPLE_ERROR);
             }
 
@@ -825,7 +911,7 @@ public class ProjectServiceImpl implements ProjectService {
 
             list.add(operationRecord);
 
-            projectGroupMapper.updateProjectStatus(form.getProjectId(),ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
+            projectGroupMapper.updateProjectStatus(form.getProjectId(), ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
         }
         //存储上报记录信息
         recordMapper.multiInsert(list);
@@ -849,7 +935,6 @@ public class ProjectServiceImpl implements ProjectService {
             //计算编号并在数据库中插入编号
             projectGroupMapper.updateProjectSerialNumber(id, SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.GENERAL.getValue(), serialNumber));
         }
-
 
 
         AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(college, ProjectType.GENERAL.getValue(), RoleType.SECONDARY_UNIT.getValue());
@@ -934,35 +1019,35 @@ public class ProjectServiceImpl implements ProjectService {
 
         //判断是否为已通过的  筛选出大于当前状态的
         if (info.getOperationType().equals(OperationType.AGREE.getValue())
-            || info.getOperationType().equals(OperationType.REPORT.getValue())) {
+                || info.getOperationType().equals(OperationType.REPORT.getValue())) {
             //排除立项失败的
             Integer status = 0;
             if (info.getOperationUnit().equals(OperationUnit.LAB_ADMINISTRATOR.getValue())) {
                 if (info.getOperationType().equals(OperationType.AGREE.getValue())) {
                     status = ProjectStatus.LAB_ALLOWED.getValue();
-                }else {
+                } else {
                     status = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
                 }
-            }else if (info.getOperationUnit().equals(OperationUnit.SECONDARY_UNIT.getValue())) {
+            } else if (info.getOperationUnit().equals(OperationUnit.SECONDARY_UNIT.getValue())) {
                 if (info.getOperationType().equals(OperationType.AGREE.getValue())) {
                     status = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
-                }else {
+                } else {
                     status = ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue();
                 }
-            }else if (info.getOperationUnit().equals(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue())) {
+            } else if (info.getOperationUnit().equals(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue())) {
                 college = null;
                 //职能部门获取已经通过的，只要是立项的即可，驳回的状态为-3，会被直接筛选掉
                 status = ProjectStatus.ESTABLISH.getValue();
             }
-            list =projectGroupMapper.selectGeneralPassedProjectList(college,status);
-        }else {
-            list  = projectGroupMapper.selectGeneralRejectedProjectList(college);
+            list = projectGroupMapper.selectGeneralPassedProjectList(college, status);
+        } else {
+            list = projectGroupMapper.selectGeneralRejectedProjectList(college);
         }
 
         for (ProjectGroup projectGroup : list
         ) {
-            projectGroup.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(projectGroup.getId(),JoinStatus.JOINED.getValue()));
-            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(), projectGroup.getId(),JoinStatus.JOINED.getValue()));
+            projectGroup.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(projectGroup.getId(), JoinStatus.JOINED.getValue()));
+            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(), projectGroup.getId(), JoinStatus.JOINED.getValue()));
         }
         return Result.success(list);
     }
@@ -993,7 +1078,7 @@ public class ProjectServiceImpl implements ProjectService {
         ) {
             Long id = projectGroup.getId();
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(id, null));
-            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null, id,JoinStatus.JOINED.getValue()));
+            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null, id, JoinStatus.JOINED.getValue()));
         }
         return Result.success(list);
     }
@@ -1080,6 +1165,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 有报错
+     *
      * @return
      */
     @Override
@@ -1087,11 +1173,11 @@ public class ProjectServiceImpl implements ProjectService {
         //筛选  学生如果不在要求的时间内，项目不显示
         User currentUser = getUserService.getCurrentUser();
         Integer college = currentUser.getInstitute();
-        TimeLimit timeLimit = timeLimitService.getTimeLimitByTypeAndCollege(TimeLimitType.JOIN_APPLY_LIMIT,college);
+        TimeLimit timeLimit = timeLimitService.getTimeLimitByTypeAndCollege(TimeLimitType.JOIN_APPLY_LIMIT, college);
         //不在时间范围内
         if (timeLimit.getEndTime().before(new Date()) || timeLimit.getStartTime().after(new Date())) {
             //身份为学生，不可见
-            if (userRoleService.validContainsUserRole(RoleType.NORMAL_STU)){
+            if (userRoleService.validContainsUserRole(RoleType.NORMAL_STU)) {
                 return Result.success();
             }
         }
@@ -1099,7 +1185,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<OpenTopicInfo> list = projectGroupMapper.getAllOpenTopic(null);
         for (OpenTopicInfo info : list
         ) {
-            info.setAmountOfSelected(userProjectGroupMapper.selectStuCount(info.getId(),JoinStatus.JOINED.getValue()));
+            info.setAmountOfSelected(userProjectGroupMapper.selectStuCount(info.getId(), JoinStatus.JOINED.getValue()));
         }
         return Result.success(list);
     }
@@ -1180,6 +1266,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 添加学生到项目组
+     *
      * @param joinForm
      * @return
      */
@@ -1219,7 +1306,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         //不得超过最大数量限制
-        Integer amount = userProjectGroupMapper.selectStuCount(joinForm.getProjectGroupId(),JoinStatus.JOINED.getValue());
+        Integer amount = userProjectGroupMapper.selectStuCount(joinForm.getProjectGroupId(), JoinStatus.JOINED.getValue());
 
         //数量限制判断
         if (projectGroup.getFitPeopleNum() <= amount) {
@@ -1247,7 +1334,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         //验证人数限制
-        Integer amount = userProjectGroupMapper.selectStuCount(joinForm.getProjectGroupId(),JoinStatus.JOINED.getValue());
+        Integer amount = userProjectGroupMapper.selectStuCount(joinForm.getProjectGroupId(), JoinStatus.JOINED.getValue());
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(joinForm.getProjectGroupId());
         if (amount <= projectGroup.getFitPeopleNum()) {
             throw new GlobalException(CodeMsg.FIT_PEOPLE_LIMIT_ERROR);
@@ -1349,7 +1436,7 @@ public class ProjectServiceImpl implements ProjectService {
             //修改状态
             updateProjectStatus(form.getProjectId(), ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue());
 
-            projectGroupMapper.updateProjectType(form.getProjectId(),ProjectType.GENERAL.getValue());
+            projectGroupMapper.updateProjectType(form.getProjectId(), ProjectType.GENERAL.getValue());
 
             list.add(operationRecord);
         }
@@ -1359,22 +1446,23 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 中期打回
+     *
      * @param list
      * @return
      */
     @Override
     public Result midTermKeyProjectHitBack(List<ProjectCheckForm> list) {
-        return ProjectHitBack(list,OperationUnit.FUNCTIONAL_DEPARTMENT,OperationType.INTERIM_RETURN);
+        return ProjectHitBack(list, OperationUnit.FUNCTIONAL_DEPARTMENT, OperationType.INTERIM_RETURN);
     }
 
     @Transactional(rollbackFor = GlobalException.class)
-    public Result ProjectHitBack(List<ProjectCheckForm> formList, OperationUnit operationUnit, OperationType operationType){
+    public Result ProjectHitBack(List<ProjectCheckForm> formList, OperationUnit operationUnit, OperationType operationType) {
         User user = getUserService.getCurrentUser();
         List<OperationRecord> list = new LinkedList<>();
-        for(ProjectCheckForm form : formList){
+        for (ProjectCheckForm form : formList) {
             ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(form.getProjectId());
             Integer status = projectGroup.getStatus();
-            if(!status.equals(ProjectStatus.ESTABLISH.getValue())){
+            if (!status.equals(ProjectStatus.ESTABLISH.getValue())) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
             //批量插入数据
@@ -1386,13 +1474,13 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecord.setOperationType(operationType.getValue());
             operationRecord.setOperationCollege(user.getInstitute());
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
-            updateProjectStatus(form.getProjectId(),ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue());
+            updateProjectStatus(form.getProjectId(), ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue());
             list.add(operationRecord);
 
             //发送消息
             HitBackMessage hitBackMessage = new HitBackMessage();
-            hitBackMessage.setReceiveUserId(userProjectGroupMapper.getProjectLeader(form.getProjectId(),MemberRole.PROJECT_GROUP_LEADER.getValue()).getUserId());
-            hitBackMessage.setContent("项目名:"+projectGroup.getProjectName()+"  意见:"+form.getReason());
+            hitBackMessage.setReceiveUserId(userProjectGroupMapper.getProjectLeader(form.getProjectId(), MemberRole.PROJECT_GROUP_LEADER.getValue()).getUserId());
+            hitBackMessage.setContent("项目名:" + projectGroup.getProjectName() + "  意见:" + form.getReason());
             hitBackMessage.setSender(user.getRealName());
             Date date = new Date();
             hitBackMessage.setSendTime(date);
@@ -1468,7 +1556,7 @@ public class ProjectServiceImpl implements ProjectService {
             /**
              * 有改动 可能存在bug
              */
-            if (!rightProjectStatus.equals(status) && operationUnit!= OperationUnit.LAB_ADMINISTRATOR && operationUnit!= OperationUnit.FUNCTIONAL_DEPARTMENT) {
+            if (!rightProjectStatus.equals(status) && operationUnit != OperationUnit.LAB_ADMINISTRATOR && operationUnit != OperationUnit.FUNCTIONAL_DEPARTMENT) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
             //批量插入数据
@@ -1481,10 +1569,10 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecord.setOperationCollege(user.getInstitute());
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
             //修改状态
-            if (operationUnit == OperationUnit.LAB_ADMINISTRATOR  ||
-                operationUnit == OperationUnit.MENTOR) {
+            if (operationUnit == OperationUnit.LAB_ADMINISTRATOR ||
+                    operationUnit == OperationUnit.MENTOR) {
                 updateProjectStatus(form.getProjectId(), ProjectStatus.REJECT_MODIFY.getValue());
-            }else {
+            } else {
                 updateProjectStatus(form.getProjectId(), ProjectStatus.ESTABLISH_FAILED.getValue());
             }
             list.add(operationRecord);
@@ -1505,6 +1593,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 获取项目详情
+     *
      * @param projectId
      * @return
      */
@@ -1535,7 +1624,7 @@ public class ProjectServiceImpl implements ProjectService {
         Long currentUserId = Long.valueOf(currentUser.getCode());
         if (userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectId, currentUserId) == null
                 || !userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectId, currentUserId).getMemberRole()
-                .equals(MemberRole.GUIDANCE_TEACHER.getValue()) ) {
+                .equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
         }
         UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectId, userId);

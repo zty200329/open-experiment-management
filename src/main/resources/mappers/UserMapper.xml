@@ -109,6 +109,7 @@
       and user_project_group.status = 2
   </select>
 <!--    到时要分表-->
+<!--    别吧 我不行啊-->
   <select id="selectByRandom" resultMap="BaseResultMap">
     select u_stu.id, code, real_name, institute, major, email, fix_phone, id_card, mobile_phone, password, qq_num, sex, user_type, grade, work_unit, class_num from openexperiment.u_stu
     inner join openexperiment.user_role on code = user_role.user_id

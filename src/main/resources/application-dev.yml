@@ -25,6 +25,7 @@ upload:
 file:
   ip-address: "http://192.168.43.153:8083"
 
+
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

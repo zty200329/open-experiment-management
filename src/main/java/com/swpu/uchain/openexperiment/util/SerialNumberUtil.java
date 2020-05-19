@@ -40,17 +40,21 @@ public class SerialNumberUtil {
         }else {
             projectTypeValue = "KSP";
         }
+        int lastYear = Integer.parseInt(maxSerialNumber.substring(0,4));
         int index = 1;
         //验证非空
         if (maxSerialNumber != null && !"".equals(maxSerialNumber)){
-            index = Integer.parseInt(maxSerialNumber.substring(maxSerialNumber.length()-3)) + 1;
+            //如果年份不一样又要重1来
+            if(year==lastYear) {
+                index = Integer.parseInt(maxSerialNumber.substring(maxSerialNumber.length() - 3)) + 1;
+            }
         }
         serialNumber = year+projectTypeValue+String.format("%02d", college)+String.format("%03d", index);
         return serialNumber;
     }
 
     public static void main(String[] args) {
-        String number = getSerialNumberOfProject(CollegeType.MARXISM_COLLEGE.getValue(),ProjectType.KEY.getValue(),"2019KSZ01034");
+        String number = getSerialNumberOfProject(CollegeType.ELECTRICAL_INFORMATION_COLLEGE.getValue(),ProjectType.GENERAL.getValue(),"2019KSZ07079");
         System.err.println(number);
     }
 }
