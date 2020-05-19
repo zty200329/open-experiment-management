@@ -50,7 +50,7 @@ public class ProjectInvokeController {
 
     @ApiOperation("职能部门内定")
     @PostMapping("/FunctionCreateCommonApply")
-    public Result FunctionCreateCommonApply(@Valid FunctionCreateProjectApplyForm functionCreateProjectApplyForm){
+    public Result FunctionCreateCommonApply(@Valid @RequestBody FunctionCreateProjectApplyForm functionCreateProjectApplyForm){
         return projectService.FunctionCreateCommonApply(functionCreateProjectApplyForm);
     }
 

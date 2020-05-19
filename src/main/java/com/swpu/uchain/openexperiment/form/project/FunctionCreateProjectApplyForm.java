@@ -80,7 +80,7 @@ public class FunctionCreateProjectApplyForm {
     private String itemNumber;
 
     @ApiModelProperty("学生编号--选填,如果开放选题选择否则不能添加学生")
-    @NotNull(message = "参加学生不能为空模糊")
+    @NotNull(message = "参加学生不能为空")
     private String[] stuCodes;
 
     @ApiModelProperty("限选专业--选填")
