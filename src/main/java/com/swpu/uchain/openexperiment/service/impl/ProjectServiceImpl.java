@@ -147,6 +147,10 @@ public class ProjectServiceImpl implements ProjectService {
         return projectGroupMapper.selectByUserIdAndStatus(userId, projectStatus, joinStatus);
     }
 
+    private List<CheckProjectVO> selectFunctionCreateCommonApply(){
+        return projectGroupMapper.selectFunctionCreateCommonApply();
+    }
+
     /**
      * 指导教师填写申请立项书
      * <p>
@@ -717,9 +721,55 @@ public class ProjectServiceImpl implements ProjectService {
         return getCheckInfo(ProjectStatus.ESTABLISH);
     }
 
+    /**
+     * 职能部门获取内定项目
+     * @return
+     */
     @Override
     public Result getFunctionCreateCommonApply() {
-        return null;
+        User currentUser = getUserService.getCurrentUser();
+
+        List<CheckProjectVO> checkProjectVOs = selectFunctionCreateCommonApply();
+        log.info(checkProjectVOs.size()+"***********");
+
+        for (CheckProjectVO checkProjectVO : checkProjectVOs) {
+            List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
+            checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(checkProjectVO.getId(), null));
+            List<UserMemberVO> guidanceTeachers = new ArrayList<>();
+            List<UserMemberVO> memberStudents = new ArrayList<>();
+            for (UserProjectGroup userProjectGroup : userProjectGroups) {
+                UserMemberVO userMemberVO = new UserMemberVO();
+                User user = userService.selectByUserId(userProjectGroup.getUserId());
+                userMemberVO.setUserId(Long.valueOf(user.getCode()));
+                userMemberVO.setUserName(user.getRealName());
+                userMemberVO.setMemberRole(userProjectGroup.getMemberRole());
+                //设置负责人(项目组长)
+                switch (userProjectGroup.getMemberRole()) {
+                    case 1:
+                        guidanceTeachers.add(userMemberVO);
+                        break;
+                    case 2:
+                        checkProjectVO.setGroupLeaderPhone(user.getMobilePhone());
+                        memberStudents.add(userMemberVO);
+                        break;
+                    case 3:
+                        memberStudents.add(userMemberVO);
+                        break;
+                    default:
+                        break;
+                }
+                //设置立项申请文件的id
+                ProjectFile applyProjectFile = projectFileService.getAimNameProjectFile(
+                        userProjectGroup.getProjectGroupId(),
+                        uploadConfig.getApplyFileName());
+                if (applyProjectFile != null) {
+                    checkProjectVO.setApplyFileId(applyProjectFile.getId());
+                }
+                checkProjectVO.setMemberStudents(memberStudents);
+                checkProjectVO.setGuidanceTeachers(guidanceTeachers);
+            }
+        }
+        return Result.success(checkProjectVOs);
     }
 
     @Override

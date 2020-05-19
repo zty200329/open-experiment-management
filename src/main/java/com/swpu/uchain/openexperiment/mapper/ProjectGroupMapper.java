@@ -81,6 +81,8 @@ public interface ProjectGroupMapper {
      */
     List<ProjectGroup>  selectByUserIdAndStatus(@Param("userId") Long userId,@Param("projectStatus") Integer projectStatus,@Param("status")Integer joinStatus);
 
+    List<CheckProjectVO> selectFunctionCreateCommonApply();
+
     List<ProjectGroup> selectByCollegeIdAndStatus(@Param("college") String college,@Param("projectStatus") Integer projectStatus);
 
     List<CheckProjectVO> selectApplyOrderByTime(@Param("projectStatus") int projectStatus,@Param("projectType") Integer projectType,@Param("college") Integer college);

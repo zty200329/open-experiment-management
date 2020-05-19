@@ -37,6 +37,8 @@ public class ProjectQueryController {
         return projectService.getAllOpenTopicByCondition(queryConditionForm);
     }
 
+    @ApiOperation("职能部门查看内定项目")
+    @PostMapping("/getFunctionCreateCommonApply")
     public Result getFunctionCreateCommonApply(){
         return projectService.getFunctionCreateCommonApply();
     }

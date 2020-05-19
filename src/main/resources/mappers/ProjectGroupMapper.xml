@@ -311,6 +311,27 @@
     </if>
     </where>
   </select>
+    <select id="selectFunctionCreateCommonApply" resultMap="CheckProjectResultMap">
+        select openexperiment.project_group.limit_college,
+           openexperiment.project_group.is_open_topic,
+           openexperiment.project_group.serial_number,
+           openexperiment.project_group.id,
+           openexperiment.project_group.apply_funds,
+           openexperiment.project_group.project_name,
+           openexperiment.project_group.experiment_type,
+           openexperiment.project_group.total_hours,
+           openexperiment.project_group.start_time,
+           openexperiment.project_group.end_time,
+           openexperiment.project_group.lab_name,
+           openexperiment.project_group.address,
+           openexperiment.project_group.subordinate_college,
+           openexperiment.project_group.suggest_group_type,
+           openexperiment.project_group.project_type,
+           openexperiment.project_group.main_Content,
+           openexperiment.project_group.apply_funds
+    from openexperiment.project_group
+        where openexperiment.project_group.subordinate_college = 0;
+    </select>
     
     
   <select id="selectApplyOrderByTime" resultMap="CheckProjectResultMap">
@@ -318,7 +339,7 @@
            openexperiment.project_group.is_open_topic,
            openexperiment.project_group.serial_number,
            openexperiment.project_group.id,
-           project_group.apply_funds,
+           openexperiment.project_group.apply_funds,
            openexperiment.project_group.project_name,
            openexperiment.project_group.experiment_type,
            openexperiment.project_group.total_hours,
