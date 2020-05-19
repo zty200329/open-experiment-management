@@ -325,8 +325,8 @@ public class ProjectServiceImpl implements ProjectService {
         projectGroup.setIsOpenTopic(2);
 
         //设置申请人
-        projectGroup.setCreatorId(Long.valueOf(currentUser.getCode()));
-        projectGroup.setSubordinateCollege(form.getSubordinateCollege());
+        projectGroup.setCreatorId(Long.valueOf(form.getTeacherCodes()));
+        projectGroup.setSubordinateCollege(CollegeType.FUNCTIONAL_DEPARTMENT.getValue());
         //插入数据
         Result result = addProjectGroup(projectGroup);
         if (result.getCode() != 0) {
