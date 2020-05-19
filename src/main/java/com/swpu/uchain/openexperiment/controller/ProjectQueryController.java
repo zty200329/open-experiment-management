@@ -37,6 +37,10 @@ public class ProjectQueryController {
         return projectService.getAllOpenTopicByCondition(queryConditionForm);
     }
 
+    public Result getFunctionCreateCommonApply(){
+        return projectService.getFunctionCreateCommonApply();
+    }
+
     @ApiOperation("学生获取可参与的开放性选题")
     @GetMapping("/getAllOpenTopicByStudent")
     public Result getAllOpenTopic(){

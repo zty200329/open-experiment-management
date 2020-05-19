@@ -718,6 +718,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public Result getFunctionCreateCommonApply() {
+        return null;
+    }
+
+    @Override
     public Result getIntermediateInspectionProject() {
         //ESTABLISH
 //        return getCheckInfo(ProjectStatus.MID_TERM_INSPECTION);

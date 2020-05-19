@@ -262,6 +262,12 @@ public interface ProjectService {
 
     Result getToBeConcludingProject();
 
+    /**
+     * 职能部门获取内定项目
+     * @return
+     */
+    Result getFunctionCreateCommonApply();
+
     Result getIntermediateInspectionProject();
 
     Result getMidTermReturnProject();
