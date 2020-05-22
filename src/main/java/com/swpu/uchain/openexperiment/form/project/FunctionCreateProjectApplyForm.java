@@ -83,14 +83,14 @@ public class FunctionCreateProjectApplyForm {
     @NotNull(message = "参加学生不能为空")
     private String[] stuCodes;
 
-    @ApiModelProperty("限选专业--选填")
-    private String limitMajor;
-
-    @ApiModelProperty("限选学院--选填")
-    private String limitCollege;
-
-    @ApiModelProperty("限选年级")
-    private String limitGrade;
+//    @ApiModelProperty("限选专业--选填")
+//    private String limitMajor;
+//
+//    @ApiModelProperty("限选学院--选填")
+//    private String limitCollege;
+//
+//    @ApiModelProperty("限选年级")
+//    private String limitGrade;
 
     @ApiModelProperty("适宜学生数--选填")
     private Integer fitPeopleNum;

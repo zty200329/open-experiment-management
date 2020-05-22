@@ -29,7 +29,7 @@ import java.util.List;
 @Slf4j
 public class UserProjectServiceImpl implements UserProjectService {
     @Autowired
-        private UserProjectGroupMapper userProjectGroupMapper;
+    private UserProjectGroupMapper userProjectGroupMapper;
     @Autowired
     private RedisService redisService;
     @Autowired
@@ -58,7 +58,7 @@ public class UserProjectServiceImpl implements UserProjectService {
     @Override
     public void delete(Long id) {
         UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByPrimaryKey(id);
-        if (userProjectGroup == null){
+        if (userProjectGroup == null) {
             return;
         }
         redisService.delete(UserProjectGroupKey.getByProjectGroupIdAndUserId,
@@ -73,7 +73,7 @@ public class UserProjectServiceImpl implements UserProjectService {
 
     @Override
     public Result addUserProject(UserProjectGroup userProjectGroup) {
-        if (insert(userProjectGroup)){
+        if (insert(userProjectGroup)) {
             return Result.success();
         }
         return Result.error(CodeMsg.ADD_ERROR);
@@ -94,11 +94,11 @@ public class UserProjectServiceImpl implements UserProjectService {
         return userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, userId);
     }
 
-    private  String[] strToStrArr(String str){
+    private String[] strToStrArr(String str) {
         if (str == null) {
             return null;
         }
-        return str.replace("[","").replace("]","").split(",");
+        return str.replace("[", "").replace("]", "").split(",");
     }
 
     @Override
@@ -125,10 +125,9 @@ public class UserProjectServiceImpl implements UserProjectService {
         }
 
         //验证是否已经达到最大数量
-        if (userProjectGroupMapper.selectStuCount(joinProjectApplyForm.getProjectGroupId(),JoinStatus.JOINED.getValue()) >= projectGroup.getFitPeopleNum()) {
+        if (userProjectGroupMapper.selectStuCount(joinProjectApplyForm.getProjectGroupId(), JoinStatus.JOINED.getValue()) >= projectGroup.getFitPeopleNum()) {
             throw new GlobalException(CodeMsg.PROJECT_USER_MAX_ERROR);
         }
-
 
 
         //学生是否可以加入判断
@@ -205,11 +204,11 @@ public class UserProjectServiceImpl implements UserProjectService {
     }
 
     @Override
-    public Result checkUserMatch(User user, ProjectGroup projectGroup){
+    public Result checkUserMatch(User user, ProjectGroup projectGroup) {
         List<User> users = userService.selectProjectJoinedUsers(projectGroup.getId());
         if (users.size() < projectGroup.getFitPeopleNum()
                 && selectByProjectGroupId(projectGroup.getId()).size()
-                < CountUtil.getMaxApplyNum(projectGroup.getFitPeopleNum())){
+                < CountUtil.getMaxApplyNum(projectGroup.getFitPeopleNum())) {
             return Result.success();
         }
         return Result.error(CodeMsg.REACH_NUM_MAX);
@@ -221,18 +220,18 @@ public class UserProjectServiceImpl implements UserProjectService {
         //判断当前操作用户是否存在项目组
         User currentUser = getUserService.getCurrentUser();
         UserProjectGroup group = selectByProjectGroupIdAndUserId(aimForm.getProjectGroupId(), Long.valueOf(currentUser.getCode()));
-        if (group == null){
+        if (group == null) {
             Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
         //判断指定用户是否存在与项目组
         UserProjectGroup userProjectGroup = selectByProjectGroupIdAndUserId(
                 aimForm.getProjectGroupId(),
                 aimForm.getUserId());
-        if (userProjectGroup == null){
+        if (userProjectGroup == null) {
             return Result.error(CodeMsg.USER_GROUP_NOT_EXIST);
         }
         //判断指定用户是否是指导老师
-        if (userProjectGroup.getMemberRole().intValue() == MemberRole.GUIDANCE_TEACHER.getValue()){
+        if (userProjectGroup.getMemberRole().intValue() == MemberRole.GUIDANCE_TEACHER.getValue()) {
             return Result.error(CodeMsg.CANT_AIM_TEACHER);
         }
 
@@ -240,20 +239,23 @@ public class UserProjectServiceImpl implements UserProjectService {
         Integer status = projectGroupMapper.selectByPrimaryKey(aimForm.getProjectGroupId()).getStatus();
         if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue())
         ) {
-            throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+            int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(aimForm.getProjectGroupId());
+            if (SubordinateCollege != 0) {
+                throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+            }
         }
 
 
-        if (aimForm.getMemberRole().intValue() == MemberRole.PROJECT_GROUP_LEADER.getValue()){
+        if (aimForm.getMemberRole().intValue() == MemberRole.PROJECT_GROUP_LEADER.getValue()) {
             //判断项目组是已否存在组长
             User user = userService.selectGroupLeader(aimForm.getProjectGroupId());
-            if (user != null){
+            if (user != null) {
                 return Result.error(CodeMsg.GROUP_LEADER_EXIST);
             }
             userProjectGroup.setMemberRole(MemberRole.PROJECT_GROUP_LEADER.getValue());
-        }else if (aimForm.getMemberRole().intValue() == MemberRole.NORMAL_MEMBER.getValue()){
+        } else if (aimForm.getMemberRole().intValue() == MemberRole.NORMAL_MEMBER.getValue()) {
             userProjectGroup.setMemberRole(MemberRole.NORMAL_MEMBER.getValue());
-        }else {
+        } else {
             return Result.error(CodeMsg.ILLEGAL_MEMBER_ROLE);
         }
         if (update(userProjectGroup)) {
@@ -270,20 +272,20 @@ public class UserProjectServiceImpl implements UserProjectService {
     @Override
     public void addStuAndTeacherJoin(String[] stuCodes, String[] teacherCodes, Long projectGroupId) {
         Result result = null;
-        if (teacherCodes != null){
+        if (teacherCodes != null) {
             result = userService.createUserJoin(
                     teacherCodes,
                     projectGroupId,
                     UserType.LECTURER);
         }
-        if (stuCodes != null){
+        if (stuCodes != null) {
             result = userService.createUserJoin(
                     stuCodes,
                     projectGroupId,
                     UserType.STUDENT);
         }
         assert result != null;
-        if (result.getCode() != 0){
+        if (result.getCode() != 0) {
             throw new GlobalException(CodeMsg.USER_NO_EXIST);
         }
     }
@@ -291,14 +293,14 @@ public class UserProjectServiceImpl implements UserProjectService {
     @Override
     public void addTeacherJoin(String[] teacherCodes, Long projectGroupId) {
         Result result = null;
-        if (teacherCodes != null){
+        if (teacherCodes != null) {
             result = userService.createUserJoin(
                     teacherCodes,
                     projectGroupId,
                     UserType.LECTURER);
         }
 
-        if (result.getCode() != 0){
+        if (result.getCode() != 0) {
             throw new GlobalException(CodeMsg.ADD_USER_JOIN_ERROR);
         }
     }

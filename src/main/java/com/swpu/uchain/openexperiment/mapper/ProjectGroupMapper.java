@@ -59,6 +59,8 @@ public interface ProjectGroupMapper {
 
     ProjectGroup selectByPrimaryKey(@Param("id") Long id);
 
+    int selectSubordinateCollege(Long id);
+
     ProjectGroup selectByPrimaryProjectName(@Param("projectName") String projectName);
 
     /**
@@ -85,6 +87,7 @@ public interface ProjectGroupMapper {
 
     List<ProjectGroup> selectByCollegeIdAndStatus(@Param("college") String college,@Param("projectStatus") Integer projectStatus);
 
+//有改动 temp_
     List<CheckProjectVO> selectApplyOrderByTime(@Param("projectStatus") int projectStatus,@Param("projectType") Integer projectType,@Param("college") Integer college);
 
     List<SelectProjectVO> selectByFuzzyName(@Param("name") String name);

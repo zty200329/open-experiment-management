@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.controller;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.ProjectStatus;
+import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.ProjectFileService;
@@ -34,7 +35,8 @@ public class FileController {
     private UserProjectService userProjectService;
     @Autowired
     private GetUserService getUserService;
-
+    @Autowired
+    private ProjectGroupMapper projectGroupMapper;
     @ApiOperation("下载重点立项申请正文pdf")
     @GetMapping(value = "/getApplyDoc", name = "下载重点立项申请正文pdf")
     public void getApplyDoc(Long fileId, HttpServletResponse response){
@@ -65,7 +67,10 @@ public class FileController {
     public Object reloadApplyDoc(Long projectGroupId,MultipartFile file,MultipartFile headFile){
         User currentUser = getUserService.getCurrentUser();
         if (userProjectService.selectByProjectGroupIdAndUserId(projectGroupId,Long.valueOf(currentUser.getCode())) == null) {
-            return Result.error(CodeMsg.PERMISSION_DENNY);
+            int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(projectGroupId);
+            if (SubordinateCollege != 0) {
+                return Result.error(CodeMsg.PERMISSION_DENNY);
+            }
         }
         return projectFileService.uploadApplyDoc(file, headFile,projectGroupId);
     }

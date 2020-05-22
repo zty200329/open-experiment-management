@@ -270,6 +270,13 @@
     from openexperiment.project_group left join openexperiment.key_project_status  on key_project_status.project_id = project_group.id
     where project_group.id = #{id,jdbcType=BIGINT}
   </select>
+
+    <select id="selectSubordinateCollege" parameterType="java.lang.Long" resultType="java.lang.Integer">
+    select openexperiment.project_group.subordinate_college
+    from openexperiment.project_group
+    where project_group.id = #{id,jdbcType=BIGINT}
+  </select>
+
   <select id="selectByName" resultMap="ProjectGroupResultMap">
     select id, serial_number, status, project_type, creator_id, end_time, apply_funds, lab_name, experiment_type, achievement_check, limit_college, limit_major, limit_grade, fit_people_num, total_hours, experiment_condition, project_name, create_time, start_time, address, suggest_group_type, update_time, is_open_topic, main_Content, subordinate_college from openexperiment.project_group where project_name = #{projectName}
   </select>
@@ -337,7 +344,7 @@
   <select id="selectApplyOrderByTime" resultMap="CheckProjectResultMap">
     select openexperiment.project_group.limit_college,
            openexperiment.project_group.is_open_topic,
-           openexperiment.project_group.serial_number,
+           openexperiment.project_group.temp_serial_number as serial_number,
            openexperiment.project_group.id,
            openexperiment.project_group.apply_funds,
            openexperiment.project_group.project_name,

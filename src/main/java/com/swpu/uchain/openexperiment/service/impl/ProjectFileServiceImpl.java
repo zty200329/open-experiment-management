@@ -180,7 +180,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         //校验当前用户是否有权进行上传
         UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, Long.valueOf(user.getCode()));
         if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.PROJECT_GROUP_LEADER.getValue())) {
-            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+            int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(projectGroupId);
+            if (SubordinateCollege != 0) {
+                throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+            }
         }
         ProjectFile projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(user.getCode()));

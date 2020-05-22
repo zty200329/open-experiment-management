@@ -1342,12 +1342,18 @@ public class ProjectServiceImpl implements ProjectService {
         //验证项目状态
         if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue())
         ) {
-            throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+            int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(joinForm.getProjectGroupId());
+            if (SubordinateCollege != 0) {
+                throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+            }
         }
 
         UserProjectGroup userProjectGroupOfCurrentUser = userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(), userId);
         if (userProjectGroupOfCurrentUser == null || !userProjectGroupOfCurrentUser.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
-            throw new GlobalException(CodeMsg.USER_NOT_IN_GROUP);
+            int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(joinForm.getProjectGroupId());
+            if (SubordinateCollege != 0) {
+                throw new GlobalException(CodeMsg.USER_NOT_IN_GROUP);
+            }
         }
 
         //判断用户是否存在
@@ -1680,7 +1686,10 @@ public class ProjectServiceImpl implements ProjectService {
         if (userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectId, currentUserId) == null
                 || !userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectId, currentUserId).getMemberRole()
                 .equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
-            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+            int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(projectId);
+            if (SubordinateCollege != 0) {
+                throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+            }
         }
         UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectId, userId);
         if (userProjectGroup == null) {
