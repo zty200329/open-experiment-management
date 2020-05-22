@@ -1,13 +1,9 @@
 package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
-import com.swpu.uchain.openexperiment.VO.project.CheckProjectVO;
-import com.swpu.uchain.openexperiment.VO.project.OpenTopicInfo;
-import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
-import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
+import com.swpu.uchain.openexperiment.VO.project.*;
 import com.swpu.uchain.openexperiment.domain.Certificate;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
-import com.swpu.uchain.openexperiment.VO.project.ProjectGroupDetailVO;
 import com.swpu.uchain.openexperiment.enums.ProjectType;
 import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import org.apache.ibatis.annotations.Param;
@@ -21,6 +17,13 @@ import java.util.List;
  */
 @Repository
 public interface ProjectGroupMapper {
+
+    /**
+     * 关键字模糊查询
+     * @param keyword
+     * @return
+     */
+    List<SelectByKeywordProjectVO> selectByKeyword(String keyword);
 
     /**
      * 更新项目上传编号

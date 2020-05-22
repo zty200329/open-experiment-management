@@ -19,6 +19,7 @@ import com.swpu.uchain.openexperiment.redis.key.ProjectGroupKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
+import com.swpu.uchain.openexperiment.util.RedisUtil;
 import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -62,6 +63,7 @@ public class ProjectServiceImpl implements ProjectService {
     private TimeLimitService timeLimitService;
     private AmountLimitMapper amountLimitMapper;
     private HitBackMessageMapper hitBackMessageMapper;
+    private RedisUtil redisUtil;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -73,7 +75,7 @@ public class ProjectServiceImpl implements ProjectService {
                               RoleMapper roleMapper, AmountLimitMapper amountLimitMapper,
                               UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper,
                               KeyProjectStatusMapper keyProjectStatusMapper, ProjectFileMapper projectFileMapper,
-                              TimeLimitService timeLimitService, UserRoleService userRoleService, HitBackMessageMapper hitBackMessageMapper) {
+                              TimeLimitService timeLimitService,RedisUtil redisUtil, UserRoleService userRoleService, HitBackMessageMapper hitBackMessageMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -93,6 +95,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.amountLimitMapper = amountLimitMapper;
         this.userRoleService = userRoleService;
         this.hitBackMessageMapper = hitBackMessageMapper;
+        this.redisUtil = redisUtil;
     }
 
     @Override
@@ -770,6 +773,24 @@ public class ProjectServiceImpl implements ProjectService {
             }
         }
         return Result.success(checkProjectVOs);
+    }
+
+    /**
+     * 根据关键字查询
+     * @param Keyword
+     * @return
+     */
+    @Override
+    public Result selectByKeyword(String Keyword) {
+        List<SelectByKeywordProjectVO> projectVOS = (List<SelectByKeywordProjectVO>) redisUtil.get("select"+Keyword);
+        if(projectVOS == null || projectVOS.size()==0){
+            projectVOS = projectGroupMapper.selectByKeyword(Keyword);
+            if(projectVOS != null &&projectVOS.size()!=0){
+                redisUtil.set("select"+Keyword,projectVOS,300);
+                log.info("存入redis");
+            }
+        }
+        return Result.success(projectVOS);
     }
 
     @Override

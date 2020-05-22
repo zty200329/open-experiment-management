@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service;
 
+import com.swpu.uchain.openexperiment.VO.project.SelectByKeywordProjectVO;
 import com.swpu.uchain.openexperiment.VO.project.SelectProjectVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
@@ -267,6 +268,13 @@ public interface ProjectService {
      * @return
      */
     Result getFunctionCreateCommonApply();
+
+    /**
+     * 关键字查项目
+     * @param Keyword
+     * @return
+     */
+    Result selectByKeyword(String Keyword);
 
     Result getIntermediateInspectionProject();
 

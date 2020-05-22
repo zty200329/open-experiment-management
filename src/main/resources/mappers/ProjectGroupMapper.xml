@@ -740,7 +740,18 @@
         update openexperiment.project_group set `status` = #{status} where id =
             #{id}
     </update>
+    <select id="selectByKeyword" resultType="com.swpu.uchain.openexperiment.VO.project.SelectByKeywordProjectVO">
+        SELECT
+        project_group.id as id,
+        project_group.serial_number as serialNumber,
+        project_group.subordinate_college as subordinateCollege,
+        project_group.project_name as projectName,
+        project_group.project_type as projectType,
 
+        FROM openexperiment.project_group
+        where locate(#{keyword},`temp_serial_number`) or locate(#{keyword},`project_name`)
+        limit 10
+    </select>
     <update id="updateProjectSerialNumber">
         update openexperiment.project_group set `serial_number` = #{serialNumber} where id =
         #{id}

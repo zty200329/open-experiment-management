@@ -1,7 +1,9 @@
 package com.swpu.uchain.openexperiment.controller;
 
+import com.swpu.uchain.openexperiment.VO.project.SelectByKeywordProjectVO;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.member.MemberQueryCondition;
+import com.swpu.uchain.openexperiment.form.project.SelectByKeywordForm;
 import com.swpu.uchain.openexperiment.form.query.HistoryQueryProjectInfo;
 import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -9,10 +11,12 @@ import com.swpu.uchain.openexperiment.service.ProjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.regexp.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 项目模块查询接口
@@ -101,6 +105,12 @@ public class ProjectQueryController {
     @GetMapping(value = "getIntermediateInspectionProject")
     public Result getIntermediateInspectionProject (){
         return projectService.getIntermediateInspectionProject();
+    }
+
+    @ApiOperation("职能部门根据关键字查找项目")
+    @PostMapping("/selectByKeyword")
+    public Result selectByKeyword(@RequestBody SelectByKeywordForm Keyword){
+        return projectService.selectByKeyword(Keyword.getKeyword());
     }
 
     @ApiOperation("职能部门获取待结题检查的项目")
