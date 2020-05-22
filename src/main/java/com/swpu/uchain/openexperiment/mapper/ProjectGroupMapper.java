@@ -2,9 +2,7 @@ package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
 import com.swpu.uchain.openexperiment.VO.project.*;
-import com.swpu.uchain.openexperiment.domain.Certificate;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
-import com.swpu.uchain.openexperiment.enums.ProjectType;
 import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -24,6 +22,9 @@ public interface ProjectGroupMapper {
      * @return
      */
     List<SelectByKeywordProjectVO> selectByKeyword(String keyword);
+
+
+    List<SelectByKeywordProjectVO> keyProjectSelectByKeyword(String keyword);
 
     /**
      * 更新项目上传编号

@@ -794,6 +794,19 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public Result selectKeyProjectByKeyword(SelectByKeywordForm Keyword) {
+        List<SelectByKeywordProjectVO> projectVOS = (List<SelectByKeywordProjectVO>) redisUtil.get("selectKey"+Keyword);
+        if(projectVOS == null || projectVOS.size()==0){
+            projectVOS = projectGroupMapper.keyProjectSelectByKeyword(Keyword.getKeyword());
+            if(projectVOS != null &&projectVOS.size()!=0){
+                redisUtil.set("select"+Keyword,projectVOS,300);
+                log.info("存入redis");
+            }
+        }
+        return Result.success(projectVOS);
+    }
+
+    @Override
     public Result getIntermediateInspectionProject() {
         //ESTABLISH
 //        return getCheckInfo(ProjectStatus.MID_TERM_INSPECTION);

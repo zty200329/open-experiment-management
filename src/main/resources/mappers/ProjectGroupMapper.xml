@@ -743,13 +743,25 @@
     <select id="selectByKeyword" resultType="com.swpu.uchain.openexperiment.VO.project.SelectByKeywordProjectVO">
         SELECT
         project_group.id as id,
-        project_group.serial_number as serialNumber,
+        project_group.temp_serial_number as serialNumber,
         project_group.subordinate_college as subordinateCollege,
         project_group.project_name as projectName,
         project_group.project_type as projectType,
-
         FROM openexperiment.project_group
-        where locate(#{keyword},`temp_serial_number`) or locate(#{keyword},`project_name`)
+        where locate(#{keyword},`temp_serial_number`) or locate(#{keyword},`project_name`) and project_group.status = 5
+        limit 10
+    </select>
+    <select id="keyProjectSelectByKeyword" resultType="com.swpu.uchain.openexperiment.VO.project.SelectByKeywordProjectVO">
+        SELECT
+        project_group.id as id,
+        project_group.temp_serial_number as serialNumber,
+        project_group.subordinate_college as subordinateCollege,
+        project_group.project_name as projectName,
+        project_group.project_type as projectType,
+        key_project_status.status
+        FROM openexperiment.project_group
+        INNER JOIN openexperiment.key_project_status on  project_group.id = key_project_status.project_id
+        where locate(#{keyword},`temp_serial_number`) or locate(#{keyword},`project_name`) and key_project_status.status = 5
         limit 10
     </select>
     <update id="updateProjectSerialNumber">

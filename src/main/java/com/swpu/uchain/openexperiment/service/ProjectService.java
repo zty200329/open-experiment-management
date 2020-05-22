@@ -270,11 +270,18 @@ public interface ProjectService {
     Result getFunctionCreateCommonApply();
 
     /**
-     * 关键字查项目
+     * 关键字查普通项目
      * @param Keyword
      * @return
      */
     Result selectByKeyword(String Keyword);
+
+    /**
+     * 关键字查重点项目
+     * @param Keyword
+     * @return
+     */
+    Result selectKeyProjectByKeyword(SelectByKeywordForm Keyword);
 
     Result getIntermediateInspectionProject();
 
