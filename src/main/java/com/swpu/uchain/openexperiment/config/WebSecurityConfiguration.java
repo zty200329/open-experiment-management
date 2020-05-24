@@ -90,6 +90,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/druid/**",
                         "/static/**",
                         "/apply/**",
+                        "/conclusion/**",
                         "/material/**"
                 ).permitAll()
                 //配置swagger界面的匿名访问

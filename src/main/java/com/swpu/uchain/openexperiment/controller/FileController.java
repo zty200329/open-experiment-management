@@ -78,7 +78,7 @@ public class FileController {
 
 
 
-    @ApiIgnore("附件上传--6，普通项目结题验收报告；7，重点项目结题验收报告 8，普通项目实验报告")
+    @ApiOperation("附件上传--6，普通项目结题验收报告；7，重点项目结题验收报告 8，普通项目实验报告")
     @PostMapping(value = "/uploadAttachmentFile", name = "上传附件")
     public Object uploadAttachmentFile(MultipartFile multipartFile,Integer attachmentType){
         return projectFileService.uploadAttachmentFile(multipartFile,attachmentType);

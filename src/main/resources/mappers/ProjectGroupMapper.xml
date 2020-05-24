@@ -746,7 +746,7 @@
         project_group.temp_serial_number as serialNumber,
         project_group.subordinate_college as subordinateCollege,
         project_group.project_name as projectName,
-        project_group.project_type as projectType,
+        project_group.project_type as projectType
         FROM openexperiment.project_group
         where locate(#{keyword},`temp_serial_number`) or locate(#{keyword},`project_name`) and project_group.status = 5
         limit 10

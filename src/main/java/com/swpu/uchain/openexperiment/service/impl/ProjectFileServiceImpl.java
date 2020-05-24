@@ -72,18 +72,19 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     /**
      * 多角色身份验证
+     *
      * @param roleType 需要的角色
      * @return
      */
     private boolean validContainsUserRole(RoleType roleType) {
-        User user  = getUserService.getCurrentUser();
+        User user = getUserService.getCurrentUser();
         //用户角色组
         List<UserRole> list = userRoleMapper.selectByUserId(Long.valueOf(user.getCode()));
         if (list == null || list.size() == 0) {
             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
         }
 
-        for (UserRole userRole:list
+        for (UserRole userRole : list
         ) {
             if (roleType.getValue().equals(userRole.getRoleId())) {
                 return true;
@@ -132,7 +133,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public Result uploadApplyDoc(MultipartFile file,MultipartFile headFile, Long projectGroupId) {
+    public Result uploadApplyDoc(MultipartFile file, MultipartFile headFile, Long projectGroupId) {
         //先检查文件是否为空
         if (file == null || headFile == null) {
             throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
@@ -144,15 +145,15 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
         //如果是职能部门，不需要验证项目的状态
         if (validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT)) {
-            log.info("职能部门对进行项目编号为"+projectGroupId+"的项目进行正文修改");
+            log.info("职能部门对进行项目编号为" + projectGroupId + "的项目进行正文修改");
             //验证项目状态合法性，为其中之一的状态均可以通过
-        }else if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue()) &&
-                    !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())
-                    //判定是否为重点项目驳回状态,该状态可进行文件提交
-                    && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.TO_DE_CONFIRMED.getValue())
-         && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue()) ){
-                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
-            }
+        } else if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue()) &&
+                !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())
+                //判定是否为重点项目驳回状态,该状态可进行文件提交
+                && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.TO_DE_CONFIRMED.getValue())
+                && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue())) {
+            throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+        }
 
         if (!getFileSuffix(file.getOriginalFilename()).equals(".doc") || !getFileSuffix(headFile.getOriginalFilename()).equals(".html")) {
             throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
@@ -170,7 +171,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         //如果存在则覆盖
         File dest = new File(bodyDocPath);
         dest.delete();
-
 
 
         if (!checkFileFormat(file, FileType.WORD.getValue())) {
@@ -224,9 +224,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
             //转化为PDF
             try {
-                Html2PDFUtil.convertHtml2PDF(headHtmlPath,pdfHeadPath);
+                Html2PDFUtil.convertHtml2PDF(headHtmlPath, pdfHeadPath);
                 log.info("开始转化HTML头文件为PDF----------------");
-                PDFConvertUtil.Word2Pdf(bodyDocPath,pdfBodyPath);
+                PDFConvertUtil.Word2Pdf(bodyDocPath, pdfBodyPath);
                 log.info("开始内容正文文件为PDF----------------");
             } catch (IOException e) {
                 throw new GlobalException(CodeMsg.PDF_CONVERT_ERROR);
@@ -356,6 +356,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (file == null) {
             throw new GlobalException(CodeMsg.FILE_EMPTY_ERROR);
         }
+
         if (projectGroup == null) {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
@@ -421,8 +422,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         return calendar.get(Calendar.YEAR);
     }
 
+
+
     @Override
-    public void generateEstablishExcel(HttpServletResponse response,Integer projectStatus) {
+    public void generateEstablishExcel(HttpServletResponse response, Integer projectStatus) {
 
         User user = getUserService.getCurrentUser();
         //获取管理人员所管理的学院
@@ -460,8 +463,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
         // 4.设置表头，即每个列的列名
         String[] head = {"院/中心", "创建编号", "项目名称", "实验类型", "实验时数", "指导教师", "学生"
-                , "专业年级", "开始时间", "结束时间", "开放\r\n实验室", "实验室地点","负责学生姓名" ,"负责学生\r\n电话"
-                , "申请经费（元）", "建议\r\n评审分组","项目状态","上报编号","项目类型"};
+                , "专业年级", "开始时间", "结束时间", "开放\r\n实验室", "实验室地点", "负责学生姓名", "负责学生\r\n电话"
+                , "申请经费（元）", "建议\r\n评审分组", "项目状态", "上报编号", "项目类型"};
         // 4.1创建表头行
         XSSFRow row = sheet.createRow(index++);
 
@@ -485,7 +488,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
             //项目组组长
             List<UserMemberVO> userMemberVOList =
-                    userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.PROJECT_GROUP_LEADER.getValue(),projectTableInfo.getId(),JoinStatus.JOINED.getValue());
+                    userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.PROJECT_GROUP_LEADER.getValue(), projectTableInfo.getId(), JoinStatus.JOINED.getValue());
             StringBuilder students = new StringBuilder("");
             StringBuilder studentsMajorAndGrade = new StringBuilder();
             StringBuilder leaderName = new StringBuilder();
@@ -494,14 +497,14 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             for (int i = 0; i < userMemberVOList.size(); i++) {
                 UserMemberVO userMemberVO = userMemberVOList.get(i);
                 leaderName.append(userMemberVO.getUserName());
-                if (userMemberVO.getPhone()!=null) {
+                if (userMemberVO.getPhone() != null) {
                     leaderPhone.append(userMemberVO.getPhone());
                 }
 
                 students.append(userMemberVO.getUserName());
                 students.append("\r\n ");
                 studentsMajorAndGrade.append(ConvertUtil.getGradeAndMajorByNumber(userMemberVO.getGrade() + userMemberVO.getMajor()));
-                if (i != userMemberVOList.size() -1) {
+                if (i != userMemberVOList.size() - 1) {
                     studentsMajorAndGrade.append("\r\n ");
                 }
             }
@@ -509,25 +512,25 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
             //项目成员
             List<UserMemberVO> userMemberVOList2 =
-                    userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.NORMAL_MEMBER.getValue(),projectTableInfo.getId(),JoinStatus.JOINED.getValue());
+                    userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.NORMAL_MEMBER.getValue(), projectTableInfo.getId(), JoinStatus.JOINED.getValue());
             for (int i = 0; i < userMemberVOList2.size(); i++) {
                 UserMemberVO userMemberVO = userMemberVOList2.get(i);
                 students.append(userMemberVO.getUserName());
                 students.append("\r\n ");
                 studentsMajorAndGrade.append(ConvertUtil.getGradeAndMajorByNumber(userMemberVO.getGrade() + userMemberVO.getMajor()));
-                if (i != userMemberVOList2.size()-1) {
+                if (i != userMemberVOList2.size() - 1) {
                     studentsMajorAndGrade.append("\r\n ");
                 }
             }
 
             //指导教师
             List<UserMemberVO> userMemberVOList3 =
-                    userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectTableInfo.getId(),JoinStatus.JOINED.getValue());
+                    userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(), projectTableInfo.getId(), JoinStatus.JOINED.getValue());
             for (int i = 0; i < userMemberVOList3.size(); i++) {
                 UserMemberVO userMemberVO = userMemberVOList3.get(i);
                 guideTeachers.append(userMemberVO.getUserName());
                 guideTeachers.append("\r\n ");
-                if (i != userMemberVOList3.size()-1) {
+                if (i != userMemberVOList3.size() - 1) {
                     studentsMajorAndGrade.append("\r\n ");
                 }
             }
@@ -541,7 +544,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             // 序号
             row.createCell(0).setCellValue(ConvertUtil.getStrCollege(projectTableInfo.getCollege()));
             if (projectTableInfo.getTempSerialNumber() != null) {
-                row.createCell(1).setCellValue(projectTableInfo.getTempSerialNumber()+"T");
+                row.createCell(1).setCellValue(projectTableInfo.getTempSerialNumber() + "T");
             }
             //项目名称
             row.createCell(2).setCellValue(projectTableInfo.getProjectName());
@@ -552,12 +555,12 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             row.createCell(5).setCellValue(guideTeachers.toString());
             row.createCell(6).setCellValue(students.toString());
             row.createCell(7).setCellValue(studentsMajorAndGrade.toString());
-            row.createCell(8).setCellValue(projectTableInfo.getStartTime().substring(0,10));
-            row.createCell(9).setCellValue(projectTableInfo.getEndTime().substring(0,10));
+            row.createCell(8).setCellValue(projectTableInfo.getStartTime().substring(0, 10));
+            row.createCell(9).setCellValue(projectTableInfo.getEndTime().substring(0, 10));
             row.createCell(10).setCellValue(projectTableInfo.getLabName());
             row.createCell(11).setCellValue(projectTableInfo.getAddress());
             row.createCell(12).setCellValue(leaderName.toString());
-            row.createCell(13).setCellValue(leaderPhone.length()==0?"":leaderPhone.toString());
+            row.createCell(13).setCellValue(leaderPhone.length() == 0 ? "" : leaderPhone.toString());
             row.createCell(14).setCellValue(projectTableInfo.getApplyFunds());
             row.createCell(15).setCellValue(ConvertUtil.getStringSuggestGroupType(projectTableInfo.getSuggestGroupType()));
             row.createCell(16).setCellValue(projectTableInfo.getProjectStatus());

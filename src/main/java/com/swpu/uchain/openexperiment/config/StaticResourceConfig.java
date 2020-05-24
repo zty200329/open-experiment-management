@@ -24,6 +24,9 @@ public class StaticResourceConfig implements WebMvcConfigurer {
         //定义到硬盘
         registry.addResourceHandler("/apply/**")
                 .addResourceLocations("file:"+uploadConfig.getApplyDir()+"/").resourceChain(false);
+        //定义到硬盘
+        registry.addResourceHandler("/conclusion/**")
+                .addResourceLocations("file:"+uploadConfig.getConclusionDir()+"/").resourceChain(false);
         //定义到相对路径
         registry.addResourceHandler("/material/**")
                 .addResourceLocations("classpath:/material_sample/").resourceChain(false);

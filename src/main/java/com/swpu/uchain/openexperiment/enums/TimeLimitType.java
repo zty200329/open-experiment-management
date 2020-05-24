@@ -20,7 +20,8 @@ public enum  TimeLimitType {
     LAB_KEY_CHECK_LIMIT(6,"实验室重点项目审核时间限制"),
     LAB_REPORT_LIMIT(7,"实验室上报时间限制"),
     SECONDARY_UNIT_CHECK_LIMIT(8,"二级单位审核时间限制"),
-    SECONDARY_UNIT_REPORT_LIMIT(20,"二级单位上报时间限制");
+    SECONDARY_UNIT_REPORT_LIMIT(20,"二级单位上报时间限制"),
+    UPLOADING_INFORMATION(10,"结题资料上传时间限制");
 
 
     private Integer value;
