@@ -15,6 +15,7 @@ import com.swpu.uchain.openexperiment.redis.key.FileKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.ProjectFileService;
+import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -63,6 +64,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Autowired
     private UserProjectGroupMapper userProjectGroupMapper;
+    @Autowired
+    private UserProjectService userProjectService;
 
     @Autowired
     private UserRoleMapper userRoleMapper;
@@ -94,10 +97,20 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     public boolean insert(ProjectFile projectFile) {
-        ProjectFile projectFile1 = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectFile.getProjectGroupId(), projectFile.getMaterialType());
-        if (projectFile1 != null) {
-            projectFile.setId(projectFile1.getId());
-            return update(projectFile);
+
+        //如果为申请只能存在一条
+        if(projectFile.getMaterialType()==1) {
+            ProjectFile projectFile1 = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectFile.getProjectGroupId(), projectFile.getMaterialType());
+            if (projectFile1 != null) {
+                projectFile.setId(projectFile1.getId());
+                return update(projectFile);
+            }
+        }else{
+            ProjectFile projectFile1 = projectFileMapper.selectByProjectGroupIdAndFileName(projectFile.getProjectGroupId(), projectFile.getFileName());
+            if (projectFile1 != null) {
+                projectFile.setId(projectFile1.getId());
+                return update(projectFile);
+            }
         }
         return projectFileMapper.insert(projectFile) == 1;
     }
@@ -303,33 +316,39 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public Result uploadAttachmentFile(MultipartFile multipartFile, Integer attachmentType) {
-        if (multipartFile == null || multipartFile.isEmpty()) {
-            return Result.error(CodeMsg.UPLOAD_CANT_BE_EMPTY);
+    public Result uploadAttachmentFile(List<MultipartFile> multipartFile, Long projectId) {
+        if (multipartFile == null || multipartFile.size() == 0) {
+            throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
-
-
         User currentUser = getUserService.getCurrentUser();
-        ProjectFile projectFile = new ProjectFile();
-        projectFile.setFileName(multipartFile.getOriginalFilename());
-        projectFile.setDownloadTimes(0);
-        projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(multipartFile)));
-        projectFile.setSize(FileUtil.FormatFileSize(multipartFile.getSize()));
-        projectFile.setUploadTime(new Date());
-        projectFile.setMaterialType(MaterialType.APPLY_MATERIAL.getValue());
-        projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
-        if (!insert(projectFile)) {
-            return Result.error(CodeMsg.ADD_ERROR);
+        if (userProjectService.selectByProjectGroupIdAndUserId(projectId, Long.valueOf(currentUser.getCode())) == null) {
+            return Result.error(CodeMsg.PERMISSION_DENNY);
         }
-        if (!FileUtil.uploadFile(
-                multipartFile,
-                FileUtil.getFileRealPath(
-                        projectFile.getId(),
-                        uploadConfig.getApplyDir(),
-                        projectFile.getFileName()))) {
-            return Result.error(CodeMsg.UPLOAD_ERROR);
+
+        List<String> attachmentUrls = new ArrayList<>();
+        for (MultipartFile file : multipartFile) {
+
+
+            ProjectFile projectFile = new ProjectFile();
+            projectFile.setProjectGroupId(projectId);
+            projectFile.setFileName(projectId + "_附件_" + file.getOriginalFilename());
+            projectFile.setDownloadTimes(0);
+            projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(file)));
+            projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
+            projectFile.setUploadTime(new Date());
+            projectFile.setMaterialType(MaterialType.ATTACHMENT_FILE.getValue());
+            projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
+            if (!insert(projectFile)) {
+                return Result.error(CodeMsg.ADD_ERROR);
+            }
+            if (!FileUtil.uploadFile(
+                    file,uploadConfig.getConclusionDir()+"/"+projectFile.getFileName())) {
+                return Result.error(CodeMsg.UPLOAD_ERROR);
+            }
+
+            attachmentUrls.add(ipAddress + "/conclusion/" + projectFile.getFileName());
         }
-        return Result.success();
+        return Result.success(attachmentUrls);
     }
 
     @Override
@@ -377,6 +396,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
         //TODO,校验当前用户是否有权进行上传
 
+        if (userProjectService.selectByProjectGroupIdAndUserId(projectId, Long.valueOf(currentUser.getCode())) == null) {
+            return Result.error(CodeMsg.PERMISSION_DENNY);
+        }
 
         projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
@@ -405,7 +427,71 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         }
         // 异步转换成PDF
         convertDocToPDF(docPath, pdfPath);
-        return Result.success();
+        Map<String, String> map = new HashMap<>();
+        map.put("ConcludingReportUrl", ipAddress + "/conclusion/" + projectFile.getFileName());
+        return Result.success(map);
+    }
+
+    @Override
+    public Result uploadExperimentReport(Long projectId, MultipartFile file) {
+        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectId);
+        if (file == null) {
+            throw new GlobalException(CodeMsg.FILE_EMPTY_ERROR);
+        }
+
+        if (projectGroup == null) {
+            return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
+        }
+
+
+        //判断是否存在该文件,若存在则进行覆盖
+        ProjectFile projectFile = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.EXPERIMENTAL_REPORT.getValue());
+
+        if (projectFile != null) {
+            FileUtil.uploadFile(
+                    file,
+                    FileUtil.getFileRealPath(
+                            projectFile.getId(),
+                            uploadConfig.getConclusionDir(),
+                            uploadConfig.getExperimentReportFileName()));
+        }
+        User currentUser = getUserService.getCurrentUser();
+
+        //TODO,校验当前用户是否有权进行上传
+        if (userProjectService.selectByProjectGroupIdAndUserId(projectId, Long.valueOf(currentUser.getCode())) == null) {
+            return Result.error(CodeMsg.PERMISSION_DENNY);
+        }
+
+        projectFile = new ProjectFile();
+        projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
+        //数据库存储为pdf名称
+        projectFile.setFileName(projectId + "_" + uploadConfig.getExperimentReportFileName() + ".pdf");
+        projectFile.setUploadTime(new Date());
+        projectFile.setMaterialType(MaterialType.CONCLUSION_MATERIAL.getValue());
+        projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
+        projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(file)));
+        projectFile.setDownloadTimes(0);
+        projectFile.setProjectGroupId(projectId);
+
+        if (!insert(projectFile)) {
+            return Result.error(CodeMsg.ADD_ERROR);
+        }
+        String docPath = FileUtil.getFileRealPath(projectId,
+                uploadConfig.getConclusionDir(),
+                uploadConfig.getExperimentReportFileName() + getFileSuffix(file.getOriginalFilename()));
+        String pdfPath = FileUtil.getFileRealPath(projectId,
+                uploadConfig.getConclusionDir(),
+                uploadConfig.getExperimentReportFileName() + ".pdf");
+        if (!FileUtil.uploadFile(
+                file,
+                docPath)) {
+            return Result.error(CodeMsg.UPLOAD_ERROR);
+        }
+        // 异步转换成PDF
+        convertDocToPDF(docPath, pdfPath);
+        Map<String, String> map = new HashMap<>();
+        map.put("ExperimentReportUrl", ipAddress + "/conclusion/" + projectFile.getFileName());
+        return Result.success(map);
     }
 
     public boolean checkFileFormat(MultipartFile multipartFile, Integer aimType) {
@@ -421,7 +507,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.YEAR);
     }
-
 
 
     @Override

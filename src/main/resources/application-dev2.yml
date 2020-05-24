@@ -16,6 +16,7 @@ spring:
 upload:
   apply-file-name: "立项申请主要内容"
   concluding-file-name: "结题报告"
+  experiment-report-file-name: "项目实验报告"
   apply-dir: "/home/zty/open-experiment-management-system/apply_dir"
   apply-dir-2: "/home/zty/open-experiment-management-system/apply_dir_2"
   pdf-temp-dir: "/home/zty/open-experiment-management-system/pdf_temp_dir"

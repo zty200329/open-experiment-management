@@ -18,7 +18,7 @@ public class ProjectCheckForm {
     private Long projectId;
 
     @NotNull
-    @ApiModelProperty("拒绝的原因")
+    @ApiModelProperty("原因")
     private String reason;
 
 }

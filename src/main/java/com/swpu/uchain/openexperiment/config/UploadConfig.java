@@ -38,6 +38,11 @@ public class UploadConfig {
     private String concludingFileName;
 
     /**
+     * 上传实验报告文件名
+     */
+    private String experimentReportFileName;
+
+    /**
      * 证明材料上传位置
      */
     private String conclusionDir;

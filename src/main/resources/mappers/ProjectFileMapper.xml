@@ -75,6 +75,14 @@
       and material_type = #{materialType}
     </if>
   </select>
+  <select id="selectByProjectGroupIdAndFileName" resultMap="BaseResultMap">
+    select id, project_group_id, download_times, file_name, file_type, size, upload_time, upload_user_id,material_type
+    from openexperiment.project_file
+    where project_group_id = #{projectGroupId}
+    <if test="fileName!=null">
+      and file_name = #{fileName}
+    </if>
+  </select>
   <select id="selectAttachmentFiles" resultMap="AttachmentFileDTOMap">
     select project_file.id, project_file.project_group_id, project_file.download_times, project_file.file_name,
     project_file.file_type, project_file.`size`, project_file.upload_time, project_file.upload_user_id, u_stu.real_name

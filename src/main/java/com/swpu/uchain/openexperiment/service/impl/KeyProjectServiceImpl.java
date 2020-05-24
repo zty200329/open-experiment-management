@@ -208,7 +208,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result getToBeConcludingKeyProject(Integer college) {
-        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.MID_TERM_INSPECTION,college);
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.COLLEGE_FINAL_SUBMISSION,college);
     }
 
     private Result getKeyProjectDTOListByStatusAndCollege(ProjectStatus status, Integer college){

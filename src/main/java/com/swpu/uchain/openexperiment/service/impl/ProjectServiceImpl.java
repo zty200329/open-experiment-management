@@ -593,6 +593,16 @@ public class ProjectServiceImpl implements ProjectService {
         return setProjectStatusAndRecord(list, OperationType.CONCLUSION, OperationUnit.FUNCTIONAL_DEPARTMENT);
     }
 
+    /**
+     * 学院同意结题
+     * @param list
+     * @return
+     */
+    @Override
+    public Result agreeCollegePassedTheExamination(List<ProjectCheckForm> list) {
+        return setProjectStatusAndRecord(list, OperationType.OFFLINE_CHECK, OperationUnit.FUNCTIONAL_DEPARTMENT);
+    }
+
 
     /**
      * 复核通过

@@ -42,7 +42,7 @@ public enum ProjectStatus {
     /**
      * 取消中期, 退回修改,不通过
      */
-    MID_TERM_INSPECTION(6,"中期检查"),
+    COLLEGE_FINAL_SUBMISSION(6,"学院结题提交"),
 
     CONCLUDED(7,"结题项目"),
     ;

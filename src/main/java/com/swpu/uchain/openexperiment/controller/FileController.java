@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * 文件相关模块
@@ -78,10 +79,10 @@ public class FileController {
 
 
 
-    @ApiOperation("附件上传--6，普通项目结题验收报告；7，重点项目结题验收报告 8，普通项目实验报告")
+    @ApiOperation("附件上传")
     @PostMapping(value = "/uploadAttachmentFile", name = "上传附件")
-    public Object uploadAttachmentFile(MultipartFile multipartFile,Integer attachmentType){
-        return projectFileService.uploadAttachmentFile(multipartFile,attachmentType);
+    public Object uploadAttachmentFile(@RequestParam("file") List<MultipartFile> multipartFile, Long projectId){
+        return projectFileService.uploadAttachmentFile(multipartFile,projectId);
     }
 
 
@@ -91,7 +92,12 @@ public class FileController {
         return projectFileService.uploadConcludingReport(projectGroupId,file);
     }
 
-    @ApiIgnore
+    @ApiOperation("上传结题实验报告--重点项目和普通项目")
+    @PostMapping(value = "/uploadExperimentReport", name = "上传结题报告")
+    public Result uploadExperimentReport(Long projectGroupId,MultipartFile file){
+        return projectFileService.uploadExperimentReport(projectGroupId,file);
+    }
+
     @ApiOperation("显示所有附件信息")
     @GetMapping(value = "listAttachmentFiles", name = "显示所有附件信息")
     public Object listAttachmentFiles(){
