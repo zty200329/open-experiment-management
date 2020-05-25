@@ -1712,7 +1712,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (detail.getKeyProjectStatus() != null) {
             detail.setStatus(detail.getKeyProjectStatus());
         }
-        ProjectFile file = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.APPLY_MATERIAL.getValue());
+        ProjectFile file = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.APPLY_MATERIAL.getValue(),null);
         if (file == null) {
             detail.setApplyurl(null);
         } else {

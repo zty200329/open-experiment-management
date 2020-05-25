@@ -99,7 +99,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         }
 
         //文件上传验证，没有进行证明材料上传不得申请重点项目
-        ProjectFile projectFile = projectFileMapper.selectByProjectGroupIdAndMaterialType(form.getProjectId(),MaterialType.APPLY_MATERIAL.getValue());
+        ProjectFile projectFile = projectFileMapper.selectByProjectGroupIdAndMaterialType(form.getProjectId(),MaterialType.APPLY_MATERIAL.getValue(),null);
         if (projectFile == null) {
             throw new GlobalException(CodeMsg.KEY_PROJECT_APPLY_MATERIAL_EMPTY);
         }
@@ -311,7 +311,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             }
 
 
-            if ( projectFileMapper.selectByProjectGroupIdAndMaterialType(check.getProjectId(),MaterialType.APPLY_MATERIAL.getValue()) == null) {
+            if ( projectFileMapper.selectByProjectGroupIdAndMaterialType(check.getProjectId(),MaterialType.APPLY_MATERIAL.getValue(),null) == null) {
                 throw new GlobalException(CodeMsg.KEY_PROJECT_APPLY_MATERIAL_EMPTY);
             }
 

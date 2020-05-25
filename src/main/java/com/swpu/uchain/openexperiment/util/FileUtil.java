@@ -147,7 +147,15 @@ public class FileUtil {
     public static String getFileRealPath(Long fileId, String uploadDir, String fileName){
         return uploadDir + "/" + fileId + "_" + fileName;
     }
-
+    /**
+     * 获取文件真正的路径
+     * @param uploadDir
+     * @param fileName
+     * @return
+     */
+    public static String getFileRealPath1(Long projectId,String uploadDir, String fileName){
+        return uploadDir + "/" + projectId+"/"+projectId + "_" + fileName;
+    }
     /**
      * 获取文件的大小
      * @param fileSize

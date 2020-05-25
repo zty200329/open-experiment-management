@@ -74,6 +74,9 @@
     <if test="materialType!=null">
       and material_type = #{materialType}
     </if>
+    <if test="filename!=null">
+      and locate(#{filename},`file_name`)
+    </if>
   </select>
   <select id="selectByProjectGroupIdAndFileName" resultMap="BaseResultMap">
     select id, project_group_id, download_times, file_name, file_type, size, upload_time, upload_user_id,material_type

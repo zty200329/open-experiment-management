@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -99,13 +100,13 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     public boolean insert(ProjectFile projectFile) {
 
         //如果为申请只能存在一条
-        if(projectFile.getMaterialType()==1) {
-            ProjectFile projectFile1 = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectFile.getProjectGroupId(), projectFile.getMaterialType());
+        if (projectFile.getMaterialType() == 1) {
+            ProjectFile projectFile1 = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectFile.getProjectGroupId(), projectFile.getMaterialType(), null);
             if (projectFile1 != null) {
                 projectFile.setId(projectFile1.getId());
                 return update(projectFile);
             }
-        }else{
+        } else {
             ProjectFile projectFile1 = projectFileMapper.selectByProjectGroupIdAndFileName(projectFile.getProjectGroupId(), projectFile.getFileName());
             if (projectFile1 != null) {
                 projectFile.setId(projectFile1.getId());
@@ -342,7 +343,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 return Result.error(CodeMsg.ADD_ERROR);
             }
             if (!FileUtil.uploadFile(
-                    file,uploadConfig.getConclusionDir()+"/"+projectFile.getFileName())) {
+                    file, uploadConfig.getConclusionDir() + "/" + projectFile.getFileName())) {
                 return Result.error(CodeMsg.UPLOAD_ERROR);
             }
 
@@ -379,26 +380,24 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (projectGroup == null) {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
-
-
-        //判断是否存在该文件,若存在则进行覆盖
-        ProjectFile projectFile = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.CONCLUSION_MATERIAL.getValue());
-
-        if (projectFile != null) {
-            FileUtil.uploadFile(
-                    file,
-                    FileUtil.getFileRealPath(
-                            projectFile.getId(),
-                            uploadConfig.getConclusionDir(),
-                            uploadConfig.getConcludingFileName()));
-        }
         User currentUser = getUserService.getCurrentUser();
 
-        //TODO,校验当前用户是否有权进行上传
 
         if (userProjectService.selectByProjectGroupIdAndUserId(projectId, Long.valueOf(currentUser.getCode())) == null) {
             return Result.error(CodeMsg.PERMISSION_DENNY);
         }
+
+        ProjectFile projectFile;
+//                = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.CONCLUSION_MATERIAL.getValue(), uploadConfig.getConcludingFileName());
+//        //判断是否存在该文件,若存在则进行覆盖
+//        if (projectFile != null) {
+//            FileUtil.uploadFile(
+//                    file,
+//                    FileUtil.getFileRealPath(
+//                            projectId,
+//                            uploadConfig.getConclusionDir(),
+//                            uploadConfig.getConcludingFileName() + getFileSuffix(file.getOriginalFilename())));
+//        }
 
         projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
@@ -410,10 +409,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(file)));
         projectFile.setDownloadTimes(0);
         projectFile.setProjectGroupId(projectId);
-
-        if (!insert(projectFile)) {
-            return Result.error(CodeMsg.ADD_ERROR);
-        }
         String docPath = FileUtil.getFileRealPath(projectId,
                 uploadConfig.getConclusionDir(),
                 uploadConfig.getConcludingFileName() + getFileSuffix(file.getOriginalFilename()));
@@ -424,6 +419,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 file,
                 docPath)) {
             return Result.error(CodeMsg.UPLOAD_ERROR);
+        }
+        if (!insert(projectFile)) {
+            return Result.error(CodeMsg.ADD_ERROR);
         }
         // 异步转换成PDF
         convertDocToPDF(docPath, pdfPath);
@@ -445,16 +443,17 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
 
         //判断是否存在该文件,若存在则进行覆盖
-        ProjectFile projectFile = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.EXPERIMENTAL_REPORT.getValue());
-
-        if (projectFile != null) {
-            FileUtil.uploadFile(
-                    file,
-                    FileUtil.getFileRealPath(
-                            projectFile.getId(),
-                            uploadConfig.getConclusionDir(),
-                            uploadConfig.getExperimentReportFileName()));
-        }
+        ProjectFile projectFile;
+//                = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.EXPERIMENTAL_REPORT.getValue(), uploadConfig.getConcludingFileName());
+//
+//        if (projectFile != null) {
+//            FileUtil.uploadFile(
+//                    file,
+//                    FileUtil.getFileRealPath(
+//                            projectFile.getId(),
+//                            uploadConfig.getConclusionDir(),
+//                            uploadConfig.getExperimentReportFileName()));
+//        }
         User currentUser = getUserService.getCurrentUser();
 
         //TODO,校验当前用户是否有权进行上传
