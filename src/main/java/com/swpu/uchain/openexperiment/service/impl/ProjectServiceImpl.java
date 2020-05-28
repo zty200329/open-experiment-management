@@ -911,6 +911,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         List<CheckProjectVO> checkProjectVOs = projectGroupMapper.selectApplyOrderByTime(status, projectType, currentUser.getInstitute());
         for (CheckProjectVO checkProjectVO : checkProjectVOs) {
+            checkProjectVO.setStatus(status);
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
             checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(checkProjectVO.getId(), null));
             List<UserMemberVO> guidanceTeachers = new ArrayList<>();
@@ -1779,8 +1780,16 @@ public class ProjectServiceImpl implements ProjectService {
             detail.setStatus(detail.getKeyProjectStatus());
         }
         BeanUtils.copyProperties(detail, conclusionDetailVO);
+        ProjectFile file = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.APPLY_MATERIAL.getValue(), null);
         ProjectFile conclusionPdf = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.CONCLUSION_MATERIAL.getValue(), uploadConfig.getConcludingFileName());
         ProjectFile experimentReportPdf = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.EXPERIMENTAL_REPORT.getValue(), uploadConfig.getExperimentReportFileName());
+        if (file == null) {
+            detail.setApplyurl(null);
+        } else {
+            String fileName = file.getFileName();
+            String url = ipAddress + "/apply/" + fileName;
+            detail.setApplyurl(url);
+        }
         if (conclusionPdf == null) {
             conclusionDetailVO.setConclusionPdf(null);
         } else {

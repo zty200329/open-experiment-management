@@ -149,6 +149,7 @@ public class ProjectGroupConclusionDetailVO {
      */
     private String mainContent;
 
+    private String applyUrl;
     /**
      * 结题验收报告pdf
      */

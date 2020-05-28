@@ -19,6 +19,7 @@ import java.util.List;
 public class CheckProjectVO{
 
     private String serialNumber;
+    private Integer status;
     private String limitCollege;
     private Long id;
     private String projectName;

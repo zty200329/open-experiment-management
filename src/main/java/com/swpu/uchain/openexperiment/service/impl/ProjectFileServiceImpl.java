@@ -4,6 +4,7 @@ import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
 import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
 import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
 import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
+import com.swpu.uchain.openexperiment.VO.project.UploadAttachmentFileVO;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
 import com.swpu.uchain.openexperiment.domain.*;
@@ -326,7 +327,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return Result.error(CodeMsg.PERMISSION_DENNY);
         }
 
-        List<String> attachmentUrls = new ArrayList<>();
+        List<UploadAttachmentFileVO> attachmentUrls = new ArrayList<>();
         for (MultipartFile file : multipartFile) {
 
 
@@ -346,8 +347,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                     file, uploadConfig.getConclusionAnnex() + "/" + projectFile.getFileName())) {
                 return Result.error(CodeMsg.UPLOAD_ERROR);
             }
-
-            attachmentUrls.add(ipAddress + "/conclusionAnnex/" + projectFile.getFileName());
+            UploadAttachmentFileVO attachmentFileVO = new UploadAttachmentFileVO();
+            attachmentFileVO.setFileId(projectFile.getId());
+            attachmentFileVO.setAttachmentUrls(ipAddress + "/conclusionAnnex/" + projectFile.getFileName());
+            attachmentUrls.add(attachmentFileVO);
         }
         return Result.success(attachmentUrls);
     }
@@ -431,6 +434,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         // 异步转换成PDF
         convertDocToPDF(docPath, pdfPath);
         Map<String, String> map = new HashMap<>();
+        map.put("FileId", String.valueOf(projectFile.getId()));
         map.put("ConcludingReportUrl", ipAddress + "/conclusion/" + projectFile.getFileName());
         return Result.success(map);
     }
@@ -494,6 +498,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         // 异步转换成PDF
         convertDocToPDF(docPath, pdfPath);
         Map<String, String> map = new HashMap<>();
+        map.put("FileId", String.valueOf(projectFile.getId()));
         map.put("ExperimentReportUrl", ipAddress + "/conclusion/" + projectFile.getFileName());
         return Result.success(map);
     }
