@@ -571,26 +571,38 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.error(CodeMsg.UPDATE_ERROR);
     }
 
+    /**
+     * 同意立项
+     * @param list
+     * @return
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result agreeEstablish(List<ProjectCheckForm> list) {
-        return setProjectStatusAndRecord(list, OperationType.AGREE, OperationUnit.FUNCTIONAL_DEPARTMENT);
+        return setProjectStatusAndRecord(list, OperationType.AGREE, OperationUnit.FUNCTIONAL_DEPARTMENT,ProjectStatus.ESTABLISH);
     }
 
     /**
      * 同意中期检查
-     *
+     * 好像不用了
      * @param list
      * @return
      */
     @Override
     public Result agreeIntermediateInspectionProject(List<ProjectCheckForm> list) {
-        return setProjectStatusAndRecord(list, OperationType.OFFLINE_CHECK, OperationUnit.FUNCTIONAL_DEPARTMENT);
+        return setProjectStatusAndRecord(list, OperationType.OFFLINE_CHECK, OperationUnit.FUNCTIONAL_DEPARTMENT,ProjectStatus.ESTABLISH);
     }
 
+    /**
+     * 职能部门同意结题
+     *
+     * @param list
+     * @return
+     */
+    //TODO 有问题
     @Override
     public Result agreeToBeConcludingProject(List<ProjectCheckForm> list) {
-        return setProjectStatusAndRecord(list, OperationType.CONCLUSION, OperationUnit.FUNCTIONAL_DEPARTMENT);
+        return setProjectStatusAndRecord(list, OperationType.FUNCTIONAL_PASSED_THE_EXAMINATION, OperationUnit.FUNCTIONAL_DEPARTMENT,ProjectStatus.COLLEGE_FINAL_SUBMISSION);
     }
 
     /**
@@ -600,22 +612,22 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public Result agreeCollegePassedTheExamination(List<ProjectCheckForm> list) {
-        return setProjectStatusAndRecord(list, OperationType.COLLEGE_PASSED_THE_EXAMINATION, OperationUnit.LAB_ADMINISTRATOR);
+        return setProjectStatusAndRecord(list, OperationType.COLLEGE_PASSED_THE_EXAMINATION, OperationUnit.COLLEGE_REVIEWER,ProjectStatus.COLLEGE_FINAL_SUBMISSION);
     }
 
 
     /**
-     * 复核通过
+     * 立项状态
      *
      * @param list
      * @param operationType
      * @param operationUnit
      * @return
      */
-    private Result setProjectStatusAndRecord(List<ProjectCheckForm> list, OperationType operationType, OperationUnit operationUnit) {
+    private Result setProjectStatusAndRecord(List<ProjectCheckForm> list, OperationType operationType, OperationUnit operationUnit,ProjectStatus projectStatus) {
         List<OperationRecord> operationRecordS = new LinkedList<>();
         for (ProjectCheckForm projectCheckForm : list) {
-            Result result = updateProjectStatus(projectCheckForm.getProjectId(), ProjectStatus.ESTABLISH.getValue());
+            Result result = updateProjectStatus(projectCheckForm.getProjectId(), projectStatus.getValue());
             if (result.getCode() != 0) {
                 throw new GlobalException(CodeMsg.UPDATE_ERROR);
             }
@@ -1100,9 +1112,14 @@ public class ProjectServiceImpl implements ProjectService {
         return approveProjectApply(list, RoleType.SECONDARY_UNIT.getValue());
     }
 
+    /**
+     * 复核通过
+     * @param list
+     * @return
+     */
     @Override
     public Result midTermReviewPassed(List<ProjectCheckForm> list) {
-        return setProjectStatusAndRecord(list, OperationType.MIDTERM_REVIEW_PASSED, OperationUnit.FUNCTIONAL_DEPARTMENT);
+        return setProjectStatusAndRecord(list, OperationType.MIDTERM_REVIEW_PASSED, OperationUnit.FUNCTIONAL_DEPARTMENT,ProjectStatus.ESTABLISH);
     }
 
 
