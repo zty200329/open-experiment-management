@@ -380,6 +380,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional(rollbackFor = Exception.class)
     public Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm) {
 
+        //TODO 起止时间有问题
         //验证时间限制
         timeLimitService.validTime(TimeLimitType.DECLARE_LIMIT);
 
@@ -837,8 +838,15 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result collegeGetsTheItemsToBeCompleted() {
+//        timeLimitService.validTime(TimeLimitType.DECLARE_LIMIT);
         //TODO 应该加入时间校验
         return getCheckInfo(ProjectStatus.ESTABLISH);
+    }
+
+    @Override
+    public Result collegeGetsTheProjects() {
+        //TODO 应该加入时间校验
+        return getCheckInfo(ProjectStatus.COLLEGE_FINAL_SUBMISSION);
     }
 
     @Override

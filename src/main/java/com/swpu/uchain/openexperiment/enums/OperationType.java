@@ -16,7 +16,7 @@ public enum OperationType {
     REPORT(3,"上报"),
     MODIFY(4,"修改"),
     OFFLINE_CHECK(5,"线下检查通过"),
-//    CONCLUSION(6,"结题审核通过"),
+    CONCLUSION(6,"结题审核通过"),
     OFFLINE_CHECK_REJECT(7,"线下检查不通过"),
     CONCLUSION_REJECT(8,"结题审核不通过"),
     REPORT_REJECT(0,"上报拒绝"),
