@@ -119,6 +119,12 @@ public class ProjectQueryController {
         return projectService.selectKeyProjectByKeyword(Keyword);
     }
 
+    @ApiOperation("学院获取待结题项目")
+    @GetMapping(value = "/collegeGetsTheItemsToBeCompleted")
+    public Result collegeGetsTheItemsToBeCompleted (){
+        return projectService.collegeGetsTheItemsToBeCompleted();
+    }
+
     @ApiOperation("职能部门获取待结题检查的项目")
     @GetMapping(value = "getToBeConcludingProject")
     public Result getToBeConcludingProject (){

@@ -285,6 +285,12 @@ public interface ProjectService {
 
     Result getIntermediateInspectionProject();
 
+    /**
+     * 学院获取待结题项目
+     * @return
+     */
+    Result collegeGetsTheItemsToBeCompleted();
+
     Result getMidTermReturnProject();
 
     Result agreeIntermediateInspectionProject(List<ProjectCheckForm> list);

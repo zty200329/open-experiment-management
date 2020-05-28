@@ -594,13 +594,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     /**
-     * 学院同意结题
+     * 学院同意普通项目结题
      * @param list
      * @return
      */
     @Override
     public Result agreeCollegePassedTheExamination(List<ProjectCheckForm> list) {
-        return setProjectStatusAndRecord(list, OperationType.OFFLINE_CHECK, OperationUnit.FUNCTIONAL_DEPARTMENT);
+        return setProjectStatusAndRecord(list, OperationType.COLLEGE_PASSED_THE_EXAMINATION, OperationUnit.LAB_ADMINISTRATOR);
     }
 
 
@@ -820,6 +820,12 @@ public class ProjectServiceImpl implements ProjectService {
     public Result getIntermediateInspectionProject() {
         //ESTABLISH
 //        return getCheckInfo(ProjectStatus.MID_TERM_INSPECTION);
+        return getCheckInfo(ProjectStatus.ESTABLISH);
+    }
+
+    @Override
+    public Result collegeGetsTheItemsToBeCompleted() {
+        //TODO 应该加入时间校验
         return getCheckInfo(ProjectStatus.ESTABLISH);
     }
 
@@ -1629,6 +1635,8 @@ public class ProjectServiceImpl implements ProjectService {
     public Result rejectToBeConcludingProject(List<ProjectCheckForm> list) {
         return rejectProjectApply(list, OperationUnit.FUNCTIONAL_DEPARTMENT, OperationType.CONCLUSION_REJECT);
     }
+
+
 
     /**
      * 因为是批量操作  所以就最好将拒绝和同意分开
