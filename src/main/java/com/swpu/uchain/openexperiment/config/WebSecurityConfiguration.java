@@ -91,6 +91,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/static/**",
                         "/apply/**",
                         "/conclusion/**",
+                        "/conclusionAnnex/**",
                         "/material/**"
                 ).permitAll()
                 //配置swagger界面的匿名访问

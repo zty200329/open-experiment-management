@@ -43,8 +43,18 @@ public class UploadConfig {
     private String experimentReportFileName;
 
     /**
-     * 证明材料上传位置
+     * 证明材料上传位置doc
      */
     private String conclusionDir;
+
+    /**
+     * 结题异步转换pdf位置
+     */
+    private String conclusionPdf;
+
+    /**
+     * 结题附件位置
+     */
+    private String conclusionAnnex;
 }
 

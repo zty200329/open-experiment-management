@@ -22,6 +22,8 @@ upload:
   pdf-temp-dir: "/home/zty/open-experiment-management-system/pdf_temp_dir"
   conclusion-dir: "/home/zty/open-experiment-management-system/conclusion_dir"
   material_sample: "/home/zty/open-experiment-management-system/material_sample"
+  conclusion-pdf: "/home/zty/open-experiment-management-system/conclusion_pdf"
+  conclusion-annex: "/home/zty/open-experiment-management-system/conclusion_annex"
 download:
   certificate-excel-download: "/home/zty/test"
 file:

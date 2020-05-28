@@ -343,11 +343,11 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 return Result.error(CodeMsg.ADD_ERROR);
             }
             if (!FileUtil.uploadFile(
-                    file, uploadConfig.getConclusionDir() + "/" + projectFile.getFileName())) {
+                    file, uploadConfig.getConclusionAnnex() + "/" + projectFile.getFileName())) {
                 return Result.error(CodeMsg.UPLOAD_ERROR);
             }
 
-            attachmentUrls.add(ipAddress + "/conclusion/" + projectFile.getFileName());
+            attachmentUrls.add(ipAddress + "/conclusionAnnex/" + projectFile.getFileName());
         }
         return Result.success(attachmentUrls);
     }
@@ -413,7 +413,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 uploadConfig.getConclusionDir(),
                 uploadConfig.getConcludingFileName() + getFileSuffix(file.getOriginalFilename()));
         String pdfPath = FileUtil.getFileRealPath(projectId,
-                uploadConfig.getConclusionDir(),
+                uploadConfig.getConclusionPdf(),
                 uploadConfig.getConcludingFileName() + ".pdf");
         if (!FileUtil.uploadFile(
                 file,
@@ -479,7 +479,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 uploadConfig.getConclusionDir(),
                 uploadConfig.getExperimentReportFileName() + getFileSuffix(file.getOriginalFilename()));
         String pdfPath = FileUtil.getFileRealPath(projectId,
-                uploadConfig.getConclusionDir(),
+                uploadConfig.getConclusionPdf(),
                 uploadConfig.getExperimentReportFileName() + ".pdf");
         if (!FileUtil.uploadFile(
                 file,
