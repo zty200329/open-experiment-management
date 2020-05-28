@@ -111,7 +111,7 @@ public class FileController {
         return Result.success();
     }
 
-    @ApiIgnore("下载附件")
+    @ApiOperation("下载附件")
     @GetMapping(value = "downloadAttachmentFile", name = "下载附件")
     public void downloadAttachmentFile(long fileId, HttpServletResponse response){
         projectFileService.downloadAttachmentFile(fileId, response);

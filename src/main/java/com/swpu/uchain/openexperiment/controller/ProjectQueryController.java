@@ -152,6 +152,13 @@ public class ProjectQueryController {
         return projectService.getProjectGroupDetailVOByProjectId(projectId);
     }
 
+
+    @ApiOperation("普通项目结题通过项目ID查看项目详情--成员和项目信息")
+    @GetMapping("/getConclusionInfo")
+    public Result getProjectGroupConclusionDetailByProjectId(@RequestParam("id")Long projectId){
+        return projectService.getProjectGroupConclusionDetailByProjectId(projectId);
+    }
+
     @ApiOperation("二级单位查看待上报的项目")
     @GetMapping("/getToBeReportedProjectBySecondaryUnit")
     public Result getToBeReportedProjectBySecondaryUnit(){

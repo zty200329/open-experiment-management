@@ -8,7 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author panghu
+ * @author zty
+ * 普通项目详情
  */
 @Data
 public class ProjectGroupConclusionDetailVO {
@@ -149,9 +150,19 @@ public class ProjectGroupConclusionDetailVO {
     private String mainContent;
 
     /**
-     * 重点项目申请书PDF
+     * 结题验收报告pdf
      */
-    private String applyurl;
+    private ProjectAnnex conclusionPdf;
+
+    /**
+     * 项目实验报告
+     */
+    private ProjectAnnex experimentReportPdf;
+
+    /**
+     * 附件
+     */
+    private List<ProjectAnnex> annexes;
 
     /**
      * 项目成员详情

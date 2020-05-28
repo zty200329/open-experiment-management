@@ -352,13 +352,18 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         return Result.success(attachmentUrls);
     }
 
+    /**
+     * 下载附件
+     * @param fileId
+     * @param response
+     */
     @Override
     public void downloadAttachmentFile(long fileId, HttpServletResponse response) {
         ProjectFile projectFile = selectById(fileId);
         if (projectFile == null) {
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
-        if (FileUtil.downloadFile(response, FileUtil.getFileRealPath(fileId, uploadConfig.getApplyDir(), projectFile.getFileName()))) {
+        if (FileUtil.downloadFile(response, FileUtil.getFileRealPath(uploadConfig.getConclusionAnnex(), projectFile.getFileName()))) {
             throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
         }
     }

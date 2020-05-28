@@ -75,7 +75,7 @@ public class ProjectServiceImpl implements ProjectService {
                               RoleMapper roleMapper, AmountLimitMapper amountLimitMapper,
                               UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper,
                               KeyProjectStatusMapper keyProjectStatusMapper, ProjectFileMapper projectFileMapper,
-                              TimeLimitService timeLimitService,RedisUtil redisUtil, UserRoleService userRoleService, HitBackMessageMapper hitBackMessageMapper) {
+                              TimeLimitService timeLimitService, RedisUtil redisUtil, UserRoleService userRoleService, HitBackMessageMapper hitBackMessageMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -150,7 +150,7 @@ public class ProjectServiceImpl implements ProjectService {
         return projectGroupMapper.selectByUserIdAndStatus(userId, projectStatus, joinStatus);
     }
 
-    private List<CheckProjectVO> selectFunctionCreateCommonApply(){
+    private List<CheckProjectVO> selectFunctionCreateCommonApply() {
         return projectGroupMapper.selectFunctionCreateCommonApply();
     }
 
@@ -339,12 +339,12 @@ public class ProjectServiceImpl implements ProjectService {
         if (result.getCode() != 0) {
             throw new GlobalException(CodeMsg.ADD_PROJECT_GROUP_ERROR);
         }
-        if(form.getProjectType() == 2){
+        if (form.getProjectType() == 2) {
             keyProjectStatusMapper.insert(projectGroup.getId(), ProjectStatus.ESTABLISH.getValue(),
                     projectGroup.getSubordinateCollege(), Long.valueOf(currentUser.getCode()));
         }
         String itemNumber = form.getItemNumber();
-        projectGroupMapper.updateProjectTempSerialNumber(projectGroup.getId(),itemNumber);
+        projectGroupMapper.updateProjectTempSerialNumber(projectGroup.getId(), itemNumber);
 
         String[] teacherArray = new String[1];
         teacherArray[0] = form.getTeacherCodes();
@@ -574,24 +574,26 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 同意立项
+     *
      * @param list
      * @return
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result agreeEstablish(List<ProjectCheckForm> list) {
-        return setProjectStatusAndRecord(list, OperationType.AGREE, OperationUnit.FUNCTIONAL_DEPARTMENT,ProjectStatus.ESTABLISH);
+        return setProjectStatusAndRecord(list, OperationType.AGREE, OperationUnit.FUNCTIONAL_DEPARTMENT, ProjectStatus.ESTABLISH);
     }
 
     /**
      * 同意中期检查
      * 好像不用了
+     *
      * @param list
      * @return
      */
     @Override
     public Result agreeIntermediateInspectionProject(List<ProjectCheckForm> list) {
-        return setProjectStatusAndRecord(list, OperationType.OFFLINE_CHECK, OperationUnit.FUNCTIONAL_DEPARTMENT,ProjectStatus.ESTABLISH);
+        return setProjectStatusAndRecord(list, OperationType.OFFLINE_CHECK, OperationUnit.FUNCTIONAL_DEPARTMENT, ProjectStatus.ESTABLISH);
     }
 
     /**
@@ -603,17 +605,18 @@ public class ProjectServiceImpl implements ProjectService {
     //TODO 有问题
     @Override
     public Result agreeToBeConcludingProject(List<ProjectCheckForm> list) {
-        return setProjectStatusAndRecord(list, OperationType.FUNCTIONAL_PASSED_THE_EXAMINATION, OperationUnit.FUNCTIONAL_DEPARTMENT,ProjectStatus.COLLEGE_FINAL_SUBMISSION);
+        return setProjectStatusAndRecord(list, OperationType.FUNCTIONAL_PASSED_THE_EXAMINATION, OperationUnit.FUNCTIONAL_DEPARTMENT, ProjectStatus.COLLEGE_FINAL_SUBMISSION);
     }
 
     /**
      * 学院同意普通项目结题
+     *
      * @param list
      * @return
      */
     @Override
     public Result agreeCollegePassedTheExamination(List<ProjectCheckForm> list) {
-        return setProjectStatusAndRecord(list, OperationType.COLLEGE_PASSED_THE_EXAMINATION, OperationUnit.COLLEGE_REVIEWER,ProjectStatus.COLLEGE_FINAL_SUBMISSION);
+        return setProjectStatusAndRecord(list, OperationType.COLLEGE_PASSED_THE_EXAMINATION, OperationUnit.COLLEGE_REVIEWER, ProjectStatus.COLLEGE_FINAL_SUBMISSION);
     }
 
 
@@ -625,7 +628,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @param operationUnit
      * @return
      */
-    private Result setProjectStatusAndRecord(List<ProjectCheckForm> list, OperationType operationType, OperationUnit operationUnit,ProjectStatus projectStatus) {
+    private Result setProjectStatusAndRecord(List<ProjectCheckForm> list, OperationType operationType, OperationUnit operationUnit, ProjectStatus projectStatus) {
         List<OperationRecord> operationRecordS = new LinkedList<>();
         for (ProjectCheckForm projectCheckForm : list) {
             Result result = updateProjectStatus(projectCheckForm.getProjectId(), projectStatus.getValue());
@@ -749,6 +752,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 职能部门获取内定项目
+     *
      * @return
      */
     @Override
@@ -756,7 +760,7 @@ public class ProjectServiceImpl implements ProjectService {
         User currentUser = getUserService.getCurrentUser();
 
         List<CheckProjectVO> checkProjectVOs = selectFunctionCreateCommonApply();
-        log.info(checkProjectVOs.size()+"***********");
+        log.info(checkProjectVOs.size() + "***********");
 
         for (CheckProjectVO checkProjectVO : checkProjectVOs) {
             List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectGroupId(checkProjectVO.getId());
@@ -800,16 +804,17 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 根据关键字查询
+     *
      * @param Keyword
      * @return
      */
     @Override
     public Result selectByKeyword(String Keyword) {
-        List<SelectByKeywordProjectVO> projectVOS = (List<SelectByKeywordProjectVO>) redisUtil.get("select"+Keyword);
-        if(projectVOS == null || projectVOS.size()==0){
+        List<SelectByKeywordProjectVO> projectVOS = (List<SelectByKeywordProjectVO>) redisUtil.get("select" + Keyword);
+        if (projectVOS == null || projectVOS.size() == 0) {
             projectVOS = projectGroupMapper.selectByKeyword(Keyword);
-            if(projectVOS != null &&projectVOS.size()!=0){
-                redisUtil.set("select"+Keyword,projectVOS,300);
+            if (projectVOS != null && projectVOS.size() != 0) {
+                redisUtil.set("select" + Keyword, projectVOS, 300);
                 log.info("存入redis");
             }
         }
@@ -818,11 +823,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result selectKeyProjectByKeyword(SelectByKeywordForm Keyword) {
-        List<SelectByKeywordProjectVO> projectVOS = (List<SelectByKeywordProjectVO>) redisUtil.get("selectKey"+Keyword);
-        if(projectVOS == null || projectVOS.size()==0){
+        List<SelectByKeywordProjectVO> projectVOS = (List<SelectByKeywordProjectVO>) redisUtil.get("selectKey" + Keyword);
+        if (projectVOS == null || projectVOS.size() == 0) {
             projectVOS = projectGroupMapper.keyProjectSelectByKeyword(Keyword.getKeyword());
-            if(projectVOS != null &&projectVOS.size()!=0){
-                redisUtil.set("select"+Keyword,projectVOS,300);
+            if (projectVOS != null && projectVOS.size() != 0) {
+                redisUtil.set("select" + Keyword, projectVOS, 300);
                 log.info("存入redis");
             }
         }
@@ -1122,12 +1127,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 复核通过
+     *
      * @param list
      * @return
      */
     @Override
     public Result midTermReviewPassed(List<ProjectCheckForm> list) {
-        return setProjectStatusAndRecord(list, OperationType.MIDTERM_REVIEW_PASSED, OperationUnit.FUNCTIONAL_DEPARTMENT,ProjectStatus.ESTABLISH);
+        return setProjectStatusAndRecord(list, OperationType.MIDTERM_REVIEW_PASSED, OperationUnit.FUNCTIONAL_DEPARTMENT, ProjectStatus.ESTABLISH);
     }
 
 
@@ -1662,7 +1668,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
-
     /**
      * 因为是批量操作  所以就最好将拒绝和同意分开
      *
@@ -1745,7 +1750,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (detail.getKeyProjectStatus() != null) {
             detail.setStatus(detail.getKeyProjectStatus());
         }
-        ProjectFile file = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.APPLY_MATERIAL.getValue(),null);
+        ProjectFile file = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.APPLY_MATERIAL.getValue(), null);
         if (file == null) {
             detail.setApplyurl(null);
         } else {
@@ -1754,6 +1759,56 @@ public class ProjectServiceImpl implements ProjectService {
             detail.setApplyurl(url);
         }
         return Result.success(detail);
+    }
+
+    /**
+     * 普通项目结题状态获取项目详情
+     *
+     * @param projectId
+     * @return
+     */
+    @Override
+    public Result getProjectGroupConclusionDetailByProjectId(Long projectId) {
+        if (projectId == null) {
+            throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
+        }
+        ProjectGroupConclusionDetailVO conclusionDetailVO = new ProjectGroupConclusionDetailVO();
+        ProjectGroupDetailVO detail = projectGroupMapper.getProjectGroupDetailVOByProjectId(projectId);
+        //设置状态
+        if (detail.getKeyProjectStatus() != null) {
+            detail.setStatus(detail.getKeyProjectStatus());
+        }
+        BeanUtils.copyProperties(detail, conclusionDetailVO);
+        ProjectFile conclusionPdf = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.CONCLUSION_MATERIAL.getValue(), uploadConfig.getConcludingFileName());
+        ProjectFile experimentReportPdf = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.EXPERIMENTAL_REPORT.getValue(), uploadConfig.getExperimentReportFileName());
+        if (conclusionPdf == null) {
+            conclusionDetailVO.setConclusionPdf(null);
+        } else {
+            ProjectAnnex conclusionFile = new ProjectAnnex();
+            String url = ipAddress + "/conclusion/" + conclusionPdf.getFileName();
+            BeanUtils.copyProperties(conclusionPdf,conclusionFile);
+            conclusionFile.setUrl(url);
+            BeanUtils.copyProperties(conclusionFile,conclusionDetailVO);
+            conclusionDetailVO.setConclusionPdf(conclusionFile);
+        }
+        if (experimentReportPdf == null) {
+            conclusionDetailVO.setExperimentReportPdf(null);
+        } else {
+            ProjectAnnex experimentReport = new ProjectAnnex();
+            String url = ipAddress + "/conclusion/" + experimentReport.getFileName();
+            BeanUtils.copyProperties(experimentReportPdf,experimentReport);
+            experimentReport.setUrl(url);
+            BeanUtils.copyProperties(experimentReport,conclusionDetailVO);
+            conclusionDetailVO.setExperimentReportPdf(experimentReport);
+        }
+        //查询该项目所有附件
+        List<ProjectAnnex> projectAnnexes = projectFileMapper.selectAnnexByProjectGroupId(projectId);
+        for (ProjectAnnex projectAnnex : projectAnnexes) {
+            String url = ipAddress + "/conclusionAnnex/" + projectAnnex.getFileName();
+            projectAnnex.setUrl(url);
+        }
+        conclusionDetailVO.setAnnexes(projectAnnexes);
+        return Result.success(conclusionDetailVO);
     }
 
     @Override

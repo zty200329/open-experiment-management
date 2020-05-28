@@ -93,4 +93,11 @@
     inner join openexperiment.u_stu where u_stu.id = openexperiment.project_file.upload_user_id
     and project_group_id is null
   </select>
+  <select id="selectAnnexByProjectGroupId" resultType="com.swpu.uchain.openexperiment.VO.project.ProjectAnnex">
+    select project_file.id as id,  project_file.file_name as fileName,
+    project_file.file_type as fileType,  project_file.upload_user_id as uploadUserId
+    from openexperiment.project_file
+
+    where project_file.project_group_id = #{projectGroupId} and project_file.material_type = 10 and project_file.file_type = 3 or project_file.file_type = 4
+  </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
+import com.swpu.uchain.openexperiment.VO.project.ProjectAnnex;
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -29,4 +30,6 @@ public interface ProjectFileMapper {
     ProjectFile selectByProjectGroupIdAndFileName(@Param("projectGroupId") Long projectGroupId,@Param("fileName") String fileName);
 
     List<AttachmentFileDTO> selectAttachmentFiles();
+
+    List<ProjectAnnex> selectAnnexByProjectGroupId(@Param("projectGroupId")Long projectGroupId);
 }

@@ -10,6 +10,7 @@ import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.form.query.HistoryQueryProjectInfo;
 import com.swpu.uchain.openexperiment.result.Result;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -214,6 +215,12 @@ public interface ProjectService {
      */
     Result getProjectGroupDetailVOByProjectId(Long projectId);
 
+    /**
+     * 普通项目结题状态获取项目详情
+     * @param projectId
+     * @return
+     */
+    Result getProjectGroupConclusionDetailByProjectId(Long projectId);
 
     Result getToBeReportedProjectBySecondaryUnit();
 

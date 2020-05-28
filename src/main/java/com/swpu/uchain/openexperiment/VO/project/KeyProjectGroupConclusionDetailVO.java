@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author panghu
+ * @author zty
  */
 @Data
 public class KeyProjectGroupConclusionDetailVO {
