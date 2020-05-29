@@ -95,6 +95,14 @@ public interface ProjectFileService {
 
     Result uploadExperimentReport(Long projectId,MultipartFile file);
 
+    /**
+     * 上传成果附件
+     * @param projectGroupId
+     * @param file
+     * @return
+     */
+    Result uploadAchievementAnnex(Long projectGroupId,MultipartFile file);
+
 
     /**
      * 生成立项总览表

@@ -26,6 +26,10 @@ public enum FileType {
      * 图片文件
      */
     IMAGE(4),
+    /**
+     * 压缩文件
+     */
+    ZIP(5)
     ;
     private Integer value;
 

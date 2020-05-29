@@ -59,6 +59,9 @@ public class FileUtil {
         if (".img".equals(suffix)) {
             return FileType.IMAGE.getValue();
         }
+        if (".zip".equals(suffix)) {
+            return FileType.ZIP.getValue();
+        }
         return 0;
     }
 

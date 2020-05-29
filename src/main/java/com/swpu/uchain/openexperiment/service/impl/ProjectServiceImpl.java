@@ -1781,6 +1781,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         BeanUtils.copyProperties(detail, conclusionDetailVO);
         ProjectFile file = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.APPLY_MATERIAL.getValue(), null);
+        log.info(String.valueOf(file));
         ProjectFile conclusionPdf = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.CONCLUSION_MATERIAL.getValue(), uploadConfig.getConcludingFileName());
         ProjectFile experimentReportPdf = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.EXPERIMENTAL_REPORT.getValue(), uploadConfig.getExperimentReportFileName());
         if (file == null) {
@@ -1788,7 +1789,7 @@ public class ProjectServiceImpl implements ProjectService {
         } else {
             String fileName = file.getFileName();
             String url = ipAddress + "/apply/" + fileName;
-            detail.setApplyurl(url);
+            conclusionDetailVO.setApplyUrl(url);
         }
         if (conclusionPdf == null) {
             conclusionDetailVO.setConclusionPdf(null);
@@ -1797,17 +1798,15 @@ public class ProjectServiceImpl implements ProjectService {
             String url = ipAddress + "/conclusion/" + conclusionPdf.getFileName();
             BeanUtils.copyProperties(conclusionPdf,conclusionFile);
             conclusionFile.setUrl(url);
-            BeanUtils.copyProperties(conclusionFile,conclusionDetailVO);
             conclusionDetailVO.setConclusionPdf(conclusionFile);
         }
         if (experimentReportPdf == null) {
             conclusionDetailVO.setExperimentReportPdf(null);
         } else {
             ProjectAnnex experimentReport = new ProjectAnnex();
-            String url = ipAddress + "/conclusion/" + experimentReport.getFileName();
+            String url = ipAddress + "/conclusion/" + experimentReportPdf.getFileName();
             BeanUtils.copyProperties(experimentReportPdf,experimentReport);
             experimentReport.setUrl(url);
-            BeanUtils.copyProperties(experimentReport,conclusionDetailVO);
             conclusionDetailVO.setExperimentReportPdf(experimentReport);
         }
         //查询该项目所有附件

@@ -56,5 +56,10 @@ public class UploadConfig {
      * 结题附件位置
      */
     private String conclusionAnnex;
+
+    /**
+     * 成果材料
+     */
+    private String achievementAnnex;
 }
 

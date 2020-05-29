@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.service.impl;
 import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
 import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
 import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
+import com.swpu.uchain.openexperiment.VO.project.ProjectAnnex;
 import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
 import com.swpu.uchain.openexperiment.VO.project.UploadAttachmentFileVO;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
@@ -25,6 +26,7 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -100,8 +102,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     public boolean insert(ProjectFile projectFile) {
 
-        //如果为申请只能存在一条
-        if (projectFile.getMaterialType() == 1) {
+        //如果为申请只能存在一条 成果附件也只能有一条
+        if (projectFile.getMaterialType() == 1 || projectFile.getMaterialType() == 11) {
             ProjectFile projectFile1 = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectFile.getProjectGroupId(), projectFile.getMaterialType(), null);
             if (projectFile1 != null) {
                 projectFile.setId(projectFile1.getId());
@@ -123,11 +125,21 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public void delete(Long id) {
+        //TODO 这要弄
         ProjectFile projectFile = selectById(id);
         if (projectFile == null) {
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
         redisService.delete(FileKey.getById, id + "");
+        Integer fileType = projectFile.getFileType();
+        if (fileType == 1) {
+            if (FileUtil.deleteFile(FileUtil.getFileRealPath(
+                    projectFile.getId(),
+                    uploadConfig.getApplyDir(),
+                    projectFile.getFileName()))) {
+                projectFileMapper.deleteByPrimaryKey(id);
+            }
+        }
         if (FileUtil.deleteFile(FileUtil.getFileRealPath(
                 projectFile.getId(),
                 uploadConfig.getApplyDir(),
@@ -327,7 +339,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return Result.error(CodeMsg.PERMISSION_DENNY);
         }
 
-        List<UploadAttachmentFileVO> attachmentUrls = new ArrayList<>();
+        List<ProjectAnnex> attachmentUrls = new ArrayList<>();
         for (MultipartFile file : multipartFile) {
 
 
@@ -336,6 +348,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             projectFile.setFileName(projectId + "_附件_" + file.getOriginalFilename());
             projectFile.setDownloadTimes(0);
             projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(file)));
+            log.info(projectFile.getFileType().toString());
+            if (projectFile.getFileType() != 3 && projectFile.getFileType() != 4) {
+                throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
+            }
             projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
             projectFile.setUploadTime(new Date());
             projectFile.setMaterialType(MaterialType.ATTACHMENT_FILE.getValue());
@@ -347,16 +363,17 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                     file, uploadConfig.getConclusionAnnex() + "/" + projectFile.getFileName())) {
                 return Result.error(CodeMsg.UPLOAD_ERROR);
             }
-            UploadAttachmentFileVO attachmentFileVO = new UploadAttachmentFileVO();
-            attachmentFileVO.setFileId(projectFile.getId());
-            attachmentFileVO.setAttachmentUrls(ipAddress + "/conclusionAnnex/" + projectFile.getFileName());
-            attachmentUrls.add(attachmentFileVO);
+            ProjectAnnex projectAnnex = new ProjectAnnex();
+            BeanUtils.copyProperties(projectFile,projectAnnex);
+            projectAnnex.setUrl(ipAddress + "/conclusionAnnex/" + projectFile.getFileName());
+            attachmentUrls.add(projectAnnex);
         }
         return Result.success(attachmentUrls);
     }
 
     /**
      * 下载附件
+     *
      * @param fileId
      * @param response
      */
@@ -415,6 +432,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         projectFile.setMaterialType(MaterialType.CONCLUSION_MATERIAL.getValue());
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
         projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(file)));
+        if (projectFile.getFileType() != 2) {
+            throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
+        }
         projectFile.setDownloadTimes(0);
         projectFile.setProjectGroupId(projectId);
         String docPath = FileUtil.getFileRealPath(projectId,
@@ -433,10 +453,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         }
         // 异步转换成PDF
         convertDocToPDF(docPath, pdfPath);
-        Map<String, String> map = new HashMap<>();
-        map.put("FileId", String.valueOf(projectFile.getId()));
-        map.put("ConcludingReportUrl", ipAddress + "/conclusion/" + projectFile.getFileName());
-        return Result.success(map);
+        ProjectAnnex projectAnnex = new ProjectAnnex();
+        BeanUtils.copyProperties(projectFile,projectAnnex);
+        projectAnnex.setUrl(ipAddress + "/conclusion/" + projectFile.getFileName());
+        return Result.success(projectAnnex);
     }
 
     @Override
@@ -497,10 +517,49 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         }
         // 异步转换成PDF
         convertDocToPDF(docPath, pdfPath);
-        Map<String, String> map = new HashMap<>();
-        map.put("FileId", String.valueOf(projectFile.getId()));
-        map.put("ExperimentReportUrl", ipAddress + "/conclusion/" + projectFile.getFileName());
-        return Result.success(map);
+        ProjectAnnex projectAnnex = new ProjectAnnex();
+        BeanUtils.copyProperties(projectFile,projectAnnex);
+        projectAnnex.setUrl(ipAddress + "/conclusion/" + projectFile.getFileName());
+        return Result.success(projectAnnex);
+    }
+
+    /**
+     * 上传成果附件
+     * @param projectGroupId
+     * @param file
+     * @return
+     */
+    @Override
+    public Result uploadAchievementAnnex(Long projectGroupId, MultipartFile file) {
+        if (file == null) {
+            throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
+        }
+        User currentUser = getUserService.getCurrentUser();
+        if (userProjectService.selectByProjectGroupIdAndUserId(projectGroupId, Long.valueOf(currentUser.getCode())) == null) {
+            return Result.error(CodeMsg.PERMISSION_DENNY);
+        }
+        ProjectFile projectFile = new ProjectFile();
+        projectFile.setProjectGroupId(projectGroupId);
+        projectFile.setFileName(projectGroupId + "_重点项目成果附件_" + file.getOriginalFilename());
+        projectFile.setDownloadTimes(0);
+        projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(file)));
+        if (projectFile.getFileType() != 5) {
+            throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
+        }
+        projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
+        projectFile.setUploadTime(new Date());
+        projectFile.setMaterialType(MaterialType.ACHIEVEMENT_ANNEX.getValue());
+        projectFile.setUploadUserId(Long.valueOf(currentUser.getCode()));
+        if (!insert(projectFile)) {
+            return Result.error(CodeMsg.ADD_ERROR);
+        }
+        if (!FileUtil.uploadFile(
+                file, uploadConfig.getAchievementAnnex() + "/" + projectFile.getFileName())) {
+            return Result.error(CodeMsg.UPLOAD_ERROR);
+        }
+        ProjectAnnex projectAnnex = new ProjectAnnex();
+        BeanUtils.copyProperties(projectFile,projectAnnex);
+        return Result.success(projectAnnex);
     }
 
     public boolean checkFileFormat(MultipartFile multipartFile, Integer aimType) {

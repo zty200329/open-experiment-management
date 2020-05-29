@@ -24,6 +24,7 @@ upload:
   material_sample: "/home/zty/open-experiment-management-system/material_sample"
   conclusion-pdf: "/home/zty/open-experiment-management-system/conclusion_pdf"
   conclusion-annex: "/home/zty/open-experiment-management-system/conclusion_annex"
+  achievement-annex: "/home/zty/open-experiment-management-system/achievement_annex"
 download:
   certificate-excel-download: "/home/zty/test"
 file:

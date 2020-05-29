@@ -79,7 +79,7 @@ public class FileController {
 
 
 
-    @ApiOperation("附件上传")
+    @ApiOperation("图片视频附件上传")
     @PostMapping(value = "/uploadAttachmentFile", name = "上传附件")
     public Object uploadAttachmentFile(@RequestParam("file") List<MultipartFile> multipartFile, Long projectId){
         return projectFileService.uploadAttachmentFile(multipartFile,projectId);
@@ -96,6 +96,12 @@ public class FileController {
     @PostMapping(value = "/uploadExperimentReport", name = "上传结题报告")
     public Result uploadExperimentReport(Long projectGroupId,MultipartFile file){
         return projectFileService.uploadExperimentReport(projectGroupId,file);
+    }
+
+    @ApiOperation("上传成果附件,zip文件")
+    @PostMapping("/uploadAchievementAnnex")
+    public Result uploadAchievementAnnex(Long projectGroupId,MultipartFile file){
+        return projectFileService.uploadAchievementAnnex(projectGroupId,file);
     }
 
     @ApiOperation("显示所有附件信息")

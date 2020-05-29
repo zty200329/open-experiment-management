@@ -30,7 +30,7 @@ public interface UserProjectGroupMapper {
 
     List<UserProjectGroup> selectByProjectGroupId(Long projectGroupId);
 
-    UserProjectGroup selectByProjectGroupIdAndUserId(Long projectGroupId, Long userId);
+    UserProjectGroup selectByProjectGroupIdAndUserId(@Param("projectGroupId") Long projectGroupId,@Param("userId") Long userId);
 
     void deleteByProjectGroupId(Long projectGroupId);
 
