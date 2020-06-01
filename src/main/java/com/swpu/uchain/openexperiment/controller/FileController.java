@@ -110,9 +110,9 @@ public class FileController {
         return projectFileService.listAttachmentFiles();
     }
 
-    @ApiIgnore
+    @ApiOperation("删除指定文件")
     @PostMapping(value = "/deleteFile", name = "删除指定文件")
-    public Object deleteFile(long fileId){
+    public Object deleteFile(Long fileId){
         projectFileService.delete(fileId);
         return Result.success();
     }

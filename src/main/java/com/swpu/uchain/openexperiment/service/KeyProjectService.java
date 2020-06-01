@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service;
 
+import com.swpu.uchain.openexperiment.form.project.IconicResultForm;
 import com.swpu.uchain.openexperiment.form.project.ProjectCheckForm;
 import com.swpu.uchain.openexperiment.form.query.HistoryQueryKeyProjectInfo;
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
@@ -28,6 +29,8 @@ public interface KeyProjectService {
      * @return
      */
     Result getKeyProjectApplyingListByGuideTeacher();
+
+    Result iconicResult(List<IconicResultForm> iconicResultForm);
 
     Result getKeyProjectApplyingListByLabAdmin();
 

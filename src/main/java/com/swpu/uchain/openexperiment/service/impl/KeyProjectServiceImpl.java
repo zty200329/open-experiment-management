@@ -8,6 +8,7 @@ import com.swpu.uchain.openexperiment.VO.limit.AmountAndTypeVO;
 import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.form.amount.AmountAndType;
+import com.swpu.uchain.openexperiment.form.project.IconicResultForm;
 import com.swpu.uchain.openexperiment.form.project.ProjectCheckForm;
 import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.enums.*;
@@ -175,6 +176,16 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             keyProjectDTO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId(),JoinStatus.JOINED.getValue()));
         }
         return Result.success(list);
+    }
+
+    /**
+     * 成果填报
+     * @param iconicResultForm
+     * @return
+     */
+    @Override
+    public Result iconicResult(List<IconicResultForm> iconicResultForm) {
+        return null;
     }
 
     @Override

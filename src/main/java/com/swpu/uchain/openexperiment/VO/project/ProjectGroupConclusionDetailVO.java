@@ -161,6 +161,11 @@ public class ProjectGroupConclusionDetailVO {
     private ProjectAnnex experimentReportPdf;
 
     /**
+     * 成果附件
+     */
+    private ProjectAnnex achievementAnnex;
+
+    /**
      * 附件
      */
     private List<ProjectAnnex> annexes;

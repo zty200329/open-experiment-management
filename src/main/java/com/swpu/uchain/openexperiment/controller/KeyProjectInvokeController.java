@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
+import com.swpu.uchain.openexperiment.form.project.IconicResultForm;
 import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
 import com.swpu.uchain.openexperiment.form.project.ProjectCheckForm;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -32,6 +33,12 @@ public class KeyProjectInvokeController {
     public KeyProjectInvokeController(KeyProjectService keyProjectService, GetUserService getUserService) {
         this.keyProjectService = keyProjectService;
         this.getUserService = getUserService;
+    }
+
+    @ApiOperation("添加标志性结果")
+    @PostMapping("/iconicResult")
+    public Result iconicResult(@Valid @RequestBody List<IconicResultForm> iconicResultForm){
+        return keyProjectService.iconicResult(iconicResultForm);
     }
 
     @ApiOperation("重点项目申请接口")

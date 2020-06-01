@@ -1816,6 +1816,17 @@ public class ProjectServiceImpl implements ProjectService {
             projectAnnex.setUrl(url);
         }
         conclusionDetailVO.setAnnexes(projectAnnexes);
+        //查询成果附件
+        if(detail.getKeyProjectStatus() != null) {
+            ProjectFile achievementAnnex= projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.ACHIEVEMENT_ANNEX.getValue(),null);
+            if (achievementAnnex == null) {
+                conclusionDetailVO.setAchievementAnnex(null);
+            } else {
+                ProjectAnnex annex = new ProjectAnnex();
+                BeanUtils.copyProperties(achievementAnnex,annex);
+                conclusionDetailVO.setAchievementAnnex(annex);
+            }
+        }
         return Result.success(conclusionDetailVO);
     }
 

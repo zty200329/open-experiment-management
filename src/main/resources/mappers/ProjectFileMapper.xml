@@ -10,6 +10,7 @@
     <result column="size" jdbcType="VARCHAR" property="size" />
     <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
     <result column="upload_user_id" jdbcType="BIGINT" property="uploadUserId" />
+    <result column="material_type" jdbcType="SMALLINT" property="materialType" />
   </resultMap>
   <resultMap id="AttachmentFileDTOMap" type="com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO">
     <id column="id" jdbcType="BIGINT" property="fileId" />
@@ -98,6 +99,7 @@
     project_file.file_type as fileType,  project_file.upload_user_id as uploadUserId
     from openexperiment.project_file
 
-    where project_file.project_group_id = #{projectGroupId} and project_file.material_type = 10 and project_file.file_type = 3 or project_file.file_type = 4
+    where project_file.project_group_id = #{projectGroupId}
+    and project_file.material_type = 10
   </select>
 </mapper>

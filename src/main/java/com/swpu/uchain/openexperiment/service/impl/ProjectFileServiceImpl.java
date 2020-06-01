@@ -124,6 +124,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Long id) {
         //TODO 这要弄
         ProjectFile projectFile = selectById(id);
@@ -131,24 +132,54 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             throw new GlobalException(CodeMsg.FILE_NOT_EXIST);
         }
         redisService.delete(FileKey.getById, id + "");
-        Integer fileType = projectFile.getFileType();
-        if (fileType == 1) {
+        //根据文件类型
+        /**
+         * 1 申请材料
+         * 2 结题报告
+         * 3 实验报告
+         * 10 附件
+         * 11 成果附件
+         */
+        Integer materialType = projectFile.getMaterialType();
+        //不提供删除申请文件
+
+        //删除结题报告或实验报告
+        if(materialType == 2 || materialType == 3){
+            String docPath = projectFile.getFileName().replace("pdf","doc");
+            log.info(docPath);
+             FileUtil.deleteFile(FileUtil.getFileRealPath(
+                    uploadConfig.getConclusionDir(),
+                    docPath));
             if (FileUtil.deleteFile(FileUtil.getFileRealPath(
-                    projectFile.getId(),
-                    uploadConfig.getApplyDir(),
+                    uploadConfig.getConclusionPdf(),
                     projectFile.getFileName()))) {
                 projectFileMapper.deleteByPrimaryKey(id);
             }
         }
-        if (FileUtil.deleteFile(FileUtil.getFileRealPath(
-                projectFile.getId(),
-                uploadConfig.getApplyDir(),
-                projectFile.getFileName()))) {
-            projectFileMapper.deleteByPrimaryKey(id);
+        //附件
+        if(materialType == 10 ){
+            if (FileUtil.deleteFile(FileUtil.getFileRealPath(
+                    uploadConfig.getConclusionAnnex(),
+                    projectFile.getFileName()))) {
+                projectFileMapper.deleteByPrimaryKey(id);
+            }
         }
-        throw new GlobalException(CodeMsg.DELETE_FILE_ERROR);
+        //成果附件
+        if(materialType == 11){
+            if (FileUtil.deleteFile(FileUtil.getFileRealPath(
+                    uploadConfig.getAchievementAnnex(),
+                    projectFile.getFileName()))) {
+                projectFileMapper.deleteByPrimaryKey(id);
+            }
+        }
+        else {
+            throw new GlobalException(CodeMsg.DELETE_FILE_ERROR);
+        }
     }
 
+    public static void main(String[] args) {
+
+    }
     @Override
     public ProjectFile selectById(Long id) {
         return projectFileMapper.selectByPrimaryKey(id);
@@ -159,6 +190,13 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         return projectFileMapper.selectByGroupIdFileName(projectGroupId, aimFileName);
     }
 
+    /**
+     * 重点项目申请文件
+     * @param file
+     * @param headFile
+     * @param projectGroupId
+     * @return
+     */
     @Override
     public Result uploadApplyDoc(MultipartFile file, MultipartFile headFile, Long projectGroupId) {
         //先检查文件是否为空
@@ -262,6 +300,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             log.info("开始合并PDF-------");
             mergePdf(pdfHeadPath, pdfBodyPath, pdfPath);
 
+            Result result = deleteTempFile(projectGroupId);
+            log.info(result.toString());
             Map<String, String> map = new HashMap<>();
             map.put("url", ipAddress + "/apply/" + fileName);
             return Result.success(map);
@@ -269,6 +309,24 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         return Result.error(CodeMsg.UPLOAD_ERROR);
     }
 
+    private Result deleteTempFile(Long projectId){
+        String fileName1 = projectId + "_" + uploadConfig.getApplyFileName() + ".html";
+        String fileName2 = projectId + "_" + uploadConfig.getApplyFileName()+"head" + ".pdf";
+        String fileName3 = projectId + "_" + uploadConfig.getApplyFileName()+"body" + ".pdf";
+
+        FileUtil.deleteFile(FileUtil.getFileRealPath(
+                uploadConfig.getApplyDir2(),
+                fileName1));
+        log.info("删除1");
+        FileUtil.deleteFile(FileUtil.getFileRealPath(
+                uploadConfig.getPdfTempDir(),
+                fileName2));
+        log.info("");
+        FileUtil.deleteFile(FileUtil.getFileRealPath(
+                uploadConfig.getPdfTempDir(),
+                fileName3));
+        return Result.success();
+    }
     @Override
     public void downloadApplyFile(Long fileId, HttpServletResponse response) {
         ProjectFile projectFile = projectFileMapper.selectByPrimaryKey(fileId);
@@ -405,6 +463,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (projectGroup == null) {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
+        if (!".doc".equals(getFileSuffix(file.getOriginalFilename()))) {
+            throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
+        }
         User currentUser = getUserService.getCurrentUser();
 
 
@@ -470,6 +531,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);
         }
 
+        if (!".doc".equals(getFileSuffix(file.getOriginalFilename()))) {
+            throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
+        }
 
         //判断是否存在该文件,若存在则进行覆盖
         ProjectFile projectFile;
