@@ -36,9 +36,9 @@ public class KeyProjectInvokeController {
     }
 
     @ApiOperation("添加标志性结果")
-    @PostMapping("/iconicResult")
-    public Result iconicResult(@Valid @RequestBody List<IconicResultForm> iconicResultForm){
-        return keyProjectService.iconicResult(iconicResultForm);
+    @PostMapping("/insertIconicResult")
+    public Result insertIconicResult(@Valid @RequestBody List<IconicResultForm> iconicResultForms){
+        return keyProjectService.insertIconicResult(iconicResultForms);
     }
 
     @ApiOperation("重点项目申请接口")

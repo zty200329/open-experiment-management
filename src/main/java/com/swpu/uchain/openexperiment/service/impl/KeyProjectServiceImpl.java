@@ -6,6 +6,7 @@ import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.VO.limit.AmountAndTypeVO;
 import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
+import com.swpu.uchain.openexperiment.accessctro.ExcelResources;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.form.amount.AmountAndType;
 import com.swpu.uchain.openexperiment.form.project.IconicResultForm;
@@ -25,10 +26,13 @@ import com.swpu.uchain.openexperiment.service.TimeLimitService;
 import com.swpu.uchain.openexperiment.service.UserRoleService;
 import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
 import io.swagger.models.auth.In;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.statement.select.Join;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +42,7 @@ import java.util.List;
 /**
  * @author dengg
  */
+@Slf4j
 @Service
 public class KeyProjectServiceImpl implements KeyProjectService {
 
@@ -52,6 +57,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private ProjectFileMapper projectFileMapper;
     private UserRoleService userRoleService;
     private HitBackMessageMapper hitBackMessageMapper;
+    private AchievementMapper achievementMapper;
 
 
     @Autowired
@@ -59,7 +65,8 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                                  KeyProjectStatusMapper keyProjectStatusMapper,GetUserService getUserService,
                                  OperationRecordMapper operationRecordMapper,TimeLimitService timeLimitService,
                                  AmountLimitMapper amountLimitMapper,ProjectFileMapper projectFileMapper,
-                                 UserRoleService userRoleService,HitBackMessageMapper hitBackMessageMapper) {
+                                 UserRoleService userRoleService,HitBackMessageMapper hitBackMessageMapper,
+                                 AchievementMapper achievementMapper) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
@@ -70,6 +77,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         this.projectFileMapper = projectFileMapper;
         this.userRoleService = userRoleService;
         this.hitBackMessageMapper = hitBackMessageMapper;
+        this.achievementMapper=achievementMapper;
     }
 
 
@@ -180,12 +188,26 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     /**
      * 成果填报
-     * @param iconicResultForm
+     * @param iconicResultForms
      * @return
      */
     @Override
-    public Result iconicResult(List<IconicResultForm> iconicResultForm) {
-        return null;
+    @Transactional(rollbackFor = Exception.class)
+    public Result insertIconicResult(List<IconicResultForm> iconicResultForms) {
+        User user = getUserService.getCurrentUser();
+        if (user == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        //TODO 校验权限记得做噢
+        Achievement achievement = new Achievement();
+        for (IconicResultForm iconicResultForm : iconicResultForms) {
+            log.info(achievement.toString());
+            BeanUtils.copyProperties(iconicResultForm,achievement);
+            achievement.setGmtCreate(new Date());
+            achievement.setGmtModified(new Date());
+            achievementMapper.insert(achievement);
+        }
+        return Result.success();
     }
 
     @Override

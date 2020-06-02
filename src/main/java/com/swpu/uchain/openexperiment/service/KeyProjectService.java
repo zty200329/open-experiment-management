@@ -30,7 +30,7 @@ public interface KeyProjectService {
      */
     Result getKeyProjectApplyingListByGuideTeacher();
 
-    Result iconicResult(List<IconicResultForm> iconicResultForm);
+    Result insertIconicResult(List<IconicResultForm> iconicResultForms);
 
     Result getKeyProjectApplyingListByLabAdmin();
 
