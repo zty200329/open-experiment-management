@@ -20,10 +20,7 @@ import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
 import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.form.user.StuMember;
 import com.swpu.uchain.openexperiment.result.Result;
-import com.swpu.uchain.openexperiment.service.GetUserService;
-import com.swpu.uchain.openexperiment.service.KeyProjectService;
-import com.swpu.uchain.openexperiment.service.TimeLimitService;
-import com.swpu.uchain.openexperiment.service.UserRoleService;
+import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +55,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private UserRoleService userRoleService;
     private HitBackMessageMapper hitBackMessageMapper;
     private AchievementMapper achievementMapper;
+    private UserProjectService userProjectService;
 
 
     @Autowired
@@ -66,7 +64,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                                  OperationRecordMapper operationRecordMapper,TimeLimitService timeLimitService,
                                  AmountLimitMapper amountLimitMapper,ProjectFileMapper projectFileMapper,
                                  UserRoleService userRoleService,HitBackMessageMapper hitBackMessageMapper,
-                                 AchievementMapper achievementMapper) {
+                                 AchievementMapper achievementMapper,UserProjectService userProjectService) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
@@ -78,6 +76,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         this.userRoleService = userRoleService;
         this.hitBackMessageMapper = hitBackMessageMapper;
         this.achievementMapper=achievementMapper;
+        this.userProjectGroupMapper=userProjectGroupMapper;
     }
 
 
@@ -207,6 +206,24 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             achievement.setGmtModified(new Date());
             achievementMapper.insert(achievement);
         }
+        return Result.success();
+    }
+
+    /**
+     * 删除成果
+     * 只有本组的同学才能删除
+     * @param id
+     * @return
+     */
+    @Override
+    public Result deleteIconicResult(Long id) {
+        Achievement achievement = achievementMapper.selectByPrimaryKey(id);
+        User currentUser = getUserService.getCurrentUser();
+        if (currentUser == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        log.info(achievement.toString());
+        achievementMapper.deleteByPrimaryKey(id);
         return Result.success();
     }
 

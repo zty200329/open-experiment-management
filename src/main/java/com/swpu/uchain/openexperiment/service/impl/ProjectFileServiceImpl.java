@@ -604,7 +604,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         }
         ProjectFile projectFile = new ProjectFile();
         projectFile.setProjectGroupId(projectGroupId);
-        projectFile.setFileName(projectGroupId + "_重点项目成果附件_" + file.getOriginalFilename());
+        projectFile.setFileName(projectGroupId + "_重点项目成果附件.zip");
         projectFile.setDownloadTimes(0);
         projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(file)));
         if (projectFile.getFileType() != 5) {

@@ -3,40 +3,52 @@
 <mapper namespace="com.swpu.uchain.openexperiment.mapper.AchievementMapper" >
   <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.Achievement" >
     <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="project_id" property="projectId" jdbcType="BIGINT" />
     <result column="value" property="value" jdbcType="INTEGER" />
     <result column="provenance" property="provenance" jdbcType="VARCHAR" />
     <result column="issuing_time" property="issuingTime" jdbcType="TIMESTAMP" />
     <result column="issuing_name" property="issuingName" jdbcType="VARCHAR" />
-    <result column="gmt_create" property="gmtCreate" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from achievement
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.Achievement" >
-    insert into achievement (id, `value`, provenance, 
-      issuing_time, issuing_name, gmt_create
-      )
-    values (#{id,jdbcType=BIGINT}, #{value,jdbcType=INTEGER}, #{provenance,jdbcType=VARCHAR}, 
-      #{issuingTime,jdbcType=TIMESTAMP}, #{issuingName,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=VARCHAR}
-      )
+    insert into achievement (project_id, `value`,
+      provenance, issuing_time, issuing_name, 
+      gmt_create, gmt_modified)
+    values (#{projectId,jdbcType=BIGINT}, #{value,jdbcType=INTEGER},
+      #{provenance,jdbcType=VARCHAR}, #{issuingTime,jdbcType=TIMESTAMP}, #{issuingName,jdbcType=VARCHAR}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.Achievement" >
     update achievement
-    set `value` = #{value,jdbcType=INTEGER},
+    set project_id = #{projectId,jdbcType=BIGINT},
+      `value` = #{value,jdbcType=INTEGER},
       provenance = #{provenance,jdbcType=VARCHAR},
       issuing_time = #{issuingTime,jdbcType=TIMESTAMP},
       issuing_name = #{issuingName,jdbcType=VARCHAR},
-      gmt_create = #{gmtCreate,jdbcType=VARCHAR}
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select id, `value`, provenance, issuing_time, issuing_name, gmt_create
+    select id, project_id, `value`, provenance, issuing_time, issuing_name, gmt_create, 
+    gmt_modified
     from achievement
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, `value`, provenance, issuing_time, issuing_name, gmt_create
+    select id, project_id, `value`, provenance, issuing_time, issuing_name, gmt_create,
+    gmt_modified
     from achievement
+  </select>
+  <select id="selectByProjectId" resultMap="BaseResultMap" >
+    select id, project_id, `value`, provenance, issuing_time, issuing_name, gmt_create,
+    gmt_modified
+    from achievement
+    where project_id = #{id}
   </select>
 </mapper>

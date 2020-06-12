@@ -64,6 +64,7 @@ public class ProjectServiceImpl implements ProjectService {
     private AmountLimitMapper amountLimitMapper;
     private HitBackMessageMapper hitBackMessageMapper;
     private RedisUtil redisUtil;
+    private AchievementMapper achievementMapper;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -75,7 +76,8 @@ public class ProjectServiceImpl implements ProjectService {
                               RoleMapper roleMapper, AmountLimitMapper amountLimitMapper,
                               UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper,
                               KeyProjectStatusMapper keyProjectStatusMapper, ProjectFileMapper projectFileMapper,
-                              TimeLimitService timeLimitService, RedisUtil redisUtil, UserRoleService userRoleService, HitBackMessageMapper hitBackMessageMapper) {
+                              TimeLimitService timeLimitService, RedisUtil redisUtil, UserRoleService userRoleService,
+                              HitBackMessageMapper hitBackMessageMapper ,AchievementMapper achievementMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -96,6 +98,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.userRoleService = userRoleService;
         this.hitBackMessageMapper = hitBackMessageMapper;
         this.redisUtil = redisUtil;
+        this.achievementMapper = achievementMapper;
     }
 
     @Override
@@ -1763,7 +1766,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     /**
-     * 普通项目结题状态获取项目详情
+     * 项目结题状态获取项目详情
      *
      * @param projectId
      * @return
@@ -1818,6 +1821,15 @@ public class ProjectServiceImpl implements ProjectService {
         conclusionDetailVO.setAnnexes(projectAnnexes);
         //查询成果附件
         if(detail.getKeyProjectStatus() != null) {
+            //如果为重点项目用上传成果
+            List<Achievement> achievements = achievementMapper.selectByProjectId(projectId);
+            List<ProjectOutcomeVO> outcomeVOS = new LinkedList<>();
+            for (Achievement achievement : achievements) {
+                ProjectOutcomeVO projectOutcomeVO = new ProjectOutcomeVO();
+                BeanUtils.copyProperties(achievement,projectOutcomeVO);
+                outcomeVOS.add(projectOutcomeVO);
+            }
+            conclusionDetailVO.setListProjectOutcomeVO(outcomeVOS);
             ProjectFile achievementAnnex= projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.ACHIEVEMENT_ANNEX.getValue(),null);
             if (achievementAnnex == null) {
                 conclusionDetailVO.setAchievementAnnex(null);

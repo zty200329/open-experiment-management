@@ -8,6 +8,7 @@ import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
 import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -31,6 +32,8 @@ public interface KeyProjectService {
     Result getKeyProjectApplyingListByGuideTeacher();
 
     Result insertIconicResult(List<IconicResultForm> iconicResultForms);
+
+    Result deleteIconicResult(Long id);
 
     Result getKeyProjectApplyingListByLabAdmin();
 

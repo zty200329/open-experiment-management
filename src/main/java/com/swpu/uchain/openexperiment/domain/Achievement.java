@@ -6,6 +6,8 @@ import java.util.Date;
 public class Achievement implements Serializable {
     private Long id;
 
+    private Long projectId;
+
     private Integer value;
 
     private String provenance;
@@ -14,7 +16,9 @@ public class Achievement implements Serializable {
 
     private String issuingName;
 
-    private String gmtCreate;
+    private Date gmtCreate;
+
+    private Date gmtModified;
 
     private static final long serialVersionUID = 1L;
 
@@ -24,6 +28,14 @@ public class Achievement implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 
     public Integer getValue() {
@@ -58,12 +70,20 @@ public class Achievement implements Serializable {
         this.issuingName = issuingName == null ? null : issuingName.trim();
     }
 
-    public String getGmtCreate() {
+    public Date getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(String gmtCreate) {
-        this.gmtCreate = gmtCreate == null ? null : gmtCreate.trim();
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Date getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
     @Override
@@ -73,11 +93,13 @@ public class Achievement implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", projectId=").append(projectId);
         sb.append(", value=").append(value);
         sb.append(", provenance=").append(provenance);
         sb.append(", issuingTime=").append(issuingTime);
         sb.append(", issuingName=").append(issuingName);
         sb.append(", gmtCreate=").append(gmtCreate);
+        sb.append(", gmtModified=").append(gmtModified);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

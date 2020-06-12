@@ -15,7 +15,7 @@ import java.util.Date;
 public class IconicResultForm {
 
     @NotNull(message = "项目id不能为空")
-    private Integer projectId;
+    private Long projectId;
 
     @NotNull(message = "成果类型不能为空")
     @ApiModelProperty("成果类型")

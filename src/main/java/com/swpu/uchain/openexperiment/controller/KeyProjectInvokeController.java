@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.controller;
 
+import com.swpu.uchain.openexperiment.form.certificate.DeleteCertificateForm;
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
 import com.swpu.uchain.openexperiment.form.project.IconicResultForm;
 import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
@@ -39,6 +40,12 @@ public class KeyProjectInvokeController {
     @PostMapping("/insertIconicResult")
     public Result insertIconicResult(@Valid @RequestBody List<IconicResultForm> iconicResultForms){
         return keyProjectService.insertIconicResult(iconicResultForms);
+    }
+
+    @ApiOperation("删除一个标志性结果")
+    @PostMapping("/deleteIconicResult")
+    public Result deleteIconicResult(@Valid @RequestBody DeleteCertificateForm deleteCertificateForm){
+        return keyProjectService.deleteIconicResult(deleteCertificateForm.getId());
     }
 
     @ApiOperation("重点项目申请接口")

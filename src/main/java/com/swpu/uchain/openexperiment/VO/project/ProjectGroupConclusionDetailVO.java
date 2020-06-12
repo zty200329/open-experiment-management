@@ -161,14 +161,19 @@ public class ProjectGroupConclusionDetailVO {
     private ProjectAnnex experimentReportPdf;
 
     /**
-     * 成果附件
-     */
-    private ProjectAnnex achievementAnnex;
-
-    /**
      * 附件
      */
     private List<ProjectAnnex> annexes;
+
+    /**
+     * 成果列表
+     */
+    private List<ProjectOutcomeVO> listProjectOutcomeVO;
+
+    /**
+     * 成果附件
+     */
+    private ProjectAnnex achievementAnnex;
 
     /**
      * 项目成员详情
