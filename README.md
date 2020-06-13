@@ -4,7 +4,7 @@
 ### 项目开发
 SpringBoot+Mybatis+Redis+OpenOffice
 ### 项目构建
-Gradle
+Maven
 ### 项目部署
 Nginx
 ## 需求分析
