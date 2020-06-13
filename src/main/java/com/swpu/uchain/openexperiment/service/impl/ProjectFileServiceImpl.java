@@ -17,6 +17,7 @@ import com.swpu.uchain.openexperiment.redis.key.FileKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.ProjectFileService;
+import com.swpu.uchain.openexperiment.service.TimeLimitService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +71,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     private UserProjectGroupMapper userProjectGroupMapper;
     @Autowired
     private UserProjectService userProjectService;
-
+    @Autowired
+    private TimeLimitService timeLimitService;
     @Autowired
     private UserRoleMapper userRoleMapper;
 
@@ -386,6 +388,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public Result uploadAttachmentFile(List<MultipartFile> multipartFile, Long projectId) {
+        //验证时间限制
+        timeLimitService.validTime(TimeLimitType.UPLOADING_INFORMATION);
         if (multipartFile == null || multipartFile.size() == 0) {
             throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
@@ -556,7 +560,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         //数据库存储为pdf名称
         projectFile.setFileName(projectId + "_" + uploadConfig.getExperimentReportFileName() + ".pdf");
         projectFile.setUploadTime(new Date());
-        projectFile.setMaterialType(MaterialType.CONCLUSION_MATERIAL.getValue());
+        projectFile.setMaterialType(MaterialType.EXPERIMENTAL_REPORT.getValue());
         projectFile.setSize(FileUtil.FormatFileSize(file.getSize()));
         projectFile.setFileType(FileUtil.getType(FileUtil.getMultipartFileSuffix(file)));
         projectFile.setDownloadTimes(0);

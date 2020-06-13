@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.controller;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.ProjectStatus;
+import com.swpu.uchain.openexperiment.form.project.DeleteIconicResultForm;
 import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
@@ -112,8 +113,8 @@ public class FileController {
 
     @ApiOperation("删除指定文件")
     @PostMapping(value = "/deleteFile", name = "删除指定文件")
-    public Object deleteFile(Long fileId){
-        projectFileService.delete(fileId);
+    public Object deleteFile(@RequestBody DeleteIconicResultForm fileId){
+        projectFileService.delete(fileId.getId());
         return Result.success();
     }
 
