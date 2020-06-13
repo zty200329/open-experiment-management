@@ -331,5 +331,11 @@ public interface ProjectService {
      */
     Result  midTermKeyProjectHitBack(List<ProjectCheckForm> list);
 
+    /**
+     * 学院对普通项目给出评级
+     * @param projectGradeList
+     * @return
+     */
+    Result CollegeGivesRating(List<ProjectGrade> projectGradeList);
 
 }

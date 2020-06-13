@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +66,7 @@ public class ProjectServiceImpl implements ProjectService {
     private HitBackMessageMapper hitBackMessageMapper;
     private RedisUtil redisUtil;
     private AchievementMapper achievementMapper;
+    private CollegeGivesGradeMapper collegeGivesGradeMapper;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -77,7 +79,8 @@ public class ProjectServiceImpl implements ProjectService {
                               UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper,
                               KeyProjectStatusMapper keyProjectStatusMapper, ProjectFileMapper projectFileMapper,
                               TimeLimitService timeLimitService, RedisUtil redisUtil, UserRoleService userRoleService,
-                              HitBackMessageMapper hitBackMessageMapper ,AchievementMapper achievementMapper) {
+                              HitBackMessageMapper hitBackMessageMapper ,AchievementMapper achievementMapper,
+                              CollegeGivesGradeMapper collegeGivesGradeMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -99,6 +102,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.hitBackMessageMapper = hitBackMessageMapper;
         this.redisUtil = redisUtil;
         this.achievementMapper = achievementMapper;
+        this.collegeGivesGradeMapper = collegeGivesGradeMapper;
     }
 
     @Override
@@ -632,6 +636,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @return
      */
     private Result setProjectStatusAndRecord(List<ProjectCheckForm> list, OperationType operationType, OperationUnit operationUnit, ProjectStatus projectStatus) {
+        User user = getUserService.getCurrentUser();
         List<OperationRecord> operationRecordS = new LinkedList<>();
         for (ProjectCheckForm projectCheckForm : list) {
             Result result = updateProjectStatus(projectCheckForm.getProjectId(), projectStatus.getValue());
@@ -644,8 +649,9 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecord.setOperationUnit(operationUnit.getValue());
             operationRecord.setOperationReason(projectCheckForm.getReason());
             operationRecord.setRelatedId(projectCheckForm.getProjectId());
-            operationRecordS.add(operationRecord);
             setOperationExecutor(operationRecord);
+            operationRecord.setOperationCollege(user.getInstitute());
+            operationRecordS.add(operationRecord);
         }
         recordMapper.multiInsert(operationRecordS);
         return Result.success();
@@ -851,6 +857,10 @@ public class ProjectServiceImpl implements ProjectService {
         return getCheckInfo(ProjectStatus.ESTABLISH);
     }
 
+    /**
+     * 学院获取学院初审通过的
+     * @return
+     */
     @Override
     public Result collegeGetsTheProjects() {
         //TODO 应该加入时间校验
@@ -1600,6 +1610,53 @@ public class ProjectServiceImpl implements ProjectService {
     public Result midTermKeyProjectHitBack(List<ProjectCheckForm> list) {
         return ProjectHitBack(list, OperationUnit.FUNCTIONAL_DEPARTMENT, OperationType.INTERIM_RETURN);
     }
+
+    /**
+     * 对普通项目给出评级
+     * @param projectGradeList
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result CollegeGivesRating(List<ProjectGrade> projectGradeList) {
+        User user = getUserService.getCurrentUser();
+        //权限验证
+        if (!userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT) &&
+                !userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT_LEADER)&&
+           !userRoleService.validContainsUserRole(RoleType.COLLEGE_FINALIZATION_REVIEW)) {
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
+        List<ProjectCheckForm> list = new LinkedList<>();
+        for (ProjectGrade projectGrade : projectGradeList) {
+            ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectGrade.getProjectId());
+            if (projectGroup.getStatus().equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())) {
+                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+            }
+            ProjectCheckForm projectCheckForm = new ProjectCheckForm();
+            BeanUtils.copyProperties(projectGrade,projectCheckForm);
+            projectCheckForm.setReason("学院结题审核通过");
+            list.add(projectCheckForm);
+        }
+        //异步插入
+        setProjectGrade(projectGradeList,user,1);
+        return setProjectStatusAndRecord(list, OperationType.COLLEGE_PASSED_THE_EXAMINATION, OperationUnit.COLLEGE_REVIEWER, ProjectStatus.COLLEGE_FINAL_SUBMISSION);
+
+    }
+
+
+    private void setProjectGrade(List<ProjectGrade> projectGradeList,User user,Integer projectType){
+        for (ProjectGrade projectGrade : projectGradeList) {
+            CollegeGivesGrade collegeGivesGrade = new CollegeGivesGrade();
+            collegeGivesGrade.setOperatorName(user.getRealName());
+            collegeGivesGrade.setAcceptanceTime(new Date());
+            collegeGivesGrade.setGrade(projectGrade.getValue());
+            collegeGivesGrade.setProjectId(projectGrade.getProjectId());
+            collegeGivesGrade.setProjectType(projectType);
+            collegeGivesGradeMapper.insert(collegeGivesGrade);
+        }
+        log.info("插入成功");
+    }
+
 
     @Transactional(rollbackFor = GlobalException.class)
     public Result ProjectHitBack(List<ProjectCheckForm> formList, OperationUnit operationUnit, OperationType operationType) {

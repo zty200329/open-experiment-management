@@ -115,23 +115,12 @@ public class ProjectInvokeController {
         return projectService.agreeIntermediateInspectionProject(list);
     }
 
-    @ApiOperation("职能部门不同意结题")
-    @PostMapping(value = "/rejectToBeConcludingProject")
-    public Result rejectToBeConcludingProject(@Valid @RequestBody List<ProjectCheckForm> list){
-        return projectService.rejectToBeConcludingProject(list);
-    }
-
     @ApiOperation("职能部门不同意中期检查项目")
     @PostMapping(value = "/rejectIntermediateInspectionProject")
     public Result rejectIntermediateInspectionProject(@Valid @RequestBody List<ProjectCheckForm> list){
         return projectService.rejectIntermediateInspectionProject(list);
     }
 
-    @ApiOperation("学院结题审核通过")
-    @PostMapping("/collegePassedTheExamination")
-    public Result agreeCollegePassedTheExamination(@Valid @RequestBody List<ProjectCheckForm> list){
-        return projectService.agreeCollegePassedTheExamination(list);
-    }
 
     @ApiOperation("职能部门同意结题")
     @PostMapping(value = "/agreeToBeConcludingProject")
@@ -229,6 +218,41 @@ public class ProjectInvokeController {
     @PostMapping("/midTermKeyProjectHitBack")
     public Result  midTermKeyProjectHitBack(@Valid @RequestBody List<ProjectCheckForm> list){
         return projectService.midTermKeyProjectHitBack(list);
+    }
+
+    @ApiOperation("学院初审对普通项目给出评级")
+    @PostMapping("/CollegeGivesRating")
+    public Result CollegeGivesRating(@RequestBody @Valid List<ProjectGrade> projectGradeList){
+        return projectService.CollegeGivesRating(projectGradeList);
+    }
+
+    @ApiOperation("学院初审打回")
+    @PostMapping("/CollegeHitBack")
+    public Result CollegeHitBack(){
+        return null;
+    }
+
+    @ApiOperation("学院初审复核通过")
+    @PostMapping("/CollegeReviewPassed")
+    public Result CollegeReviewPassed(){
+        return null;
+    }
+
+    @ApiOperation("学院初审不通过")
+    @PostMapping("/CollegerejectToBeConcludingProject")
+    public Result CollegerejectToBeConcludingProject(){
+        return null;
+    }
+
+    @ApiIgnore("学院结题审核通过")
+    @PostMapping("/collegePassedTheExamination")
+    public Result agreeCollegePassedTheExamination(@Valid @RequestBody List<ProjectCheckForm> list){
+        return projectService.agreeCollegePassedTheExamination(list);
+    }
+    @ApiOperation("职能部门不同意结题")
+    @PostMapping(value = "/rejectToBeConcludingProject")
+    public Result rejectToBeConcludingProject(@Valid @RequestBody List<ProjectCheckForm> list){
+        return projectService.rejectToBeConcludingProject(list);
     }
 
 }

@@ -22,8 +22,13 @@ public enum OperationType {
     REPORT_REJECT(0,"上报拒绝"),
     INTERIM_RETURN(9,"中期退回"),
     MIDTERM_REVIEW_PASSED(10,"中期复核通过"),
-    COLLEGE_PASSED_THE_EXAMINATION(11,"学院结题审核通过"),
-    FUNCTIONAL_PASSED_THE_EXAMINATION(12,"职能部门结题通过")
+    COLLEGE_RETURNS(11,"学院结题审核退回"),
+    COLLEGE_REVIEW_PASSED(12,"学院复核通过"),
+    COLLEGE_PASSED_THE_EXAMINATION(13,"学院结题审核通过"),
+    FUNCTIONAL_RETURNS(14,"职能部门审核退回"),
+    FUNCTIONAL_REVIEW_PASSED(15,"职能部门复核通过"),
+    FUNCTIONAL_PASSED_THE_EXAMINATION(16,"职能部门结题通过"),
+
     ;
 
     private Integer value;

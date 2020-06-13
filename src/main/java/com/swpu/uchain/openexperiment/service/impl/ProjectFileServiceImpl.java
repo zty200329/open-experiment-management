@@ -523,6 +523,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public Result uploadExperimentReport(Long projectId, MultipartFile file) {
+        //TODO 项目状态
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectId);
         if (file == null) {
             throw new GlobalException(CodeMsg.FILE_EMPTY_ERROR);
