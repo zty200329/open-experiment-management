@@ -157,7 +157,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             }
         }
         //附件
-        if(materialType == 10 ){
+        else if(materialType == 10 ){
             if (FileUtil.deleteFile(FileUtil.getFileRealPath(
                     uploadConfig.getConclusionAnnex(),
                     projectFile.getFileName()))) {
@@ -165,7 +165,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             }
         }
         //成果附件
-        if(materialType == 11){
+        else if(materialType == 11){
             if (FileUtil.deleteFile(FileUtil.getFileRealPath(
                     uploadConfig.getAchievementAnnex(),
                     projectFile.getFileName()))) {
@@ -177,9 +177,6 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         }
     }
 
-    public static void main(String[] args) {
-
-    }
     @Override
     public ProjectFile selectById(Long id) {
         return projectFileMapper.selectByPrimaryKey(id);
