@@ -246,6 +246,11 @@ public interface ProjectService {
 
     Result approveProjectApplyBySecondaryUnit(List<ProjectCheckForm> list);
 
+    /**
+     * 中期复核通过
+     * @param list
+     * @return
+     */
     Result midTermReviewPassed(List<ProjectCheckForm> list);
 
     /**
@@ -338,4 +343,10 @@ public interface ProjectService {
      */
     Result CollegeGivesRating(List<ProjectGrade> projectGradeList);
 
+    /**
+     * 学院初审退回修改
+     * @param list
+     * @return
+     */
+    Result CollegeHitBack(List<ProjectCheckForm> list);
 }

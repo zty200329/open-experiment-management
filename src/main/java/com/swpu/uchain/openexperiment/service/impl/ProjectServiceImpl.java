@@ -1643,6 +1643,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     }
 
+    @Override
+    public Result CollegeHitBack(List<ProjectCheckForm> list) {
+        return ProjectHitBack(list,OperationUnit.COLLEGE_REVIEWER,OperationType.COLLEGE_RETURNS);
+    }
 
     private void setProjectGrade(List<ProjectGrade> projectGradeList,User user,Integer projectType){
         for (ProjectGrade projectGrade : projectGradeList) {
@@ -1665,19 +1669,27 @@ public class ProjectServiceImpl implements ProjectService {
         for (ProjectCheckForm form : formList) {
             ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(form.getProjectId());
             Integer status = projectGroup.getStatus();
-            if (!status.equals(ProjectStatus.ESTABLISH.getValue())) {
+            if (!status.equals(ProjectStatus.ESTABLISH.getValue())&&!status.equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
             //批量插入数据
             OperationRecord operationRecord = new OperationRecord();
 
             operationRecord.setRelatedId(form.getProjectId());
-            operationRecord.setOperationReason("中期退回修改");
+            operationRecord.setOperationReason("退回修改");
             operationRecord.setOperationUnit(operationUnit.getValue());
             operationRecord.setOperationType(operationType.getValue());
             operationRecord.setOperationCollege(user.getInstitute());
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
-            updateProjectStatus(form.getProjectId(), ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue());
+            if(operationType.getValue().equals(OperationType.INTERIM_RETURN.getValue())) {
+                updateProjectStatus(form.getProjectId(), ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue());
+            }else if(operationType.getValue().equals(OperationType.COLLEGE_RETURNS.getValue())){
+                updateProjectStatus(form.getProjectId(), ProjectStatus.COLLEGE_RETURNS.getValue());
+            }else if(operationType.getValue().equals(OperationType.FUNCTIONAL_RETURNS.getValue())) {
+                updateProjectStatus(form.getProjectId(), ProjectStatus.FUNCTIONAL_RETURNS.getValue());
+            }else{
+                throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+            }
             list.add(operationRecord);
 
             //发送消息

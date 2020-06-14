@@ -229,7 +229,7 @@ public class ProjectInvokeController {
     @ApiOperation("学院初审打回")
     @PostMapping("/CollegeHitBack")
     public Result CollegeHitBack(@Valid @RequestBody List<ProjectCheckForm> list){
-        return null;
+        return projectService.CollegeHitBack(list);
     }
 
     @ApiOperation("学院初审复核通过")
