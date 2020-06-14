@@ -254,6 +254,13 @@ public interface ProjectService {
     Result midTermReviewPassed(List<ProjectCheckForm> list);
 
     /**
+     * 学院复核通过
+     * @param list
+     * @return
+     */
+    Result CollegeReviewPassed(List<ProjectCheckForm> list);
+
+    /**
      * 根据指定条件查询项目信息
      * @param form
      * @return

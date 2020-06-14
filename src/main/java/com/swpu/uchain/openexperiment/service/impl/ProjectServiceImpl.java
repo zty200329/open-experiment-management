@@ -1150,6 +1150,11 @@ public class ProjectServiceImpl implements ProjectService {
         return setProjectStatusAndRecord(list, OperationType.MIDTERM_REVIEW_PASSED, OperationUnit.FUNCTIONAL_DEPARTMENT, ProjectStatus.ESTABLISH);
     }
 
+    @Override
+    public Result CollegeReviewPassed(List<ProjectCheckForm> list) {
+        return setProjectStatusAndRecord(list, OperationType.COLLEGE_REVIEW_PASSED, OperationUnit.COLLEGE_REVIEWER, ProjectStatus.COLLEGE_FINAL_SUBMISSION);
+    }
+
 
     @Override
     public Result conditionallyQueryOfProject(QueryConditionForm form) {
