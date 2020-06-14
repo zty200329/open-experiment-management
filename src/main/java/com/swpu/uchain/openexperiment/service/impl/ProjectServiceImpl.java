@@ -1315,7 +1315,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 有报错
-     *
+     * 学生获取所有可参与的项目
      * @return
      */
     @Override

@@ -11,8 +11,10 @@ import com.swpu.uchain.openexperiment.form.permission.UserRoleForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.UserRoleService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ import java.util.List;
  * 实现用户角色管理模块
  */
 @Service
+@Slf4j
 public class UserRoleServiceImpl implements UserRoleService {
     @Autowired
     private UserMapper userMapper;
@@ -40,7 +43,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         if (userRoleMapper.selectByUserId(userId) == null){
             throw new GlobalException(CodeMsg.USER_NO_EXIST);
         }
-        int result = userRoleMapper.updateUserRoleByUserIdAndRole(userId, RoleType.MENTOR.getValue());
+        int result = userRoleMapper.deleteByUserIdAndRoleId(userId, Long.valueOf(roleId));
         if (result != 1){
             throw new GlobalException(CodeMsg.USER_INFORMATION_MATCH_ERROR);
         }
@@ -70,9 +73,17 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result addUserRole(UserRoleForm userRoleForm) {
         if (userMapper.selectByUserCode(userRoleForm.getUserId().toString()) == null){
             throw new GlobalException(CodeMsg.USER_NO_EXIST);
+        }
+        List<UserRole> list = userRoleMapper.selectByUserId(userRoleForm.getUserId());
+        for (UserRole userRole : list) {
+            if (RoleType.NORMAL_STU.getValue().equals(userRole.getRoleId())||
+                    RoleType.PROJECT_LEADER.getValue().equals(userRole.getRoleId())) {
+                throw new GlobalException(CodeMsg.STUDENT_CANT_GAIN_THIS_PERMISSION);
+            }
         }
         UserRole userRole = userRoleMapper.selectByUserIdAndRoleId(userRoleForm.getUserId(), userRoleForm.getRoleId());
 
@@ -82,28 +93,17 @@ public class UserRoleServiceImpl implements UserRoleService {
 
         int result ;
 
-        List<UserRole> list = userRoleMapper.selectByUserId(userRoleForm.getUserId());
 
-        //不存在则增加
-        if (list == null) {
-            UserRole userRoleDomain = new UserRole();
-            userRoleDomain.setRoleId(userRoleForm.getRoleId());
-            userRoleDomain.setUserId(userRoleForm.getUserId());
-            result = userRoleMapper.insert(userRoleDomain);
-        //存在则更新
-        }else {
-            if (validContainsUserRole(RoleType.NORMAL_STU) ||
-                    //暂时不存在这种情况
-                validContainsUserRole(RoleType.PROJECT_LEADER)) {
-                throw new GlobalException(CodeMsg.STUDENT_CANT_GAIN_THIS_PERMISSION);
-            }
-            result = userRoleMapper.updateUserRoleByUserIdAndRole(userRoleForm.getUserId(),userRoleForm.getRoleId());
-        }
+        UserRole userRoleDomain = new UserRole();
+        userRoleDomain.setRoleId(userRoleForm.getRoleId());
+        userRoleDomain.setUserId(userRoleForm.getUserId());
+        result = userRoleMapper.insert(userRoleDomain);
         if (result != 1) {
-            return Result.error(CodeMsg.ADD_ERROR);
+            throw new GlobalException(CodeMsg.ADD_ERROR);
         }
         return Result.success();
     }
+
 
     @Override
     public List<UserRole> selectUsersByRoleId(Long roleId) {
