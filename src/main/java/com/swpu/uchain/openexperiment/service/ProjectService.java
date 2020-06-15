@@ -324,7 +324,19 @@ public interface ProjectService {
 
     Result agreeCollegePassedTheExamination(List<ProjectCheckForm> list);
 
+    /**
+     *
+     * @param list
+     * @return
+     */
     Result rejectIntermediateInspectionProject(List<ProjectCheckForm> list);
+
+    /**
+     * 学院初审不通过
+     * @param list
+     * @return
+     */
+    Result CollegeRejectToBeConcludingProject(List<ProjectCheckForm> list);
 
     Result rejectToBeConcludingProject(List<ProjectCheckForm> list);
 

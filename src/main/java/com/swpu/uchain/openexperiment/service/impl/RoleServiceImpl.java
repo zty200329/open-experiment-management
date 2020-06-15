@@ -105,6 +105,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public Role getUserRoles(Long userId, Long roleId) {
+        return roleMapper.getUserRoles(userId,roleId);
+    }
+
+    @Override
     public Role selectByRoleId(Long id) {
         return roleMapper.selectByPrimaryKey(id);
     }

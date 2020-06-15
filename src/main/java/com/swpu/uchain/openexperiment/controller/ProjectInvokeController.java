@@ -240,8 +240,8 @@ public class ProjectInvokeController {
 
     @ApiOperation("学院初审不通过")
     @PostMapping("/CollegeRejectToBeConcludingProject")
-    public Result CollegeRejectToBeConcludingProject(){
-        return null;
+    public Result CollegeRejectToBeConcludingProject(@Valid @RequestBody List<ProjectCheckForm> list){
+        return projectService.CollegeRejectToBeConcludingProject(list);
     }
 
     @ApiIgnore("学院结题审核通过")

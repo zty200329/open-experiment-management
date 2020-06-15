@@ -81,4 +81,12 @@ public interface RoleService {
      * @return
      */
     Role getUserRoles(Long userId);
+
+    /**
+     * 根据用户id以及权限
+     * @param userId
+     * @param roleId
+     * @return
+     */
+    Role getUserRoles(Long userId,Long roleId);
 }

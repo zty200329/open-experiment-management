@@ -53,4 +53,11 @@
     on user_role.role_id = role.id
     where user_role.user_id = #{userId} limit 1
   </select>
+  <select id="getUserRoles" resultMap="BaseResultMap">
+    select role.id, role.create_time, role.`name`, role.update_time
+    from role
+    inner join user_role
+    on user_role.role_id = role.id
+    where user_role.user_id = #{userId} and user_role.role_id = #{roleId}
+  </select>
 </mapper>

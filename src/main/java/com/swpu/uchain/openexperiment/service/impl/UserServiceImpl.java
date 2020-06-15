@@ -188,7 +188,7 @@ public class UserServiceImpl implements UserService {
         log.info("加载数据库中的userDetails: {}", userDetails);
         //生成真正的token
         final String realToken = jwtTokenUtil.generateToken(userDetails);
-        Role role = roleService.getUserRoles(Long.valueOf(user1.getCode()));
+        Role role = roleService.getUserRoles(Long.valueOf(user1.getCode()), Long.valueOf(loginForm.getRole()));
         Map<String, Object> map = new HashMap<>(8);
         map.put("token",realToken);
         map.put("roles",role);

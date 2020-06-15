@@ -1739,6 +1739,11 @@ public class ProjectServiceImpl implements ProjectService {
         return rejectProjectApply(list, OperationUnit.FUNCTIONAL_DEPARTMENT, OperationType.OFFLINE_CHECK_REJECT);
     }
 
+    @Override
+    public Result CollegeRejectToBeConcludingProject(List<ProjectCheckForm> list) {
+        return rejectProjectApply(list, OperationUnit.COLLEGE_REVIEWER, OperationType.CONCLUSION_REJECT);
+    }
+
 
     @Override
     public Result rejectToBeConcludingProject(List<ProjectCheckForm> list) {
@@ -1777,7 +1782,8 @@ public class ProjectServiceImpl implements ProjectService {
             /**
              * 有改动 可能存在bug
              */
-            if (!rightProjectStatus.equals(status) && operationUnit != OperationUnit.LAB_ADMINISTRATOR && operationUnit != OperationUnit.FUNCTIONAL_DEPARTMENT) {
+            if (!rightProjectStatus.equals(status) && operationUnit != OperationUnit.LAB_ADMINISTRATOR && operationUnit != OperationUnit.FUNCTIONAL_DEPARTMENT
+            && operationUnit != OperationUnit.COLLEGE_REVIEWER ) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
             //批量插入数据
