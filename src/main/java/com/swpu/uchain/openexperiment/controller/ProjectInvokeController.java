@@ -249,6 +249,13 @@ public class ProjectInvokeController {
     public Result agreeCollegePassedTheExamination(@Valid @RequestBody List<ProjectCheckForm> list){
         return projectService.agreeCollegePassedTheExamination(list);
     }
+
+    @ApiOperation("职能部门对普通项目给出评级")
+    @PostMapping("/CollegeGivesRating")
+    public Result FunctionalGivesRating(@RequestBody @Valid List<ProjectGrade> projectGradeList){
+        return projectService.FunctionalGivesRating(projectGradeList);
+    }
+
     @ApiOperation("职能部门不同意结题")
     @PostMapping(value = "/rejectToBeConcludingProject")
     public Result rejectToBeConcludingProject(@Valid @RequestBody List<ProjectCheckForm> list){

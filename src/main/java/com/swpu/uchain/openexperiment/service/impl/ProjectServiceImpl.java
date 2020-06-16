@@ -1626,15 +1626,13 @@ public class ProjectServiceImpl implements ProjectService {
     public Result CollegeGivesRating(List<ProjectGrade> projectGradeList) {
         User user = getUserService.getCurrentUser();
         //权限验证
-        if (!userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT) &&
-                !userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT_LEADER)&&
-           !userRoleService.validContainsUserRole(RoleType.COLLEGE_FINALIZATION_REVIEW)) {
+        if (!userRoleService.validContainsUserRole(RoleType.COLLEGE_FINALIZATION_REVIEW)) {
             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
         }
         List<ProjectCheckForm> list = new LinkedList<>();
         for (ProjectGrade projectGrade : projectGradeList) {
             ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectGrade.getProjectId());
-            if (projectGroup.getStatus().equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())) {
+            if (!projectGroup.getStatus().equals(ProjectStatus.ESTABLISH.getValue())) {
                 throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
             }
             ProjectCheckForm projectCheckForm = new ProjectCheckForm();
@@ -1651,6 +1649,35 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result CollegeHitBack(List<ProjectCheckForm> list) {
         return ProjectHitBack(list,OperationUnit.COLLEGE_REVIEWER,OperationType.COLLEGE_RETURNS);
+    }
+
+    /**
+     * 职能部门对项目给出评级
+     * @param projectGradeList
+     * @return
+     */
+    @Override
+    public Result FunctionalGivesRating(List<ProjectGrade> projectGradeList) {
+        User user = getUserService.getCurrentUser();
+        //权限验证
+        if (!userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT)&&
+        !userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT_LEADER)) {
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
+        List<ProjectCheckForm> list = new LinkedList<>();
+        for (ProjectGrade projectGrade : projectGradeList) {
+            ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectGrade.getProjectId());
+            if (!projectGroup.getStatus().equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())) {
+                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+            }
+            ProjectCheckForm projectCheckForm = new ProjectCheckForm();
+            BeanUtils.copyProperties(projectGrade,projectCheckForm);
+            projectCheckForm.setReason("职能部门结题审核通过");
+            list.add(projectCheckForm);
+        }
+        //异步插入
+        setProjectGrade(projectGradeList,user,2);
+        return setProjectStatusAndRecord(list, OperationType.COLLEGE_PASSED_THE_EXAMINATION, OperationUnit.COLLEGE_REVIEWER, ProjectStatus.COLLEGE_FINAL_SUBMISSION);
     }
 
     private void setProjectGrade(List<ProjectGrade> projectGradeList,User user,Integer projectType){

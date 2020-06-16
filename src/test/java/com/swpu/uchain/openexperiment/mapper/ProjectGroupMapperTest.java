@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.mapper;
 
+import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
 import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +47,11 @@ public class ProjectGroupMapperTest {
         list.add(21L);
         list.add(22L);
         projectGroupMapper.updateProjectStatusOfList(list,2);
+    }
+    @Test
+    public void selectConclusionDTOs(){
+        List<ConclusionDTO> conclusionDTOS = projectGroupMapper.selectConclusionDTOs(6);
+        System.out.println(conclusionDTOS.toString());
     }
 
     @Test

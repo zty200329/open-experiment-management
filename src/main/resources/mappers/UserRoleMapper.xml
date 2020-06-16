@@ -46,7 +46,7 @@
   </select>
     <select id="getUserInfoByRole" resultType="com.swpu.uchain.openexperiment.VO.user.RoleUserVO">
       SELECT
-        `user`.id AS id,
+        `u_stu`.id AS id,
         `code` AS `code`,
         email,
         real_name AS realName,
@@ -54,8 +54,8 @@
         work_unit AS workUnit,
         role_id AS role
       FROM
-        openexperiment.`user`
-          INNER JOIN openexperiment.user_role ON `user`.`code` = user_role.user_id
+        openexperiment.`u_stu`
+          INNER JOIN openexperiment.user_role ON `u_stu`.`code` = user_role.user_id
       WHERE
         user_role.role_id &gt; #{role}
       ORDER BY

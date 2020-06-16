@@ -368,4 +368,11 @@ public interface ProjectService {
      * @return
      */
     Result CollegeHitBack(List<ProjectCheckForm> list);
+
+    /**
+     * 职能部门给出评级
+     * @param projectGradeList
+     * @return
+     */
+    Result FunctionalGivesRating(List<ProjectGrade> projectGradeList);
 }

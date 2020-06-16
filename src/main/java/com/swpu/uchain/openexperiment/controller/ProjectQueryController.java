@@ -125,7 +125,7 @@ public class ProjectQueryController {
         return projectService.collegeGetsTheItemsToBeCompleted();
     }
 
-    @ApiOperation("学院获取结题项目")
+    @ApiOperation("学院评审人员获取学院结题项目")
     @GetMapping(value = "/collegeGetsTheProjects")
     public Result collegeGetsTheProjects (){
         return projectService.collegeGetsTheProjects();

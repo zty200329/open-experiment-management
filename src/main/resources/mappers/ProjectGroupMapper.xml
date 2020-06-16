@@ -655,13 +655,14 @@
             project_group.creator_id AS guideTeacherId,
             CONCAT(DATE_FORMAT(project_group.start_time,'%Y.%m.%d'),'-',DATE_FORMAT(project_group.end_time,'%Y.%m.%d')) AS startTimeAndEndTime,
             `user_project_group`.member_role AS userRole,
-            `user`.real_name AS userName,
-            `user`.`code` AS userId,
-            CONCAT(`user`.class_num ,'-',`user`.grade) AS majorAndGrade
+            `u_stu`.real_name AS userName,
+            `u_stu`.`code` AS userId,
+            CONCAT(`u_stu`.class_num ,'-',`u_stu`.grade) AS majorAndGrade
         FROM
             openexperiment.project_group
                 INNER JOIN openexperiment.user_project_group ON project_group.id = user_project_group.project_group_id
-                INNER JOIN openexperiment.`user` on user_project_group.user_id = `user`.`code`;
+                INNER JOIN openexperiment.`u_stu` ON user_project_group.user_id = `u_stu`.`code`
+        WHERE project_group.status = 6 AND user_project_group.member_role != 1 AND project_group.subordinate_college = #{college}
     </select>
 
     <select id="selectAllByList" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
