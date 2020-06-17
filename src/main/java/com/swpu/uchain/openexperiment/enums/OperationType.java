@@ -27,7 +27,7 @@ public enum OperationType {
     COLLEGE_PASSED_THE_EXAMINATION(13,"学院结题审核通过"),
     FUNCTIONAL_RETURNS(14,"职能部门审核退回"),
     FUNCTIONAL_REVIEW_PASSED(15,"职能部门复核通过"),
-    FUNCTIONAL_PASSED_THE_EXAMINATION(16,"职能部门结题通过"),
+    FUNCTIONAL_PASSED_THE_EXAMINATION(16,"职能部门结题审核通过"),
 
     ;
 

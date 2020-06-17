@@ -251,7 +251,7 @@ public class ProjectInvokeController {
     }
 
     @ApiOperation("职能部门对普通项目给出评级")
-    @PostMapping("/CollegeGivesRating")
+    @PostMapping("/functionGivesRating")
     public Result FunctionalGivesRating(@RequestBody @Valid List<ProjectGrade> projectGradeList){
         return projectService.FunctionalGivesRating(projectGradeList);
     }

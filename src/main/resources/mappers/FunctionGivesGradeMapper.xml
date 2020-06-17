@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swpu.uchain.openexperiment.mapper.FunctionGivesGradeMapper" >
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.FunctionGivesGrade" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="project_id" property="projectId" jdbcType="BIGINT" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+    <result column="acceptance_time" property="acceptanceTime" jdbcType="TIMESTAMP" />
+    <result column="project_type" property="projectType" jdbcType="INTEGER" />
+    <result column="operator_name" property="operatorName" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from function_gives_grade
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.FunctionGivesGrade" >
+    insert into function_gives_grade (id, project_id, grade, 
+      acceptance_time, project_type, operator_name
+      )
+    values (#{id,jdbcType=BIGINT}, #{projectId,jdbcType=BIGINT}, #{grade,jdbcType=INTEGER}, 
+      #{acceptanceTime,jdbcType=TIMESTAMP}, #{projectType,jdbcType=INTEGER}, #{operatorName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.FunctionGivesGrade" >
+    update function_gives_grade
+    set project_id = #{projectId,jdbcType=BIGINT},
+      grade = #{grade,jdbcType=INTEGER},
+      acceptance_time = #{acceptanceTime,jdbcType=TIMESTAMP},
+      project_type = #{projectType,jdbcType=INTEGER},
+      operator_name = #{operatorName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, project_id, grade, acceptance_time, project_type, operator_name
+    from function_gives_grade
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, project_id, grade, acceptance_time, project_type, operator_name
+    from function_gives_grade
+  </select>
+</mapper>

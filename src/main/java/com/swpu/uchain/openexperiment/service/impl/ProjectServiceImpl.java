@@ -67,6 +67,7 @@ public class ProjectServiceImpl implements ProjectService {
     private RedisUtil redisUtil;
     private AchievementMapper achievementMapper;
     private CollegeGivesGradeMapper collegeGivesGradeMapper;
+    private FunctionGivesGradeMapper functionGivesGradeMapper;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -80,7 +81,7 @@ public class ProjectServiceImpl implements ProjectService {
                               KeyProjectStatusMapper keyProjectStatusMapper, ProjectFileMapper projectFileMapper,
                               TimeLimitService timeLimitService, RedisUtil redisUtil, UserRoleService userRoleService,
                               HitBackMessageMapper hitBackMessageMapper ,AchievementMapper achievementMapper,
-                              CollegeGivesGradeMapper collegeGivesGradeMapper) {
+                              CollegeGivesGradeMapper collegeGivesGradeMapper,FunctionGivesGradeMapper functionGivesGradeMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -103,6 +104,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.redisUtil = redisUtil;
         this.achievementMapper = achievementMapper;
         this.collegeGivesGradeMapper = collegeGivesGradeMapper;
+        this.functionGivesGradeMapper = functionGivesGradeMapper;
     }
 
     @Override
@@ -1676,8 +1678,8 @@ public class ProjectServiceImpl implements ProjectService {
             list.add(projectCheckForm);
         }
         //异步插入
-        setProjectGrade(projectGradeList,user,2);
-        return setProjectStatusAndRecord(list, OperationType.COLLEGE_PASSED_THE_EXAMINATION, OperationUnit.COLLEGE_REVIEWER, ProjectStatus.COLLEGE_FINAL_SUBMISSION);
+        setProjectGrade(projectGradeList,user,1);
+        return setProjectStatusAndRecord(list, OperationType.FUNCTIONAL_PASSED_THE_EXAMINATION, OperationUnit.FUNCTIONAL_DEPARTMENT, ProjectStatus.CONCLUDED);
     }
 
     private void setProjectGrade(List<ProjectGrade> projectGradeList,User user,Integer projectType){
