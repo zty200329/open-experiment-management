@@ -1659,7 +1659,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @return
      */
     @Override
-    public Result FunctionalGivesRating(List<ProjectGrade> projectGradeList) {
+    public Result functionalGivesRating(List<ProjectGrade> projectGradeList) {
         User user = getUserService.getCurrentUser();
         //权限验证
         if (!userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT)&&
@@ -1678,7 +1678,7 @@ public class ProjectServiceImpl implements ProjectService {
             list.add(projectCheckForm);
         }
         //异步插入
-        setProjectGrade(projectGradeList,user,1);
+        functionSetProjectGrade(projectGradeList,user,1);
         return setProjectStatusAndRecord(list, OperationType.FUNCTIONAL_PASSED_THE_EXAMINATION, OperationUnit.FUNCTIONAL_DEPARTMENT, ProjectStatus.CONCLUDED);
     }
 
@@ -1691,6 +1691,19 @@ public class ProjectServiceImpl implements ProjectService {
             collegeGivesGrade.setProjectId(projectGrade.getProjectId());
             collegeGivesGrade.setProjectType(projectType);
             collegeGivesGradeMapper.insert(collegeGivesGrade);
+        }
+        log.info("插入成功");
+    }
+
+    private void functionSetProjectGrade(List<ProjectGrade> projectGradeList,User user,Integer projectType){
+        for (ProjectGrade projectGrade : projectGradeList) {
+            FunctionGivesGrade functionGivesGrade = new FunctionGivesGrade();
+            functionGivesGrade.setOperatorName(user.getRealName());
+            functionGivesGrade.setAcceptanceTime(new Date());
+            functionGivesGrade.setGrade(projectGrade.getValue());
+            functionGivesGrade.setProjectId(projectGrade.getProjectId());
+            functionGivesGrade.setProjectType(projectType);
+            functionGivesGradeMapper.insert(functionGivesGrade);
         }
         log.info("插入成功");
     }

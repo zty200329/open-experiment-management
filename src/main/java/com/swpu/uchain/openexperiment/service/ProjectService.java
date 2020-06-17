@@ -374,5 +374,5 @@ public interface ProjectService {
      * @param projectGradeList
      * @return
      */
-    Result FunctionalGivesRating(List<ProjectGrade> projectGradeList);
+    Result functionalGivesRating(List<ProjectGrade> projectGradeList);
 }

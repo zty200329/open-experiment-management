@@ -14,10 +14,10 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.FunctionGivesGrade" >
-    insert into function_gives_grade (id, project_id, grade, 
+    insert into function_gives_grade (project_id, grade,
       acceptance_time, project_type, operator_name
       )
-    values (#{id,jdbcType=BIGINT}, #{projectId,jdbcType=BIGINT}, #{grade,jdbcType=INTEGER}, 
+    values (#{projectId,jdbcType=BIGINT}, #{grade,jdbcType=INTEGER},
       #{acceptanceTime,jdbcType=TIMESTAMP}, #{projectType,jdbcType=INTEGER}, #{operatorName,jdbcType=VARCHAR}
       )
   </insert>
