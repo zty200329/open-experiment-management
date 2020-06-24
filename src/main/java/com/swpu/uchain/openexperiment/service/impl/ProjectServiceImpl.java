@@ -758,7 +758,7 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public Result getToBeConcludingProject() {
-        return getCheckInfo(ProjectStatus.ESTABLISH);
+        return getCheckInfo(ProjectStatus.COLLEGE_FINAL_SUBMISSION);
     }
 
     /**
@@ -872,6 +872,16 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result getMidTermReturnProject() {
         return getCheckInfo(ProjectStatus.INTERIM_RETURN_MODIFICATION);
+    }
+
+    @Override
+    public Result getCollegeReturnProject() {
+        return getCheckInfo(ProjectStatus.COLLEGE_RETURNS);
+    }
+
+    @Override
+    public Result getFunctionReturnProject() {
+        return getCheckInfo(ProjectStatus.FUNCTIONAL_RETURNS);
     }
 
 
@@ -1155,6 +1165,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result CollegeReviewPassed(List<ProjectCheckForm> list) {
         return setProjectStatusAndRecord(list, OperationType.COLLEGE_REVIEW_PASSED, OperationUnit.COLLEGE_REVIEWER, ProjectStatus.COLLEGE_FINAL_SUBMISSION);
+    }
+
+    @Override
+    public Result functionReviewPassed(List<ProjectCheckForm> list) {
+        return setProjectStatusAndRecord(list, OperationType.FUNCTIONAL_REVIEW_PASSED, OperationUnit.FUNCTIONAL_DEPARTMENT, ProjectStatus.CONCLUDED);
     }
 
 
@@ -1681,6 +1696,12 @@ public class ProjectServiceImpl implements ProjectService {
         functionSetProjectGrade(projectGradeList,user,1);
         return setProjectStatusAndRecord(list, OperationType.FUNCTIONAL_PASSED_THE_EXAMINATION, OperationUnit.FUNCTIONAL_DEPARTMENT, ProjectStatus.CONCLUDED);
     }
+
+    @Override
+    public Result functionHitBack(List<ProjectCheckForm> list) {
+        return ProjectHitBack(list,OperationUnit.FUNCTIONAL_DEPARTMENT,OperationType.FUNCTIONAL_RETURNS);
+    }
+
 
     private void setProjectGrade(List<ProjectGrade> projectGradeList,User user,Integer projectType){
         for (ProjectGrade projectGrade : projectGradeList) {

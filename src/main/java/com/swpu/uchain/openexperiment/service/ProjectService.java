@@ -318,6 +318,10 @@ public interface ProjectService {
 
     Result getMidTermReturnProject();
 
+    Result getCollegeReturnProject();
+
+    Result getFunctionReturnProject();
+
     Result agreeIntermediateInspectionProject(List<ProjectCheckForm> list);
 
     Result agreeToBeConcludingProject(List<ProjectCheckForm> list);
@@ -375,4 +379,18 @@ public interface ProjectService {
      * @return
      */
     Result functionalGivesRating(List<ProjectGrade> projectGradeList);
+
+    /**
+     * 职能部门审核打回
+     * @param list
+     * @return
+     */
+    Result functionHitBack(List<ProjectCheckForm> list);
+
+    /**
+     * 职能部门复核通过
+     * @param list
+     * @return
+     */
+    Result functionReviewPassed(List<ProjectCheckForm> list);
 }

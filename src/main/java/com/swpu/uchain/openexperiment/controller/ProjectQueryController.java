@@ -132,7 +132,7 @@ public class ProjectQueryController {
     }
 
     @ApiOperation("职能部门获取待结题检查的项目")
-    @GetMapping(value = "getToBeConcludingProject")
+    @GetMapping(value = "/getToBeConcludingProject")
     public Result getToBeConcludingProject (){
         return projectService.getToBeConcludingProject();
     }
@@ -189,5 +189,16 @@ public class ProjectQueryController {
         return projectService.getMidTermReturnProject();
     }
 
+    @ApiOperation("查看学院打回的项目列表")
+    @PostMapping("/getCollegeReturnProject")
+    public Result getCollegeReturnProject(){
+        return projectService.getCollegeReturnProject();
+    }
+
+    @ApiOperation("查看职能部门打回的项目列表")
+    @PostMapping("/getFunctionReturnProject")
+    public Result getFunctionReturnProject(){
+        return projectService.getFunctionReturnProject();
+    }
 
 }

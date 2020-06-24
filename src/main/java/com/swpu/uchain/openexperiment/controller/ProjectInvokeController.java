@@ -256,7 +256,19 @@ public class ProjectInvokeController {
         return projectService.functionalGivesRating(projectGradeList);
     }
 
-    @ApiOperation("职能部门不同意结题")
+    @ApiOperation("职能部门驳回修改")
+    @PostMapping("/functionHitBack")
+    public Result functionHitBack(@Valid @RequestBody List<ProjectCheckForm> list){
+        return projectService.functionHitBack(list);
+    }
+
+    @ApiOperation("职能部门复核通过")
+    @PostMapping("/functionReviewPassed")
+    public Result functionReviewPassed(@RequestBody List<ProjectCheckForm> list){
+        return projectService.functionReviewPassed(list);
+    }
+
+    @ApiOperation("职能部门拒绝结题")
     @PostMapping(value = "/rejectToBeConcludingProject")
     public Result rejectToBeConcludingProject(@Valid @RequestBody List<ProjectCheckForm> list){
         return projectService.rejectToBeConcludingProject(list);
