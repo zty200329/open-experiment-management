@@ -294,17 +294,33 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             }
         }
 
-        //如果职能部门中期检查不合格则立项失败
+        //如果检查不合格则立项失败
         if(operationType == OperationType.OFFLINE_CHECK_REJECT){
             if((roleType==RoleType.FUNCTIONAL_DEPARTMENT||roleType == RoleType.FUNCTIONAL_DEPARTMENT_LEADER)){
                 return ProjectStatus.ESTABLISH_FAILED;
             }
         }
+        if(operationType == OperationType.CONCLUSION_REJECT){
+            if((roleType==RoleType.FUNCTIONAL_DEPARTMENT||roleType == RoleType.FUNCTIONAL_DEPARTMENT_LEADER
+                    || roleType == RoleType.COLLEGE_FINALIZATION_REVIEW)){
+                return ProjectStatus.ESTABLISH_FAILED;
+            }
+        }
 
-        //如果职能部门中期检查不合格则立项失败
+        //职能部门中期打回
         if(operationType == OperationType.INTERIM_RETURN){
             if((roleType==RoleType.FUNCTIONAL_DEPARTMENT||roleType == RoleType.FUNCTIONAL_DEPARTMENT_LEADER)){
                 return ProjectStatus.INTERIM_RETURN_MODIFICATION;
+            }
+        }
+        if(operationType == OperationType.COLLEGE_RETURNS){
+            if((roleType==RoleType.COLLEGE_FINALIZATION_REVIEW)){
+                return ProjectStatus.COLLEGE_RETURNS;
+            }
+        }
+        if(operationType == OperationType.FUNCTIONAL_RETURNS){
+            if((roleType==RoleType.FUNCTIONAL_DEPARTMENT||roleType == RoleType.FUNCTIONAL_DEPARTMENT_LEADER)){
+                return ProjectStatus.FUNCTIONAL_RETURNS;
             }
         }
         switch (roleType.getValue()){
@@ -383,7 +399,9 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             operationRecordList.add(operationRecord);
 
             idList.add(check.getProjectId());
-            if(operationType == OperationType.INTERIM_RETURN){
+            if(operationType == OperationType.INTERIM_RETURN
+            || operationType == OperationType.COLLEGE_RETURNS
+            || operationType == OperationType.FUNCTIONAL_RETURNS){
                 //发送消息
                 HitBackMessage hitBackMessage = new HitBackMessage();
                 hitBackMessage.setReceiveUserId(userProjectGroupMapper.getProjectLeader(check.getProjectId(),MemberRole.PROJECT_GROUP_LEADER.getValue()).getUserId());
@@ -589,6 +607,19 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result midTermKeyProjectHitBack(List<KeyProjectCheck> list) {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.INTERIM_RETURN,list);
+    }
+
+    @Override
+    public Result collegeKeyProjectHitBack(List<KeyProjectCheck> list){
+        if (!userRoleService.validContainsUserRole(RoleType.COLLEGE_FINALIZATION_REVIEW)) {
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.COLLEGE_FINALIZATION_REVIEW, OperationType.COLLEGE_RETURNS,list);
+    }
+
+    @Override
+    public Result rejectCollegeKeyProject(List<KeyProjectCheck> list) {
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.COLLEGE_FINALIZATION_REVIEW, OperationType.CONCLUSION_REJECT,list);
     }
 
     @Override

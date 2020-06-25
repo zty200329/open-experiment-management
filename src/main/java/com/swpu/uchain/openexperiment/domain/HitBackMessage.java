@@ -6,14 +6,29 @@ import java.util.Date;
 public class HitBackMessage implements Serializable {
     private Long id;
 
+    /**
+     * 接收者id
+     */
     private Long receiveUserId;
 
+    /**
+     * 发送人
+     */
     private String sender;
 
+    /**
+     * 内容
+     */
     private String content;
 
+    /**
+     * 发送时间
+     */
     private Date sendTime;
 
+    /**
+     * 是否已读
+     */
     private Boolean isRead;
 
     private static final long serialVersionUID = 1L;

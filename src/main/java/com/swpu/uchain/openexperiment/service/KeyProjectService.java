@@ -104,6 +104,20 @@ public interface KeyProjectService {
     Result midTermKeyProjectHitBack(List<KeyProjectCheck> list);
 
     /**
+     * 学院打回
+     * @param list
+     * @return
+     */
+    Result collegeKeyProjectHitBack(List<KeyProjectCheck> list);
+
+    /**
+     * 学院拒绝结题
+     * @param list
+     * @return
+     */
+    Result rejectCollegeKeyProject(List<KeyProjectCheck> list);
+
+    /**
      * 查看打回的列表
      * @return
      */

@@ -140,12 +140,6 @@ public class KeyProjectInvokeController {
         return keyProjectService.rejectIntermediateInspectionKeyProject(list);
     }
 
-    @ApiOperation("职能部门拒绝结题")
-    @PostMapping(value = "/rejectToBeConcludingKeyProject")
-    public Result rejectToBeConcludingKeyProject(@Valid @RequestBody List<KeyProjectCheck> list){
-        return keyProjectService.rejectToBeConcludingKeyProject(list);
-    }
-
     @ApiOperation("中期检查项目退回")
     @PostMapping("/KeyProjectMidTermKeyProjectHitBack")
     public Result midTermKeyProjectHitBack(@Valid @RequestBody List<KeyProjectCheck> list){
@@ -158,4 +152,21 @@ public class KeyProjectInvokeController {
         return keyProjectService.midTermReviewPassed(list);
     }
 
+    @ApiOperation("学院结题检查项目退回修改")
+    @PostMapping("/collegeKeyProjectHitBack")
+    public Result collegeKeyProjectHitBack(@Valid @RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.collegeKeyProjectHitBack(list);
+    }
+
+    @ApiOperation("学院拒绝结题")
+    @PostMapping(value = "/rejectCollegeKeyProject")
+    public Result rejectCollegeKeyProject(@Valid @RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.rejectCollegeKeyProject(list);
+    }
+
+    @ApiOperation("职能部门拒绝结题")
+    @PostMapping(value = "/rejectToBeConcludingKeyProject")
+    public Result rejectToBeConcludingKeyProject(@Valid @RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.rejectToBeConcludingKeyProject(list);
+    }
 }
