@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.form.project.IconicResultForm;
 import com.swpu.uchain.openexperiment.form.project.ProjectCheckForm;
+import com.swpu.uchain.openexperiment.form.project.ProjectGrade;
 import com.swpu.uchain.openexperiment.form.query.HistoryQueryKeyProjectInfo;
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
 import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
@@ -116,6 +117,13 @@ public interface KeyProjectService {
      * @return
      */
     Result rejectCollegeKeyProject(List<KeyProjectCheck> list);
+
+    /**
+     * 学院给出等级
+     * @param projectGradeList
+     * @return
+     */
+    Result collegeGivesKeyProjectRating(List<ProjectGrade> projectGradeList);
 
     /**
      * 查看打回的列表

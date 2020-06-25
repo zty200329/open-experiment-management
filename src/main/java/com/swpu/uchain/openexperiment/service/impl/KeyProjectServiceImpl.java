@@ -11,6 +11,7 @@ import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.form.amount.AmountAndType;
 import com.swpu.uchain.openexperiment.form.project.IconicResultForm;
 import com.swpu.uchain.openexperiment.form.project.ProjectCheckForm;
+import com.swpu.uchain.openexperiment.form.project.ProjectGrade;
 import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
@@ -56,6 +57,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private HitBackMessageMapper hitBackMessageMapper;
     private AchievementMapper achievementMapper;
     private UserProjectService userProjectService;
+    private CollegeGivesGradeMapper collegeGivesGradeMapper;
 
 
     @Autowired
@@ -64,7 +66,8 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                                  OperationRecordMapper operationRecordMapper,TimeLimitService timeLimitService,
                                  AmountLimitMapper amountLimitMapper,ProjectFileMapper projectFileMapper,
                                  UserRoleService userRoleService,HitBackMessageMapper hitBackMessageMapper,
-                                 AchievementMapper achievementMapper,UserProjectService userProjectService) {
+                                 AchievementMapper achievementMapper,UserProjectService userProjectService,
+                                 CollegeGivesGradeMapper collegeGivesGradeMapper) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
@@ -77,6 +80,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         this.hitBackMessageMapper = hitBackMessageMapper;
         this.achievementMapper=achievementMapper;
         this.userProjectGroupMapper=userProjectGroupMapper;
+        this.collegeGivesGradeMapper=collegeGivesGradeMapper;
     }
 
 
@@ -323,6 +327,18 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                 return ProjectStatus.FUNCTIONAL_RETURNS;
             }
         }
+
+        if(operationType == OperationType.COLLEGE_PASSED_THE_EXAMINATION){
+            if((roleType==RoleType.COLLEGE_FINALIZATION_REVIEW)){
+                return ProjectStatus.COLLEGE_FINAL_SUBMISSION;
+            }
+        }
+        if(operationType == OperationType.FUNCTIONAL_PASSED_THE_EXAMINATION){
+            if((roleType==RoleType.FUNCTIONAL_DEPARTMENT||roleType == RoleType.FUNCTIONAL_DEPARTMENT_LEADER)){
+                return ProjectStatus.CONCLUDED;
+            }
+        }
+
         switch (roleType.getValue()){
             //如果是指导老师
             case 3:
@@ -620,6 +636,40 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result rejectCollegeKeyProject(List<KeyProjectCheck> list) {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.COLLEGE_FINALIZATION_REVIEW, OperationType.CONCLUSION_REJECT,list);
+    }
+
+    @Override
+    public Result collegeGivesKeyProjectRating(List<ProjectGrade> projectGradeList) {
+        User user = getUserService.getCurrentUser();
+        //权限验证
+        if (!userRoleService.validContainsUserRole(RoleType.COLLEGE_FINALIZATION_REVIEW)) {
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
+        List<KeyProjectCheck> list = new LinkedList<>();
+        for (ProjectGrade projectGrade : projectGradeList) {
+            if (!keyProjectStatusMapper.getStatusByProjectId(projectGrade.getProjectId()).equals(ProjectStatus.ESTABLISH.getValue())) {
+                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+            }
+            KeyProjectCheck projectCheckForm = new KeyProjectCheck();
+            BeanUtils.copyProperties(projectGrade,projectCheckForm);
+            projectCheckForm.setReason("学院结题审核通过");
+            list.add(projectCheckForm);
+        }
+        setProjectGrade(projectGradeList,user,2);
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.COLLEGE_FINALIZATION_REVIEW, OperationType.COLLEGE_PASSED_THE_EXAMINATION,list);
+    }
+
+    private void setProjectGrade(List<ProjectGrade> projectGradeList,User user,Integer projectType){
+        for (ProjectGrade projectGrade : projectGradeList) {
+            CollegeGivesGrade collegeGivesGrade = new CollegeGivesGrade();
+            collegeGivesGrade.setOperatorName(user.getRealName());
+            collegeGivesGrade.setAcceptanceTime(new Date());
+            collegeGivesGrade.setGrade(projectGrade.getValue());
+            collegeGivesGrade.setProjectId(projectGrade.getProjectId());
+            collegeGivesGrade.setProjectType(projectType);
+            collegeGivesGradeMapper.insert(collegeGivesGrade);
+        }
+        log.info("插入成功");
     }
 
     @Override

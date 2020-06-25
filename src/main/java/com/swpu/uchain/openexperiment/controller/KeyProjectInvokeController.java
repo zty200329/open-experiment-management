@@ -5,6 +5,7 @@ import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
 import com.swpu.uchain.openexperiment.form.project.IconicResultForm;
 import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
 import com.swpu.uchain.openexperiment.form.project.ProjectCheckForm;
+import com.swpu.uchain.openexperiment.form.project.ProjectGrade;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.KeyProjectService;
@@ -92,6 +93,7 @@ public class KeyProjectInvokeController {
     }
 
     @ApiOperation("实验室主任上报已审核项目")
+    @PostMapping("/reportKeyProjectByLabAdministrator")
     public Result reportKeyProjectByLabAdministrator(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.reportKeyProjectByLabAdministrator(list);
     }
@@ -162,6 +164,12 @@ public class KeyProjectInvokeController {
     @PostMapping(value = "/rejectCollegeKeyProject")
     public Result rejectCollegeKeyProject(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.rejectCollegeKeyProject(list);
+    }
+
+    @ApiOperation("学院初审给出评级")
+    @PostMapping("/collegeGivesKeyProjectRating")
+    public Result collegeGivesKeyProjectRating(@RequestBody @Valid List<ProjectGrade> projectGradeList){
+        return keyProjectService.collegeGivesKeyProjectRating(projectGradeList);
     }
 
     @ApiOperation("职能部门拒绝结题")
