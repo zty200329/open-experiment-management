@@ -240,6 +240,12 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     @Override
+    public Result getCollegeKeyProject() {
+        User user  = getUserService.getCurrentUser();
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.ESTABLISH,user.getInstitute());
+    }
+
+    @Override
     public Result getKeyProjectApplyingListByFunctionalDepartment() {
         User user  = getUserService.getCurrentUser();
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED,null);

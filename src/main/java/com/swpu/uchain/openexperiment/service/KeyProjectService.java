@@ -39,6 +39,12 @@ public interface KeyProjectService {
 
     Result getKeyProjectApplyingListBySecondaryUnit();
 
+    /**
+     * 学院获取待检查的重点项目
+     * @return
+     */
+    Result getCollegeKeyProject ();
+
     Result getKeyProjectApplyingListByFunctionalDepartment();
 
     Result agreeKeyProjectByGuideTeacher(List<KeyProjectCheck> list);

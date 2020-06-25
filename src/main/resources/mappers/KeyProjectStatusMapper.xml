@@ -64,6 +64,7 @@
             <if test="college!=null">
                 and project_group.subordinate_college = #{college}
             </if>
+                and project_file.material_type = 1
         </where>
 
     </select>
