@@ -105,4 +105,17 @@ public class KeyProjectQueryController {
     public Result getToBeConcludingKeyProject (Integer college){
         return keyProjectService.getToBeConcludingKeyProject(college);
     }
+
+    @ApiOperation("学院获取结题打回的重点项目列表")
+    @GetMapping(value = "/getCollegeReturnKeyProject")
+    public Result getCollegeReturnKeyProject(){
+        return keyProjectService.getCollegeReturnKeyProject();
+    }
+
+    @ApiOperation("职能部门结题打回的重点项目列表 ----- 参数可不传")
+    @GetMapping(value = "/getFunctionReturnKeyProject")
+    public Result getFunctionReturnKeyProject (Integer college){
+        return keyProjectService.getFunctionReturnKeyProject(college);
+    }
+
 }

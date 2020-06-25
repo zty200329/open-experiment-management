@@ -110,6 +110,18 @@ public interface KeyProjectService {
     Result getMidTermReturnProject();
 
     /**
+     * 查看学院结题打回列表
+     * @return
+     */
+    Result getCollegeReturnKeyProject();
+
+    /**
+     * 查看职能部门打回列表
+     * @return
+     */
+    Result getFunctionReturnKeyProject(Integer college);
+
+    /**
      * 中期复核通过
      * @param list
      * @return

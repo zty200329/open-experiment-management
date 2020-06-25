@@ -597,6 +597,22 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     /**
+     * 获取学院结题打回列表
+     * @return
+     */
+    @Override
+    public Result getCollegeReturnKeyProject() {
+        User user  = getUserService.getCurrentUser();
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.COLLEGE_RETURNS,user.getInstitute());
+    }
+
+    @Override
+    public Result getFunctionReturnKeyProject(Integer college) {
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.FUNCTIONAL_RETURNS,college);
+    }
+
+
+    /**
      * 中期重点复核通过
      * @param list
      * @return
