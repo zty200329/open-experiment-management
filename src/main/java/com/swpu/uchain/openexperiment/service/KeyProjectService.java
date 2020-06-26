@@ -112,6 +112,13 @@ public interface KeyProjectService {
     Result collegeKeyProjectHitBack(List<KeyProjectCheck> list);
 
     /**
+     * 职能部门退回修改
+     * @param list
+     * @return
+     */
+    Result functionKeyProjectHitBack(List<KeyProjectCheck> list);
+
+    /**
      * 学院拒绝结题
      * @param list
      * @return

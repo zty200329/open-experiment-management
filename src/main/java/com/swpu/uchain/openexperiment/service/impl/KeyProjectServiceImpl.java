@@ -636,12 +636,29 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.INTERIM_RETURN,list);
     }
 
+    /**
+     * 学院退回
+     * @param list
+     * @return
+     */
     @Override
     public Result collegeKeyProjectHitBack(List<KeyProjectCheck> list){
         if (!userRoleService.validContainsUserRole(RoleType.COLLEGE_FINALIZATION_REVIEW)) {
             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
         }
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.COLLEGE_FINALIZATION_REVIEW, OperationType.COLLEGE_RETURNS,list);
+    }
+
+    /**
+     * 职能部门退回
+     *
+     * 、
+     * @param list
+     * @return
+     */
+    @Override
+    public Result functionKeyProjectHitBack(List<KeyProjectCheck> list) {
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.FUNCTIONAL_RETURNS,list);
     }
 
     @Override

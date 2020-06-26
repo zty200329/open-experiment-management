@@ -178,6 +178,11 @@ public class KeyProjectInvokeController {
         return keyProjectService.collegeGivesKeyProjectRating(projectGradeList);
     }
 
+    @ApiOperation("职能部门检查项目退回修改")
+    @PostMapping("/functionKeyProjectHitBack")
+    public Result functionKeyProjectHitBack(@Valid @RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.functionKeyProjectHitBack(list);
+    }
     @ApiOperation("职能部门拒绝结题")
     @PostMapping(value = "/rejectToBeConcludingKeyProject")
     public Result rejectToBeConcludingKeyProject(@Valid @RequestBody List<KeyProjectCheck> list){
