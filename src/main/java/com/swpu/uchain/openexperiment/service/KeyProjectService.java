@@ -133,7 +133,14 @@ public interface KeyProjectService {
     Result collegeGivesKeyProjectRating(List<ProjectGrade> projectGradeList);
 
     /**
-     * 查看打回的列表
+     * 职能部门给出评级
+     * @param projectGradeList
+     * @return
+     */
+    Result functionGivesKeyProjectRating(List<ProjectGrade> projectGradeList);
+
+    /**
+     * 中期查看打回的列表
      * @return
      */
     Result getMidTermReturnProject();
