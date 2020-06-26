@@ -170,4 +170,11 @@ public interface KeyProjectService {
      * @return
      */
     Result collegeReviewPassed(List<KeyProjectCheck> list);
+
+    /**
+     * 职能部门
+     * @param list
+     * @return
+     */
+    Result functionReviewPassed(List<KeyProjectCheck> list);
 }

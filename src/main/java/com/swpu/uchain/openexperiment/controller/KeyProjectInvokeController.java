@@ -190,6 +190,12 @@ public class KeyProjectInvokeController {
         return keyProjectService.functionGivesKeyProjectRating(projectGradeList);
     }
 
+    @ApiOperation("重点项目职能部门复核通过")
+    @PostMapping("/functionReviewPassedKeyProject")
+    public Result functionReviewPassedKeyProject(@RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.functionReviewPassed(list);
+    }
+
     @ApiOperation("职能部门拒绝结题")
     @PostMapping(value = "/rejectToBeConcludingKeyProject")
     public Result rejectToBeConcludingKeyProject(@Valid @RequestBody List<KeyProjectCheck> list){

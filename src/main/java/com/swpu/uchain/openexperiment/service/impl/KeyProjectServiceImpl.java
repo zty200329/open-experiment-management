@@ -766,6 +766,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     @Override
+    public Result functionReviewPassed(List<KeyProjectCheck> list) {
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.FUNCTIONAL_REVIEW_PASSED,list);
+    }
+
+    @Override
     public Result rejectKeyProjectByFunctionalDepartment(List<KeyProjectCheck> list) {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.REJECT,list);
     }
