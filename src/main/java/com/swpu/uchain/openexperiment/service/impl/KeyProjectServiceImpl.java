@@ -328,6 +328,17 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             }
         }
 
+        if(operationType == OperationType.COLLEGE_REVIEW_PASSED){
+            if((roleType==RoleType.COLLEGE_FINALIZATION_REVIEW)){
+                return ProjectStatus.COLLEGE_FINAL_SUBMISSION;
+            }
+        }
+        if(operationType == OperationType.FUNCTIONAL_REVIEW_PASSED){
+            if((roleType==RoleType.FUNCTIONAL_DEPARTMENT||roleType == RoleType.FUNCTIONAL_DEPARTMENT_LEADER)){
+                return ProjectStatus.CONCLUDED;
+            }
+        }
+
         if(operationType == OperationType.COLLEGE_PASSED_THE_EXAMINATION){
             if((roleType==RoleType.COLLEGE_FINALIZATION_REVIEW)){
                 return ProjectStatus.COLLEGE_FINAL_SUBMISSION;
