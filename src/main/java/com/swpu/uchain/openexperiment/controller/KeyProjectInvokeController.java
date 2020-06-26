@@ -160,6 +160,12 @@ public class KeyProjectInvokeController {
         return keyProjectService.collegeKeyProjectHitBack(list);
     }
 
+    @ApiOperation("重点项目学院复核通过")
+    @PostMapping("/collegeReviewPassed")
+    public Result collegeReviewPassed(@RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.collegeReviewPassed(list);
+    }
+
     @ApiOperation("学院拒绝结题")
     @PostMapping(value = "/rejectCollegeKeyProject")
     public Result rejectCollegeKeyProject(@Valid @RequestBody List<KeyProjectCheck> list){

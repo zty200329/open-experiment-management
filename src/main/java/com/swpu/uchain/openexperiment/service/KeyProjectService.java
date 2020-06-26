@@ -149,4 +149,11 @@ public interface KeyProjectService {
      * @return
      */
     Result midTermReviewPassed(List<KeyProjectCheck> list);
+
+    /**
+     * 学院复核通过
+     * @param list
+     * @return
+     */
+    Result collegeReviewPassed(List<KeyProjectCheck> list);
 }
