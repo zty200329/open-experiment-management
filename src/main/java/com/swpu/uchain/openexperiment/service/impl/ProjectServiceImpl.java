@@ -408,12 +408,12 @@ public class ProjectServiceImpl implements ProjectService {
         if (userProjectGroup == null) {
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
-        //状态不是申报或者退回修改不允许修改
+        //状态不是申报或者退回修改或者中期打回不允许修改
         if (!(projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) || projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue()) ||
                 projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()))) {
             return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
         }
-        //修改的话将状态修改为申报状态
+        //修改的话将状态修改为申报状态，中期打回不用
         if (!projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue())) {
             projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
         }
@@ -423,11 +423,11 @@ public class ProjectServiceImpl implements ProjectService {
         //固定时间
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            Date startTime = dateFormat.parse("2019-12-05");
+            Date startTime = dateFormat.parse("2020-12-05");
             updateProjectApplyForm.setStartTime(startTime);
             Date endTime;
             if (updateProjectApplyForm.getProjectType().equals(ProjectType.GENERAL.getValue())) {
-                endTime = dateFormat.parse("2020-06-01");
+                endTime = dateFormat.parse("2021-06-01");
             } else {
                 endTime = dateFormat.parse("2020-11-01");
             }
