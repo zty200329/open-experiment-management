@@ -100,10 +100,28 @@ public class KeyProjectQueryController {
         return keyProjectService.getCollegeKeyProject();
     }
 
+    @ApiOperation("学院获取学院结题通过了的")
+    @GetMapping("/getTheCollegeHasCompletedKeyProject")
+    public Result getTheCollegeHasCompletedKeyProject(){
+        return keyProjectService.getTheCollegeHasCompletedKeyProject();
+    }
+
+    @ApiOperation("学院获取职能部门结题通过了的")
+    @GetMapping("/getTheSchoolHasCompletedKeyProject")
+    public Result getTheSchoolHasCompletedKeyProject(){
+        return keyProjectService.getTheSchoolHasCompletedKeyProject();
+    }
+
     @ApiOperation("职能部门获取待结题检查的项目 -- 参数可不传")
     @GetMapping(value = "getToBeConcludingKeyProject")
     public Result getToBeConcludingKeyProject (Integer college){
         return keyProjectService.getToBeConcludingKeyProject(college);
+    }
+
+    @ApiOperation("职能部门获取待结题检查的项目 -- 参数可不传")
+    @GetMapping(value = "getToBeConcludingKeyProject")
+    public Result getCompleteKeyProject (Integer college){
+        return keyProjectService.getCompleteKeyProject(college);
     }
 
     @ApiOperation("学院获取结题打回的重点项目列表")

@@ -25,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,8 +79,8 @@ public class ProjectServiceImpl implements ProjectService {
                               UserProjectGroupMapper userProjectGroupMapper, UserMapper userMapper,
                               KeyProjectStatusMapper keyProjectStatusMapper, ProjectFileMapper projectFileMapper,
                               TimeLimitService timeLimitService, RedisUtil redisUtil, UserRoleService userRoleService,
-                              HitBackMessageMapper hitBackMessageMapper ,AchievementMapper achievementMapper,
-                              CollegeGivesGradeMapper collegeGivesGradeMapper,FunctionGivesGradeMapper functionGivesGradeMapper) {
+                              HitBackMessageMapper hitBackMessageMapper, AchievementMapper achievementMapper,
+                              CollegeGivesGradeMapper collegeGivesGradeMapper, FunctionGivesGradeMapper functionGivesGradeMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -257,7 +256,14 @@ public class ProjectServiceImpl implements ProjectService {
             teacherArray[0] = currentUser.getCode();
             teacherArray[1] = secondTeacherCode;
             //判定用户是否存在
-            if (userMapper.selectByUserCode(secondTeacherCode) == null) {
+            User secondTeacher = userMapper.selectByUserCode(secondTeacherCode);
+            if (userMapper.selectByUserCode(secondTeacherCode) != null) {
+                //权限验证
+                if (!userRoleService.validContainsUserRole(secondTeacher, RoleType.MENTOR) &&
+                        !userRoleService.validContainsUserRole(secondTeacher, RoleType.POSTGRADUATE)) {
+                    throw new GlobalException(CodeMsg.THIS_USER_CANNOT_BE_A_TUTOR);
+                }
+            } else {
                 throw new GlobalException(CodeMsg.ADD_TEACHER_NOT_EXIST);
             }
         }
@@ -403,12 +409,14 @@ public class ProjectServiceImpl implements ProjectService {
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
         //状态不是申报或者退回修改不允许修改
-        if (!(projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) ||
+        if (!(projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) || projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue()) ||
                 projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()))) {
             return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
         }
         //修改的话将状态修改为申报状态
-        projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
+        if (!projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue())) {
+            projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
+        }
 
         //设置创建者
         projectGroup.setCreatorId(Long.valueOf(currentUser.getCode()));
@@ -443,8 +451,9 @@ public class ProjectServiceImpl implements ProjectService {
         setOperationExecutor(operationRecord);
 
         //修改项目状态
-        projectGroupMapper.updateProjectStatus(projectGroup.getId(), ProjectStatus.DECLARE.getValue());
-
+        if (!projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue())) {
+            projectGroupMapper.updateProjectStatus(projectGroup.getId(), ProjectStatus.DECLARE.getValue());
+        }
         recordMapper.insert(operationRecord);
         return Result.success();
     }
@@ -861,12 +870,19 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 学院获取学院初审通过的
+     *
      * @return
      */
     @Override
     public Result collegeGetsTheProjects() {
         //TODO 应该加入时间校验
         return getCheckInfo(ProjectStatus.COLLEGE_FINAL_SUBMISSION);
+    }
+
+    @Override
+    public Result getTheSchoolHasCompletedProject() {
+        //TODO 应该加入时间校验
+        return getCheckInfo(ProjectStatus.CONCLUDED);
     }
 
     @Override
@@ -1085,12 +1101,12 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
         }
 
-        //生成项目编号
-        for (Long id : projectGroupIdList) {
-            String serialNumber = projectGroupMapper.selectByPrimaryKey(id).getSerialNumber();
-            //计算编号并在数据库中插入编号
-            projectGroupMapper.updateProjectSerialNumber(id, SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.GENERAL.getValue(), serialNumber));
-        }
+        //生成项目编号 不用
+//        for (Long id : projectGroupIdList) {
+//            String serialNumber = projectGroupMapper.selectByPrimaryKey(id).getSerialNumber();
+//            //计算编号并在数据库中插入编号
+//            projectGroupMapper.updateProjectSerialNumber(id, SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.GENERAL.getValue(), serialNumber));
+//        }
 
 
         AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(college, ProjectType.GENERAL.getValue(), RoleType.SECONDARY_UNIT.getValue());
@@ -1100,7 +1116,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         //时间限制
-        timeLimitService.validTime(TimeLimitType.SECONDARY_UNIT_REPORT_LIMIT);
+//        timeLimitService.validTime(TimeLimitType.SECONDARY_UNIT_REPORT_LIMIT);
         return reportToHigherUnit(projectGroupIdList, ProjectStatus.SECONDARY_UNIT_ALLOWED, OperationUnit.SECONDARY_UNIT);
     }
 
@@ -1338,6 +1354,7 @@ public class ProjectServiceImpl implements ProjectService {
     /**
      * 有报错
      * 学生获取所有可参与的项目
+     *
      * @return
      */
     @Override
@@ -1347,6 +1364,7 @@ public class ProjectServiceImpl implements ProjectService {
         Integer college = currentUser.getInstitute();
         TimeLimit timeLimit = timeLimitService.getTimeLimitByTypeAndCollege(TimeLimitType.JOIN_APPLY_LIMIT, college);
         //不在时间范围内
+        log.info(timeLimit.getEndTime()+"  "+timeLimit.getStartTime() + "   "+ new Date());
         if (timeLimit.getEndTime().before(new Date()) || timeLimit.getStartTime().after(new Date())) {
             //身份为学生，不可见
             if (userRoleService.validContainsUserRole(RoleType.NORMAL_STU)) {
@@ -1457,7 +1475,7 @@ public class ProjectServiceImpl implements ProjectService {
         Integer status = projectGroup.getStatus();
 
         //验证项目状态
-        if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue())
+        if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue()) && !status.equals(ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue())
         ) {
             int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(joinForm.getProjectGroupId());
             if (SubordinateCollege != 0) {
@@ -1635,6 +1653,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 对普通项目给出评级
+     *
      * @param projectGradeList
      * @return
      */
@@ -1653,23 +1672,24 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
             }
             ProjectCheckForm projectCheckForm = new ProjectCheckForm();
-            BeanUtils.copyProperties(projectGrade,projectCheckForm);
+            BeanUtils.copyProperties(projectGrade, projectCheckForm);
             projectCheckForm.setReason("学院结题审核通过");
             list.add(projectCheckForm);
         }
         //异步插入
-        setProjectGrade(projectGradeList,user,1);
+        setProjectGrade(projectGradeList, user, 1);
         return setProjectStatusAndRecord(list, OperationType.COLLEGE_PASSED_THE_EXAMINATION, OperationUnit.COLLEGE_REVIEWER, ProjectStatus.COLLEGE_FINAL_SUBMISSION);
 
     }
 
     @Override
     public Result CollegeHitBack(List<ProjectCheckForm> list) {
-        return ProjectHitBack(list,OperationUnit.COLLEGE_REVIEWER,OperationType.COLLEGE_RETURNS);
+        return ProjectHitBack(list, OperationUnit.COLLEGE_REVIEWER, OperationType.COLLEGE_RETURNS);
     }
 
     /**
      * 职能部门对项目给出评级
+     *
      * @param projectGradeList
      * @return
      */
@@ -1677,8 +1697,8 @@ public class ProjectServiceImpl implements ProjectService {
     public Result functionalGivesRating(List<ProjectGrade> projectGradeList) {
         User user = getUserService.getCurrentUser();
         //权限验证
-        if (!userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT)&&
-        !userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT_LEADER)) {
+        if (!userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT) &&
+                !userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT_LEADER)) {
             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
         }
         List<ProjectCheckForm> list = new LinkedList<>();
@@ -1688,22 +1708,22 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
             }
             ProjectCheckForm projectCheckForm = new ProjectCheckForm();
-            BeanUtils.copyProperties(projectGrade,projectCheckForm);
+            BeanUtils.copyProperties(projectGrade, projectCheckForm);
             projectCheckForm.setReason("职能部门结题审核通过");
             list.add(projectCheckForm);
         }
         //异步插入
-        functionSetProjectGrade(projectGradeList,user,1);
+        functionSetProjectGrade(projectGradeList, user, 1);
         return setProjectStatusAndRecord(list, OperationType.FUNCTIONAL_PASSED_THE_EXAMINATION, OperationUnit.FUNCTIONAL_DEPARTMENT, ProjectStatus.CONCLUDED);
     }
 
     @Override
     public Result functionHitBack(List<ProjectCheckForm> list) {
-        return ProjectHitBack(list,OperationUnit.FUNCTIONAL_DEPARTMENT,OperationType.FUNCTIONAL_RETURNS);
+        return ProjectHitBack(list, OperationUnit.FUNCTIONAL_DEPARTMENT, OperationType.FUNCTIONAL_RETURNS);
     }
 
 
-    private void setProjectGrade(List<ProjectGrade> projectGradeList,User user,Integer projectType){
+    private void setProjectGrade(List<ProjectGrade> projectGradeList, User user, Integer projectType) {
         for (ProjectGrade projectGrade : projectGradeList) {
             CollegeGivesGrade collegeGivesGrade = new CollegeGivesGrade();
             collegeGivesGrade.setOperatorName(user.getRealName());
@@ -1716,7 +1736,7 @@ public class ProjectServiceImpl implements ProjectService {
         log.info("插入成功");
     }
 
-    private void functionSetProjectGrade(List<ProjectGrade> projectGradeList,User user,Integer projectType){
+    private void functionSetProjectGrade(List<ProjectGrade> projectGradeList, User user, Integer projectType) {
         for (ProjectGrade projectGrade : projectGradeList) {
             FunctionGivesGrade functionGivesGrade = new FunctionGivesGrade();
             functionGivesGrade.setOperatorName(user.getRealName());
@@ -1737,7 +1757,7 @@ public class ProjectServiceImpl implements ProjectService {
         for (ProjectCheckForm form : formList) {
             ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(form.getProjectId());
             Integer status = projectGroup.getStatus();
-            if (!status.equals(ProjectStatus.ESTABLISH.getValue())&&!status.equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())) {
+            if (!status.equals(ProjectStatus.ESTABLISH.getValue()) && !status.equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
             //批量插入数据
@@ -1749,13 +1769,13 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecord.setOperationType(operationType.getValue());
             operationRecord.setOperationCollege(user.getInstitute());
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
-            if(operationType.getValue().equals(OperationType.INTERIM_RETURN.getValue())) {
+            if (operationType.getValue().equals(OperationType.INTERIM_RETURN.getValue())) {
                 updateProjectStatus(form.getProjectId(), ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue());
-            }else if(operationType.getValue().equals(OperationType.COLLEGE_RETURNS.getValue())){
+            } else if (operationType.getValue().equals(OperationType.COLLEGE_RETURNS.getValue())) {
                 updateProjectStatus(form.getProjectId(), ProjectStatus.COLLEGE_RETURNS.getValue());
-            }else if(operationType.getValue().equals(OperationType.FUNCTIONAL_RETURNS.getValue())) {
+            } else if (operationType.getValue().equals(OperationType.FUNCTIONAL_RETURNS.getValue())) {
                 updateProjectStatus(form.getProjectId(), ProjectStatus.FUNCTIONAL_RETURNS.getValue());
-            }else{
+            } else {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
             list.add(operationRecord);
@@ -1846,7 +1866,7 @@ public class ProjectServiceImpl implements ProjectService {
              * 有改动 可能存在bug
              */
             if (!rightProjectStatus.equals(status) && operationUnit != OperationUnit.LAB_ADMINISTRATOR && operationUnit != OperationUnit.FUNCTIONAL_DEPARTMENT
-            && operationUnit != OperationUnit.COLLEGE_REVIEWER ) {
+                    && operationUnit != OperationUnit.COLLEGE_REVIEWER) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
             //批量插入数据
@@ -1942,7 +1962,7 @@ public class ProjectServiceImpl implements ProjectService {
         } else {
             ProjectAnnex conclusionFile = new ProjectAnnex();
             String url = ipAddress + "/conclusion/" + conclusionPdf.getFileName();
-            BeanUtils.copyProperties(conclusionPdf,conclusionFile);
+            BeanUtils.copyProperties(conclusionPdf, conclusionFile);
             conclusionFile.setUrl(url);
             conclusionDetailVO.setConclusionPdf(conclusionFile);
         }
@@ -1951,7 +1971,7 @@ public class ProjectServiceImpl implements ProjectService {
         } else {
             ProjectAnnex experimentReport = new ProjectAnnex();
             String url = ipAddress + "/conclusion/" + experimentReportPdf.getFileName();
-            BeanUtils.copyProperties(experimentReportPdf,experimentReport);
+            BeanUtils.copyProperties(experimentReportPdf, experimentReport);
             experimentReport.setUrl(url);
             conclusionDetailVO.setExperimentReportPdf(experimentReport);
         }
@@ -1963,22 +1983,22 @@ public class ProjectServiceImpl implements ProjectService {
         }
         conclusionDetailVO.setAnnexes(projectAnnexes);
         //查询成果附件
-        if(detail.getKeyProjectStatus() != null) {
+        if (detail.getKeyProjectStatus() != null) {
             //如果为重点项目用上传成果
             List<Achievement> achievements = achievementMapper.selectByProjectId(projectId);
             List<ProjectOutcomeVO> outcomeVOS = new LinkedList<>();
             for (Achievement achievement : achievements) {
                 ProjectOutcomeVO projectOutcomeVO = new ProjectOutcomeVO();
-                BeanUtils.copyProperties(achievement,projectOutcomeVO);
+                BeanUtils.copyProperties(achievement, projectOutcomeVO);
                 outcomeVOS.add(projectOutcomeVO);
             }
             conclusionDetailVO.setListProjectOutcomeVO(outcomeVOS);
-            ProjectFile achievementAnnex= projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.ACHIEVEMENT_ANNEX.getValue(),null);
+            ProjectFile achievementAnnex = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectId, MaterialType.ACHIEVEMENT_ANNEX.getValue(), null);
             if (achievementAnnex == null) {
                 conclusionDetailVO.setAchievementAnnex(null);
             } else {
                 ProjectAnnex annex = new ProjectAnnex();
-                BeanUtils.copyProperties(achievementAnnex,annex);
+                BeanUtils.copyProperties(achievementAnnex, annex);
                 conclusionDetailVO.setAchievementAnnex(annex);
             }
         }

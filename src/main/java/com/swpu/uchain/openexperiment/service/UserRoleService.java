@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service;
 
+import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserRole;
 import com.swpu.uchain.openexperiment.enums.RoleType;
 import com.swpu.uchain.openexperiment.form.permission.UserRoleForm;
@@ -10,10 +11,17 @@ import java.util.List;
 /**
  * @Author: clf
  * @Date: 19-1-22
- * @Description:
- * 用户权限模块
+ * @Description: 用户权限模块
  */
 public interface UserRoleService {
+    /**
+     * 验证是否拥有角色
+     *
+     * @param user
+     * @param roleType
+     * @return
+     */
+    boolean validContainsUserRole(User user, RoleType roleType);
 
     /**
      * 验证是否拥有该角色
@@ -22,6 +30,7 @@ public interface UserRoleService {
 
     /**
      * 插入UserRole
+     *
      * @param userRole
      * @return
      */
@@ -29,6 +38,7 @@ public interface UserRoleService {
 
     /**
      * 删除用户的某个角色
+     *
      * @param userId
      * @param roleId
      */
@@ -36,6 +46,7 @@ public interface UserRoleService {
 
     /**
      * 为用户配置角色
+     *
      * @param userRoleForm
      * @return
      */
@@ -43,6 +54,7 @@ public interface UserRoleService {
 
     /**
      * 查找拥有某一角色的所有用户
+     *
      * @param roleId
      * @return
      */

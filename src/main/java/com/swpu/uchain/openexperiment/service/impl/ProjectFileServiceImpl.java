@@ -197,6 +197,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result uploadApplyDoc(MultipartFile file, MultipartFile headFile, Long projectGroupId) {
         //先检查文件是否为空
         if (file == null || headFile == null) {
@@ -212,11 +213,16 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             log.info("职能部门对进行项目编号为" + projectGroupId + "的项目进行正文修改");
             //验证项目状态合法性，为其中之一的状态均可以通过
         } else if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue()) &&
-                !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())
+                !projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue())) {
+            if(keyProjectStatusMapper.getStatusByProjectId(projectGroupId) !=null){
                 //判定是否为重点项目驳回状态,该状态可进行文件提交
-                && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.TO_DE_CONFIRMED.getValue())
-                && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue())) {
-            throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+                if(!keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.TO_DE_CONFIRMED.getValue())
+                        && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue())){
+                    throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+                }
+            }else{
+                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+            }
         }
 
         if (!getFileSuffix(file.getOriginalFilename()).equals(".doc") || !getFileSuffix(headFile.getOriginalFilename()).equals(".html")) {
@@ -389,7 +395,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Override
     public Result uploadAttachmentFile(List<MultipartFile> multipartFile, Long projectId) {
         //验证时间限制
-        timeLimitService.validTime(TimeLimitType.UPLOADING_INFORMATION);
+//        timeLimitService.validTime(TimeLimitType.UPLOADING_INFORMATION);
         if (multipartFile == null || multipartFile.size() == 0) {
             throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }

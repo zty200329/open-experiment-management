@@ -50,15 +50,13 @@ public class UserRoleServiceImpl implements UserRoleService {
         return Result.success();
     }
 
-    /**
-     * 多角色身份验证
-     * @param roleType 需要的角色
-     * @return
-     */
     @Override
-    public boolean validContainsUserRole(RoleType roleType) {
-        User user  = getCurrentUser.getCurrentUser();
+    public boolean validContainsUserRole(User user,RoleType roleType) {
         //用户角色组
+        return userRoleList(user, roleType);
+    }
+
+    private boolean userRoleList(User user, RoleType roleType) {
         List<UserRole> list = userRoleMapper.selectByUserId(Long.valueOf(user.getCode()));
         if (list == null || list.size() == 0) {
             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
@@ -70,6 +68,18 @@ public class UserRoleServiceImpl implements UserRoleService {
             }
         }
         return false;
+    }
+
+    /**
+     * 多角色身份验证
+     * @param roleType 需要的角色
+     * @return
+     */
+    @Override
+    public boolean validContainsUserRole(RoleType roleType) {
+        User user  = getCurrentUser.getCurrentUser();
+        //用户角色组
+        return userRoleList(user, roleType);
     }
 
     @Override

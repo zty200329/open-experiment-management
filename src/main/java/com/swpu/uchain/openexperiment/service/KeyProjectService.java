@@ -46,6 +46,10 @@ public interface KeyProjectService {
      */
     Result getCollegeKeyProject ();
 
+    Result getTheCollegeHasCompletedKeyProject();
+
+    Result getTheSchoolHasCompletedKeyProject();
+
     Result getKeyProjectApplyingListByFunctionalDepartment();
 
     Result agreeKeyProjectByGuideTeacher(List<KeyProjectCheck> list);
@@ -81,6 +85,8 @@ public interface KeyProjectService {
     Result getIntermediateInspectionKeyProject(Integer college);
 
     Result getToBeConcludingKeyProject(Integer college);
+
+    Result getCompleteKeyProject (Integer college);
 
     Result agreeIntermediateInspectionKeyProject(List<KeyProjectCheck> list);
 

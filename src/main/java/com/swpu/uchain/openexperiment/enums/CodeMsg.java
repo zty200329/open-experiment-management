@@ -40,6 +40,7 @@ public enum CodeMsg {
     ADD_TEACHER_NOT_EXIST(1422,"添加教师不存在"),
     ONLY_TEACHER_CAN_APPLY(1423,"非教师不得进行项目申请"),
     DOES_NOT_HAVE_DEFAULT_PROJECT_PERMISSIONS(1424,"不具备内定项目权限"),
+    THIS_USER_CANNOT_BE_A_TUTOR(1425,"该用户不能作为指导教师"),
 
 
 

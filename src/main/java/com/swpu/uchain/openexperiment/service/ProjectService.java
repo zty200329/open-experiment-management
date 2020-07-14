@@ -316,6 +316,12 @@ public interface ProjectService {
      */
     Result collegeGetsTheProjects();
 
+    /**
+     * 学院获取职能部门同意的结题项目
+     * @return
+     */
+    Result getTheSchoolHasCompletedProject();
+
     Result getMidTermReturnProject();
 
     Result getCollegeReturnProject();

@@ -42,7 +42,7 @@ public class Html2PDFUtil {
             // 实际项目中，可以获取改字体所在真实的服务器的路径,这个方法是本地地址和网络地址都支持的
             // 这里面添加的是宋体
 //            fontResolver.addFont("/usr/share/fonts/chinese/simsun.ttc",
-            fontResolver.addFont("/home/zty/open-experiment-management-system/simsun.ttc",
+            fontResolver.addFont("C:\\Program Files (x86)\\OpenOffice 4\\simsun.ttc",
                     BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
 

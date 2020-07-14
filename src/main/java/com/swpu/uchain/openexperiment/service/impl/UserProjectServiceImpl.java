@@ -237,7 +237,7 @@ public class UserProjectServiceImpl implements UserProjectService {
 
         //验证项目状态
         Integer status = projectGroupMapper.selectByPrimaryKey(aimForm.getProjectGroupId()).getStatus();
-        if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue())
+        if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue()) && !status.equals(ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue())
         ) {
             int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(aimForm.getProjectGroupId());
             if (SubordinateCollege != 0) {

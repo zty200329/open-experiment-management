@@ -125,10 +125,16 @@ public class ProjectQueryController {
         return projectService.collegeGetsTheItemsToBeCompleted();
     }
 
-    @ApiOperation("学院评审人员获取学院结题项目")
+    @ApiOperation("学院评审人员获取学院结题项目但是还未通过职能部门评审的项目")
     @GetMapping(value = "/collegeGetsTheProjects")
     public Result collegeGetsTheProjects (){
         return projectService.collegeGetsTheProjects();
+    }
+
+    @ApiOperation("学院获取该院已经通过职能部门评审的项目")
+    @GetMapping("/getTheSchoolHasCompletedProject")
+    public Result getTheSchoolHasCompletedProject(){
+        return projectService.getTheSchoolHasCompletedProject();
     }
 
     @ApiOperation("职能部门获取待结题检查的项目")

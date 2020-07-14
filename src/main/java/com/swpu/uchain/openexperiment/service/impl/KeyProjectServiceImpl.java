@@ -252,6 +252,18 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     @Override
+    public Result getTheCollegeHasCompletedKeyProject() {
+        User user  = getUserService.getCurrentUser();
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.COLLEGE_FINAL_SUBMISSION,user.getInstitute());
+    }
+
+    @Override
+    public Result getTheSchoolHasCompletedKeyProject() {
+        User user  = getUserService.getCurrentUser();
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.CONCLUDED,user.getInstitute());
+    }
+
+    @Override
     public Result getKeyProjectApplyingListByFunctionalDepartment() {
         User user  = getUserService.getCurrentUser();
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED,null);
@@ -270,6 +282,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result getToBeConcludingKeyProject(Integer college) {
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.COLLEGE_FINAL_SUBMISSION,college);
+    }
+
+    @Override
+    public Result getCompleteKeyProject(Integer college) {
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.COLLEGE_FINAL_SUBMISSION,college);
     }
 
@@ -402,14 +419,16 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         List<Long> idList = new LinkedList<>();
         for (KeyProjectCheck check:list) {
             ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(check.getProjectId());
-            UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(check.getProjectId(), Long.valueOf(user.getCode()));
+//            UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(check.getProjectId(), Long.valueOf(user.getCode()));
 
             //验证属于该项目并且是该项目的指导教师
-            if (userRoleService.validContainsUserRole(RoleType.MENTOR)) {
-                if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
-                    throw new GlobalException(CodeMsg.PERMISSION_DENNY);
-                }
-            }
+//            if (userRoleService.validContainsUserRole(RoleType.MENTOR)) {
+//                if (userProjectGroup != null && userProjectGroup.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
+////                    if(roleType != RoleType.COLLEGE_FINALIZATION_REVIEW ) {
+//                        throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+////                    }
+//                }
+//            }
 
 
             if ( projectFileMapper.selectByProjectGroupIdAndMaterialType(check.getProjectId(),MaterialType.APPLY_MATERIAL.getValue(),null) == null) {
@@ -669,10 +688,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result collegeGivesKeyProjectRating(List<ProjectGrade> projectGradeList) {
         User user = getUserService.getCurrentUser();
-        //权限验证
-        if (!userRoleService.validContainsUserRole(RoleType.COLLEGE_FINALIZATION_REVIEW)) {
-            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
-        }
+
         List<KeyProjectCheck> list = new LinkedList<>();
         for (ProjectGrade projectGrade : projectGradeList) {
             if (!keyProjectStatusMapper.getStatusByProjectId(projectGrade.getProjectId()).equals(ProjectStatus.ESTABLISH.getValue())) {
