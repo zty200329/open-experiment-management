@@ -101,6 +101,12 @@ public class ProjectQueryController {
         return projectService.getPendingApprovalProjectByFunctionalDepartment();
     }
 
+    @ApiOperation("职能部门获取结题的项目")
+    @GetMapping(value = "getConclusionProject")
+    public Result getConclusionProject (){
+        return projectService.getConclusionProject();
+    }
+
     @ApiOperation("职能部门获取待中期检查的项目")
     @GetMapping(value = "getIntermediateInspectionProject")
     public Result getIntermediateInspectionProject (){
@@ -118,6 +124,7 @@ public class ProjectQueryController {
     public Result selectKeyProjectByKeyword(@RequestBody SelectByKeywordForm Keyword){
         return projectService.selectKeyProjectByKeyword(Keyword);
     }
+
 
     @ApiOperation("学院获取待结题项目")
     @GetMapping(value = "/collegeGetsTheItemsToBeCompleted")
