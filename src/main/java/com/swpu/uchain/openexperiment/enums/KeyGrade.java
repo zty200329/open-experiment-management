@@ -22,4 +22,5 @@ public enum KeyGrade {
         this.value = value;
         this.tips = tips;
     }
+
 }

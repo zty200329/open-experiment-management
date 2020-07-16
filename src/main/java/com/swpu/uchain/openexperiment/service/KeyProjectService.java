@@ -26,6 +26,7 @@ public interface KeyProjectService {
      */
     Result createKeyApply(KeyProjectApplyForm form);
 
+    Result deleteKeyProject(List<KeyProjectCheck> list);
     /**
      * 指导教师获取带审批的重点项目申请表
      * @return

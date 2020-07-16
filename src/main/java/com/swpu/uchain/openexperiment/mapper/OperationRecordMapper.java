@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 public interface OperationRecordMapper {
 
+    int deleteByGroupId(Long id);
+
     int deleteByPrimaryKey(Long id);
 
     /**

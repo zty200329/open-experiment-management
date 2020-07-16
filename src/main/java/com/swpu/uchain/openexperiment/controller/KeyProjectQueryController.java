@@ -118,8 +118,8 @@ public class KeyProjectQueryController {
         return keyProjectService.getToBeConcludingKeyProject(college);
     }
 
-    @ApiOperation("职能部门获取待结题检查的项目 -- 参数可不传")
-    @GetMapping(value = "getToBeConcludingKeyProject")
+    @ApiOperation("职能部门获取通过的项目 -- 参数可不传")
+    @GetMapping(value = "getCompleteKeyProject")
     public Result getCompleteKeyProject (Integer college){
         return keyProjectService.getCompleteKeyProject(college);
     }

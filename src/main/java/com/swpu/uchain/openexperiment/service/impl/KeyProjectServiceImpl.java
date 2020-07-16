@@ -176,6 +176,31 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result deleteKeyProject(List<KeyProjectCheck> list) {
+        for (KeyProjectCheck keyProjectCheck : list) {
+            Integer keyProjectStatus = keyProjectStatusMapper.getStatusByProjectId(keyProjectCheck.getProjectId());
+
+            if (keyProjectStatus == null) {
+                //不存在则可以直接删除
+                projectGroupMapper.deleteByPrimaryKey(keyProjectCheck.getProjectId());
+                userProjectGroupMapper.deleteByProjectGroupId(keyProjectCheck.getProjectId());
+                operationRecordMapper.deleteByGroupId(keyProjectCheck.getProjectId());
+            }else {
+
+                if (!(keyProjectStatus >= -4 && keyProjectStatus <= 2 && keyProjectStatus != -3)) {
+                    return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+                }
+                projectGroupMapper.deleteByPrimaryKey(keyProjectCheck.getProjectId());
+                userProjectGroupMapper.deleteByProjectGroupId(keyProjectCheck.getProjectId());
+                operationRecordMapper.deleteByGroupId(keyProjectCheck.getProjectId());
+                keyProjectStatusMapper.deleteByProjectId(keyProjectCheck.getProjectId());
+            }
+        }
+        return Result.success();
+    }
+
+    @Override
     public Result getKeyProjectApplyingListByGuideTeacher() {
         User user = getUserService.getCurrentUser();
         if (user == null){
@@ -287,7 +312,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result getCompleteKeyProject(Integer college) {
-        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.COLLEGE_FINAL_SUBMISSION,college);
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.CONCLUDED,college);
     }
 
     private Result getKeyProjectDTOListByStatusAndCollege(ProjectStatus status, Integer college){
@@ -696,7 +721,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             }
             KeyProjectCheck projectCheckForm = new KeyProjectCheck();
             BeanUtils.copyProperties(projectGrade,projectCheckForm);
-            projectCheckForm.setReason("学院结题审核通过");
+            projectCheckForm.setReason("学院结题审核通过，等级：");
             list.add(projectCheckForm);
         }
         setProjectGrade(projectGradeList,user,2);

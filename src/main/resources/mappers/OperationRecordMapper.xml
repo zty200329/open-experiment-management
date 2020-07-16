@@ -43,7 +43,10 @@
     <delete id="deleteByPrimaryKey">
 
     </delete>
-
+    <delete id="deleteByGroupId">
+    delete from openexperiment.operation_record
+    where related_id = #{projectGroupId}
+    </delete>
     <select id="selectByPrimaryKey" resultType="com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo">
 
     </select>

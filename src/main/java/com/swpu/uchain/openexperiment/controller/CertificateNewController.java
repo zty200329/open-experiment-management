@@ -31,7 +31,7 @@ public class CertificateNewController {
     private CertificateNewService certificateNewService;
     @ApiOperation("学生申领")
     @PostMapping(value = "/applyCertificate")
-    public Result applyCertificate(@RequestBody @Valid ApplyCertificateForm applyCertificate){
+    public Result ApplyCertificate(@RequestBody @Valid ApplyCertificateForm applyCertificate){
         return certificateNewService.applyCertificate(applyCertificate);
     }
 

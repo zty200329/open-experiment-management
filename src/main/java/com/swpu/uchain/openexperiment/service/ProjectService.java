@@ -88,6 +88,13 @@ public interface ProjectService {
     Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm);
 
     /**
+     * 指导教师删除学院审核之前的项目
+     * @param list
+     * @return
+     */
+    Result  instructorsToDeleteItems(List<ProjectCheckForm> list);
+
+    /**
      * 获取当前用户的所有参与的项目
      *
      * @param projectStatus

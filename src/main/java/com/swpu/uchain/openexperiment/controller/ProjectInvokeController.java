@@ -61,6 +61,12 @@ public class ProjectInvokeController {
         return projectService.applyUpdateProject(updateProjectApplyForm);
     }
 
+    @ApiOperation("指导教师删除处于学院审核之前项目")
+    @PostMapping("/instructorsToDeleteItems")
+    public Result  instructorsToDeleteItems(@Valid @RequestBody List<ProjectCheckForm> list){
+        return projectService.instructorsToDeleteItems(list);
+    }
+
     @ApiIgnore
     @PostMapping(value = "/ensureOrNotModify")
     public Result ensureOrNotModify(@Valid @RequestBody ConfirmForm confirmForm){

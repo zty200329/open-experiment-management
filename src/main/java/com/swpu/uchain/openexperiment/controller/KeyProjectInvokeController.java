@@ -55,6 +55,12 @@ public class KeyProjectInvokeController {
         return keyProjectService.createKeyApply(form);
     }
 
+    @ApiOperation("删除重点项目，指导老师")
+    @PostMapping("/deleteKeyProject")
+    public Result deleteKeyProject(@Valid @RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.deleteKeyProject(list);
+    }
+
     @ApiOperation("指导老师同意带审核项目")
     @PostMapping(value = "/agreeKeyProjectByGuideTeacher")
     public Result agreeKeyProjectByGuideTeacher(@Valid @RequestBody List<KeyProjectCheck> list){
@@ -115,7 +121,6 @@ public class KeyProjectInvokeController {
     public Result rejectKeyProjectByLabAdministrator(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.rejectKeyProjectByLabAdministrator(list);
     }
-
 
     @ApiOperation("二级单位主任拒绝待审核项目")
     @PostMapping(value = "/rejectKeyProjectBySecondaryUnit")

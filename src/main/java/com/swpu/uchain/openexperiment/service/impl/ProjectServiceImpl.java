@@ -317,13 +317,13 @@ public class ProjectServiceImpl implements ProjectService {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         //固定时间
         try {
-            Date startTime = dateFormat.parse("2019-12-05");
+            Date startTime = dateFormat.parse("2020-12-05");
             form.setStartTime(startTime);
             Date endTime;
             if (form.getProjectType().equals(ProjectType.GENERAL.getValue())) {
-                endTime = dateFormat.parse("2020-06-01");
+                endTime = dateFormat.parse("2021-06-01");
             } else {
-                endTime = dateFormat.parse("2020-11-01");
+                endTime = dateFormat.parse("2021-11-01");
             }
             form.setEndTime(endTime);
         } catch (ParseException e) {
@@ -455,6 +455,38 @@ public class ProjectServiceImpl implements ProjectService {
             projectGroupMapper.updateProjectStatus(projectGroup.getId(), ProjectStatus.DECLARE.getValue());
         }
         recordMapper.insert(operationRecord);
+        return Result.success();
+    }
+
+    /**
+     * 删除项目
+     * @param list
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result instructorsToDeleteItems(List<ProjectCheckForm> list) {
+        User user = getUserService.getCurrentUser();
+        if (user == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        //验证属于该项目并且是该项目的指导教师
+        for (ProjectCheckForm projectCheckForm : list) {
+            ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectCheckForm.getProjectId());
+            UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectCheckForm.getProjectId(), Long.valueOf(user.getCode()));
+            if (userRoleService.validContainsUserRole(RoleType.MENTOR)) {
+                if (!(userProjectGroup != null && userProjectGroup.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue()))){
+                        throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+                }
+            }
+            //验证状态
+            if (!(projectGroup.getStatus() >= -2 && projectGroup.getStatus() <= 2)) {
+                return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+            }
+            projectGroupMapper.deleteByPrimaryKey(projectCheckForm.getProjectId());
+            userProjectGroupMapper.deleteByProjectGroupId(projectCheckForm.getProjectId());
+            recordMapper.deleteByGroupId(projectCheckForm.getProjectId());
+        }
         return Result.success();
     }
 
