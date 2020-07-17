@@ -304,12 +304,16 @@ public interface ProjectService {
      */
     Result selectByKeyword(String Keyword);
 
+    Result selectConclusionByKeyword(String Keyword);
+
     /**
      * 关键字查重点项目
      * @param Keyword
      * @return
      */
     Result selectKeyProjectByKeyword(SelectByKeywordForm Keyword);
+
+    Result selectConclusionKeyProjectByKeyword(SelectByKeywordForm Keyword);
 
     Result getIntermediateInspectionProject();
 

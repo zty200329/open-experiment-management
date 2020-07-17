@@ -869,9 +869,22 @@ public class ProjectServiceImpl implements ProjectService {
     public Result selectByKeyword(String Keyword) {
         List<SelectByKeywordProjectVO> projectVOS = (List<SelectByKeywordProjectVO>) redisUtil.get("select" + Keyword);
         if (projectVOS == null || projectVOS.size() == 0) {
-            projectVOS = projectGroupMapper.selectByKeyword(Keyword);
+            projectVOS = projectGroupMapper.selectByKeyword(Keyword,5);
             if (projectVOS != null && projectVOS.size() != 0) {
                 redisUtil.set("select" + Keyword, projectVOS, 300);
+                log.info("存入redis");
+            }
+        }
+        return Result.success(projectVOS);
+    }
+
+    @Override
+    public Result selectConclusionByKeyword(String Keyword) {
+        List<SelectByKeywordProjectVO> projectVOS = (List<SelectByKeywordProjectVO>) redisUtil.get("selectConclusion" + Keyword);
+        if (projectVOS == null || projectVOS.size() == 0) {
+            projectVOS = projectGroupMapper.selectByKeyword(Keyword,7);
+            if (projectVOS != null && projectVOS.size() != 0) {
+                redisUtil.set("selectConclusion" + Keyword, projectVOS, 300);
                 log.info("存入redis");
             }
         }
@@ -882,9 +895,24 @@ public class ProjectServiceImpl implements ProjectService {
     public Result selectKeyProjectByKeyword(SelectByKeywordForm Keyword) {
         List<SelectByKeywordProjectVO> projectVOS = (List<SelectByKeywordProjectVO>) redisUtil.get("selectKey" + Keyword);
         if (projectVOS == null || projectVOS.size() == 0) {
-            projectVOS = projectGroupMapper.keyProjectSelectByKeyword(Keyword.getKeyword());
+            projectVOS = projectGroupMapper.keyProjectSelectByKeyword(Keyword.getKeyword(),5);
+            log.info(projectVOS.toString());
             if (projectVOS != null && projectVOS.size() != 0) {
-                redisUtil.set("select" + Keyword, projectVOS, 300);
+                redisUtil.set("selectKey" + Keyword, projectVOS, 300);
+                log.info("存入redis");
+            }
+        }
+        return Result.success(projectVOS);
+    }
+
+    @Override
+    public Result selectConclusionKeyProjectByKeyword(SelectByKeywordForm Keyword) {
+        List<SelectByKeywordProjectVO> projectVOS = (List<SelectByKeywordProjectVO>) redisUtil.get("selectKeyConclusion" + Keyword);
+        if (projectVOS == null || projectVOS.size() == 0) {
+            projectVOS = projectGroupMapper.keyProjectSelectByKeyword(Keyword.getKeyword(),7);
+            log.info(projectVOS.toString());
+            if (projectVOS != null && projectVOS.size() != 0) {
+                redisUtil.set("selectKeyConclusion" + Keyword, projectVOS, 300);
                 log.info("存入redis");
             }
         }

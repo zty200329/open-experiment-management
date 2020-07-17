@@ -21,10 +21,10 @@ public interface ProjectGroupMapper {
      * @param keyword
      * @return
      */
-    List<SelectByKeywordProjectVO> selectByKeyword(String keyword);
+    List<SelectByKeywordProjectVO> selectByKeyword(@Param("keyword") String keyword,@Param("status") Integer status);
 
 
-    List<SelectByKeywordProjectVO> keyProjectSelectByKeyword(String keyword);
+    List<SelectByKeywordProjectVO> keyProjectSelectByKeyword(@Param("keyword") String keyword,@Param("status") Integer status);
 
     /**
      * 更新项目上传编号

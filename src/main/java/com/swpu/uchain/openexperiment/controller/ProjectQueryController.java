@@ -113,16 +113,28 @@ public class ProjectQueryController {
         return projectService.getIntermediateInspectionProject();
     }
 
-    @ApiOperation("职能部门根据关键字查找普通项目")
+    @ApiOperation("职能部门根据关键字查找立项状态普通项目")
     @PostMapping("/selectByKeyword")
     public Result selectByKeyword(@RequestBody SelectByKeywordForm Keyword){
         return projectService.selectByKeyword(Keyword.getKeyword());
     }
 
-    @ApiOperation("职能部门根据关键字查找重点项目")
+    @ApiOperation("职能部门根据关键字查找结题状态普通项目")
+    @PostMapping("/selectConclusionByKeyword")
+    public Result selectConclusionByKeyword(@RequestBody SelectByKeywordForm Keyword){
+        return projectService.selectConclusionByKeyword(Keyword.getKeyword());
+    }
+
+    @ApiOperation("职能部门根据关键字查找立项状态的重点项目")
     @PostMapping("/selectKeyProjectByKeyword")
     public Result selectKeyProjectByKeyword(@RequestBody SelectByKeywordForm Keyword){
         return projectService.selectKeyProjectByKeyword(Keyword);
+    }
+
+    @ApiOperation("职能部门根据关键字查找结题状态的重点项目")
+    @PostMapping("/selectConclusionKeyProjectByKeyword")
+    public Result selectConclusionKeyProjectByKeyword(@RequestBody SelectByKeywordForm Keyword){
+        return projectService.selectConclusionKeyProjectByKeyword(Keyword);
     }
 
 
