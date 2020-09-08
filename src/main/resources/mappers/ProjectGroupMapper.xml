@@ -645,11 +645,12 @@
     <select id="getMaxSerialNumberByCollege" resultType="java.lang.String">
         select  max(serial_number) from openexperiment.project_group where subordinate_college = #{college}
     </select>
+<!--    这个是学院的-->
     <select id="selectConclusionDTOs" resultType="com.swpu.uchain.openexperiment.DTO.ConclusionDTO">
         SELECT
             project_group.subordinate_college AS college,
             project_group.lab_name AS labName,
-            project_group.serial_number AS id,
+            project_group.temp_serial_number AS id,
             project_group.experiment_type AS experimentType,
             project_group.total_hours AS totalHours,
             project_group.creator_id AS guideTeacherId,
@@ -657,12 +658,16 @@
             `user_project_group`.member_role AS userRole,
             `u_stu`.real_name AS userName,
             `u_stu`.`code` AS userId,
-            CONCAT(`u_stu`.class_num ,'-',`u_stu`.grade) AS majorAndGrade
+            DATE_FORMAT(college_gives_grade.acceptance_time,'%Y.%m.%d') AS checkTime,
+            college_gives_grade.grade AS checkResult,
+            `u_stu`.major AS major,
+            `u_stu`.grade AS grade
         FROM
             openexperiment.project_group
                 INNER JOIN openexperiment.user_project_group ON project_group.id = user_project_group.project_group_id
                 INNER JOIN openexperiment.`u_stu` ON user_project_group.user_id = `u_stu`.`code`
-        WHERE project_group.status = 6 AND user_project_group.member_role != 1 AND project_group.subordinate_college = #{college}
+                INNER JOIN openexperiment.college_gives_grade ON project_group.id = college_gives_grade.project_id
+        WHERE project_group.status = 7 AND user_project_group.member_role != 1 AND project_group.subordinate_college = #{college}
     </select>
 
     <select id="selectAllByList" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">

@@ -75,7 +75,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     private TimeLimitService timeLimitService;
     @Autowired
     private UserRoleMapper userRoleMapper;
-
+    @Autowired
+    private UserMapper userMapper;
     @Value(value = "${file.ip-address}")
     private String ipAddress;
 
@@ -813,7 +814,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     @Override
-    public void generateConclusionExcel(HttpServletResponse response) {
+    public synchronized void generateConclusionExcel(HttpServletResponse response) {
         User user = getUserService.getCurrentUser();
         Integer college = user.getInstitute();
         // TODO  区分学院
@@ -834,7 +835,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         XSSFRow title = sheet.createRow(index);
         sheet.setColumnWidth(0, 256 * 150);
         title.setHeight((short) (16 * 50));
-        title.createCell(index++).setCellValue("西南石油大学第" + getYear() / 100 + "期（" + getYear() + "-" + (getYear() + 1) + "年度）课外开放实验普通项目结题验收一览表");
+        title.createCell(index++).setCellValue("西南石油大学第" + (getYear() / 100 -1) + "期（" + getYear() + "-" + (getYear() ) + "年度）课外开放实验普通项目结题验收一览表");
 
 
         XSSFRow info = sheet.createRow(index);
@@ -845,7 +846,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         // 4.1创建表头行
         XSSFRow row = sheet.createRow(index++);
         String[] columns = {"序号", "学院", "开放实验室", "项目编号", "实验类型", "实验时数"
-                , "指导教师", "教师公号", "学生姓名", "学生学号", "组员职责", "专业年级", "起止时间", "验收时间", "验收结果", "备注"};
+                , "指导教师", "教师工号", "学生姓名", "学生学号", "组员职责", "专业年级", "起止时间", "验收时间", "验收结果", "备注"};
         //创建行中的列
         sheet.setColumnWidth(0, 256 * 20);
         for (int i = 0; i < columns.length; i++) {
@@ -857,6 +858,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
         //写入数据
         List<ConclusionDTO> list = projectGroupMapper.selectConclusionDTOs(college);
+        int count = 0;
+        String now = null;
+        String before = null;
+        User user1 = new User();
         for (ConclusionDTO conclusion : list
         ) {
             // 创建行
@@ -864,20 +869,29 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
             //设置行高
             row.setHeight((short) (16 * 22));
+            now = conclusion.getId();
+            if(!now.equals(before)){
+                count++;
+                user1 = userMapper.selectByUserCode(String.valueOf(conclusion.getGuideTeacherId()));
+            }
             // 序号
+            row.createCell(0).setCellValue(count);
             row.createCell(1).setCellValue(ConvertUtil.getStrCollege(conclusion.getCollege()));
             row.createCell(2).setCellValue(conclusion.getLabName());
             row.createCell(3).setCellValue(conclusion.getId());
             row.createCell(4).setCellValue(ConvertUtil.getStrExperimentType(conclusion.getExperimentType()));
             row.createCell(5).setCellValue(conclusion.getTotalHours());
-            row.createCell(6).setCellValue(conclusion.getGuideTeacherName());
+            row.createCell(6).setCellValue(user1.getRealName());
             row.createCell(7).setCellValue(conclusion.getGuideTeacherId());
             row.createCell(8).setCellValue(conclusion.getUserName());
             row.createCell(9).setCellValue(conclusion.getUserId());
             row.createCell(10).setCellValue(ConvertUtil.getStrMemberRole(conclusion.getUserRole()));
-            row.createCell(11).setCellValue(conclusion.getMajorAndGrade());
+            row.createCell(11).setCellValue(ConvertUtil.getMajorNameByNumber(conclusion.getMajor())+conclusion.getGrade()+"级");
+            log.info(conclusion.getGrade());
             row.createCell(12).setCellValue(conclusion.getStartTimeAndEndTime());
-
+            row.createCell(13).setCellValue(conclusion.getCheckTime());
+            row.createCell(14).setCellValue(ConvertUtil.getProjectRealGrade(conclusion.getCheckResult()));
+            before = conclusion.getId();
         }
 
         sheet.createRow(++index).createCell(0).setCellValue("注1：本表由学院（中心）汇总填报。注2：建议评审分组填A-F,数据来源立项申请表");

@@ -95,6 +95,10 @@ public class ProjectQueryController {
         return projectService.getPendingApprovalProjectBySecondaryUnit();
     }
 
+    /**
+     * 大bug
+     * @return
+     */
     @ApiOperation("职能部门获取待立项审核的项目")
     @GetMapping(value = "getPendingApprovalProjectByFunctionalDepartment")
     public Result getPendingApprovalProjectByFunctionalDepartment (){

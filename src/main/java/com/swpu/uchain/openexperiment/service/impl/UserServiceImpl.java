@@ -171,6 +171,7 @@ public class UserServiceImpl implements UserService {
             return Result.error(CodeMsg.USER_NO_EXIST);
         }
         log.info("=============校验用户的密码================");
+        log.info(loginForm.getPassword());
         Authentication token = new UsernamePasswordAuthenticationToken(loginForm.getUserCode(), loginForm.getPassword());
         Authentication authentication = authenticationManager.authenticate(token);
         //认证通过放入容器中

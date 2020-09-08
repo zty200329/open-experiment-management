@@ -61,8 +61,12 @@ public class ConclusionDTO {
     /**
      * 专业年级
      */
-    private String majorAndGrade;
+    private Integer major;
 
+    /**
+     * 年级
+     */
+    private String grade;
     /**
      * 起止时间
      */
@@ -71,11 +75,11 @@ public class ConclusionDTO {
     /**
      * 验收时间
      */
-    private Date checkTime;
+    private String checkTime;
 
     /**
      * 验收结果
      */
-    private String checkResult;
+    private Integer checkResult;
 
 }

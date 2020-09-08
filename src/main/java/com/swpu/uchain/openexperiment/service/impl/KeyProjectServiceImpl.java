@@ -721,7 +721,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             }
             KeyProjectCheck projectCheckForm = new KeyProjectCheck();
             BeanUtils.copyProperties(projectGrade,projectCheckForm);
-            projectCheckForm.setReason("学院结题审核通过，等级：");
+            projectCheckForm.setReason("学院结题审核通过，等级："+KeyGrade.getTips(projectGrade.getValue()));
             list.add(projectCheckForm);
         }
         setProjectGrade(projectGradeList,user,2);
@@ -738,7 +738,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             }
             KeyProjectCheck projectCheckForm = new KeyProjectCheck();
             BeanUtils.copyProperties(projectGrade,projectCheckForm);
-            projectCheckForm.setReason("职能部门题审核通过");
+            projectCheckForm.setReason("职能部门题审核通过,等级："+KeyGrade.getTips(projectGrade.getValue()));
             list.add(projectCheckForm);
         }
         functionSetProjectGrade(projectGradeList,user,2);

@@ -1738,7 +1738,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
             ProjectCheckForm projectCheckForm = new ProjectCheckForm();
             BeanUtils.copyProperties(projectGrade, projectCheckForm);
-            projectCheckForm.setReason("学院结题审核通过");
+            projectCheckForm.setReason("学院结题审核通过,等级："+GeneralGrade.getTips(projectGrade.getValue()));
             list.add(projectCheckForm);
         }
         //异步插入
@@ -1774,7 +1774,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
             ProjectCheckForm projectCheckForm = new ProjectCheckForm();
             BeanUtils.copyProperties(projectGrade, projectCheckForm);
-            projectCheckForm.setReason("职能部门结题审核通过");
+            projectCheckForm.setReason("职能部门结题审核通过,等级："+GeneralGrade.getTips(projectGrade.getValue()));
             list.add(projectCheckForm);
         }
         //异步插入

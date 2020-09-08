@@ -62,6 +62,17 @@ public class ConvertUtil {
         }
     }
 
+    public static String getProjectRealGrade(Integer grade){
+        switch (grade){
+            case 0:
+                return "通过";
+            case 1:
+                return "优秀";
+            default:
+                return "未知";
+        }
+    }
+
     public static String getStrExperimentType(Integer experimentType) {
         switch (experimentType) {
             case 1:

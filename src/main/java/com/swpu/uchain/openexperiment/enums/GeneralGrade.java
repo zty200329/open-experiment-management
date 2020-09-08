@@ -22,4 +22,22 @@ public enum GeneralGrade {
         this.value = value;
         this.tips = tips;
     }
+
+    public static String getTips(Integer value) {
+        GeneralGrade[] carTypeEnums = values();
+        for (GeneralGrade carTypeEnum : carTypeEnums) {
+            if (carTypeEnum.value().equals(value)) {
+                return carTypeEnum.tips();
+            }
+        }
+        return null;
+    }
+
+    private Integer value() {
+        return this.value;
+    }
+
+    private String tips() {
+        return this.tips;
+    }
 }

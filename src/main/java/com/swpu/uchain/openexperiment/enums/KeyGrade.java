@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.enums;
 
+import lombok.Data;
 import lombok.Getter;
 
 @Getter
@@ -23,4 +24,21 @@ public enum KeyGrade {
         this.tips = tips;
     }
 
+    public static String getTips(Integer value) {
+        KeyGrade[] carTypeEnums = values();
+        for (KeyGrade carTypeEnum : carTypeEnums) {
+            if (carTypeEnum.value().equals(value)) {
+                return carTypeEnum.tips();
+            }
+        }
+        return null;
+    }
+
+    private Integer value() {
+        return this.value;
+    }
+
+    private String tips() {
+        return this.tips;
+    }
 }

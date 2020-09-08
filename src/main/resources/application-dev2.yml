@@ -28,7 +28,7 @@ upload:
 download:
   certificate-excel-download: "C:\\Users\\Administrator\\Desktop\\open-experiment-management-system\\src\\main\\resources\\excel-templates\\"
 file:
-  ipaddress: "http://zty200329.nat300.top"
+  ipaddress: "http://192.168.1.23:8083"
 #  ip-address: "http://192.168.43.153:8083"
 #  ip-address: "http://10.20.0.56:8083"
 mybatis:
