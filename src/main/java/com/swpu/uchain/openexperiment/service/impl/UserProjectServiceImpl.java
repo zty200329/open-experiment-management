@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.swpu.uchain.openexperiment.VO.user.UserVO;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.mapper.UserProjectGroupMapper;
@@ -77,6 +78,11 @@ public class UserProjectServiceImpl implements UserProjectService {
             return Result.success();
         }
         return Result.error(CodeMsg.ADD_ERROR);
+    }
+
+    @Override
+    public List<UserVO> selectGuideTeacherByGroupId(Long projectGroupId) {
+        return projectGroupMapper.selectGuideTeacherByGroupId(projectGroupId);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.VO.limit.AmountAndTypeVO;
 import com.swpu.uchain.openexperiment.VO.project.*;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
+import com.swpu.uchain.openexperiment.VO.user.UserVO;
 import com.swpu.uchain.openexperiment.config.UploadConfig;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.enums.*;
@@ -787,9 +788,13 @@ public class ProjectServiceImpl implements ProjectService {
         return getCheckInfo(ProjectStatus.LAB_ALLOWED_AND_REPORTED);
     }
 
+    /**
+     * 职能部门获取待立项审核的项目 查询的东西太多了
+     * @return
+     */
     @Override
     public Result getPendingApprovalProjectByFunctionalDepartment() {
-        return getCheckInfo(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED);
+        return getNewCheckList(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED);
     }
 
     @Override
@@ -1005,6 +1010,22 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success(checkProjectVOs);
     }
 
+    private Result getNewCheckList(ProjectStatus projectStatus){
+        Integer status = projectStatus.getValue();
+        Integer projectType = ProjectType.GENERAL.getValue();
+        //如果是实验室进行审批，则返回所有项目
+        if (projectStatus == ProjectStatus.DECLARE) {
+            projectType = null;
+        }
+        User currentUser = getUserService.getCurrentUser();
+        List<NewCheckProjectVO> checkProjectVOS = projectGroupMapper.selectNewApplyOrderByTime(status, projectType, currentUser.getInstitute());
+        for (NewCheckProjectVO checkProjectVO : checkProjectVOS) {
+            checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(checkProjectVO.getId(), null));
+            List<UserVO> userVOS = userProjectService.selectGuideTeacherByGroupId(checkProjectVO.getId());
+            checkProjectVO.setGuidanceTeachers(userVOS);
+        }
+        return Result.success(checkProjectVOS);
+    }
     private Result getCheckInfo(ProjectStatus projectStatus) {
         Integer status = projectStatus.getValue();
         Integer projectType = ProjectType.GENERAL.getValue();

@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
 import com.swpu.uchain.openexperiment.VO.project.*;
+import com.swpu.uchain.openexperiment.VO.user.UserVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import org.apache.ibatis.annotations.Param;
@@ -16,6 +17,12 @@ import java.util.List;
 @Repository
 public interface ProjectGroupMapper {
 
+    /**
+     * 根据项目id查询指导教师
+     * @param projectGroupId
+     * @return
+     */
+    List<UserVO> selectGuideTeacherByGroupId(Long projectGroupId);
     /**
      * 关键字模糊查询
      * @param keyword
@@ -91,8 +98,17 @@ public interface ProjectGroupMapper {
 
     List<ProjectGroup> selectByCollegeIdAndStatus(@Param("college") String college,@Param("projectStatus") Integer projectStatus);
 
-//有改动 temp_
+
+    /**
+     * 有改动 temp_
+     * @param projectStatus
+     * @param projectType
+     * @param college
+     * @return
+     */
     List<CheckProjectVO> selectApplyOrderByTime(@Param("projectStatus") int projectStatus,@Param("projectType") Integer projectType,@Param("college") Integer college);
+
+    List<NewCheckProjectVO> selectNewApplyOrderByTime(@Param("projectStatus") int projectStatus,@Param("projectType") Integer projectType,@Param("college") Integer college);
 
     List<SelectProjectVO> selectByFuzzyName(@Param("name") String name);
 

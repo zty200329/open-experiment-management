@@ -151,6 +151,16 @@
         <result column="subordinate_college" property="subordinateCollege"/>
         <result column="apply_funds" property="applyFunds"/>
     </resultMap>
+    <resultMap id="NewCheckProjectResultMap" type="com.swpu.uchain.openexperiment.VO.project.NewCheckProjectVO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="apply_funds" property="applyFunds"/>
+        <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+        <result column="project_type" jdbcType="INTEGER" property="projectType" />
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+        <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
+        <result column="apply_funds" property="applyFunds"/>
+    </resultMap>
 
     <resultMap id="SelectProjectMap" type="com.swpu.uchain.openexperiment.VO.project.SelectProjectVO">
     <id column="id" jdbcType="BIGINT" property="projectGroupId" />
@@ -369,6 +379,26 @@
     </if>
     order by create_time desc
   </select>
+    <select id="selectNewApplyOrderByTime" resultMap="NewCheckProjectResultMap">
+        select
+        openexperiment.project_group.id,
+        openexperiment.project_group.apply_funds,
+        openexperiment.project_group.project_name,
+        openexperiment.project_group.experiment_type,
+        openexperiment.project_group.start_time,
+        openexperiment.project_group.end_time,
+        openexperiment.project_group.project_type,
+        openexperiment.project_group.apply_funds
+        from openexperiment.project_group
+        where status = #{projectStatus}
+        <if test="projectType!=null">
+            and project_type = #{projectType}
+        </if>
+        <if  test="college!=0">
+            and subordinate_college = #{college}
+        </if>
+        order by create_time desc
+    </select>
   <select id="selectByFuzzyName" resultMap="SelectProjectMap">
     select openexperiment.project_group.id, openexperiment.project_group.project_name, u_stu.real_name
     from openexperiment.project_group
@@ -378,7 +408,7 @@
     <select id="getAllOpenTopic" resultMap="OpenTopicInfoResultMap">
       select project_group.id,
              project_group.subordinate_college,
-             project_group.serial_number,
+             project_group.serial_number as serial_number,
              project_group.address,
              project_group.create_time,
              project_group.creator_id,
@@ -741,6 +771,14 @@
                 and locate(#{projectName},project_group.project_name)
             </if>
         </where>
+    </select>
+
+    <select id="selectGuideTeacherByGroupId" resultType="com.swpu.uchain.openexperiment.VO.user.UserVO">
+        SELECT
+        u_stu.real_name as userName
+        FROM openexperiment.u_stu
+        INNER JOIN user_project_group on u_stu.code = user_project_group.user_id
+        WHERE user_project_group.project_group_id = #{serialNumber} and member_role = 1
     </select>
     <update id="updateProjectStatus">
         update openexperiment.project_group set `status` = #{status} where id =

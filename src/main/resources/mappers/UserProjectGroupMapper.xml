@@ -150,9 +150,9 @@
     </select>
     <select id="getMemberAmountOfProject" resultType="java.lang.Integer">
         select count(user_id) from openexperiment.user_project_group where project_group_id = #{projectId} and status = 2
-        <if test="memberRole!=null">
-            and member_role = #{memberRole}
-        </if>
+      <!--  <if test="memberRole!=null"> -->
+            and member_role != 1
+      <!--  </if> -->
     </select>
     <select id="geCountOfAppliedProject" resultType="java.lang.Integer">
         select count(project_group.id) from openexperiment.project_group

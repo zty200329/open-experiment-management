@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service;
 
+import com.swpu.uchain.openexperiment.VO.user.UserVO;
 import com.swpu.uchain.openexperiment.domain.ProjectGroup;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
@@ -51,10 +52,12 @@ public interface UserProjectService {
     Result addUserProject(UserProjectGroup userProjectGroup);
 
     /**
-     * 获取项目组的所有成员id
+     * 根据项目id查找指导教师
      * @param projectGroupId
      * @return
      */
+    List<UserVO> selectGuideTeacherByGroupId(Long projectGroupId);
+
     List<UserProjectGroup> selectByProjectGroupId(Long projectGroupId);
 
     /**
