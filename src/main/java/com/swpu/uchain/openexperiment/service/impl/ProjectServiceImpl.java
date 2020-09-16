@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.reflect.generics.tree.ReturnType;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -780,12 +781,14 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getPendingApprovalProjectByLabAdministrator() {
-        return getCheckInfo(ProjectStatus.DECLARE);
+//        return getCheckInfo(ProjectStatus.DECLARE);
+        return getNewCheckList(ProjectStatus.DECLARE);
     }
 
     @Override
     public Result getPendingApprovalProjectBySecondaryUnit() {
-        return getCheckInfo(ProjectStatus.LAB_ALLOWED_AND_REPORTED);
+//        return getCheckInfo(ProjectStatus.LAB_ALLOWED_AND_REPORTED);
+        return getNewCheckList(ProjectStatus.LAB_ALLOWED_AND_REPORTED);
     }
 
     /**
@@ -799,7 +802,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getConclusionProject() {
-        return getCheckInfo(ProjectStatus.CONCLUDED);
+//        return getCheckInfo(ProjectStatus.CONCLUDED);
+        return getNewCheckList(ProjectStatus.CONCLUDED);
     }
 
     /**
@@ -809,7 +813,8 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public Result getToBeConcludingProject() {
-        return getCheckInfo(ProjectStatus.COLLEGE_FINAL_SUBMISSION);
+//        return getCheckInfo(ProjectStatus.COLLEGE_FINAL_SUBMISSION);
+        return getNewCheckList(ProjectStatus.COLLEGE_FINAL_SUBMISSION);
     }
 
     /**
@@ -926,16 +931,16 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getIntermediateInspectionProject() {
-        //ESTABLISH
-//        return getCheckInfo(ProjectStatus.MID_TERM_INSPECTION);
-        return getCheckInfo(ProjectStatus.ESTABLISH);
+//        return getCheckInfo(ProjectStatus.ESTABLISH);
+        return getNewCheckList(ProjectStatus.ESTABLISH);
     }
 
     @Override
     public Result collegeGetsTheItemsToBeCompleted() {
 //        timeLimitService.validTime(TimeLimitType.DECLARE_LIMIT);
         //TODO 应该加入时间校验
-        return getCheckInfo(ProjectStatus.ESTABLISH);
+//        return getCheckInfo(ProjectStatus.ESTABLISH);
+        return getNewCheckList(ProjectStatus.ESTABLISH);
     }
 
     /**
@@ -946,28 +951,34 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result collegeGetsTheProjects() {
         //TODO 应该加入时间校验
-        return getCheckInfo(ProjectStatus.COLLEGE_FINAL_SUBMISSION);
+//        return getCheckInfo(ProjectStatus.COLLEGE_FINAL_SUBMISSION);
+        return getNewCheckList(ProjectStatus.COLLEGE_FINAL_SUBMISSION);
     }
 
     @Override
     public Result getTheSchoolHasCompletedProject() {
         //TODO 应该加入时间校验
-        return getCheckInfo(ProjectStatus.CONCLUDED);
+//        return getCheckInfo(ProjectStatus.CONCLUDED);
+        return getNewCheckList(ProjectStatus.CONCLUDED);
+
     }
 
     @Override
     public Result getMidTermReturnProject() {
-        return getCheckInfo(ProjectStatus.INTERIM_RETURN_MODIFICATION);
+//        return getCheckInfo(ProjectStatus.INTERIM_RETURN_MODIFICATION);
+        return getNewCheckList(ProjectStatus.INTERIM_RETURN_MODIFICATION);
     }
 
     @Override
     public Result getCollegeReturnProject() {
-        return getCheckInfo(ProjectStatus.COLLEGE_RETURNS);
+//        return getCheckInfo(ProjectStatus.COLLEGE_RETURNS);
+        return getNewCheckList(ProjectStatus.COLLEGE_RETURNS);
     }
 
     @Override
     public Result getFunctionReturnProject() {
-        return getCheckInfo(ProjectStatus.FUNCTIONAL_RETURNS);
+//        return getCheckInfo(ProjectStatus.FUNCTIONAL_RETURNS);
+        return getNewCheckList(ProjectStatus.FUNCTIONAL_RETURNS);
     }
 
 

@@ -154,11 +154,13 @@
     <resultMap id="NewCheckProjectResultMap" type="com.swpu.uchain.openexperiment.VO.project.NewCheckProjectVO">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="apply_funds" property="applyFunds"/>
+        <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
         <result column="project_name" jdbcType="VARCHAR" property="projectName" />
         <result column="project_type" jdbcType="INTEGER" property="projectType" />
         <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
         <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
         <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
+        <result column="subordinate_college" property="subordinateCollege"/>
         <result column="apply_funds" property="applyFunds"/>
     </resultMap>
 
@@ -383,11 +385,13 @@
         select
         openexperiment.project_group.id,
         openexperiment.project_group.apply_funds,
+        openexperiment.project_group.temp_serial_number as serial_number,
         openexperiment.project_group.project_name,
         openexperiment.project_group.experiment_type,
         openexperiment.project_group.start_time,
         openexperiment.project_group.end_time,
         openexperiment.project_group.project_type,
+        openexperiment.project_group.subordinate_college,
         openexperiment.project_group.apply_funds
         from openexperiment.project_group
         where status = #{projectStatus}

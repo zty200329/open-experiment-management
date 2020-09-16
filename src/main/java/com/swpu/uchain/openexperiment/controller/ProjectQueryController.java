@@ -47,6 +47,10 @@ public class ProjectQueryController {
         return projectService.getFunctionCreateCommonApply();
     }
 
+    /**
+     * 有空指针异常
+     * @return
+     */
     @ApiOperation("学生获取可参与的开放性选题")
     @GetMapping("/getAllOpenTopicByStudent")
     public Result getAllOpenTopic(){

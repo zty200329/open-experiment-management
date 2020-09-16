@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.VO.project;
 
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.VO.user.UserVO;
+import com.swpu.uchain.openexperiment.enums.CollegeType;
 import lombok.Data;
 
 import java.util.Date;
@@ -18,6 +19,7 @@ public class NewCheckProjectVO {
     private String projectName;
     private List<UserVO> guidanceTeachers;
     private Integer projectType;
+    private String serialNumber;
     /**
      * 已选项目人数
      */
@@ -26,4 +28,8 @@ public class NewCheckProjectVO {
     private Integer applyFunds;
     private Date startTime;
     private Date endTime;
+    /**
+     * 所属学院  {@link CollegeType#getValue()}
+     */
+    private Integer subordinateCollege;
 }
