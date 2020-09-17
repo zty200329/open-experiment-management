@@ -1530,7 +1530,9 @@ public class ProjectServiceImpl implements ProjectService {
                     break;
                 }
                 if (projectGroups.get(i).getIsOpenTopic().equals(OpenTopicType.NOT_OPEN_TOPIC.getValue())) {
-                    i++;
+//                    if(i!=projectGroups.size()){
+                        i++;
+//                    }
                 }
                 ProjectGroup projectGroup = projectGroups.get(i);
                 List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(), condition.getStatus());
