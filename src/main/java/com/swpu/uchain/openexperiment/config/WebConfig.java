@@ -18,7 +18,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private AuthRoleInterceptor authRoleInterceptor;
 
-    String str = "C:\\Users\\Administrator\\Desktop\\openexperiment\\";
+    String str = "C:\\Users\\Administrator\\Desktop\\openexperiment\\document\\";
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authRoleInterceptor);

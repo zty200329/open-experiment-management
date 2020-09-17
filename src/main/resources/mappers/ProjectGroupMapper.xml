@@ -701,7 +701,7 @@
                 INNER JOIN openexperiment.user_project_group ON project_group.id = user_project_group.project_group_id
                 INNER JOIN openexperiment.`u_stu` ON user_project_group.user_id = `u_stu`.`code`
                 INNER JOIN openexperiment.college_gives_grade ON project_group.id = college_gives_grade.project_id
-        WHERE project_group.status = 7 AND user_project_group.member_role != 1 AND project_group.subordinate_college = #{college}
+        WHERE project_group.status = 6 AND user_project_group.member_role != 1 AND project_group.subordinate_college = #{college}
     </select>
 
     <select id="selectAllByList" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup">
@@ -862,7 +862,7 @@
         select count(id) from openexperiment.project_group where `status` = #{status} and  subordinate_college = #{college}
     </select>
     <select id="getMaxTempSerialNumberByCollege" resultType="java.lang.String">
-        select  max(temp_serial_number) from openexperiment.project_group where subordinate_college = #{college}
+        select  max(temp_serial_number) from openexperiment.project_group where subordinate_college = #{college} and project_type = #{projectType}
     </select>
     <select id="selectGeneralPassedProjectList" resultType="com.swpu.uchain.openexperiment.domain.ProjectGroup"
             resultMap="ProjectGroupResultMap">

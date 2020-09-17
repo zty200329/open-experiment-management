@@ -53,7 +53,7 @@ public interface ProjectGroupMapper {
      * @param college
      * @return
      */
-    String getMaxTempSerialNumberByCollege(@Param("college")Integer college);
+    String getMaxTempSerialNumberByCollege(@Param("college")Integer college,@Param("projectType") Integer projectType);
 
     /**
      * 更新项目编号

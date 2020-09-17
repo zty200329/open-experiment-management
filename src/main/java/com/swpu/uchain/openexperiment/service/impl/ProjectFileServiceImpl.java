@@ -790,7 +790,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             row.createCell(14).setCellValue(projectTableInfo.getApplyFunds());
             row.createCell(15).setCellValue(ConvertUtil.getStringSuggestGroupType(projectTableInfo.getSuggestGroupType()));
             row.createCell(16).setCellValue(projectTableInfo.getProjectStatus());
-            row.createCell(17).setCellValue(projectTableInfo.getSerialNumber());
+            row.createCell(17).setCellValue(projectTableInfo.getTempSerialNumber());
             row.createCell(18).setCellValue(ConvertUtil.getStrProjectType(projectTableInfo.getProjectType()));
 
         }

@@ -245,7 +245,12 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         //设置项目创建编号
-        String maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(college);
+        String maxTempSerialNumber = null;
+        if(form.getProjectType() == 1){
+            maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(college,1);
+        }else{
+            maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(college,2);
+        }
         //计算编号并在数据库中插入编号
         projectGroupMapper.updateProjectTempSerialNumber(projectGroup.getId(), SerialNumberUtil.getSerialNumberOfProject(college, form.getProjectType(), maxTempSerialNumber));
 
@@ -1534,6 +1539,7 @@ public class ProjectServiceImpl implements ProjectService {
                         i++;
 //                    }
                 }
+                log.error(String.valueOf(i));
                 ProjectGroup projectGroup = projectGroups.get(i);
                 List<UserProjectGroup> userProjectGroups = userProjectService.selectByProjectAndStatus(projectGroup.getId(), condition.getStatus());
                 for (UserProjectGroup userProjectGroup : userProjectGroups) {
