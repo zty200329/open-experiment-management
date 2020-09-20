@@ -126,7 +126,7 @@ public class FileController {
 
 
     @ApiOperation("生成普通项目结题总览表,根据token判断学院，无bug")
-    @GetMapping(value = "generateConclusionExcel", name = "生成结题总览表")
+    @PostMapping(value = "generateConclusionExcel", name = "生成结题总览表")
     public void generateConclusionExcel(HttpServletResponse response){
         projectFileService.generateConclusionExcel(response);
     }

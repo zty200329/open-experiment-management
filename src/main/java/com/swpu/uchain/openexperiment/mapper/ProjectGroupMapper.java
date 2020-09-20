@@ -110,6 +110,8 @@ public interface ProjectGroupMapper {
 
     List<NewCheckProjectVO> selectNewApplyOrderByTime(@Param("projectStatus") int projectStatus,@Param("projectType") Integer projectType,@Param("college") Integer college);
 
+    List<NewCheckProjectVO> selectNewApplyOrderByTime2(@Param("projectStatus") int projectStatus,@Param("projectType") Integer projectType,@Param("college") Integer college);
+
     List<SelectProjectVO> selectByFuzzyName(@Param("name") String name);
 
     /**

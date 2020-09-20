@@ -307,7 +307,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result getToBeConcludingKeyProject(Integer college) {
-        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.COLLEGE_FINAL_SUBMISSION,college);
+        return getKeyProjectDTOListByStatusAndCollege2(ProjectStatus.COLLEGE_FINAL_SUBMISSION,college);
     }
 
     @Override
@@ -315,6 +315,14 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.CONCLUDED,college);
     }
 
+    private Result getKeyProjectDTOListByStatusAndCollege2(ProjectStatus status, Integer college){
+        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege2(college);
+        for (KeyProjectDTO keyProjectDTO :list) {
+            keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(keyProjectDTO.getId(),JoinStatus.JOINED.getValue()) );
+            keyProjectDTO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId(),JoinStatus.JOINED.getValue()));
+        }
+        return Result.success(list);
+    }
     private Result getKeyProjectDTOListByStatusAndCollege(ProjectStatus status, Integer college){
         List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(status.getValue(),college);
         for (KeyProjectDTO keyProjectDTO :list) {
@@ -733,8 +741,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         User user = getUserService.getCurrentUser();
         List<KeyProjectCheck> list = new LinkedList<>();
         for (ProjectGrade projectGrade : projectGradeList) {
+
             if (!keyProjectStatusMapper.getStatusByProjectId(projectGrade.getProjectId()).equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())) {
-                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+                if(!keyProjectStatusMapper.getCollegeByProjectId(projectGrade.getProjectId()).equals(CollegeType.FUNCTIONAL_DEPARTMENT.getValue())){
+                    throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+                }
             }
             KeyProjectCheck projectCheckForm = new KeyProjectCheck();
             BeanUtils.copyProperties(projectGrade,projectCheckForm);

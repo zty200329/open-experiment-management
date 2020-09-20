@@ -113,7 +113,7 @@
   <select id="selectByRandom" resultMap="BaseResultMap">
     select u_stu.id, code, real_name, institute, major, email, fix_phone, id_card, mobile_phone, password, qq_num, sex, user_type, grade, work_unit, class_num from openexperiment.u_stu
     inner join openexperiment.user_role on code = user_role.user_id
-    where locate(#{keyWord},`code`)
+    where locate(#{keyWord},`code`) or locate(#{keyWord},`real_name`)
     limit 50
   </select>
   <select id="selectGroupLeader" resultMap="BaseResultMap">

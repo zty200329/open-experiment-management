@@ -770,7 +770,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             // 序号
             row.createCell(0).setCellValue(ConvertUtil.getStrCollege(projectTableInfo.getCollege()));
             if (projectTableInfo.getTempSerialNumber() != null) {
-                row.createCell(1).setCellValue(projectTableInfo.getTempSerialNumber() + "T");
+                row.createCell(1).setCellValue(projectTableInfo.getTempSerialNumber());
             }
             //项目名称
             row.createCell(2).setCellValue(projectTableInfo.getProjectName());

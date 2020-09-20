@@ -23,6 +23,9 @@
     <select id="getStatusByProjectId" resultType="java.lang.Integer">
         select status from openexperiment.key_project_status where project_id = #{projectId}
     </select>
+    <select id="getCollegeByProjectId" resultType="java.lang.Integer">
+        select subordinate_college from openexperiment.project_group where id = #{projectId}
+    </select>
     <select id="getKeyProjectDTOListByStatusAndCollege" resultType="com.swpu.uchain.openexperiment.DTO.KeyProjectDTO">
         SELECT
             key_project_status.project_id AS id,
@@ -65,6 +68,49 @@
                 and project_group.subordinate_college = #{college}
             </if>
                 and project_file.material_type = 1
+        </where>
+
+    </select>
+    <select id="getKeyProjectDTOListByStatusAndCollege2" resultType="com.swpu.uchain.openexperiment.DTO.KeyProjectDTO">
+        SELECT
+        key_project_status.project_id AS id,
+        key_project_status.`status` AS status,
+        key_project_status.create_time AS createTime,
+        project_group.creator_id AS creatorId,
+        project_group.end_time AS endTime,
+        project_group.experiment_condition AS experimentCondition,
+        project_group.suggest_group_type AS suggestGroupType,
+        project_group.project_type as  projectType,
+        project_group.experiment_type AS experimentType,
+        project_group.achievement_check AS achievementCheck,
+        project_group.fit_people_num AS fitPeopleNum,
+        project_group.apply_funds AS applyFunds,
+        project_group.project_name AS projectName,
+        project_group.lab_name AS labName,
+        project_group.address AS address,
+        project_group.main_content AS mainContent,
+        project_group.temp_serial_number AS serialNumber,
+        project_group.limit_college AS limitCollege,
+        project_group.limit_grade AS limitGrade,
+        project_group.limit_major AS limitMajor,
+        project_group.total_hours AS totalHours,
+        project_group.start_time AS startTime,
+        project_group.is_open_topic AS isOpenTopic,
+        project_group.subordinate_college AS subordinateCollege,
+        `u_stu`.real_name AS creatorName,
+        `u_stu`.`code` AS userid,
+        project_file.id AS projectFileId
+        FROM
+        openexperiment.key_project_status
+        INNER JOIN openexperiment.project_group ON key_project_status.project_id = project_group.id
+        left join openexperiment.`u_stu` ON key_project_status.creator_id = `u_stu`.`code`
+        left join openexperiment.project_file ON project_file.project_group_id = key_project_status.project_id
+        <where>
+
+                key_project_status.`status` = 6
+
+                or project_group.subordinate_college = 0
+            and project_file.material_type = 1
         </where>
 
     </select>

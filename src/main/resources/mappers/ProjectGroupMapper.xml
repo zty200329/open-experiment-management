@@ -113,6 +113,7 @@
         <result column="apply_funds" property="applyFunds"/>
         <result column="is_open_topic" jdbcType="INTEGER" property="isOpenTopic"/>
         <result column="key_project_status" property="keyProjectStatus"/>
+        <result column="subordinate_college" jdbcType="INTEGER" property="subordinateCollege"/>
     </resultMap>
 
     <resultMap id="ProjectTableInfoResultMap" type="com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo">
@@ -150,6 +151,7 @@
         <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
         <result column="subordinate_college" property="subordinateCollege"/>
         <result column="apply_funds" property="applyFunds"/>
+        <result column="status" property="status"/>
     </resultMap>
     <resultMap id="NewCheckProjectResultMap" type="com.swpu.uchain.openexperiment.VO.project.NewCheckProjectVO">
         <id column="id" jdbcType="BIGINT" property="id" />
@@ -278,7 +280,8 @@
            key_project_status.status as key_project_status,
            update_time,
            main_Content,
-           apply_funds
+           apply_funds,
+           project_group.subordinate_college
     from openexperiment.project_group left join openexperiment.key_project_status  on key_project_status.project_id = project_group.id
     where project_group.id = #{id,jdbcType=BIGINT}
   </select>
@@ -347,7 +350,8 @@
            openexperiment.project_group.suggest_group_type,
            openexperiment.project_group.project_type,
            openexperiment.project_group.main_Content,
-           openexperiment.project_group.apply_funds
+           openexperiment.project_group.apply_funds,
+           openexperiment.project_group.status
     from openexperiment.project_group
         where openexperiment.project_group.subordinate_college = 0;
     </select>
@@ -401,6 +405,26 @@
         <if  test="college!=0">
             and subordinate_college = #{college}
         </if>
+        order by create_time desc
+    </select>
+    <select id="selectNewApplyOrderByTime2" resultMap="NewCheckProjectResultMap">
+        select
+        openexperiment.project_group.id,
+        openexperiment.project_group.apply_funds,
+        openexperiment.project_group.temp_serial_number as serial_number,
+        openexperiment.project_group.project_name,
+        openexperiment.project_group.experiment_type,
+        openexperiment.project_group.start_time,
+        openexperiment.project_group.end_time,
+        openexperiment.project_group.project_type,
+        openexperiment.project_group.subordinate_college,
+        openexperiment.project_group.apply_funds
+        from openexperiment.project_group
+        where status = #{projectStatus}
+        <if test="projectType!=null">
+            and project_type = #{projectType}
+        </if>
+            or subordinate_college = 0 and project_group.`status` = 5
         order by create_time desc
     </select>
   <select id="selectByFuzzyName" resultMap="SelectProjectMap">

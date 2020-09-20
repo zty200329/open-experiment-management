@@ -21,7 +21,11 @@ public interface KeyProjectStatusMapper {
 
     Integer getStatusByProjectId(@Param("projectId") Long projectId);
 
+    Integer getCollegeByProjectId(@Param("projectId") Long projectId);
+
     List<KeyProjectDTO> getKeyProjectDTOListByStatusAndCollege(@Param("status")Integer status, @Param("college")Integer college);
+
+    List<KeyProjectDTO> getKeyProjectDTOListByStatusAndCollege2(@Param("college")Integer college);
 
     List<KeyProjectDTO> getKeyProjectListByUserIdAndProjectStatus(@Param("userId") Long userId,@Param("status")Integer status);
 

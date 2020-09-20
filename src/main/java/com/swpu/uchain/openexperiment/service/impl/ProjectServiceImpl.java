@@ -1034,6 +1034,15 @@ public class ProjectServiceImpl implements ProjectService {
             projectType = null;
         }
         User currentUser = getUserService.getCurrentUser();
+        if(projectStatus == ProjectStatus.COLLEGE_FINAL_SUBMISSION){
+            List<NewCheckProjectVO> checkProjectVOS = projectGroupMapper.selectNewApplyOrderByTime2(status, projectType, currentUser.getInstitute());
+            for (NewCheckProjectVO checkProjectVO : checkProjectVOS) {
+                checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(checkProjectVO.getId(), null));
+                List<UserVO> userVOS = userProjectService.selectGuideTeacherByGroupId(checkProjectVO.getId());
+                checkProjectVO.setGuidanceTeachers(userVOS);
+            }
+            return Result.success(checkProjectVOS);
+        }
         List<NewCheckProjectVO> checkProjectVOS = projectGroupMapper.selectNewApplyOrderByTime(status, projectType, currentUser.getInstitute());
         for (NewCheckProjectVO checkProjectVO : checkProjectVOS) {
             checkProjectVO.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(checkProjectVO.getId(), null));
@@ -1810,7 +1819,9 @@ public class ProjectServiceImpl implements ProjectService {
         for (ProjectGrade projectGrade : projectGradeList) {
             ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectGrade.getProjectId());
             if (!projectGroup.getStatus().equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())) {
-                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+                if(!(projectGroup.getSubordinateCollege()==0)) {
+                    throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+                }
             }
             ProjectCheckForm projectCheckForm = new ProjectCheckForm();
             BeanUtils.copyProperties(projectGrade, projectCheckForm);
