@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swpu.uchain.openexperiment.mapper.UserRoleMapper">
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.UserRole">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
+  </resultMap>
+  <delete id="deleteByUserIdAndRoleId" parameterType="java.lang.Long">
+    delete from user_role
+    where user_id = #{param1}
+    and role_id = #{param2}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.UserRole">
+    insert into user_role (id, user_id, role_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.UserRole">
+    update user_role
+    set user_id = #{userId,jdbcType=BIGINT},
+      role_id = #{roleId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    <update id="updateUserRoleByUserIdAndRole">
+      update openexperiment.user_role set role_id = #{role} where user_id = #{userId}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, user_id, role_id
+    from user_role
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, user_id, role_id
+    from user_role
+  </select>
+  <select id="selectByUserIdAndRoleId" resultMap="BaseResultMap">
+    select id, user_id, role_id from user_role where user_id = #{param1} and role_id = #{param2}
+  </select>
+  <select id="selectByRoleId" resultMap="BaseResultMap">
+    select id, user_id, role_id from openexperiment.user_role where role_id = #{roleId}
+  </select>
+  <select id="selectByUserId" resultType="com.swpu.uchain.openexperiment.domain.UserRole">
+    select id, user_id as userId, role_id as roleId from openexperiment.user_role where user_id = #{userId}
+  </select>
+    <select id="getUserInfoByRole" resultType="com.swpu.uchain.openexperiment.VO.user.RoleUserVO">
+      SELECT
+        `u_stu`.id AS id,
+        `code` AS `code`,
+        email,
+        real_name AS realName,
+        mobile_phone AS mobilePhone,
+        work_unit AS workUnit,
+        role_id AS role
+      FROM
+        openexperiment.`u_stu`
+          INNER JOIN openexperiment.user_role ON `u_stu`.`code` = user_role.user_id
+      WHERE
+        user_role.role_id &gt; #{role} and user_role.role_id!=10
+      ORDER BY
+        user_role.role_id DESC
+    </select>
+    <select id="selectUserRolesById" resultType="java.lang.Integer">
+      select role_id from openexperiment.user_role
+      where user_id = #{userId}
+    </select>
+</mapper>

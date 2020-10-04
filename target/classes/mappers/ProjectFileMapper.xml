@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swpu.uchain.openexperiment.mapper.ProjectFileMapper">
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.ProjectFile">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="project_group_id" jdbcType="BIGINT" property="projectGroupId" />
+    <result column="download_times" jdbcType="INTEGER" property="downloadTimes" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_type" jdbcType="INTEGER" property="fileType" />
+    <result column="size" jdbcType="VARCHAR" property="size" />
+    <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
+    <result column="upload_user_id" jdbcType="BIGINT" property="uploadUserId" />
+    <result column="material_type" jdbcType="SMALLINT" property="materialType" />
+  </resultMap>
+  <resultMap id="AttachmentFileDTOMap" type="com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO">
+    <id column="id" jdbcType="BIGINT" property="fileId" />
+    <result column="download_times" jdbcType="INTEGER" property="downloadTimes" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_type" jdbcType="INTEGER" property="fileType" />
+    <result column="size" jdbcType="VARCHAR" property="size" />
+    <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
+    <result column="upload_user_id" jdbcType="BIGINT" property="uploadUserId" />
+    <result column="real_name" jdbcType="VARCHAR" property="userName"/>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from openexperiment.project_file
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile">
+    insert into openexperiment.project_file (id, project_group_id, download_times,
+      file_name, file_type, `size`, 
+      upload_time, upload_user_id,material_type)
+    values (#{id,jdbcType=BIGINT}, #{projectGroupId,jdbcType=BIGINT}, #{downloadTimes,jdbcType=INTEGER}, 
+      #{fileName,jdbcType=VARCHAR}, #{fileType,jdbcType=INTEGER}, #{size,jdbcType=VARCHAR}, 
+      #{uploadTime,jdbcType=TIMESTAMP}, #{uploadUserId,jdbcType=BIGINT},#{materialType})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile">
+    update openexperiment.project_file
+    set project_group_id = #{projectGroupId,jdbcType=BIGINT},
+      download_times = #{downloadTimes,jdbcType=INTEGER},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      file_type = #{fileType,jdbcType=INTEGER},
+      `size` = #{size,jdbcType=VARCHAR},
+      upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      upload_user_id = #{uploadUserId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, project_group_id, download_times, file_name, file_type, `size`, upload_time,
+    upload_user_id,material_type
+    from openexperiment.project_file
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, project_group_id, download_times, file_name, file_type, `size`, upload_time,
+    upload_user_id,material_type
+    from openexperiment.project_file
+  </select>
+  <update id="updateFileDownloadTime" parameterType="com.swpu.uchain.openexperiment.domain.ProjectFile">
+    update openexperiment.project_file
+    set download_times = download_times+1
+    where file_name=#{fileName}
+  </update>
+  <select id="selectByGroupIdFileName" resultMap="BaseResultMap">
+    select id, project_group_id, download_times, file_name, file_type, `size`, upload_time,
+    upload_user_id,material_type
+    from openexperiment.project_file
+    where project_group_id = #{param1}
+    and file_name = #{param2}
+  </select>
+  <select id="selectByProjectGroupIdAndMaterialType" resultMap="BaseResultMap">
+    select id, project_group_id, download_times, file_name, file_type, size, upload_time, upload_user_id,material_type
+    from openexperiment.project_file
+    where project_group_id = #{projectGroupId}
+    <if test="materialType!=null">
+      and material_type = #{materialType}
+    </if>
+    <if test="filename!=null">
+      and locate(#{filename},`file_name`)
+    </if>
+  </select>
+  <select id="selectByProjectGroupIdAndFileName" resultMap="BaseResultMap">
+    select id, project_group_id, download_times, file_name, file_type, size, upload_time, upload_user_id,material_type
+    from openexperiment.project_file
+    where project_group_id = #{projectGroupId}
+    <if test="fileName!=null">
+      and file_name = #{fileName}
+    </if>
+  </select>
+  <select id="selectAttachmentFiles" resultMap="AttachmentFileDTOMap">
+    select project_file.id, project_file.project_group_id, project_file.download_times, project_file.file_name,
+    project_file.file_type, project_file.`size`, project_file.upload_time, project_file.upload_user_id, u_stu.real_name
+    from openexperiment.project_file
+    inner join openexperiment.u_stu where u_stu.id = openexperiment.project_file.upload_user_id
+    and project_group_id is null
+  </select>
+  <select id="selectAnnexByProjectGroupId" resultType="com.swpu.uchain.openexperiment.VO.project.ProjectAnnex">
+    select project_file.id as id,  project_file.file_name as fileName,
+    project_file.file_type as fileType,  project_file.upload_user_id as uploadUserId
+    from openexperiment.project_file
+
+    where project_file.project_group_id = #{projectGroupId}
+    and project_file.material_type = 10
+  </select>
+</mapper>

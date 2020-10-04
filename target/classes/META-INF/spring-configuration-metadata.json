@@ -1,0 +1,264 @@
+{
+  "groups": [
+    {
+      "name": "page.count",
+      "type": "com.swpu.uchain.openexperiment.config.CountConfig",
+      "sourceType": "com.swpu.uchain.openexperiment.config.CountConfig"
+    },
+    {
+      "name": "redis",
+      "type": "com.swpu.uchain.openexperiment.config.RedisConfig",
+      "sourceType": "com.swpu.uchain.openexperiment.config.RedisConfig"
+    },
+    {
+      "name": "spring.datasource",
+      "type": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties"
+    },
+    {
+      "name": "upload",
+      "type": "com.swpu.uchain.openexperiment.config.UploadConfig",
+      "sourceType": "com.swpu.uchain.openexperiment.config.UploadConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "page.count.announcement",
+      "type": "java.lang.Integer",
+      "description": "公告列表显示数目",
+      "sourceType": "com.swpu.uchain.openexperiment.config.CountConfig"
+    },
+    {
+      "name": "page.count.check-project",
+      "type": "java.lang.Integer",
+      "description": "实验室主任审核项目显示数目",
+      "sourceType": "com.swpu.uchain.openexperiment.config.CountConfig"
+    },
+    {
+      "name": "page.count.check-user",
+      "type": "java.lang.Integer",
+      "description": "教师审核申请用户显示数目",
+      "sourceType": "com.swpu.uchain.openexperiment.config.CountConfig"
+    },
+    {
+      "name": "page.count.manage-role",
+      "type": "java.lang.Integer",
+      "description": "管理员角色管理显示数目",
+      "sourceType": "com.swpu.uchain.openexperiment.config.CountConfig"
+    },
+    {
+      "name": "page.count.manage-user",
+      "type": "java.lang.Integer",
+      "description": "管理员用户管理界面显示数目",
+      "sourceType": "com.swpu.uchain.openexperiment.config.CountConfig"
+    },
+    {
+      "name": "page.count.project",
+      "type": "java.lang.Integer",
+      "description": "项目列表显示数目",
+      "sourceType": "com.swpu.uchain.openexperiment.config.CountConfig"
+    },
+    {
+      "name": "redis.host",
+      "type": "java.lang.String",
+      "sourceType": "com.swpu.uchain.openexperiment.config.RedisConfig"
+    },
+    {
+      "name": "redis.password",
+      "type": "java.lang.String",
+      "sourceType": "com.swpu.uchain.openexperiment.config.RedisConfig"
+    },
+    {
+      "name": "redis.pool-max-idle",
+      "type": "java.lang.Integer",
+      "sourceType": "com.swpu.uchain.openexperiment.config.RedisConfig",
+      "defaultValue": 0
+    },
+    {
+      "name": "redis.pool-max-total",
+      "type": "java.lang.Integer",
+      "sourceType": "com.swpu.uchain.openexperiment.config.RedisConfig",
+      "defaultValue": 0
+    },
+    {
+      "name": "redis.pool-max-wait",
+      "type": "java.lang.Integer",
+      "sourceType": "com.swpu.uchain.openexperiment.config.RedisConfig",
+      "defaultValue": 0
+    },
+    {
+      "name": "redis.port",
+      "type": "java.lang.Integer",
+      "sourceType": "com.swpu.uchain.openexperiment.config.RedisConfig",
+      "defaultValue": 0
+    },
+    {
+      "name": "redis.timeout",
+      "type": "java.lang.Integer",
+      "sourceType": "com.swpu.uchain.openexperiment.config.RedisConfig",
+      "defaultValue": 0
+    },
+    {
+      "name": "spring.datasource.connection-properties",
+      "type": "java.lang.String",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.driver-class-name",
+      "type": "java.lang.String",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.filters",
+      "type": "java.lang.String",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.initial-size",
+      "type": "java.lang.Integer",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "spring.datasource.max-active",
+      "type": "java.lang.Integer",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "spring.datasource.max-pool-prepared-statement-per-connection-size",
+      "type": "java.lang.Integer",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "spring.datasource.max-wait",
+      "type": "java.lang.Integer",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "spring.datasource.min-evictable-idle-time-millis",
+      "type": "java.lang.Integer",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "spring.datasource.min-idle",
+      "type": "java.lang.Integer",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "spring.datasource.password",
+      "type": "java.lang.String",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.pool-prepared-statements",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "spring.datasource.test-on-borrow",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "spring.datasource.test-on-return",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "spring.datasource.test-while-idle",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "spring.datasource.time-between-eviction-runs-millis",
+      "type": "java.lang.Integer",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "spring.datasource.url",
+      "type": "java.lang.String",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.username",
+      "type": "java.lang.String",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties"
+    },
+    {
+      "name": "spring.datasource.validation-query",
+      "type": "java.lang.String",
+      "sourceType": "com.swpu.uchain.openexperiment.config.DruidConfiguration$IDataSourceProperties"
+    },
+    {
+      "name": "upload.achievement-annex",
+      "type": "java.lang.String",
+      "description": "成果材料",
+      "sourceType": "com.swpu.uchain.openexperiment.config.UploadConfig"
+    },
+    {
+      "name": "upload.apply-dir",
+      "type": "java.lang.String",
+      "description": "上传重点项目立项申请书文件夹路径",
+      "sourceType": "com.swpu.uchain.openexperiment.config.UploadConfig"
+    },
+    {
+      "name": "upload.apply-dir2",
+      "type": "java.lang.String",
+      "description": "上传重点项目立项申请书文件夹路径--头部",
+      "sourceType": "com.swpu.uchain.openexperiment.config.UploadConfig"
+    },
+    {
+      "name": "upload.apply-file-name",
+      "type": "java.lang.String",
+      "description": "上传立项申请正文文件名",
+      "sourceType": "com.swpu.uchain.openexperiment.config.UploadConfig"
+    },
+    {
+      "name": "upload.concluding-file-name",
+      "type": "java.lang.String",
+      "description": "上传结题报告文件文件名",
+      "sourceType": "com.swpu.uchain.openexperiment.config.UploadConfig"
+    },
+    {
+      "name": "upload.conclusion-annex",
+      "type": "java.lang.String",
+      "description": "结题附件位置",
+      "sourceType": "com.swpu.uchain.openexperiment.config.UploadConfig"
+    },
+    {
+      "name": "upload.conclusion-dir",
+      "type": "java.lang.String",
+      "description": "证明材料上传位置doc",
+      "sourceType": "com.swpu.uchain.openexperiment.config.UploadConfig"
+    },
+    {
+      "name": "upload.conclusion-pdf",
+      "type": "java.lang.String",
+      "description": "结题异步转换pdf位置",
+      "sourceType": "com.swpu.uchain.openexperiment.config.UploadConfig"
+    },
+    {
+      "name": "upload.experiment-report-file-name",
+      "type": "java.lang.String",
+      "description": "上传实验报告文件名",
+      "sourceType": "com.swpu.uchain.openexperiment.config.UploadConfig"
+    },
+    {
+      "name": "upload.pdf-temp-dir",
+      "type": "java.lang.String",
+      "description": "中间PDF存放位置",
+      "sourceType": "com.swpu.uchain.openexperiment.config.UploadConfig"
+    }
+  ],
+  "hints": []
+}

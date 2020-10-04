@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swpu.uchain.openexperiment.mapper.NewCertificateMapper" >
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.NewCertificate" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="project_name" property="projectName" jdbcType="VARCHAR" />
+    <result column="project_type" property="projectType" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="member_role" property="memberRole" jdbcType="VARCHAR" />
+    <result column="subordinate_collage" property="subordinateCollage" jdbcType="VARCHAR" />
+    <result column="is_true" property="isTrue" jdbcType="BIT" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from new_certificate
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.NewCertificate" >
+    insert into new_certificate ( `name`, serial_number,
+      project_name, project_type, user_id, 
+      member_role, subordinate_collage, is_true
+      )
+    values ( #{name,jdbcType=VARCHAR}, #{serialNumber,jdbcType=VARCHAR},
+      #{projectName,jdbcType=VARCHAR}, #{projectType,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, 
+      #{memberRole,jdbcType=VARCHAR}, #{subordinateCollage,jdbcType=VARCHAR}, #{isTrue,jdbcType=BIT}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.NewCertificate" >
+    update new_certificate
+    set `name` = #{name,jdbcType=VARCHAR},
+      serial_number = #{serialNumber,jdbcType=VARCHAR},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      project_type = #{projectType,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=BIGINT},
+      member_role = #{memberRole,jdbcType=VARCHAR},
+      subordinate_collage = #{subordinateCollage,jdbcType=VARCHAR},
+      is_true = #{isTrue,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, `name`, serial_number, project_name, project_type, user_id, member_role, 
+    subordinate_collage, is_true
+    from new_certificate
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, `name`, serial_number, project_name, project_type, user_id, member_role, 
+    subordinate_collage, is_true
+    from new_certificate
+  </select>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, `name`, serial_number, project_name, project_type, user_id, member_role,
+    subordinate_collage, is_true
+    from new_certificate
+    where user_id = #{userId,jdbcType=BIGINT}
+  </select>
+  <update id="truncateTable">
+    truncate table new_certificate
+  </update>
+
+</mapper>

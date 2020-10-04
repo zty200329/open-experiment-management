@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: com.swpu.uchain.openexperiment.service.impl.ProjectServiceImplTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.061 s <<< FAILURE! - in com.swpu.uchain.openexperiment.service.impl.ProjectServiceImplTest
+valid(com.swpu.uchain.openexperiment.service.impl.ProjectServiceImplTest)  Time elapsed: 0.004 s  <<< ERROR!
+java.lang.NullPointerException
+	at com.swpu.uchain.openexperiment.service.impl.ProjectServiceImplTest.valid(ProjectServiceImplTest.java:29)
+

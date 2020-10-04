@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swpu.uchain.openexperiment.mapper.OperationRecordMapper">
+    <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.OperationRecord">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="related_id" jdbcType="BIGINT" property="relatedId" />
+        <result column="operation_type" jdbcType="VARCHAR" property="operationType" />
+        <result column="operation_content" jdbcType="VARCHAR" property="operationUnit" />
+        <result column="operation_reason" jdbcType="VARCHAR" property="operationReason" />
+        <result column="operation_time" jdbcType="TIMESTAMP" property="operationTime" />
+        <result column="operation_executor_id" jdbcType="BIGINT" property="operationExecutorId"/>
+    </resultMap>
+    
+    <insert id="insert">
+        insert into  openexperiment.operation_record (related_id,operation_college, operation_type, operation_unit, operation_reason)
+            valueS (#{relatedId},#{operationCollege},#{operationType},#{operationUnit},#{operationReason})
+    </insert>
+    <insert id="multiInsert">
+        insert into openexperiment.operation_record (related_id,operation_college, operation_type, operation_unit, operation_reason,operation_executor_id)
+            value
+            <foreach collection="list" item="record" separator=",">
+                (
+                    #{record.relatedId},
+                    #{record.operationCollege},
+                    #{record.operationType},
+                    #{record.operationUnit},
+                    #{record.operationReason},
+                    #{record.operationExecutorId}
+                 )
+
+            </foreach>
+    </insert>
+
+    <!--type传入为空则更新所有-->
+    <update id="setNotVisibleByProjectId">
+        update openexperiment.operation_record set status = 'N'
+        where related_id = #{projectId}
+        <if test="type!=null">
+           and operation_type = #{type}
+        </if>
+    </update>
+
+    <delete id="deleteByPrimaryKey">
+
+    </delete>
+    <delete id="deleteByGroupId">
+    delete from openexperiment.operation_record
+    where related_id = #{projectGroupId}
+    </delete>
+    <select id="selectByPrimaryKey" resultType="com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo">
+
+    </select>
+
+    <select id="selectAllByProjectId" resultType="com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo">
+        select
+               read_status as readStatus,
+               operation_type as operationType,
+               operation_unit as operationUnit,
+               operation_reason as reason,
+               operation_time as operationTime,
+               operation_executor_id as operationExecutorId
+        from openexperiment.operation_record
+        where related_id = #{projectId} and `status` = 'Y'
+        order by operation_time
+    </select>
+    <select id="selectAllByProjectIdList" resultType="com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo">
+        select
+            id as id,
+            read_status as readStatus,
+            operation_type as operationType,
+            operation_unit as operationUnit,
+            operation_reason as reason,
+            operation_time as operationTime,
+            operation_executor_id as operationExecutorId,
+            related_id as projectId
+        from openexperiment.operation_record
+        where related_id in
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        and `status` = 'Y'
+    </select>
+    <select id="selectDesignatedTypeListByRelatedIdAndType"
+            resultType="com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo">
+        select
+            id as id,
+            read_status as readStatus,
+            operation_type as operationType,
+            operation_unit as operationUnit,
+            operation_reason as reason,
+            operation_time as operationTime,
+            operation_executor_id as operationExecutorId,
+            related_id as projectId
+        from openexperiment.operation_record
+        where related_id = #{relatedId} and operation_type = #{type}  and `status` = 'Y'
+    </select>
+    <select id="selectAllOfKeyProjectByProjectId"
+            resultType="com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo">
+        select
+            read_status as readStatus,
+            operation_type as operationType,
+            operation_unit as operationUnit,
+            operation_reason as reason,
+            operation_time as operationTime,
+            operation_executor_id as operationExecutorId
+        from openexperiment.operation_record inner join openexperiment.key_project_status on project_id = operation_record.related_id
+        where related_id = #{projectId} and  operation_record.`status` = 'Y' and operation_type &gt; 10 <!--大于10指的是重点项目的操作-->
+        order by operation_time
+    </select>
+
+
+</mapper>

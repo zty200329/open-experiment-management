@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swpu.uchain.openexperiment.mapper.HitBackMessageMapper" >
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.HitBackMessage" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="receive_user_id" property="receiveUserId" jdbcType="BIGINT" />
+    <result column="sender" property="sender" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="send_time" property="sendTime" jdbcType="DATE" />
+    <result column="is_read" property="isRead" jdbcType="BIT" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from hit_back_message
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.HitBackMessage" >
+    insert into hit_back_message (receive_user_id, sender,
+      content, send_time, is_read)
+    values ( #{receiveUserId,jdbcType=BIGINT}, #{sender,jdbcType=VARCHAR},
+      #{content,jdbcType=VARCHAR}, #{sendTime,jdbcType=DATE}, #{isRead,jdbcType=BIT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.HitBackMessage" >
+    update hit_back_message
+    set receive_user_id = #{receiveUserId,jdbcType=BIGINT},
+      sender = #{sender,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      send_time = #{sendTime,jdbcType=DATE},
+      is_read = #{isRead,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByUserIdAndNotRead" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, receive_user_id, sender, content, send_time, is_read
+    from hit_back_message
+    where receive_user_id = #{receiveUserId,jdbcType=BIGINT} and is_read = 0
+  </select>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, receive_user_id, sender, content, send_time, is_read
+    from hit_back_message
+    where receive_user_id = #{receiveUserId,jdbcType=BIGINT}
+    order by id desc
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, receive_user_id, sender, content, send_time, is_read
+    from hit_back_message
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, receive_user_id, sender, content, send_time, is_read
+    from hit_back_message
+  </select>
+</mapper>

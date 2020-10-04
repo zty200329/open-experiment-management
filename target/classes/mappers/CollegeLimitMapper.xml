@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swpu.uchain.openexperiment.mapper.CollegeLimitMapper" >
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.CollegeLimit" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="crrent_quantity" property="crrentQuantity" jdbcType="INTEGER" />
+    <result column="project_type" property="projectType" jdbcType="TINYINT" />
+    <result column="limit_college" property="limitCollege" jdbcType="TINYINT" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from college_limit
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.CollegeLimit" >
+    insert into college_limit (crrent_quantity, project_type,
+      limit_college)
+    values (#{crrentQuantity,jdbcType=INTEGER}, #{projectType,jdbcType=TINYINT},
+      #{limitCollege,jdbcType=TINYINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.CollegeLimit" >
+    update college_limit
+    set crrent_quantity = #{crrentQuantity,jdbcType=INTEGER},
+      project_type = #{projectType,jdbcType=TINYINT},
+      limit_college = #{limitCollege,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, crrent_quantity, project_type, limit_college
+    from college_limit
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, crrent_quantity, project_type, limit_college
+    from college_limit
+  </select>
+  <select id="selectByTypeAndCollege" resultMap="BaseResultMap">
+    select * from college_limit
+    where limit_college=#{college}
+    and project_type=#{projectType}
+  </select>
+</mapper>
