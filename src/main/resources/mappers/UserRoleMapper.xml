@@ -57,7 +57,7 @@
         openexperiment.`u_stu`
           INNER JOIN openexperiment.user_role ON `u_stu`.`code` = user_role.user_id
       WHERE
-        user_role.role_id &gt; #{role}
+        user_role.role_id &gt; #{role} and user_role.role_id!=10
       ORDER BY
         user_role.role_id DESC
     </select>
