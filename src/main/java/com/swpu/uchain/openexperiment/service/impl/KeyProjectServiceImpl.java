@@ -59,6 +59,8 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private UserProjectService userProjectService;
     private CollegeGivesGradeMapper collegeGivesGradeMapper;
     private FunctionGivesGradeMapper functionGivesGradeMapper;
+    private CollegeLimitMapper collegeLimitMapper;
+    private AmountLimitService amountLimitService;
 
 
     @Autowired
@@ -68,7 +70,8 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                                  AmountLimitMapper amountLimitMapper,ProjectFileMapper projectFileMapper,
                                  UserRoleService userRoleService,HitBackMessageMapper hitBackMessageMapper,
                                  AchievementMapper achievementMapper,UserProjectService userProjectService,
-                                 CollegeGivesGradeMapper collegeGivesGradeMapper,FunctionGivesGradeMapper functionGivesGradeMapper) {
+                                 CollegeGivesGradeMapper collegeGivesGradeMapper,FunctionGivesGradeMapper functionGivesGradeMapper,CollegeLimitMapper collegeLimitMapper,
+                                 AmountLimitService amountLimitService) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
@@ -83,6 +86,8 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         this.userProjectGroupMapper=userProjectGroupMapper;
         this.collegeGivesGradeMapper=collegeGivesGradeMapper;
         this.functionGivesGradeMapper=functionGivesGradeMapper;
+        this.collegeLimitMapper=collegeLimitMapper;
+        this.amountLimitService=amountLimitService;
     }
 
 
@@ -585,6 +590,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.CONCLUSION_REJECT,list);
     }
 
+    /**
+     * 二级单位上报
+     * @param list
+     * @return
+     */
     @Override
     public Result reportKeyProjectBySecondaryUnit(List<KeyProjectCheck> list) {
         //验证数量
@@ -593,13 +603,21 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         if (college == null){
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
         }
+//        CollegeLimit collegeLimit = collegeLimitMapper.selectByTypeAndCollege(college,ProjectType.KEY.getValue());
+//        //没有则插入
+//        if(collegeLimit == null){
+//            collegeLimit.setCrrentQuantity(0);
+//            collegeLimit.setLimitCollege(college.byteValue());
+//            collegeLimit.setProjectType(ProjectType.KEY.getValue().byteValue());
+//            collegeLimitMapper.insert(collegeLimit);
+//        }
 
         //生成项目编号
-        for (KeyProjectCheck check : list) {
-            String serialNumber = projectGroupMapper.getMaxSerialNumberByCollege(college);
-            //计算编号并在数据库中插入编号
-            projectGroupMapper.updateProjectSerialNumber(check.getProjectId(), SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), serialNumber));
-        }
+//        for (KeyProjectCheck check : list) {
+//            String serialNumber = projectGroupMapper.getMaxSerialNumberByCollege(college);
+//            //计算编号并在数据库中插入编号
+//            projectGroupMapper.updateProjectSerialNumber(check.getProjectId(), SerialNumberUtil.getSerialNumberOfProject(college, ProjectType.KEY.getValue(), serialNumber));
+//        }
 
         AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(college,ProjectType.KEY.getValue(),RoleType.SECONDARY_UNIT.getValue());
         Integer currentAmount = keyProjectStatusMapper.getCountOfSpecifiedStatusAndProjectProject(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue(),college);
@@ -609,6 +627,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT, OperationType.REPORT,list);
     }
+
 
 
     @Override

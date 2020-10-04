@@ -74,5 +74,4 @@ public class AmountLimitController {
         return amountLimitService.getAmountLimitList();
     }
 
-//    public Result
 }
