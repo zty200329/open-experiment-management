@@ -13,7 +13,8 @@ public enum ProjectStatus {
     /**
      *
      */
-//    MIDTERM_FAILURE(-6,"中期检查不通过在"),
+    PROJECT_REVIEW(-8,"立项评审中"),
+
     FUNCTIONAL_RETURNS(-7,"职能部门结题审核退回修改"),
 
     COLLEGE_RETURNS(-6,"学院结题审核退回修改"),

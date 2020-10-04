@@ -597,12 +597,16 @@ public class KeyProjectServiceImpl implements KeyProjectService {
      */
     @Override
     public Result reportKeyProjectBySecondaryUnit(List<KeyProjectCheck> list) {
+        //时间限制
+        //验证时间的合法性
+        timeLimitService.validTime(TimeLimitType.SECONDARY_UNIT_REPORT_LIMIT);
         //验证数量
         User user = getUserService.getCurrentUser();
         Integer college = user.getInstitute();
         if (college == null){
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
         }
+
 //        CollegeLimit collegeLimit = collegeLimitMapper.selectByTypeAndCollege(college,ProjectType.KEY.getValue());
 //        //没有则插入
 //        if(collegeLimit == null){
