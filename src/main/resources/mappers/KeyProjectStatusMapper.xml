@@ -106,11 +106,11 @@
         left join openexperiment.`u_stu` ON key_project_status.creator_id = `u_stu`.`code`
         left join openexperiment.project_file ON project_file.project_group_id = key_project_status.project_id
         <where>
+                project_file.material_type = 1
 
-                key_project_status.`status` = 6
+                and key_project_status.`status` = 6
 
                 or project_group.subordinate_college = 0
-            and project_file.material_type = 1
         </where>
 
     </select>

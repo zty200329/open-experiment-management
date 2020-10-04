@@ -1475,7 +1475,7 @@ public class ProjectServiceImpl implements ProjectService {
         Integer college = currentUser.getInstitute();
         TimeLimit timeLimit = timeLimitService.getTimeLimitByTypeAndCollege(TimeLimitType.JOIN_APPLY_LIMIT, college);
         //不在时间范围内
-        log.info(timeLimit.getEndTime()+"  "+timeLimit.getStartTime() + "   "+ new Date());
+        log.error(timeLimit.getEndTime()+"  "+timeLimit.getStartTime() + "   "+ new Date());
         if (timeLimit.getEndTime().before(new Date()) || timeLimit.getStartTime().after(new Date())) {
             //身份为学生，不可见
             if (userRoleService.validContainsUserRole(RoleType.NORMAL_STU)) {

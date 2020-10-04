@@ -503,6 +503,14 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                     //进行重点项目申请的时候该状态也会被改变
                     projectGroupMapper.updateProjectStatus(check.getProjectId(),ProjectStatus.LAB_ALLOWED.getValue());
                 }
+            }else{
+                for (KeyProjectCheck check:list
+                ) {
+                    //更新重点项目，失败
+                    keyProjectStatusMapper.update(check.getProjectId(),ProjectStatus.ESTABLISH_FAILED.getValue());
+
+                    projectGroupMapper.updateProjectStatus(check.getProjectId(),ProjectStatus.ESTABLISH_FAILED.getValue());
+                }
             }
         }else {
             //获取下一个状态

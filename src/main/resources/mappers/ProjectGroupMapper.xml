@@ -561,6 +561,10 @@
         select distinct
             project_group.id,
             case
+                when project_group.status = -7 then '职能部门结题审核退回修改'
+                when project_group.status = -6 then '学院结题审核退回修改'
+                when project_group.status = -5 then '中期打回修改'
+                when project_group.status = -4 then '重点项目申请'
                 when project_group.status = -3 then '立项失败'
                 when project_group.status = -2 then '驳回修改'
                 when project_group.status = -1 then '待指导老师确认'
@@ -569,9 +573,9 @@
                 when project_group.status = 2 then '实验室上报(待二级单位审核)'
                 when project_group.status = 3 then '二级单位审核通过(待上报)'
                 when project_group.status = 4 then '二级单位上报(待职能部门审核)'
-                when project_group.status = 5 then '职能部门审核通过(待中期检查)'
-                when project_group.status = 6 then '中期检查(待结题审核)'
-                when project_group.status = 7 then '结题' end as projectStatus,
+                when project_group.status = 5 then '职能部门审核通过,立项'
+                when project_group.status = 6 then '学院结题提交'
+                when project_group.status = 7 then '结题项目' end as projectStatus,
             project_group.serial_number,
             project_group.temp_serial_number,
             project_group.address,
@@ -587,6 +591,10 @@
             project_group.suggest_group_type,
             project_group.subordinate_college  AS college,
             case
+                when key_project_status.status = -7 then '职能部门结题审核退回修改'
+                when key_project_status.status = -6 then '学院结题审核退回修改'
+                when key_project_status.status = -5 then '中期打回修改'
+                when key_project_status.status = -4 then '重点项目申请'
                 when key_project_status.status = -3 then '立项失败'
                 when key_project_status.status = -2 then '驳回修改'
                 when key_project_status.status = -1 then '待指导老师确认'
@@ -595,9 +603,9 @@
                 when key_project_status.status = 2 then '实验室上报(待二级单位审核)'
                 when key_project_status.status = 3 then '二级单位审核通过(待上报)'
                 when key_project_status.status = 4 then '二级单位上报(待职能部门审核)'
-                when key_project_status.status = 5 then '职能部门审核通过(待中期检查)'
-                when key_project_status.status = 6 then '中期检查(待结题审核)'
-                when key_project_status.status = 7 then '结题' end as keyProjectStatus
+                when key_project_status.status = 5 then '职能部门审核通过,立项'
+                when key_project_status.status = 6 then '学院结题提交'
+                when key_project_status.status = 7 then '结题项目' end as keyProjectStatus
         from openexperiment.project_group
         left join openexperiment.key_project_status on project_group.id = key_project_status.project_id
         <where>
@@ -624,7 +632,9 @@
             inner join openexperiment.u_stu on u_stu.code = project_group.creator_id and locate(#{creator},u_stu.real_name)
         </if>
         <where>
-            project_group.project_type = 1
+            <if test="projectType!=null">
+                project_group.project_type = #{projectType}
+            </if>
             <if test="status!=null">
                 and project_group.status = #{status}
             </if>
