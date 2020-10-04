@@ -37,4 +37,4 @@ upload:
     
     
 file:
-  ip-address: "http://192.168.43.29:8083"
+  ip-address: "http://192.168.1.112:8083"

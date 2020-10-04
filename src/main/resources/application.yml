@@ -18,7 +18,7 @@ spring:
       min-evictable-idle-time-millis: 300000
   redis:
     database: 1 # Redis数据库索引（默认为0）
-    host: 106.15.248.34 # Redis服务器地址
+    host: 192.168.74.129 # Redis服务器地址
     port: 6379 # Redis服务器连接端口
     password: 200329  # Redis服务器连接密码（默认为空）
     jedis:
@@ -36,7 +36,7 @@ jwt:
   secret: swpu-uchain
   expiration: 43000
 redis:
-  host: 106.15.248.34
+  host: 192.168.74.129
   port: 6379
   timeout: 10
   poolMaxTotal: 1000

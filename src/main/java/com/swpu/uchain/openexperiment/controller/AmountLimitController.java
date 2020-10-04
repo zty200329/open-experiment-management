@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * @author dengg
+ * @author zty
  */
 @CrossOrigin
 @RestController
@@ -74,4 +74,5 @@ public class AmountLimitController {
         return amountLimitService.getAmountLimitList();
     }
 
+//    public Result
 }
