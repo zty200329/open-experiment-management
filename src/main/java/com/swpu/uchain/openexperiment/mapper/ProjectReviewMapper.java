@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+/**
+ * @author zty
+ */
 @Repository
 public interface ProjectReviewMapper {
     int deleteByPrimaryKey(Integer id);
