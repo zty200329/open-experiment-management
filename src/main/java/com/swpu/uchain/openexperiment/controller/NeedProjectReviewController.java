@@ -1,10 +1,12 @@
 package com.swpu.uchain.openexperiment.controller;
 
+import com.swpu.uchain.openexperiment.domain.CollegeGivesGrade;
 import com.swpu.uchain.openexperiment.form.reviews.NeedProjectReviewForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.NeedProjectReviewService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.poi.ss.formula.functions.Vlookup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,12 @@ public class NeedProjectReviewController {
     @PostMapping(value = "/collegeSetUpReview")
     public Result collegeSetUpReview(@Valid @RequestBody List<NeedProjectReviewForm> projectReviewForms){
         return needProjectReviewService.collegeSetUpReview(projectReviewForms);
+    }
+
+    @ApiOperation("评审打分")
+    @PostMapping(value = "/collegeSetScore")
+    public Result collegeSetScore(@Valid @RequestBody CollegeGivesGrade collegeGivesGrade){
+        return null;
     }
 
 }

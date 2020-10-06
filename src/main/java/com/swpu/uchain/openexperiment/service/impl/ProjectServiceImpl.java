@@ -69,6 +69,7 @@ public class ProjectServiceImpl implements ProjectService {
     private AchievementMapper achievementMapper;
     private CollegeGivesGradeMapper collegeGivesGradeMapper;
     private FunctionGivesGradeMapper functionGivesGradeMapper;
+    private ProjectReviewMapper projectReviewMapper;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -82,7 +83,8 @@ public class ProjectServiceImpl implements ProjectService {
                               KeyProjectStatusMapper keyProjectStatusMapper, ProjectFileMapper projectFileMapper,
                               TimeLimitService timeLimitService, RedisUtil redisUtil, UserRoleService userRoleService,
                               HitBackMessageMapper hitBackMessageMapper, AchievementMapper achievementMapper,
-                              CollegeGivesGradeMapper collegeGivesGradeMapper, FunctionGivesGradeMapper functionGivesGradeMapper) {
+                              CollegeGivesGradeMapper collegeGivesGradeMapper, FunctionGivesGradeMapper functionGivesGradeMapper,
+                              ProjectReviewMapper projectReviewMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -106,6 +108,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.achievementMapper = achievementMapper;
         this.collegeGivesGradeMapper = collegeGivesGradeMapper;
         this.functionGivesGradeMapper = functionGivesGradeMapper;
+        this.projectReviewMapper = projectReviewMapper;
     }
 
     @Override
@@ -1202,6 +1205,7 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success();
     }
 
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result reportToFunctionalDepartment(List<Long> projectGroupIdList) {
@@ -1265,18 +1269,80 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
+    /**
+     * 要先判断是否需要评审
+     * @param list
+     * @return
+     */
     @Override
     public Result approveProjectApplyBySecondaryUnit(List<ProjectCheckForm> list) {
         //时间限制验证
         timeLimitService.validTime(TimeLimitType.SECONDARY_UNIT_CHECK_LIMIT);
+
 
         User user = getUserService.getCurrentUser();
         Integer college = user.getInstitute();
         if (college == null) {
             throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
         }
+        //判断是否需要评审
+        //这里需要采用缓存
+        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(college,ProjectType.GENERAL.getValue());
+        if(projectReview != null){
+            //需要评审
+            return approveProjectReview(list, RoleType.SECONDARY_UNIT.getValue());
+        }
         return approveProjectApply(list, RoleType.SECONDARY_UNIT.getValue());
     }
+
+    /**
+     * 学院通过后改变为评审的状态
+     * @param formList
+     * @param role
+     * @return
+     */
+    @Transactional(rollbackFor = GlobalException.class)
+    public Result approveProjectReview(List<ProjectCheckForm> formList, Integer role) {
+        User user = getUserService.getCurrentUser();
+        if (user == null) {
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        Integer operationUnit = OperationUnit.SECONDARY_UNIT.getValue();
+        //当前状态
+        Integer projectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
+        //将要被更新成的状态
+        Integer updateProjectStatus = ProjectStatus.PROJECT_REVIEW.getValue();
+
+        List<OperationRecord> list = new LinkedList<>();
+        for (ProjectCheckForm form : formList
+        ) {
+            OperationRecord operationRecord = new OperationRecord();
+
+            operationRecord.setRelatedId(form.getProjectId());
+            operationRecord.setOperationReason(form.getReason());
+            operationRecord.setOperationType(OperationType.AGREE.getValue());
+            operationRecord.setOperationUnit(operationUnit);
+            operationRecord.setOperationCollege(user.getInstitute());
+            operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
+
+
+            list.add(operationRecord);
+            //当角色是实验室主任的时候,项目状态不是
+            ProjectGroup projectGroup = selectByProjectGroupId(form.getProjectId());
+            //如果不是实验室上报状态,抛出异常
+            if (role.equals(RoleType.SECONDARY_UNIT.getValue())) {
+                if (!projectGroup.getStatus().equals(projectStatus)) {
+                    throw new GlobalException("项目编号为" + projectGroup.getId() + "的项目非实验室审核通过", CodeMsg.PROJECT_CURRENT_STATUS_ERROR.getCode());
+                }
+            }
+            //根据不同角色设置不同的项目状态
+            updateProjectStatus(form.getProjectId(), updateProjectStatus);
+
+        }
+        recordMapper.multiInsert(list);
+        return Result.success();
+    }
+
 
     /**
      * 复核通过

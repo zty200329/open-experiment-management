@@ -44,6 +44,8 @@ public class NeedProjectReviewServiceImpl implements NeedProjectReviewService {
             }
             ProjectReview projectReview = new ProjectReview();
             BeanUtils.copyProperties(projectReviewForm,projectReview);
+            //将原有的状态改变
+            changeStateToReview(projectReviewForm);
             projectReviewMapper.insert(projectReview);
         }
         return Result.success();
@@ -60,7 +62,7 @@ public class NeedProjectReviewServiceImpl implements NeedProjectReviewService {
             projectReviewMapper.updateGeneralByCollegeAndType(projectReviewForm.getCollege(),projectReviewForm.getProjectType());
         }
         if(projectReviewForm.getProjectType().equals(ProjectType.KEY.getValue())){
-
+            projectReviewMapper.updateKeyByCollegeAndType(projectReviewForm.getCollege());
         }
     }
 }

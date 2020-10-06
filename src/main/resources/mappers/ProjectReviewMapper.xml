@@ -40,4 +40,8 @@
     where project_group.status = 4 and project_group.subordinate_college = #{college}
     and project_group.project_type = 1
   </update>
+  <update id="updateKeyByCollegeAndType" parameterType="java.lang.Integer">
+    UPDATE key_project_status set key_project_status.status = -8
+    where project_group.status = 4 and key_project_status.subordinate_college = #{college}
+  </update>
 </mapper>
