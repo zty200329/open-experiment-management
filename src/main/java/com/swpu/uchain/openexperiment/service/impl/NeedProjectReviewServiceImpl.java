@@ -1,12 +1,17 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.swpu.uchain.openexperiment.domain.CollegeGivesGrade;
 import com.swpu.uchain.openexperiment.domain.ProjectReview;
+import com.swpu.uchain.openexperiment.domain.ProjectReviewResult;
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.ProjectType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
+import com.swpu.uchain.openexperiment.form.project.CollegeGiveScore;
 import com.swpu.uchain.openexperiment.form.reviews.NeedProjectReviewForm;
+import com.swpu.uchain.openexperiment.mapper.CollegeGivesGradeMapper;
 import com.swpu.uchain.openexperiment.mapper.ProjectReviewMapper;
+import com.swpu.uchain.openexperiment.mapper.ProjectReviewResultMapper;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.NeedProjectReviewService;
@@ -30,6 +35,8 @@ public class NeedProjectReviewServiceImpl implements NeedProjectReviewService {
     private GetUserService getUserService;
     @Autowired
     private ProjectReviewMapper projectReviewMapper;
+    @Autowired
+    private ProjectReviewResultMapper projectReviewResultMapper;
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result collegeSetUpReview(List<NeedProjectReviewForm> projectReviewForms) {
@@ -49,6 +56,21 @@ public class NeedProjectReviewServiceImpl implements NeedProjectReviewService {
             projectReviewMapper.insert(projectReview);
         }
         return Result.success();
+    }
+
+    @Override
+    public Result collegeSetScore(List<CollegeGiveScore> CollegeGiveScores) {
+        for (CollegeGiveScore giveScore : CollegeGiveScores) {
+            ProjectReviewResult reviewResult = new ProjectReviewResult();
+            BeanUtils.copyProperties(giveScore,reviewResult);
+            if(giveScore.getIsSupport()==0){
+                reviewResult.setIsSupport(false);
+            }else{
+                reviewResult.setIsSupport(true);
+            }
+            projectReviewResultMapper.insert(reviewResult);
+        }
+        return null;
     }
 
     /**

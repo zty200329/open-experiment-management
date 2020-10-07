@@ -1,5 +1,7 @@
 package com.swpu.uchain.openexperiment.domain;
 
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 
 public class ProjectReviewResult implements Serializable {

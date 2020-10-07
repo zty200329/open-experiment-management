@@ -13,9 +13,9 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ProjectReviewResult" >
-    insert into project_review (id, project_id, score, 
+    insert into project_review ( project_id, score,
       is_support, operate_user)
-    values (#{id,jdbcType=INTEGER}, #{projectId,jdbcType=BIGINT}, #{score,jdbcType=INTEGER}, 
+    values (#{projectId,jdbcType=BIGINT}, #{score,jdbcType=INTEGER},
       #{isSupport,jdbcType=BIT}, #{operateUser,jdbcType=BIGINT})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectReviewResult" >

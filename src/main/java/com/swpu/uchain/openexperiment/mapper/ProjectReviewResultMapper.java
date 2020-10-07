@@ -1,8 +1,10 @@
 package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.domain.ProjectReviewResult;
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+@Repository
 public interface ProjectReviewResultMapper {
     int deleteByPrimaryKey(Integer id);
 

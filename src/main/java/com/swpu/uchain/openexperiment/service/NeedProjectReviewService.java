@@ -1,5 +1,7 @@
 package com.swpu.uchain.openexperiment.service;
 
+import com.swpu.uchain.openexperiment.domain.CollegeGivesGrade;
+import com.swpu.uchain.openexperiment.form.project.CollegeGiveScore;
 import com.swpu.uchain.openexperiment.form.reviews.NeedProjectReviewForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,4 +16,11 @@ import java.util.List;
  */
 public interface NeedProjectReviewService {
     Result collegeSetUpReview(List<NeedProjectReviewForm> projectReviewForms);
+
+    /**
+     * 打分和推荐
+     * @param collegeGivesGrade
+     * @return
+     */
+    Result collegeSetScore(List<CollegeGiveScore> collegeGivesGrade);
 }
