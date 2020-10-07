@@ -22,6 +22,7 @@ import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.RedisUtil;
 import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
+import com.swpu.uchain.openexperiment.util.SortListUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,7 @@ public class ProjectServiceImpl implements ProjectService {
     private FunctionGivesGradeMapper functionGivesGradeMapper;
     private ProjectReviewMapper projectReviewMapper;
     private ProjectReviewResultMapper projectReviewResultMapper;
+    private SortListUtil sortListUtil;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -85,7 +87,8 @@ public class ProjectServiceImpl implements ProjectService {
                               TimeLimitService timeLimitService, RedisUtil redisUtil, UserRoleService userRoleService,
                               HitBackMessageMapper hitBackMessageMapper, AchievementMapper achievementMapper,
                               CollegeGivesGradeMapper collegeGivesGradeMapper, FunctionGivesGradeMapper functionGivesGradeMapper,
-                              ProjectReviewMapper projectReviewMapper,ProjectReviewResultMapper projectReviewResultMapper) {
+                              ProjectReviewMapper projectReviewMapper,ProjectReviewResultMapper projectReviewResultMapper,
+                              SortListUtil sortListUtil) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -111,6 +114,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.functionGivesGradeMapper = functionGivesGradeMapper;
         this.projectReviewMapper = projectReviewMapper;
         this.projectReviewResultMapper = projectReviewResultMapper;
+        this.sortListUtil = sortListUtil;
     }
 
     @Override
@@ -1524,7 +1528,28 @@ public class ProjectServiceImpl implements ProjectService {
         if (user == null) {
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
+        // 判断是否需要评审
+        //这里需要采用缓存
+        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(user.getInstitute(),ProjectType.GENERAL.getValue());
+        if(projectReview != null){
+            //需要评审
+            return getReviewInfo();
+        }
         return getReportInfo(RoleType.SECONDARY_UNIT.getValue());
+    }
+
+    private Result getReviewInfo() {
+
+        User currentUser = getUserService.getCurrentUser();
+
+        //获取待上报的普通项目
+        List<ProjectReviewVO> projectReviewVOS = projectGroupMapper.selectHasReview(currentUser.getInstitute());
+        for (ProjectReviewVO projectReviewVO : projectReviewVOS) {
+            projectReviewVO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(projectReviewVO.getId(), JoinStatus.JOINED.getValue()));
+        }
+
+
+        return Result.success( SortListUtil.sort(projectReviewVOS,"score",SortListUtil.DESC));
     }
 
     @Override

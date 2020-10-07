@@ -37,8 +37,8 @@
     <resultMap id="ProjectGroupDetailVOResultMap" type="com.swpu.uchain.openexperiment.VO.project.ProjectGroupDetailVO">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="temp_serial_number" property="serialNumber"/>
         <result column="subordinate_college" property="subordinateCollege"/>
-        <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
         <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
@@ -132,6 +132,21 @@
         <result column="apply_funds" property="applyFunds"/>
         <result column="project_type" property="projectType"/>
 
+    </resultMap>
+    <resultMap id="ProjectReviewVOResultMap" type="com.swpu.uchain.openexperiment.VO.project.ProjectReviewVO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="apply_funds" property="applyFunds"/>
+        <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+        <result column="project_type" jdbcType="INTEGER" property="projectType" />
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+        <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
+        <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
+        <result column="subordinate_college" property="subordinateCollege"/>
+        <result column="apply_funds" property="applyFunds"/>
+        <result column="score" property="score"/>
+        <result column="reason" property="reason"/>
+        <result column="is_support" property="isSupport" />
     </resultMap>
 
     <resultMap id="CheckProjectResultMap" type="com.swpu.uchain.openexperiment.VO.project.CheckProjectVO">
@@ -385,6 +400,35 @@
     </if>
     order by create_time desc
   </select>
+    <select id="selectHasReview" resultMap="ProjectReviewVOResultMap">
+        SELECT
+        project_group.id,
+        project_group.end_time,
+        project_group.start_time,
+        project_group.subordinate_college,
+        project_group.experiment_type,
+        project_group.apply_funds,
+        project_group.project_type,
+        project_group.temp_serial_number,
+        project_group.total_hours,
+        project_group.project_name,
+        project_review.score,
+        project_review.is_support,
+        project_review.reason
+        FROM
+        project_group
+        INNER JOIN
+        project_review
+        ON
+        project_group.id = project_review.project_id
+        WHERE
+        project_group.project_type = 1
+        and project_group.`status` = 3
+        <if  test="college!=0">
+            and subordinate_college = #{college}
+        </if>
+
+    </select>
     <select id="selectNewApplyOrderByTime" resultMap="NewCheckProjectResultMap">
         select
         openexperiment.project_group.id,
@@ -507,7 +551,7 @@
 
     <select id="getProjectGroupDetailVOByProjectId" resultMap="ProjectGroupDetailVOResultMap">
         select project_group.id,
-               project_group.serial_number,
+               project_group.temp_serial_number,
                project_group.address,
                project_group.create_time,
                project_group.creator_id,

@@ -17,4 +17,7 @@ import java.util.List;
 public interface NeedProjectReviewService {
     Result collegeSetUpReview(List<NeedProjectReviewForm> projectReviewForms);
 
+    Result getCollegeReview();
+
+    Result deleteCollegeReview(Integer id);
 }

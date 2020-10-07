@@ -108,6 +108,13 @@ public interface ProjectGroupMapper {
      */
     List<CheckProjectVO> selectApplyOrderByTime(@Param("projectStatus") int projectStatus,@Param("projectType") Integer projectType,@Param("college") Integer college);
 
+    /**
+     * 查询已经完成立项评审的项目
+     * @param college
+     * @return
+     */
+    List<ProjectReviewVO> selectHasReview(@Param("college") Integer college);
+
     List<NewCheckProjectVO> selectNewApplyOrderByTime(@Param("projectStatus") int projectStatus,@Param("projectType") Integer projectType,@Param("college") Integer college);
 
     List<NewCheckProjectVO> selectNewApplyOrderByTime2(@Param("projectStatus") int projectStatus,@Param("projectType") Integer projectType,@Param("college") Integer college);

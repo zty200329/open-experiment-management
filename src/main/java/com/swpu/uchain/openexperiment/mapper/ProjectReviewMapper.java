@@ -32,4 +32,8 @@ public interface ProjectReviewMapper {
     int updateGeneralByCollegeAndType(@Param("college")Integer college,@Param("projectType")Integer projectType);
 
     int updateKeyByCollegeAndType(@Param("college")Integer college);
+
+    int updateGeneralByCollegeAndType2(@Param("college")Integer college,@Param("projectType")Integer projectType);
+
+    int updateKeyByCollegeAndType2(@Param("college")Integer college);
 }
