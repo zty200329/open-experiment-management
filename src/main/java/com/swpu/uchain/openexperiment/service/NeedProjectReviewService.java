@@ -17,10 +17,4 @@ import java.util.List;
 public interface NeedProjectReviewService {
     Result collegeSetUpReview(List<NeedProjectReviewForm> projectReviewForms);
 
-    /**
-     * 打分和推荐
-     * @param collegeGivesGrade
-     * @return
-     */
-    Result collegeSetScore(List<CollegeGiveScore> collegeGivesGrade);
 }

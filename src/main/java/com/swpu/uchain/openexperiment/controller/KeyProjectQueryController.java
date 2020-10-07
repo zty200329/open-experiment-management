@@ -45,6 +45,12 @@ public class KeyProjectQueryController {
         return keyProjectService.getKeyProjectApplyingListBySecondaryUnit();
     }
 
+    @GetMapping(value = "/getToBeReviewedProject")
+    @ApiOperation("获取待立项评审的项目")
+    public Result getToBeReviewedProject(){
+        return keyProjectService.getToBeReviewedProject();
+    }
+
     @GetMapping(value = "/getKeyProjectApplyingListByFunctionalDepartment")
     @ApiOperation("职能部门获取项目待审核的重点项目信息")
     public Result getKeyProjectApplyingListByFunctionalDepartment(){

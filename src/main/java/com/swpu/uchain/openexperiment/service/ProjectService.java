@@ -256,6 +256,12 @@ public interface ProjectService {
     Result approveProjectApplyBySecondaryUnit(List<ProjectCheckForm> list);
 
     /**
+     * 打分和推荐
+     * @param
+     * @return
+     */
+    Result collegeSetScore(List<CollegeGiveScore> collegeGiveScores);
+    /**
      * 中期复核通过
      * @param list
      * @return

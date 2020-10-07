@@ -58,20 +58,6 @@ public class NeedProjectReviewServiceImpl implements NeedProjectReviewService {
         return Result.success();
     }
 
-    @Override
-    public Result collegeSetScore(List<CollegeGiveScore> CollegeGiveScores) {
-        for (CollegeGiveScore giveScore : CollegeGiveScores) {
-            ProjectReviewResult reviewResult = new ProjectReviewResult();
-            BeanUtils.copyProperties(giveScore,reviewResult);
-            if(giveScore.getIsSupport()==0){
-                reviewResult.setIsSupport(false);
-            }else{
-                reviewResult.setIsSupport(true);
-            }
-            projectReviewResultMapper.insert(reviewResult);
-        }
-        return null;
-    }
 
     /**
      * 改变状态

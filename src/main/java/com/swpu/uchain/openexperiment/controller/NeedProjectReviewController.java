@@ -33,11 +33,5 @@ public class NeedProjectReviewController {
         return needProjectReviewService.collegeSetUpReview(projectReviewForms);
     }
 
-    @ApiOperation("评审打分")
-    @PostMapping(value = "/collegeSetScore")
-    public Result collegeSetScore(@Valid @RequestBody List<CollegeGiveScore> collegeGiveScores){
-        return needProjectReviewService.collegeSetScore(collegeGiveScores);
-    }
-
 
 }

@@ -7,6 +7,7 @@ import com.swpu.uchain.openexperiment.form.funds.FundsUpdateForm;
 import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.FundsService;
+import com.swpu.uchain.openexperiment.service.NeedProjectReviewService;
 import com.swpu.uchain.openexperiment.service.ProjectService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import io.swagger.annotations.Api;
@@ -36,10 +37,14 @@ public class ProjectInvokeController {
 
     private UserProjectService userProjectService;
 
+    private NeedProjectReviewService needProjectReviewService;
+
     @Autowired
-    public ProjectInvokeController(ProjectService projectService, UserProjectService userProjectService) {
+    public ProjectInvokeController(ProjectService projectService, UserProjectService userProjectService,
+                                   NeedProjectReviewService needProjectReviewService) {
         this.projectService = projectService;
         this.userProjectService = userProjectService;
+        this.needProjectReviewService = needProjectReviewService;
     }
 
     @ApiOperation("申请立项接口--可使用")
@@ -144,6 +149,12 @@ public class ProjectInvokeController {
     @PostMapping(value = "/approveProjectApplyBySecondaryUnit")
     public Result approveProjectApplyBySecondaryUnit(@RequestBody List<ProjectCheckForm> list){
         return projectService.approveProjectApplyBySecondaryUnit(list);
+    }
+
+    @ApiOperation("普通项目评审打分")
+    @PostMapping(value = "/collegeSetScore")
+    public Result collegeSetScore(@Valid @RequestBody List<CollegeGiveScore> collegeGiveScores){
+        return projectService.collegeSetScore(collegeGiveScores);
     }
 
     @ApiOperation("中期复核通过")

@@ -278,6 +278,12 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     @Override
+    public Result getToBeReviewedProject() {
+        User user  = getUserService.getCurrentUser();
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.PROJECT_REVIEW,user.getInstitute());
+    }
+
+    @Override
     public Result getCollegeKeyProject() {
         User user  = getUserService.getCurrentUser();
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.ESTABLISH,user.getInstitute());

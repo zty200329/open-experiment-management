@@ -42,6 +42,11 @@ public interface KeyProjectService {
     Result getKeyProjectApplyingListBySecondaryUnit();
 
     /**
+     * 获取待评审的
+     * @return
+     */
+    Result getToBeReviewedProject();
+    /**
      * 学院获取待检查的重点项目
      * @return
      */

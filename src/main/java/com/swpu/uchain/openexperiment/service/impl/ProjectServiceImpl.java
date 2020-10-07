@@ -70,6 +70,7 @@ public class ProjectServiceImpl implements ProjectService {
     private CollegeGivesGradeMapper collegeGivesGradeMapper;
     private FunctionGivesGradeMapper functionGivesGradeMapper;
     private ProjectReviewMapper projectReviewMapper;
+    private ProjectReviewResultMapper projectReviewResultMapper;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -84,7 +85,7 @@ public class ProjectServiceImpl implements ProjectService {
                               TimeLimitService timeLimitService, RedisUtil redisUtil, UserRoleService userRoleService,
                               HitBackMessageMapper hitBackMessageMapper, AchievementMapper achievementMapper,
                               CollegeGivesGradeMapper collegeGivesGradeMapper, FunctionGivesGradeMapper functionGivesGradeMapper,
-                              ProjectReviewMapper projectReviewMapper) {
+                              ProjectReviewMapper projectReviewMapper,ProjectReviewResultMapper projectReviewResultMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -109,6 +110,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.collegeGivesGradeMapper = collegeGivesGradeMapper;
         this.functionGivesGradeMapper = functionGivesGradeMapper;
         this.projectReviewMapper = projectReviewMapper;
+        this.projectReviewResultMapper = projectReviewResultMapper;
     }
 
     @Override
@@ -1295,6 +1297,65 @@ public class ProjectServiceImpl implements ProjectService {
         return approveProjectApply(list, RoleType.SECONDARY_UNIT.getValue());
     }
 
+    @Override
+    public Result collegeSetScore(List<CollegeGiveScore> collegeGiveScores) {
+        return getResult(collegeGiveScores, projectReviewResultMapper);
+    }
+
+    Result getResult(List<CollegeGiveScore> collegeGiveScores, ProjectReviewResultMapper projectReviewResultMapper) {
+        User user = getUserService.getCurrentUser();
+        for (CollegeGiveScore giveScore : collegeGiveScores) {
+            ProjectReviewResult reviewResult = new ProjectReviewResult();
+            BeanUtils.copyProperties(giveScore,reviewResult);
+            if(giveScore.getIsSupport()==0){
+                reviewResult.setIsSupport(false);
+            }else{
+                reviewResult.setIsSupport(true);
+            }
+            reviewResult.setOperateUser(Long.valueOf(user.getCode()));
+            projectReviewResultMapper.insert(reviewResult);
+            //改变状态
+            Result result = approveProjectNormal(giveScore.getProjectId(),RoleType.COLLEGE_FINALIZATION_REVIEW.getValue());
+            if(result.getCode()!=0){
+                throw new GlobalException(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+            }
+        }
+        return Result.success();
+    }
+
+    /**
+     * 状态置换回待上报
+     * @param projectId
+     * @param role
+     * @return
+     */
+    @Transactional(rollbackFor = GlobalException.class)
+    Result approveProjectNormal(Long projectId, Integer role) {
+        User user = getUserService.getCurrentUser();
+        if (user == null) {
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        Integer operationUnit = OperationUnit.COLLEGE_REVIEWER.getValue();
+        //当前状态
+        Integer projectStatus = ProjectStatus.PROJECT_REVIEW.getValue();
+        //将要被更新成的状态
+        Integer updateProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
+
+
+            //当角色是实验室主任的时候,项目状态不是
+            ProjectGroup projectGroup = selectByProjectGroupId(projectId);
+            //如果不是实验室上报状态,抛出异常
+            if (role.equals(RoleType.COLLEGE_FINALIZATION_REVIEW.getValue())) {
+                if (!projectGroup.getStatus().equals(projectStatus)) {
+                    throw new GlobalException("项目编号为" + projectGroup.getId() + "的项目非学院通过", CodeMsg.PROJECT_CURRENT_STATUS_ERROR.getCode());
+                }
+
+            }//根据不同角色设置不同的项目状态
+            updateProjectStatus(projectId, updateProjectStatus);
+
+
+        return Result.success();
+    }
     /**
      * 学院通过后改变为评审的状态
      * @param formList
