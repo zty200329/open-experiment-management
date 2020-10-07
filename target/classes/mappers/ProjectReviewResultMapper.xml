@@ -6,6 +6,7 @@
     <result column="project_id" property="projectId" jdbcType="BIGINT" />
     <result column="score" property="score" jdbcType="INTEGER" />
     <result column="is_support" property="isSupport" jdbcType="BIT" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
     <result column="operate_user" property="operateUser" jdbcType="BIGINT" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -14,25 +15,31 @@
   </delete>
   <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ProjectReviewResult" >
     insert into project_review ( project_id, score,
-      is_support, operate_user)
+      is_support, reason, operate_user)
     values (#{projectId,jdbcType=BIGINT}, #{score,jdbcType=INTEGER},
-      #{isSupport,jdbcType=BIT}, #{operateUser,jdbcType=BIGINT})
+      #{isSupport,jdbcType=BIT}, #{reason,jdbcType=VARCHAR} ,#{operateUser,jdbcType=BIGINT})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.ProjectReviewResult" >
-    update project_review
-    set project_id = #{projectId,jdbcType=BIGINT},
-      score = #{score,jdbcType=INTEGER},
-      is_support = #{isSupport,jdbcType=BIT},
-      operate_user = #{operateUser,jdbcType=BIGINT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, project_id, score, is_support, operate_user
+    select id, project_id, score, is_support, reason,operate_user
     from project_review
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, project_id, score, is_support, operate_user
+    select id, project_id, score, is_support,reason, operate_user
     from project_review
   </select>
+  <insert id="multiInsert">
+    insert into project_review (project_id, score,
+    is_support, reason, operate_user)
+    value
+    <foreach collection="list" item="record" separator=",">
+      (
+      #{record.projectId,jdbcType=BIGINT},
+      #{record.score,jdbcType=INTEGER},
+      #{record.isSupport,jdbcType=BIT},
+      #{record.reason,jdbcType=VARCHAR},
+      #{record.operateUser,jdbcType=BIGINT}
+      )
+    </foreach>
+  </insert>
 </mapper>

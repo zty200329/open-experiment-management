@@ -18,6 +18,9 @@ public class CollegeGiveScore {
     @NotNull(message = "分数不能为空")
     private Integer score;
 
+    @NotNull(message = "评审意见")
+    private String reason;
+
     @NotNull(message = "是否推荐")
     private Integer isSupport;
 }

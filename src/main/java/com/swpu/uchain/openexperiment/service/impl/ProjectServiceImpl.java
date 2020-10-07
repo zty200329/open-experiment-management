@@ -1313,12 +1313,12 @@ public class ProjectServiceImpl implements ProjectService {
                 reviewResult.setIsSupport(true);
             }
             reviewResult.setOperateUser(Long.valueOf(user.getCode()));
-            projectReviewResultMapper.insert(reviewResult);
             //改变状态
             Result result = approveProjectNormal(giveScore.getProjectId(),RoleType.COLLEGE_FINALIZATION_REVIEW.getValue());
             if(result.getCode()!=0){
                 throw new GlobalException(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
             }
+            projectReviewResultMapper.insert(reviewResult);
         }
         return Result.success();
     }

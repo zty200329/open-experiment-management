@@ -2,10 +2,7 @@ package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.form.certificate.DeleteCertificateForm;
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
-import com.swpu.uchain.openexperiment.form.project.IconicResultForm;
-import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
-import com.swpu.uchain.openexperiment.form.project.ProjectCheckForm;
-import com.swpu.uchain.openexperiment.form.project.ProjectGrade;
+import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import com.swpu.uchain.openexperiment.service.KeyProjectService;
@@ -102,6 +99,12 @@ public class KeyProjectInvokeController {
     @PostMapping("/reportKeyProjectByLabAdministrator")
     public Result reportKeyProjectByLabAdministrator(@Valid @RequestBody List<KeyProjectCheck> list){
         return keyProjectService.reportKeyProjectByLabAdministrator(list);
+    }
+
+    @ApiOperation("重点项目评审打分")
+    @PostMapping(value = "/collegeSetKeyScore")
+    public Result collegeSetKeyScore(@Valid @RequestBody List<CollegeGiveScore> collegeGiveScores){
+        return keyProjectService.collegeSetKeyScore(collegeGiveScores);
     }
 
     @ApiOperation("二级单位主任上报已审核项目")

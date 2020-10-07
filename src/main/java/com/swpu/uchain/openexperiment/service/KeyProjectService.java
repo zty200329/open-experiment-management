@@ -1,11 +1,8 @@
 package com.swpu.uchain.openexperiment.service;
 
-import com.swpu.uchain.openexperiment.form.project.IconicResultForm;
-import com.swpu.uchain.openexperiment.form.project.ProjectCheckForm;
-import com.swpu.uchain.openexperiment.form.project.ProjectGrade;
+import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.form.query.HistoryQueryKeyProjectInfo;
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
-import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
 import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,6 +62,8 @@ public interface KeyProjectService {
     Result agreeKeyProjectBySecondaryUnit(List<KeyProjectCheck> list);
 
     Result agreeKeyProjectByFunctionalDepartment(List<KeyProjectCheck> list);
+
+    Result collegeSetKeyScore(List<CollegeGiveScore> collegeGiveScores);
 
     Result reportKeyProjectByLabAdministrator(List<KeyProjectCheck> list);
 

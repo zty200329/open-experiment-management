@@ -9,15 +9,12 @@ import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
 import com.swpu.uchain.openexperiment.accessctro.ExcelResources;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.form.amount.AmountAndType;
-import com.swpu.uchain.openexperiment.form.project.IconicResultForm;
-import com.swpu.uchain.openexperiment.form.project.ProjectCheckForm;
-import com.swpu.uchain.openexperiment.form.project.ProjectGrade;
+import com.swpu.uchain.openexperiment.form.project.*;
 import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.query.HistoryQueryKeyProjectInfo;
 import com.swpu.uchain.openexperiment.form.check.KeyProjectCheck;
-import com.swpu.uchain.openexperiment.form.project.KeyProjectApplyForm;
 import com.swpu.uchain.openexperiment.form.query.QueryConditionForm;
 import com.swpu.uchain.openexperiment.form.user.StuMember;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -62,6 +59,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private CollegeLimitMapper collegeLimitMapper;
     private AmountLimitService amountLimitService;
     private ProjectReviewMapper projectReviewMapper;
+    private ProjectReviewResultMapper projectReviewResultMapper;
 
 
     @Autowired
@@ -72,7 +70,8 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                                  UserRoleService userRoleService,HitBackMessageMapper hitBackMessageMapper,
                                  AchievementMapper achievementMapper,UserProjectService userProjectService,
                                  CollegeGivesGradeMapper collegeGivesGradeMapper,FunctionGivesGradeMapper functionGivesGradeMapper,CollegeLimitMapper collegeLimitMapper,
-                                 AmountLimitService amountLimitService,ProjectReviewMapper projectReviewMapper) {
+                                 AmountLimitService amountLimitService,ProjectReviewMapper projectReviewMapper,
+                                 ProjectReviewResultMapper projectReviewResultMapper) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
@@ -90,6 +89,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         this.collegeLimitMapper=collegeLimitMapper;
         this.amountLimitService=amountLimitService;
         this.projectReviewMapper=projectReviewMapper;
+        this.projectReviewResultMapper = projectReviewResultMapper;
     }
 
 
@@ -626,6 +626,67 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result agreeKeyProjectByFunctionalDepartment(List<KeyProjectCheck> list) {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.AGREE,list);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result collegeSetKeyScore(List<CollegeGiveScore> collegeGiveScores) {
+        User user = getUserService.getCurrentUser();
+        List<Long> ids = new LinkedList<Long>();
+
+        List<ProjectReviewResult> projectReviewResults = new LinkedList<ProjectReviewResult>();
+        for (CollegeGiveScore giveScore : collegeGiveScores) {
+            ProjectReviewResult reviewResult = new ProjectReviewResult();
+            BeanUtils.copyProperties(giveScore,reviewResult);
+            if(giveScore.getIsSupport()==0){
+                reviewResult.setIsSupport(false);
+            }else{
+                reviewResult.setIsSupport(true);
+            }
+            reviewResult.setOperateUser(Long.valueOf(user.getCode()));
+            ids.add(giveScore.getProjectId());
+            projectReviewResults.add(reviewResult);
+        }
+        //改变状态
+        Result result = approveKeyProjectNormal(ids);
+        if(result.getCode()!=0){
+            throw new GlobalException(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+        }
+        projectReviewResultMapper.multiInsert(projectReviewResults);
+        return Result.success();
+    }
+
+    /**
+     * 评审状态改回正常
+     * @param list
+     * @return
+     */
+    @Transactional(rollbackFor = GlobalException.class)
+    public Result approveKeyProjectNormal(List<Long> list){
+        User user = getUserService.getCurrentUser();
+        if (user == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+
+        //需要生成编号，通过操作人来判断学院信息
+        Integer college = getUserService.getCurrentUser().getInstitute();
+        if (college == null){
+            throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
+        }
+
+        //记录操作
+        List<Long> idList = new LinkedList<>();
+        for (Long id:list) {
+//            if ( projectFileMapper.selectByProjectGroupIdAndMaterialType(id,MaterialType.APPLY_MATERIAL.getValue(),null) == null) {
+//                throw new GlobalException(CodeMsg.KEY_PROJECT_APPLY_MATERIAL_EMPTY);
+//            }
+            idList.add(id);
+        }
+        //获取下一个状态
+        Integer nextProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
+        keyProjectStatusMapper.updateList(idList,nextProjectStatus);
+
+        return Result.success();
     }
 
     /**
