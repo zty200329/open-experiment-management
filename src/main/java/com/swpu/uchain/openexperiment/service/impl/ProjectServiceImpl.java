@@ -1527,6 +1527,15 @@ public class ProjectServiceImpl implements ProjectService {
         return getReportInfo(RoleType.SECONDARY_UNIT.getValue());
     }
 
+    @Override
+    public Result getToReviewProject() {
+        User user = getUserService.getCurrentUser();
+        if (user == null) {
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        return getNewCheckList(ProjectStatus.PROJECT_REVIEW);
+    }
+
 
     @Transactional(rollbackFor = GlobalException.class)
     public Result approveProjectApply(List<ProjectCheckForm> formList, Integer role) {

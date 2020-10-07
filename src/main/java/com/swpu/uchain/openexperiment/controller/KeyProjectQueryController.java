@@ -76,6 +76,12 @@ public class KeyProjectQueryController {
         return keyProjectService.getToBeReportedProjectBySecondaryUnit ();
     }
 
+    @GetMapping(value = "/getToReviewKeyProject")
+    @ApiOperation("获取待立项评审的重点项目")
+    public Result getToReviewKeyProject(){
+        return keyProjectService.getToReviewKeyProject ();
+    }
+
     @ApiOperation("重点项目历史查询")
     @PostMapping(value = "/getHistoricalKeyProjectInfo")
     public Result getHistoricalKeyProjectInfo(@Valid @RequestBody HistoryQueryKeyProjectInfo info){

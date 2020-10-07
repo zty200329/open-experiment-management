@@ -198,6 +198,11 @@ public class ProjectQueryController {
         return projectService.getToBeReportedProjectBySecondaryUnit();
     }
 
+    @ApiOperation("查看待立项审核的项目")
+    @GetMapping("/getToReviewProject")
+    public Result getToReviewProject(){
+        return projectService.getToReviewProject();
+    }
     @ApiOperation("实验室主任查看待普通项目审批项目")
     @GetMapping("/getToBeReportedProjectByLabLeader")
     public Result getToBeReportedProjectByLabLeader(){

@@ -83,6 +83,8 @@ public interface KeyProjectService {
 
     Result getToBeReportedProjectBySecondaryUnit();
 
+    Result getToReviewKeyProject();
+
     Result getKeyProjectDetailById(Long projectId);
 
     Result conditionallyQueryOfKeyProject(QueryConditionForm form);

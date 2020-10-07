@@ -826,7 +826,14 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result getToBeReportedProjectBySecondaryUnit() {
-        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.SECONDARY_UNIT_ALLOWED,null);
+        User user  = getUserService.getCurrentUser();
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.SECONDARY_UNIT_ALLOWED,user.getInstitute());
+    }
+
+    @Override
+    public Result getToReviewKeyProject() {
+        User user  = getUserService.getCurrentUser();
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.PROJECT_REVIEW,user.getInstitute());
     }
 
 
