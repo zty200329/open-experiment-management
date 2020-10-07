@@ -61,6 +61,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private FunctionGivesGradeMapper functionGivesGradeMapper;
     private CollegeLimitMapper collegeLimitMapper;
     private AmountLimitService amountLimitService;
+    private ProjectReviewMapper projectReviewMapper;
 
 
     @Autowired
@@ -71,7 +72,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                                  UserRoleService userRoleService,HitBackMessageMapper hitBackMessageMapper,
                                  AchievementMapper achievementMapper,UserProjectService userProjectService,
                                  CollegeGivesGradeMapper collegeGivesGradeMapper,FunctionGivesGradeMapper functionGivesGradeMapper,CollegeLimitMapper collegeLimitMapper,
-                                 AmountLimitService amountLimitService) {
+                                 AmountLimitService amountLimitService,ProjectReviewMapper projectReviewMapper) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
@@ -88,6 +89,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         this.functionGivesGradeMapper=functionGivesGradeMapper;
         this.collegeLimitMapper=collegeLimitMapper;
         this.amountLimitService=amountLimitService;
+        this.projectReviewMapper=projectReviewMapper;
     }
 
 
@@ -542,9 +544,74 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
     @Override
     public Result agreeKeyProjectBySecondaryUnit(List<KeyProjectCheck> list) {
+        //时间限制验证
+        timeLimitService.validTime(TimeLimitType.SECONDARY_UNIT_CHECK_LIMIT);
+        User user = getUserService.getCurrentUser();
+        Integer college = user.getInstitute();
+        if (college == null) {
+            throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
+        }
+
+        //判断是否需要评审
+        //这里需要采用缓存
+        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(college,ProjectType.KEY.getValue());
+        if(projectReview != null){
+            //需要评审
+            return approveProjectReview(RoleType.SECONDARY_UNIT,OperationType.AGREE,list);
+        }
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT, OperationType.AGREE,list);
     }
 
+    /**
+     * 二级单位通过后置为待评审状态
+     * @param roleType
+     * @param operationType
+     * @param list
+     * @return
+     */
+    @Transactional(rollbackFor = GlobalException.class)
+    public Result approveProjectReview(RoleType roleType, OperationType operationType,
+                                                               List<KeyProjectCheck> list){
+        User user = getUserService.getCurrentUser();
+        if (user == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+
+        //需要生成编号，通过操作人来判断学院信息
+        Integer college = getUserService.getCurrentUser().getInstitute();
+        if (college == null){
+            throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
+        }
+
+        //记录操作
+        List<OperationRecord> operationRecordList = new LinkedList<>();
+        List<Long> idList = new LinkedList<>();
+        for (KeyProjectCheck check:list) {
+
+            if ( projectFileMapper.selectByProjectGroupIdAndMaterialType(check.getProjectId(),MaterialType.APPLY_MATERIAL.getValue(),null) == null) {
+                throw new GlobalException(CodeMsg.KEY_PROJECT_APPLY_MATERIAL_EMPTY);
+            }
+
+            OperationRecord operationRecord = new OperationRecord();
+            operationRecord.setOperationUnit(roleType.getValue());
+            operationRecord.setOperationType(operationType.getValue());
+            operationRecord.setOperationReason(check.getReason());
+            operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
+            operationRecord.setRelatedId(check.getProjectId());
+            operationRecord.setOperationCollege(user.getInstitute());
+
+            //批量插入
+            operationRecordList.add(operationRecord);
+
+            idList.add(check.getProjectId());
+        }
+        //获取下一个状态
+        Integer nextProjectStatus = ProjectStatus.PROJECT_REVIEW.getValue();
+        keyProjectStatusMapper.updateList(idList,nextProjectStatus);
+
+        operationRecordMapper.multiInsert(operationRecordList);
+        return Result.success();
+    }
     /**
      * 重点项目职能部门同意立项
      * @param list
