@@ -1362,15 +1362,15 @@ public class ProjectServiceImpl implements ProjectService {
         //当前状态
         Integer projectStatus = ProjectStatus.PROJECT_REVIEW.getValue();
         //将要被更新成的状态
-        Integer updateProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
+        Integer updateProjectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
 
 
             //当角色是实验室主任的时候,项目状态不是
             ProjectGroup projectGroup = selectByProjectGroupId(projectId);
             //如果不是实验室上报状态,抛出异常
-            if (role.equals(RoleType.COLLEGE_FINALIZATION_REVIEW.getValue())) {
+            if (role.equals(RoleType.COLLEGE_REVIEW_TEACHER.getValue())) {
                 if (!projectGroup.getStatus().equals(projectStatus)) {
-                    throw new GlobalException("项目编号为" + projectGroup.getId() + "的项目非学院通过", CodeMsg.PROJECT_CURRENT_STATUS_ERROR.getCode());
+                    throw new GlobalException("项目编号为" + projectGroup.getId() + "的项目非实验室通过", CodeMsg.PROJECT_CURRENT_STATUS_ERROR.getCode());
                 }
 
             }//根据不同角色设置不同的项目状态

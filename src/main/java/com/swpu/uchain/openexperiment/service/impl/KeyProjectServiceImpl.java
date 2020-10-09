@@ -277,6 +277,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result getKeyProjectApplyingListBySecondaryUnit() {
         User user  = getUserService.getCurrentUser();
+        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(user.getInstitute(),ProjectType.GENERAL.getValue());
+        if(projectReview != null){
+            //需要评审
+            return getReviewInfo2();
+        }
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.LAB_ALLOWED_AND_REPORTED,user.getInstitute());
     }
 
@@ -548,6 +553,19 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result agreeKeyProjectByLabAdministrator(List<KeyProjectCheck> list) {
         //重点项目审核同意后直接相当于上报
+
+        User user = getUserService.getCurrentUser();
+        Integer college = user.getInstitute();
+        if (college == null) {
+            throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
+        }
+        //判断是否需要评审
+        //这里需要采用缓存
+        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(college,ProjectType.KEY.getValue());
+        if(projectReview != null){
+            //需要评审
+            return approveProjectReview(RoleType.LAB_ADMINISTRATOR,OperationType.AGREE,list);
+        }
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.LAB_ADMINISTRATOR, OperationType.REPORT,list);
     }
 
@@ -561,13 +579,13 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
         }
 
-        //判断是否需要评审
-        //这里需要采用缓存
-        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(college,ProjectType.KEY.getValue());
-        if(projectReview != null){
-            //需要评审
-            return approveProjectReview(RoleType.SECONDARY_UNIT,OperationType.AGREE,list);
-        }
+//        //判断是否需要评审
+//        //这里需要采用缓存
+//        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(college,ProjectType.KEY.getValue());
+//        if(projectReview != null){
+//            //需要评审
+//            return approveProjectReview(RoleType.SECONDARY_UNIT,OperationType.AGREE,list);
+//        }
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.SECONDARY_UNIT, OperationType.AGREE,list);
     }
 
@@ -686,7 +704,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             idList.add(id);
         }
         //获取下一个状态
-        Integer nextProjectStatus = ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue();
+        Integer nextProjectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
         keyProjectStatusMapper.updateList(idList,nextProjectStatus);
 
         return Result.success();
@@ -844,12 +862,27 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.SECONDARY_UNIT_ALLOWED,user.getInstitute());
     }
 
+    private Result getReviewInfo2() {
+
+        User currentUser = getUserService.getCurrentUser();
+
+        //获取待上报的重点项目
+        List<ProjectReviewVO> projectReviewVOS = keyProjectStatusMapper.selectKeyHasReview(currentUser.getInstitute(),ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
+        for (ProjectReviewVO projectReviewVO : projectReviewVOS) {
+            //如果是老师则加入数组
+            projectReviewVO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectReviewVO.getId(),JoinStatus.JOINED.getValue()));
+            projectReviewVO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(projectReviewVO.getId(), JoinStatus.JOINED.getValue()));
+        }
+
+
+        return Result.success( SortListUtil.sort(projectReviewVOS,"score",SortListUtil.DESC));
+    }
     private Result getReviewInfo() {
 
         User currentUser = getUserService.getCurrentUser();
 
         //获取待上报的重点项目
-        List<ProjectReviewVO> projectReviewVOS = keyProjectStatusMapper.selectKeyHasReview(currentUser.getInstitute());
+        List<ProjectReviewVO> projectReviewVOS = keyProjectStatusMapper.selectKeyHasReview(currentUser.getInstitute(),ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue());
         for (ProjectReviewVO projectReviewVO : projectReviewVOS) {
             //如果是老师则加入数组
             projectReviewVO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectReviewVO.getId(),JoinStatus.JOINED.getValue()));

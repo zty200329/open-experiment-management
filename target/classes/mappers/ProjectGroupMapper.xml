@@ -423,7 +423,7 @@
         project_group.id = project_review.project_id
         WHERE
         project_group.project_type = 1
-        and project_group.`status` = 3
+        and project_group.`status` = #{status}
         <if  test="college!=0">
             and subordinate_college = #{college}
         </if>

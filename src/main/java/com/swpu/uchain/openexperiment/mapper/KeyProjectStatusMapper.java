@@ -26,7 +26,7 @@ public interface KeyProjectStatusMapper {
 
     List<KeyProjectDTO> getKeyProjectDTOListByStatusAndCollege(@Param("status")Integer status, @Param("college")Integer college);
 
-    List<ProjectReviewVO> selectKeyHasReview(@Param("college")Integer college);
+    List<ProjectReviewVO> selectKeyHasReview(@Param("college")Integer college,@Param("status") Integer status);
 
     List<KeyProjectDTO> getKeyProjectDTOListByStatusAndCollege2(@Param("college")Integer college);
 
