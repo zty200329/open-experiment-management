@@ -39,4 +39,6 @@ public class ProjectReviewVO {
      * 所属学院  {@link CollegeType#getValue()}
      */
     private Integer subordinateCollege;
+
+    private List<UserMemberVO> guidanceTeachers;
 }

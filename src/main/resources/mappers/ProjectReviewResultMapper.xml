@@ -18,6 +18,8 @@
       is_support, reason, operate_user)
     values (#{projectId,jdbcType=BIGINT}, #{score,jdbcType=INTEGER},
       #{isSupport,jdbcType=BIT}, #{reason,jdbcType=VARCHAR} ,#{operateUser,jdbcType=BIGINT})
+      ON DUPLICATE KEY UPDATE
+      #{projectId,jdbcType=BIGINT}
   </insert>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select id, project_id, score, is_support, reason,operate_user

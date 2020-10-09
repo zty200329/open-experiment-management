@@ -18,8 +18,9 @@ public enum RoleType {
     SECONDARY_UNIT(5,"二级单位(学院领导)"),
     FUNCTIONAL_DEPARTMENT(6,"职能部门"),
     FUNCTIONAL_DEPARTMENT_LEADER(7,"职能部门领导"),
-    COLLEGE_FINALIZATION_REVIEW(9,"学院评审老师"),
-    POSTGRADUATE(10,"研究生");
+    COLLEGE_FINALIZATION_REVIEW(9,"学院结题评审老师"),
+    POSTGRADUATE(10,"研究生"),
+    COLLEGE_REVIEW_TEACHER(11,"学院立项评审老师");
 
 
     private Integer value;

@@ -124,4 +124,10 @@ public class UserRoleServiceImpl implements UserRoleService {
     public Result getUserInfoByRole() {
         return Result.success(userRoleMapper.getUserInfoByRole(RoleType.MENTOR.getValue()));
     }
+
+    @Override
+    public Result getCollegeUserInfoByCollege() {
+        User user = getCurrentUser.getCurrentUser();
+        return Result.success(userRoleMapper.getCollegeUserInfoByCollege(user.getInstitute()));
+    }
 }

@@ -10,7 +10,7 @@
     delete from need_project_review
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ProjectReview" >
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ProjectReview" useGeneratedKeys="true" keyProperty="id">
     insert into need_project_review (college, project_type
       )
     values (#{college,jdbcType=INTEGER}, #{projectType,jdbcType=INTEGER}
@@ -37,12 +37,12 @@
   </select>
   <update id="updateGeneralByCollegeAndType" parameterType="java.lang.Integer">
     UPDATE project_group set project_group.status = -8
-    where project_group.status = 4 and project_group.subordinate_college = #{college}
+    where project_group.status = 4 or project_group.status = 3 and project_group.subordinate_college = #{college}
     and project_group.project_type = 1
   </update>
   <update id="updateKeyByCollegeAndType" parameterType="java.lang.Integer">
     UPDATE key_project_status set key_project_status.status = -8
-    where key_project_status.status = 4 and key_project_status.subordinate_college = #{college}
+    where key_project_status.status = 3 or key_project_status.status = 4 and key_project_status.subordinate_college = #{college}
   </update>
 
   <update id="updateGeneralByCollegeAndType2" parameterType="java.lang.Integer">

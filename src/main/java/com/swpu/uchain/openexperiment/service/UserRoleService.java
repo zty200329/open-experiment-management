@@ -61,4 +61,6 @@ public interface UserRoleService {
     List<UserRole> selectUsersByRoleId(Long roleId);
 
     Result getUserInfoByRole();
+
+    Result getCollegeUserInfoByCollege();
 }

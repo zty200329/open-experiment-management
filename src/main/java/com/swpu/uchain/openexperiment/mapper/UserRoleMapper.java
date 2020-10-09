@@ -42,4 +42,6 @@ public interface UserRoleMapper {
 
 
     List<RoleUserVO> getUserInfoByRole(@Param("role") Integer value);
+
+    List<RoleUserVO> getCollegeUserInfoByCollege(@Param("college")Integer college);
 }

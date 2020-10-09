@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.reflect.generics.tree.ReturnType;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -72,7 +71,6 @@ public class ProjectServiceImpl implements ProjectService {
     private FunctionGivesGradeMapper functionGivesGradeMapper;
     private ProjectReviewMapper projectReviewMapper;
     private ProjectReviewResultMapper projectReviewResultMapper;
-    private SortListUtil sortListUtil;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -87,8 +85,7 @@ public class ProjectServiceImpl implements ProjectService {
                               TimeLimitService timeLimitService, RedisUtil redisUtil, UserRoleService userRoleService,
                               HitBackMessageMapper hitBackMessageMapper, AchievementMapper achievementMapper,
                               CollegeGivesGradeMapper collegeGivesGradeMapper, FunctionGivesGradeMapper functionGivesGradeMapper,
-                              ProjectReviewMapper projectReviewMapper,ProjectReviewResultMapper projectReviewResultMapper,
-                              SortListUtil sortListUtil) {
+                              ProjectReviewMapper projectReviewMapper,ProjectReviewResultMapper projectReviewResultMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -114,7 +111,6 @@ public class ProjectServiceImpl implements ProjectService {
         this.functionGivesGradeMapper = functionGivesGradeMapper;
         this.projectReviewMapper = projectReviewMapper;
         this.projectReviewResultMapper = projectReviewResultMapper;
-        this.sortListUtil = sortListUtil;
     }
 
     @Override
@@ -802,6 +798,17 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result getPendingApprovalProjectBySecondaryUnit() {
 //        return getCheckInfo(ProjectStatus.LAB_ALLOWED_AND_REPORTED);
+        User user = getUserService.getCurrentUser();
+        if (user == null) {
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        // 判断是否需要评审
+        //这里需要采用缓存
+        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(user.getInstitute(),ProjectType.GENERAL.getValue());
+        if(projectReview != null){
+            //需要评审
+            return getReviewInfo2();
+        }
         return getNewCheckList(ProjectStatus.LAB_ALLOWED_AND_REPORTED);
     }
 
@@ -1271,6 +1278,18 @@ public class ProjectServiceImpl implements ProjectService {
     public Result approveProjectApplyByLabAdministrator(List<ProjectCheckForm> list) {
         //时间限制验证
         timeLimitService.validTime(TimeLimitType.LAB_CHECK_LIMIT);
+        User user = getUserService.getCurrentUser();
+        Integer college = user.getInstitute();
+        if (college == null) {
+            throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
+        }
+        //判断是否需要评审
+        //这里需要采用缓存
+        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(college,ProjectType.GENERAL.getValue());
+        if(projectReview != null){
+            //需要评审
+            return approveProjectReview(list, RoleType.SECONDARY_UNIT.getValue());
+        }
         return approveProjectApply(list, RoleType.LAB_ADMINISTRATOR.getValue());
     }
 
@@ -1291,13 +1310,13 @@ public class ProjectServiceImpl implements ProjectService {
         if (college == null) {
             throw new GlobalException(CodeMsg.PARAM_CANT_BE_NULL);
         }
-        //判断是否需要评审
-        //这里需要采用缓存
-        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(college,ProjectType.GENERAL.getValue());
-        if(projectReview != null){
-            //需要评审
-            return approveProjectReview(list, RoleType.SECONDARY_UNIT.getValue());
-        }
+//        //判断是否需要评审
+//        //这里需要采用缓存
+//        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(college,ProjectType.GENERAL.getValue());
+//        if(projectReview != null){
+//            //需要评审
+//            return approveProjectReview(list, RoleType.SECONDARY_UNIT.getValue());
+//        }
         return approveProjectApply(list, RoleType.SECONDARY_UNIT.getValue());
     }
 
@@ -1361,7 +1380,7 @@ public class ProjectServiceImpl implements ProjectService {
         return Result.success();
     }
     /**
-     * 学院通过后改变为评审的状态
+     * 实验室通过后改变为评审的状态
      * @param formList
      * @param role
      * @return
@@ -1374,9 +1393,9 @@ public class ProjectServiceImpl implements ProjectService {
         }
         Integer operationUnit = OperationUnit.SECONDARY_UNIT.getValue();
         //当前状态
-        Integer projectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
+        Integer projectStatus = ProjectStatus.LAB_ALLOWED.getValue();
         //将要被更新成的状态
-        Integer updateProjectStatus = ProjectStatus.PROJECT_REVIEW.getValue();
+        Integer updateProjectStatus = ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue();
 
         List<OperationRecord> list = new LinkedList<>();
         for (ProjectCheckForm form : formList
@@ -1397,7 +1416,7 @@ public class ProjectServiceImpl implements ProjectService {
             //如果不是实验室上报状态,抛出异常
             if (role.equals(RoleType.SECONDARY_UNIT.getValue())) {
                 if (!projectGroup.getStatus().equals(projectStatus)) {
-                    throw new GlobalException("项目编号为" + projectGroup.getId() + "的项目非实验室审核通过", CodeMsg.PROJECT_CURRENT_STATUS_ERROR.getCode());
+                    throw new GlobalException("项目编号为" + projectGroup.getId() + "的项目非实验室拟题审核通过", CodeMsg.PROJECT_CURRENT_STATUS_ERROR.getCode());
                 }
             }
             //根据不同角色设置不同的项目状态
@@ -1537,14 +1556,53 @@ public class ProjectServiceImpl implements ProjectService {
         }
         return getReportInfo(RoleType.SECONDARY_UNIT.getValue());
     }
+    private Result getReviewInfo2() {
+
+        User currentUser = getUserService.getCurrentUser();
+
+        //获取待上报的普通项目
+        List<ProjectReviewVO> projectReviewVOS = projectGroupMapper.selectHasReview(currentUser.getInstitute(),ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
+        for (ProjectReviewVO projectReviewVO : projectReviewVOS) {
+//            //如果是老师则加入数组
+//            for (UserProjectGroup userProjectGroup : userProjectGroups
+//            ) {
+//                if (userProjectGroup.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
+//                    UserMemberVO userMemberVO = new UserMemberVO();
+//                    userMemberVO.setMemberRole(userProjectGroup.getMemberRole());
+//                    userMemberVO.setUserId(userProjectGroup.getUserId());
+//                    userMemberVO.setUserName(userMapper.selectByUserCode(String.valueOf(userProjectGroup.getUserId())).getRealName());
+//                    guidanceTeachers.add(userMemberVO);
+//                }
+//            }
+            //如果是老师则加入数组
+            projectReviewVO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectReviewVO.getId(),JoinStatus.JOINED.getValue()));
+            projectReviewVO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(projectReviewVO.getId(), JoinStatus.JOINED.getValue()));
+        }
+
+
+        return Result.success( SortListUtil.sort(projectReviewVOS,"score",SortListUtil.DESC));
+    }
+
 
     private Result getReviewInfo() {
 
         User currentUser = getUserService.getCurrentUser();
 
         //获取待上报的普通项目
-        List<ProjectReviewVO> projectReviewVOS = projectGroupMapper.selectHasReview(currentUser.getInstitute());
+        List<ProjectReviewVO> projectReviewVOS = projectGroupMapper.selectHasReview(currentUser.getInstitute(),ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue());
         for (ProjectReviewVO projectReviewVO : projectReviewVOS) {
+//            for (UserProjectGroup userProjectGroup : userProjectGroups
+//            ) {
+//                if (userProjectGroup.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
+//                    UserMemberVO userMemberVO = new UserMemberVO();
+//                    userMemberVO.setMemberRole(userProjectGroup.getMemberRole());
+//                    userMemberVO.setUserId(userProjectGroup.getUserId());
+//                    userMemberVO.setUserName(userMapper.selectByUserCode(String.valueOf(userProjectGroup.getUserId())).getRealName());
+//                    guidanceTeachers.add(userMemberVO);
+//                }
+//            }
+            //如果是老师则加入数组
+            projectReviewVO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectReviewVO.getId(),JoinStatus.JOINED.getValue()));
             projectReviewVO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(projectReviewVO.getId(), JoinStatus.JOINED.getValue()));
         }
 

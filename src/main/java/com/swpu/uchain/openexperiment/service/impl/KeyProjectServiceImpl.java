@@ -6,6 +6,8 @@ import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.VO.limit.AmountAndTypeVO;
 import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
+import com.swpu.uchain.openexperiment.VO.project.ProjectReviewVO;
+import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.accessctro.ExcelResources;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.form.amount.AmountAndType;
@@ -20,6 +22,7 @@ import com.swpu.uchain.openexperiment.form.user.StuMember;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.*;
 import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
+import com.swpu.uchain.openexperiment.util.SortListUtil;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.statement.select.Join;
@@ -824,12 +827,38 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.LAB_ALLOWED,null);
     }
 
+    /**
+     * 二级单位获取待上报项目
+     * @return
+     */
     @Override
     public Result getToBeReportedProjectBySecondaryUnit() {
         User user  = getUserService.getCurrentUser();
+        // 判断是否需要评审
+        //这里需要采用缓存
+        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(user.getInstitute(),ProjectType.GENERAL.getValue());
+        if(projectReview != null){
+            //需要评审
+            return getReviewInfo();
+        }
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.SECONDARY_UNIT_ALLOWED,user.getInstitute());
     }
 
+    private Result getReviewInfo() {
+
+        User currentUser = getUserService.getCurrentUser();
+
+        //获取待上报的重点项目
+        List<ProjectReviewVO> projectReviewVOS = keyProjectStatusMapper.selectKeyHasReview(currentUser.getInstitute());
+        for (ProjectReviewVO projectReviewVO : projectReviewVOS) {
+            //如果是老师则加入数组
+            projectReviewVO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),projectReviewVO.getId(),JoinStatus.JOINED.getValue()));
+            projectReviewVO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(projectReviewVO.getId(), JoinStatus.JOINED.getValue()));
+        }
+
+
+        return Result.success( SortListUtil.sort(projectReviewVOS,"score",SortListUtil.DESC));
+    }
     @Override
     public Result getToReviewKeyProject() {
         User user  = getUserService.getCurrentUser();

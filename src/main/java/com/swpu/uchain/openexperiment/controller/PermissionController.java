@@ -96,7 +96,11 @@ public class PermissionController implements InitializingBean {
         return roleAclService.addRoleAcl(roleAclForm);
     }
 
-
+    @ApiOperation("获取拥有立项评审老师和结题评审老师的用户信息")
+    @GetMapping("/getCollegeUserInfoByCollege")
+    public Result getCollegeUserInfoByCollege(){
+        return userRoleService.getCollegeUserInfoByCollege();
+    }
 
     @ApiOperation("获取拥有实验室主任，学院领导，职能部门角色的用户信息")
     @GetMapping("/getUserInfoByRole")

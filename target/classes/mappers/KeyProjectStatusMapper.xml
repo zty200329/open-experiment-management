@@ -3,6 +3,22 @@
 <mapper namespace="com.swpu.uchain.openexperiment.mapper.KeyProjectStatusMapper">
 
 
+    <resultMap id="ProjectReviewVOResultMap" type="com.swpu.uchain.openexperiment.VO.project.ProjectReviewVO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="apply_funds" property="applyFunds"/>
+        <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+        <result column="project_type" jdbcType="INTEGER" property="projectType" />
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+        <result column="experiment_type" jdbcType="INTEGER" property="experimentType" />
+        <result column="suggest_group_type" jdbcType="INTEGER" property="suggestGroupType" />
+        <result column="subordinate_college" property="subordinateCollege"/>
+        <result column="apply_funds" property="applyFunds"/>
+        <result column="score" property="score"/>
+        <result column="reason" property="reason"/>
+        <result column="is_support" property="isSupport" />
+    </resultMap>
+
     <insert id="insert">
         insert into openexperiment.key_project_status(project_id,`status`,subordinate_college,creator_id)
             values (#{projectId},#{status},#{college},#{creatorId})
@@ -25,6 +41,40 @@
     </select>
     <select id="getCollegeByProjectId" resultType="java.lang.Integer">
         select subordinate_college from openexperiment.project_group where id = #{projectId}
+    </select>
+    <select id="selectKeyHasReview" resultMap="ProjectReviewVOResultMap">
+        SELECT
+	    project_group.end_time,
+	    project_group.start_time,
+	    project_group.subordinate_college,
+	    project_group.experiment_type,
+	    project_group.apply_funds,
+	    project_group.project_type,
+	    project_group.temp_serial_number,
+	    project_group.total_hours,
+	    project_group.project_name,
+	    project_review.score,
+	    project_review.is_support,
+	    project_review.reason,
+	    project_group.id,
+	    key_project_status.project_id
+        FROM
+	    project_group
+	    INNER JOIN
+	    project_review
+	    ON
+	    	project_group.id = project_review.project_id
+	    INNER JOIN
+	    key_project_status
+	    ON
+	    	project_group.id = key_project_status.project_id
+        WHERE
+	    project_group.project_type = 2 AND
+	    key_project_status.`status` = 3
+        <if  test="college!=0">
+            and project_group.subordinate_college = #{college}
+        </if>
+
     </select>
     <select id="getKeyProjectDTOListByStatusAndCollege" resultType="com.swpu.uchain.openexperiment.DTO.KeyProjectDTO">
         SELECT

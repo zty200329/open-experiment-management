@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,7 @@ public class NeedProjectReviewServiceImpl implements NeedProjectReviewService {
         if (user == null){
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
+        List<ProjectReview> projectReviews = new LinkedList<>();
         for (NeedProjectReviewForm projectReviewForm : projectReviewForms) {
             //存在则跳过
             if(projectReviewMapper.selectByCollegeAndType(projectReviewForm.getCollege(),projectReviewForm.getProjectType()) != null){
@@ -56,8 +58,9 @@ public class NeedProjectReviewServiceImpl implements NeedProjectReviewService {
             //将原有的状态改变
             changeStateToReview(projectReviewForm);
             projectReviewMapper.insert(projectReview);
+            projectReviews.add(projectReview);
         }
-        return Result.success();
+        return Result.success(projectReviews);
     }
 
     @Override

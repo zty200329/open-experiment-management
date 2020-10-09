@@ -113,7 +113,7 @@ public interface ProjectGroupMapper {
      * @param college
      * @return
      */
-    List<ProjectReviewVO> selectHasReview(@Param("college") Integer college);
+    List<ProjectReviewVO> selectHasReview(@Param("college") Integer college,@Param("status") Integer status);
 
     List<NewCheckProjectVO> selectNewApplyOrderByTime(@Param("projectStatus") int projectStatus,@Param("projectType") Integer projectType,@Param("college") Integer college);
 

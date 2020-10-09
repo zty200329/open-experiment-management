@@ -44,6 +44,23 @@
   <select id="selectByUserId" resultType="com.swpu.uchain.openexperiment.domain.UserRole">
     select id, user_id as userId, role_id as roleId from openexperiment.user_role where user_id = #{userId}
   </select>
+  <select id="getCollegeUserInfoByCollege" resultType="com.swpu.uchain.openexperiment.VO.user.RoleUserVO">
+      SELECT
+        `u_stu`.id AS id,
+        `code` AS `code`,
+        email,
+        real_name AS realName,
+        mobile_phone AS mobilePhone,
+        work_unit AS workUnit,
+        role_id AS role
+      FROM
+        openexperiment.`u_stu`
+          INNER JOIN openexperiment.user_role ON `u_stu`.`code` = user_role.user_id
+      WHERE
+        user_role.role_id = 9 or user_role.role_id = 11
+      ORDER BY
+        user_role.role_id DESC
+    </select>
     <select id="getUserInfoByRole" resultType="com.swpu.uchain.openexperiment.VO.user.RoleUserVO">
       SELECT
         `u_stu`.id AS id,
