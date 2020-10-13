@@ -402,10 +402,10 @@ public interface ProjectService {
 
     /**
      * 职能部门给出评级
-     * @param projectGradeList
+     * @param List<ProjectCheckForm> list
      * @return
      */
-    Result functionalGivesRating(List<ProjectGrade> projectGradeList);
+    Result functionalGivesRating(List<ProjectCheckForm> list);
 
     /**
      * 职能部门审核打回

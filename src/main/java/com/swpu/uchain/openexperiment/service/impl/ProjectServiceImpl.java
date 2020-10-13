@@ -2023,32 +2023,28 @@ public class ProjectServiceImpl implements ProjectService {
     /**
      * 职能部门对项目给出评级
      *
-     * @param projectGradeList
+     * @param list
      * @return
      */
     @Override
-    public Result functionalGivesRating(List<ProjectGrade> projectGradeList) {
+    public Result functionalGivesRating(List<ProjectCheckForm> list) {
         User user = getUserService.getCurrentUser();
         //权限验证
         if (!userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT) &&
                 !userRoleService.validContainsUserRole(RoleType.FUNCTIONAL_DEPARTMENT_LEADER)) {
             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
         }
-        List<ProjectCheckForm> list = new LinkedList<>();
-        for (ProjectGrade projectGrade : projectGradeList) {
-            ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectGrade.getProjectId());
-            if (!projectGroup.getStatus().equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())) {
-                if(!(projectGroup.getSubordinateCollege()==0)) {
-                    throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
-                }
-            }
-            ProjectCheckForm projectCheckForm = new ProjectCheckForm();
-            BeanUtils.copyProperties(projectGrade, projectCheckForm);
-            projectCheckForm.setReason("职能部门结题审核通过,等级："+GeneralGrade.getTips(projectGrade.getValue()));
-            list.add(projectCheckForm);
-        }
+//        List<ProjectCheckForm> list1 = new LinkedList<>();
+//        for (ProjectCheckForm projectCheckForm : list) {
+//            ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectCheckForm.getProjectId());
+//            if (!projectGroup.getStatus().equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())) {
+//                if(!(projectGroup.getSubordinateCollege()==0)) {
+//                    throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+//                }
+//            }
+//            list1.add(projectCheckForm);
+//        }
         //异步插入
-        functionSetProjectGrade(projectGradeList, user, 1);
         return setProjectStatusAndRecord(list, OperationType.FUNCTIONAL_PASSED_THE_EXAMINATION, OperationUnit.FUNCTIONAL_DEPARTMENT, ProjectStatus.CONCLUDED);
     }
 
