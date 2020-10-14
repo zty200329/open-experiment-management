@@ -251,8 +251,8 @@ public class ProjectInvokeController {
 
     @ApiOperation("学院初审复核通过")
     @PostMapping("/CollegeReviewPassed")
-    public Result CollegeReviewPassed(@RequestBody List<ProjectCheckForm> list){
-        return projectService.CollegeReviewPassed(list);
+    public Result CollegeReviewPassed(@RequestBody List<ProjectGrade> projectGradeList){
+        return projectService.CollegeReviewPassed(projectGradeList);
     }
 
     @ApiOperation("学院初审不通过")

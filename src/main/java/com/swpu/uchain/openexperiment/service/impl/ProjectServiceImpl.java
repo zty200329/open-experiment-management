@@ -1440,8 +1440,26 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result CollegeReviewPassed(List<ProjectCheckForm> list) {
-        return setProjectStatusAndRecord(list, OperationType.COLLEGE_REVIEW_PASSED, OperationUnit.COLLEGE_REVIEWER, ProjectStatus.COLLEGE_FINAL_SUBMISSION);
+    public Result CollegeReviewPassed(List<ProjectGrade> projectGradeList) {
+        User user = getUserService.getCurrentUser();
+        //权限验证
+        if (!userRoleService.validContainsUserRole(RoleType.COLLEGE_FINALIZATION_REVIEW)) {
+            throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+        }
+        List<ProjectCheckForm> list = new LinkedList<>();
+        for (ProjectGrade projectGrade : projectGradeList) {
+            ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectGrade.getProjectId());
+            if (!projectGroup.getStatus().equals(ProjectStatus.ESTABLISH.getValue())) {
+                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+            }
+            ProjectCheckForm projectCheckForm = new ProjectCheckForm();
+            BeanUtils.copyProperties(projectGrade, projectCheckForm);
+            projectCheckForm.setReason("学院结题审核通过,等级："+GeneralGrade.getTips(projectGrade.getValue()));
+            list.add(projectCheckForm);
+        }
+        //异步插入
+        setProjectGrade(projectGradeList, user, 1);
+        return setProjectStatusAndRecord(list, OperationType.COLLEGE_PASSED_THE_EXAMINATION, OperationUnit.COLLEGE_REVIEWER, ProjectStatus.COLLEGE_FINAL_SUBMISSION);
     }
 
     @Override
@@ -1690,6 +1708,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result getAllOpenTopic() {
         //筛选  学生如果不在要求的时间内，项目不显示
+
         User currentUser = getUserService.getCurrentUser();
         Integer college = currentUser.getInstitute();
         TimeLimit timeLimit = timeLimitService.getTimeLimitByTypeAndCollege(TimeLimitType.JOIN_APPLY_LIMIT, college);

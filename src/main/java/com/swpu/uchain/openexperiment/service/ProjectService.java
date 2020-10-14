@@ -272,10 +272,10 @@ public interface ProjectService {
 
     /**
      * 学院复核通过
-     * @param list
+     * @param projectGradeList
      * @return
      */
-    Result CollegeReviewPassed(List<ProjectCheckForm> list);
+    Result CollegeReviewPassed(List<ProjectGrade> projectGradeList);
 
     /**
      * 根据指定条件查询项目信息
