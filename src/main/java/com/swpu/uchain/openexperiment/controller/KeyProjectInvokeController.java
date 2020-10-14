@@ -181,10 +181,10 @@ public class KeyProjectInvokeController {
         return keyProjectService.rejectCollegeKeyProject(list);
     }
 
-    @ApiOperation("学院初审给出评级")
+    @ApiOperation("学院初审检查通过------------------------------改了")
     @PostMapping("/collegeGivesKeyProjectRating")
-    public Result collegeGivesKeyProjectRating(@RequestBody @Valid List<ProjectGrade> projectGradeList){
-        return keyProjectService.collegeGivesKeyProjectRating(projectGradeList);
+    public Result collegeGivesKeyProjectRating(@RequestBody @Valid List<KeyProjectCheck> list){
+        return keyProjectService.collegeGivesKeyProjectRating(list);
     }
 
     @ApiOperation("职能部门检查项目退回修改")
@@ -193,10 +193,10 @@ public class KeyProjectInvokeController {
         return keyProjectService.functionKeyProjectHitBack(list);
     }
 
-    @ApiOperation("职能部门给出评级")
+    @ApiOperation("职能部门批量通过-----------改")
     @PostMapping("/functionGivesKeyProjectRating")
-    public Result functionGivesKeyProjectRating(@RequestBody @Valid List<ProjectGrade> projectGradeList){
-        return keyProjectService.functionGivesKeyProjectRating(projectGradeList);
+    public Result functionGivesKeyProjectRating(@RequestBody @Valid List<KeyProjectCheck> list){
+        return keyProjectService.functionGivesKeyProjectRating(list);
     }
 
     @ApiOperation("重点项目职能部门复核通过")

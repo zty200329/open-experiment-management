@@ -140,17 +140,17 @@ public interface KeyProjectService {
 
     /**
      * 学院给出等级
-     * @param projectGradeList
+     * @param list
      * @return
      */
-    Result collegeGivesKeyProjectRating(List<ProjectGrade> projectGradeList);
+    Result collegeGivesKeyProjectRating(List<KeyProjectCheck> list);
 
     /**
      * 职能部门给出评级
-     * @param projectGradeList
+     * @param list
      * @return
      */
-    Result functionGivesKeyProjectRating(List<ProjectGrade> projectGradeList);
+    Result functionGivesKeyProjectRating(List<KeyProjectCheck> list);
 
     /**
      * 中期查看打回的列表

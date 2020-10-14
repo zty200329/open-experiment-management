@@ -953,40 +953,38 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     @Override
-    public Result collegeGivesKeyProjectRating(List<ProjectGrade> projectGradeList) {
-        User user = getUserService.getCurrentUser();
-
-        List<KeyProjectCheck> list = new LinkedList<>();
-        for (ProjectGrade projectGrade : projectGradeList) {
-            if (!keyProjectStatusMapper.getStatusByProjectId(projectGrade.getProjectId()).equals(ProjectStatus.ESTABLISH.getValue())) {
-                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
-            }
-            KeyProjectCheck projectCheckForm = new KeyProjectCheck();
-            BeanUtils.copyProperties(projectGrade,projectCheckForm);
-            projectCheckForm.setReason("学院结题审核通过，等级："+KeyGrade.getTips(projectGrade.getValue()));
-            list.add(projectCheckForm);
-        }
-        setProjectGrade(projectGradeList,user,2);
+    public Result collegeGivesKeyProjectRating(List<KeyProjectCheck> list) {
+//        User user = getUserService.getCurrentUser();
+//
+//        for (ProjectGrade projectGrade : list) {
+//            if (!keyProjectStatusMapper.getStatusByProjectId(projectGrade.getProjectId()).equals(ProjectStatus.ESTABLISH.getValue())) {
+//                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+//            }
+//            KeyProjectCheck projectCheckForm = new KeyProjectCheck();
+//            BeanUtils.copyProperties(projectGrade,projectCheckForm);
+//            projectCheckForm.setReason("学院结题审核通过，等级："+KeyGrade.getTips(projectGrade.getValue()));
+//            list.add(projectCheckForm);
+//        }
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.COLLEGE_FINALIZATION_REVIEW, OperationType.COLLEGE_PASSED_THE_EXAMINATION,list);
     }
 
     @Override
-    public Result functionGivesKeyProjectRating(List<ProjectGrade> projectGradeList) {
-        User user = getUserService.getCurrentUser();
-        List<KeyProjectCheck> list = new LinkedList<>();
-        for (ProjectGrade projectGrade : projectGradeList) {
-
-            if (!keyProjectStatusMapper.getStatusByProjectId(projectGrade.getProjectId()).equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())) {
-                if(!keyProjectStatusMapper.getCollegeByProjectId(projectGrade.getProjectId()).equals(CollegeType.FUNCTIONAL_DEPARTMENT.getValue())){
-                    throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
-                }
-            }
-            KeyProjectCheck projectCheckForm = new KeyProjectCheck();
-            BeanUtils.copyProperties(projectGrade,projectCheckForm);
-            projectCheckForm.setReason("职能部门题审核通过,等级："+KeyGrade.getTips(projectGrade.getValue()));
-            list.add(projectCheckForm);
-        }
-        functionSetProjectGrade(projectGradeList,user,2);
+    public Result functionGivesKeyProjectRating(List<KeyProjectCheck> list) {
+//        User user = getUserService.getCurrentUser();
+//        List<KeyProjectCheck> list = new LinkedList<>();
+//        for (ProjectGrade projectGrade : projectGradeList) {
+//
+//            if (!keyProjectStatusMapper.getStatusByProjectId(projectGrade.getProjectId()).equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())) {
+//                if(!keyProjectStatusMapper.getCollegeByProjectId(projectGrade.getProjectId()).equals(CollegeType.FUNCTIONAL_DEPARTMENT.getValue())){
+//                    throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+//                }
+//            }
+//            KeyProjectCheck projectCheckForm = new KeyProjectCheck();
+//            BeanUtils.copyProperties(projectGrade,projectCheckForm);
+//            projectCheckForm.setReason("职能部门题审核通过,等级："+KeyGrade.getTips(projectGrade.getValue()));
+//            list.add(projectCheckForm);
+//        }
+//        functionSetProjectGrade(projectGradeList,user,2);
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.FUNCTIONAL_PASSED_THE_EXAMINATION,list);
     }
 
