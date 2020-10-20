@@ -22,36 +22,19 @@
     <select>
       <path>
         <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="BRANCH:master" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:origin/master" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </select>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="82ec9892-b480-433b-9f2a-71559d579314" name="Default Changelist" comment="重点项目1020改">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/ProjectServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/ProjectServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev2.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-dev2.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-prod.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mappers/UserProjectGroupMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mappers/UserProjectGroupMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ExperimentOne.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ExperimentOne.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application-dev2.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application-dev2.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application-prod.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/controller/KeyProjectInvokeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/controller/KeyProjectInvokeController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/controller/ProjectInvokeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/controller/ProjectInvokeController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/KeyProjectService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/KeyProjectService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/ProjectService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/ProjectService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/impl/KeyProjectServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/impl/KeyProjectServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/impl/ProjectServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/impl/ProjectServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/mappers/UserProjectGroupMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/mappers/UserProjectGroupMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/ExperimentOne.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/ExperimentOne.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/controller/KeyProjectQueryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/controller/KeyProjectQueryController.java" afterDir="false" />
     </list>
     <list id="5e1931cf-d658-4ee3-948b-de25b54beb91" name="添加评审分组" comment="添加评审分组&#10;&#10;(cherry picked from commit 92bc631d0655aea324425ff2517f297a3751aa59)">
       <changelist_data name="panghu" email="792559738@qq.com" date="1569981204000" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/form/project/CreateProjectApplyForm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/form/project/CreateProjectApplyForm.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -405,14 +388,7 @@
       <workItem from="1603026307349" duration="2884000" />
       <workItem from="1603072061006" duration="1851000" />
       <workItem from="1603162011576" duration="2808000" />
-      <workItem from="1603184510946" duration="414000" />
-    </task>
-    <task id="LOCAL-00077" summary="615  学院打回复核通过">
-      <created>1592146587769</created>
-      <option name="number" value="00077" />
-      <option name="presentableId" value="LOCAL-00077" />
-      <option name="project" value="LOCAL" />
-      <updated>1592146587769</updated>
+      <workItem from="1603184510946" duration="732000" />
     </task>
     <task id="LOCAL-00078" summary="616 修复登录时权限bug 增加学院审核打回">
       <created>1592212015171</created>
@@ -750,7 +726,14 @@
       <option name="project" value="LOCAL" />
       <updated>1602681969056</updated>
     </task>
-    <option name="localTasksCounter" value="126" />
+    <task id="LOCAL-00126" summary="重点项目1020改">
+      <created>1603185094919</created>
+      <option name="number" value="00126" />
+      <option name="presentableId" value="LOCAL-00126" />
+      <option name="project" value="LOCAL" />
+      <updated>1603185094920</updated>
+    </task>
+    <option name="localTasksCounter" value="127" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -792,7 +775,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="master" />
+                        <option value="origin/master" />
                       </list>
                     </value>
                   </entry>
@@ -964,9 +947,14 @@
     <state width="1492" height="573" key="GridCell.Tab.2.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1600758928721" />
     <state width="1877" height="459" key="GridCell.Tab.2.right/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1599568720803" />
     <state width="1492" height="573" key="GridCell.Tab.2.right/0.0.1536.824@0.0.1536.824" timestamp="1600779741333" />
-    <state x="2515" y="280" key="MultipleFileMergeDialog" timestamp="1603163790623">
+    <state x="2258" y="172" key="MergeDialog" timestamp="1603184791314">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
+    <state x="2258" y="172" key="MergeDialog/0.0.1536.824/1920.0.1920.1040/1919.1080.1366.984@1920.0.1920.1040" timestamp="1603184791314" />
+    <state x="2515" y="280" key="MultipleFileMergeDialog" timestamp="1603184795738">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2515" y="280" key="MultipleFileMergeDialog/0.0.1536.824/1920.0.1920.1040/1919.1080.1366.984@1920.0.1920.1040" timestamp="1603184795738" />
     <state x="2515" y="280" key="MultipleFileMergeDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603163790623" />
     <state x="347" y="0" width="1393" height="955" key="SettingsEditor" timestamp="1601797157325">
       <screen x="0" y="0" width="1536" height="824" />
@@ -977,9 +965,10 @@
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="2468" y="199" key="VCS.ChangeListViewerDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603163706171" />
-    <state x="444" y="209" width="800" height="532" key="Vcs.Push.Dialog.v2" timestamp="1602729015743">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="2475" y="264" width="800" height="532" key="Vcs.Push.Dialog.v2" timestamp="1603185137371">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
+    <state x="2475" y="264" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040/1919.1080.1366.984@1920.0.1920.1040" timestamp="1603185137371" />
     <state x="444" y="209" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602729015743" />
     <state x="2475" y="264" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601775139278" />
     <state width="775" height="419" key="XDebugger.FullValuePopup" timestamp="1600311632036">

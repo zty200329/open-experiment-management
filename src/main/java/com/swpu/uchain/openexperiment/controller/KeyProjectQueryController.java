@@ -98,6 +98,7 @@ public class KeyProjectQueryController {
     @PostMapping("/conditionallyQueryOfKeyProject")
     public Result conditionallyQueryOfKeyProject(@RequestBody @Valid QueryConditionForm form){
         return keyProjectService.conditionallyQueryOfKeyProject(form);
+
     }
 
     @ApiOperation("查看中期打回的重点项目列表")
