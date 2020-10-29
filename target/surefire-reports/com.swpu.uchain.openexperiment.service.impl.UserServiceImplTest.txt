@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.swpu.uchain.openexperiment.service.impl.UserServiceImplTest
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.023 s <<< FAILURE! - in com.swpu.uchain.openexperiment.service.impl.UserServiceImplTest
-createUserJoin(com.swpu.uchain.openexperiment.service.impl.UserServiceImplTest)  Time elapsed: 0.011 s  <<< ERROR!
-com.swpu.uchain.openexperiment.exception.GlobalException: 用户加入项目异常
-	at com.swpu.uchain.openexperiment.service.impl.UserServiceImplTest.createUserJoin(UserServiceImplTest.java:31)
-

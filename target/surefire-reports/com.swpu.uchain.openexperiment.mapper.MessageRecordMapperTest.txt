@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.swpu.uchain.openexperiment.mapper.MessageRecordMapperTest
--------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.341 s <<< FAILURE! - in com.swpu.uchain.openexperiment.mapper.MessageRecordMapperTest
-insert(com.swpu.uchain.openexperiment.mapper.MessageRecordMapperTest)  Time elapsed: 0.018 s  <<< ERROR!
-org.apache.ibatis.binding.BindingException: Invalid bound statement (not found): com.swpu.uchain.openexperiment.mapper.MessageRecordMapper.insert
-	at com.swpu.uchain.openexperiment.mapper.MessageRecordMapperTest.insert(MessageRecordMapperTest.java:30)
-

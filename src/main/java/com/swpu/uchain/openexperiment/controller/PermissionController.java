@@ -171,6 +171,7 @@ public class PermissionController implements InitializingBean {
         log.info("================== flush()清空缓存 ==============");
         redisService.flush();
         RequestMappingHandlerMapping mapping = (RequestMappingHandlerMapping) context.getBean("requestMappingHandlerMapping");
+        //获取url类和方法的对应信息
         Map<RequestMappingInfo, HandlerMethod> map = mapping.getHandlerMethods();
         log.info("===============================更新数据库Acl数据=========================");
         Role admin = roleService.selectRoleName("ADMIN");

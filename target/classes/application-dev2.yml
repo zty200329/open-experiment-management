@@ -3,7 +3,7 @@ server:
 spring:
   datasource:
     username: root
-    password: "123456"
+    password: "200329abc"
 
   servlet:
     multipart:
@@ -17,14 +17,14 @@ upload:
   apply-file-name: "立项申请主要内容"
   concluding-file-name: "结题报告"
   experiment-report-file-name: "项目实验报告"
-  apply-dir: "C:\\Users\\Administrator\\Desktop\\openexperiment\\apply_dir"
-  apply-dir-2: "C:\\Users\\Administrator\\Desktop\\openexperiment\\apply_dir_2"
-  pdf-temp-dir: "C:\\Users\\Administrator\\Desktop\\openexperiment\\pdf_temp_dir"
-  conclusion-dir: "C:\\Users\\Administrator\\Desktop\\openexperiment\\conclusion_dir"
-  material_sample: "C:\\Users\\Administrator\\Desktop\\openexperiment\\material_sample"
-  conclusion-pdf: "C:\\Users\\Administrator\\Desktop\\openexperiment\\conclusion_pdf"
-  conclusion-annex: "C:\\Users\\Administrator\\Desktop\\openexperiment\\conclusion_annex"
-  achievement-annex: "C:\\Users\\Administrator\\Desktop\\openexperiment\\achievement_annex"
+  apply-dir: "/Users/zty/Desktop/openexperiment/apply_dir"
+  apply-dir-2: "/Users/zty/Desktop/openexperiment/apply_dir_2"
+  pdf-temp-dir: "/Users/zty/Desktop/openexperiment/pdf_temp_dir"
+  conclusion-dir: "/Users/zty/Desktop/openexperiment/conclusion_dir"
+  material_sample: "/Users/zty/Desktop/openexperiment/material_sample"
+  conclusion-pdf: "/Users/zty/Desktop/openexperiment/onclusion_pdf"
+  conclusion-annex: "/Users/zty/Desktop/openexperiment/conclusion_annex"
+  achievement-annex: "/Users/zty/Desktop/openexperiment/achievement_annex"
 download:
   certificate-excel-download: "C:\\Users\\Administrator\\Desktop\\项目\\open-experiment-management-system\\src\\main\\resources\\excel-templates\\"
 file:
