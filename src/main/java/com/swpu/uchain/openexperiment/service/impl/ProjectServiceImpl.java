@@ -1287,11 +1287,11 @@ public class ProjectServiceImpl implements ProjectService {
         }
         //判断是否需要评审
         //这里需要采用缓存
-        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(college,ProjectType.GENERAL.getValue());
-        if(projectReview != null){
-            //需要评审
-            return approveProjectReview(list, RoleType.SECONDARY_UNIT.getValue());
-        }
+//        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(college,ProjectType.GENERAL.getValue());
+//        if(projectReview != null){
+//            //需要评审
+//            return approveProjectReview(list, RoleType.SECONDARY_UNIT.getValue());
+//        }
         return approveProjectApply(list, RoleType.LAB_ADMINISTRATOR.getValue());
     }
 
