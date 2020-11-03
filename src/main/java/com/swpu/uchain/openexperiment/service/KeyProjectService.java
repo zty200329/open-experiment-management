@@ -118,6 +118,13 @@ public interface KeyProjectService {
     Result midTermKeyProjectHitBack(List<KeyProjectCheck> list);
 
     /**
+     * 职能部门立项打回
+     * @param list
+     * @return
+     */
+    Result keyProjectEstablishHitBack(List<KeyProjectCheck> list);
+
+    /**
      * 学院打回
      * @param list
      * @return
@@ -159,6 +166,12 @@ public interface KeyProjectService {
     Result getMidTermReturnProject();
 
     /**
+     * 查看职能部门立项打回
+     * @return
+     */
+    Result getKeyProjectEstablishReturnProject();
+
+    /**
      * 查看学院结题打回列表
      * @return
      */
@@ -177,6 +190,14 @@ public interface KeyProjectService {
      */
     Result midTermReviewPassed(List<KeyProjectCheck> list);
 
+
+    /**
+     * 立项复核通过
+     * @param list
+     * @return
+     */
+    Result keyProjectEstablishReviewPassed(List<KeyProjectCheck> list);
+
     /**
      * 学院复核通过
      * @param list
@@ -190,4 +211,6 @@ public interface KeyProjectService {
      * @return
      */
     Result functionReviewPassed(List<KeyProjectCheck> list);
+
+
 }

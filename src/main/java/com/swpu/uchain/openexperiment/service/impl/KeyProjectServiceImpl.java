@@ -390,6 +390,18 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                 return ProjectStatus.INTERIM_RETURN_MODIFICATION;
             }
         }
+        //职能部门立项打回
+        if(operationType == OperationType.FUNCTIONAL_ESTABLISH_PASSED){
+            if((roleType==RoleType.FUNCTIONAL_DEPARTMENT||roleType == RoleType.FUNCTIONAL_DEPARTMENT_LEADER)){
+                return ProjectStatus.ESTABLISH;
+            }
+        }
+        //职能部门复核通过
+        if(operationType == OperationType.FUNCTIONAL_ESTABLISH_RETURN){
+            if((roleType==RoleType.FUNCTIONAL_DEPARTMENT||roleType == RoleType.FUNCTIONAL_DEPARTMENT_LEADER)){
+                return ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS;
+            }
+        }
         if(operationType == OperationType.COLLEGE_RETURNS){
             if((roleType==RoleType.COLLEGE_FINALIZATION_REVIEW)){
                 return ProjectStatus.COLLEGE_RETURNS;
@@ -503,11 +515,17 @@ public class KeyProjectServiceImpl implements KeyProjectService {
             idList.add(check.getProjectId());
             if(operationType == OperationType.INTERIM_RETURN
             || operationType == OperationType.COLLEGE_RETURNS
-            || operationType == OperationType.FUNCTIONAL_RETURNS){
+            || operationType == OperationType.FUNCTIONAL_RETURNS
+            || operationType == OperationType.FUNCTIONAL_ESTABLISH_RETURN){
                 //发送消息
                 HitBackMessage hitBackMessage = new HitBackMessage();
-                hitBackMessage.setReceiveUserId(userProjectGroupMapper.getProjectLeader(check.getProjectId(),MemberRole.PROJECT_GROUP_LEADER.getValue()).getUserId());
                 hitBackMessage.setContent("项目名:"+projectGroup.getProjectName()+"  意见:"+check.getReason());
+                UserProjectGroup leader = userProjectGroupMapper.getProjectLeader(check.getProjectId(), MemberRole.PROJECT_GROUP_LEADER.getValue());
+                if(leader == null){
+                    hitBackMessage.setReceiveUserId(userProjectGroupMapper.getProjectLeader(check.getProjectId(), MemberRole.GUIDANCE_TEACHER.getValue()).getUserId());
+                }else {
+                    hitBackMessage.setReceiveUserId(userProjectGroupMapper.getProjectLeader(check.getProjectId(), MemberRole.PROJECT_GROUP_LEADER.getValue()).getUserId());
+                }
                 hitBackMessage.setSender(user.getRealName());
                 Date date = new Date();
                 hitBackMessage.setSendTime(date);
@@ -925,6 +943,16 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     /**
+     * 职能部门立项退回
+     * @param list
+     * @return
+     */
+    @Override
+    public Result keyProjectEstablishHitBack(List<KeyProjectCheck> list) {
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.FUNCTIONAL_ESTABLISH_RETURN,list);
+    }
+
+    /**
      * 学院退回
      * @param list
      * @return
@@ -1018,6 +1046,11 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.INTERIM_RETURN_MODIFICATION,null);
     }
 
+    @Override
+    public Result getKeyProjectEstablishReturnProject() {
+        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS,null);
+    }
+
     /**
      * 获取学院结题打回列表
      * @return
@@ -1042,6 +1075,16 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result midTermReviewPassed(List<KeyProjectCheck> list) {
         return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.MIDTERM_REVIEW_PASSED,list);
+    }
+
+    /**
+     * 立项复核通过
+     * @param list
+     * @return
+     */
+    @Override
+    public Result keyProjectEstablishReviewPassed(List<KeyProjectCheck> list) {
+        return operateKeyProjectOfSpecifiedRoleAndOperation(RoleType.FUNCTIONAL_DEPARTMENT, OperationType.FUNCTIONAL_ESTABLISH_PASSED,list);
     }
 
     @Override

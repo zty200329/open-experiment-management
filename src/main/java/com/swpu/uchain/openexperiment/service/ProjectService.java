@@ -352,6 +352,8 @@ public interface ProjectService {
 
     Result getMidTermReturnProject();
 
+    Result getEstablishReturnProject();
+
     Result getCollegeReturnProject();
 
     Result getFunctionReturnProject();

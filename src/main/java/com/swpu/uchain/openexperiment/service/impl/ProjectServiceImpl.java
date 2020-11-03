@@ -992,6 +992,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public Result getEstablishReturnProject() {
+        return getNewCheckList(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS);
+    }
+
+    @Override
     public Result getCollegeReturnProject() {
 //        return getCheckInfo(ProjectStatus.COLLEGE_RETURNS);
         return getNewCheckList(ProjectStatus.COLLEGE_RETURNS);
@@ -1051,6 +1056,9 @@ public class ProjectServiceImpl implements ProjectService {
             projectType = null;
         }
         User currentUser = getUserService.getCurrentUser();
+        if(currentUser == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
         if(projectStatus == ProjectStatus.COLLEGE_FINAL_SUBMISSION){
             List<NewCheckProjectVO> checkProjectVOS = projectGroupMapper.selectNewApplyOrderByTime2(status, projectType, currentUser.getInstitute());
             for (NewCheckProjectVO checkProjectVO : checkProjectVOS) {

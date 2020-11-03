@@ -227,6 +227,12 @@ public class ProjectQueryController {
         return projectService.getMidTermReturnProject();
     }
 
+    @ApiOperation("查看立项打回的项目列表")
+    @PostMapping("/getEstablishReturnProject")
+    public Result getEstablishReturnProject(){
+        return projectService.getEstablishReturnProject();
+    }
+
     @ApiOperation("查看学院打回的项目列表")
     @PostMapping("/getCollegeReturnProject")
     public Result getCollegeReturnProject(){

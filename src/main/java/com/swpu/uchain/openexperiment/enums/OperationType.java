@@ -4,7 +4,7 @@ import lombok.Getter;
 
 /**
  * 审核操作对应的类型
- * @author panghu
+ * @author zty200329
  */
 @Getter
 public enum OperationType {

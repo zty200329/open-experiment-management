@@ -157,10 +157,22 @@ public class KeyProjectInvokeController {
         return keyProjectService.midTermKeyProjectHitBack(list);
     }
 
+    @ApiOperation("职能部门立项的时候退回")
+    @PostMapping("/keyProjectEstablishHitBack")
+    public Result keyProjectEstablishHitBack(@Valid @RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.keyProjectEstablishHitBack(list);
+    }
+
     @ApiOperation("重点项目中期复核通过")
     @PostMapping("/KeyProjectMidTermReviewPassed")
     public Result midTermReviewPassed(@RequestBody List<KeyProjectCheck> list){
         return keyProjectService.midTermReviewPassed(list);
+    }
+
+    @ApiOperation("职能部门立项的复核通过")
+    @PostMapping("/keyProjectEstablishReviewPassed")
+    public Result keyProjectEstablishReviewPassed(@Valid @RequestBody List<KeyProjectCheck> list){
+        return keyProjectService.keyProjectEstablishReviewPassed(list);
     }
 
     @ApiOperation("学院结题检查项目退回修改")

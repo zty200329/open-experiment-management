@@ -107,6 +107,12 @@ public class KeyProjectQueryController {
         return keyProjectService.getMidTermReturnProject();
     }
 
+    @ApiOperation("查看立项打回的重点项目列表")
+    @PostMapping("/getKeyProjectEstablishReturnProject")
+    public Result getKeyProjectEstablishReturnProject(){
+        return keyProjectService.getKeyProjectEstablishReturnProject();
+    }
+
     @ApiOperation("学院获取待检查的项目")
     @GetMapping(value = "/getCollegeKeyProject")
     public Result getCollegeKeyProject (){
