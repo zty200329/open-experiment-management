@@ -227,6 +227,6 @@ public interface ProjectGroupMapper {
      * @param projectId
      * @param type
      */
-    void updateProjectType(@Param("id") Long projectId,@Param("type") Integer type);
+    void updateProjectType(@Param("id") Long projectId,@Param("type") Integer type,@Param("value")Float value);
 
 }

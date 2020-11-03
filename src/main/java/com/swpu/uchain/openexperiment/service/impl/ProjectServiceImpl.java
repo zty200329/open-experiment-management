@@ -1499,6 +1499,7 @@ public class ProjectServiceImpl implements ProjectService {
         return conditionallyQueryOfCheckedProject(form);
     }
 
+    //查看历史操作
     @Override
     public Result getHistoricalProjectInfo(HistoryQueryProjectInfo info) {
         User user = getUserService.getCurrentUser();
@@ -1510,7 +1511,12 @@ public class ProjectServiceImpl implements ProjectService {
 
         List<ProjectGroup> list;
 
+        // 2，拒绝    1｜｜3上报
         //判断是否为已通过的  筛选出大于当前状态的
+        /**
+         * 4  1查看 实验室拟题审核通过的
+         * 4  3查看 实验室项目审核通过
+         */
         if (info.getOperationType().equals(OperationType.AGREE.getValue())
                 || info.getOperationType().equals(OperationType.REPORT.getValue())) {
             //排除立项失败的
@@ -1984,7 +1990,7 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public Result changeKeyProjectToGeneral(List<ProjectCheckForm> formList) {
+    public Result changeKeyProjectToGeneral(List<ChangeKeyProjectToGeneralForm> formList) {
 
         User user = getUserService.getCurrentUser();
 
@@ -1993,7 +1999,7 @@ public class ProjectServiceImpl implements ProjectService {
         int statu = 0;
         //记录操作的id
         List<Long> projectGroupIdList = new LinkedList<>();
-        for (ProjectCheckForm form : formList
+        for (ChangeKeyProjectToGeneralForm form : formList
         ) {
             Integer status = keyProjectStatusMapper.getStatusByProjectId(form.getProjectId());
             //验证当前状态
@@ -2024,13 +2030,14 @@ public class ProjectServiceImpl implements ProjectService {
             //修改状态
 //            updateProjectStatus(form.getProjectId(), ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue());
 
+            ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(form.getProjectId());
             //修改成普通项目
             projectGroupIdList.add(form.getProjectId());
-            projectGroupMapper.updateProjectType(form.getProjectId(), ProjectType.GENERAL.getValue());
+            projectGroupMapper.updateProjectType(form.getProjectId(), ProjectType.GENERAL.getValue(),form.getApplyFunds());
 
             //设置项目创建编号
             String maxTempSerialNumber = null;
-            maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(user.getInstitute(),1);
+            maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(projectGroup.getSubordinateCollege(),1);
             //计算编号并在数据库中插入编号
             projectGroupMapper.updateProjectTempSerialNumber(form.getProjectId(), SerialNumberUtil.getSerialNumberOfProject(user.getInstitute(),ProjectType.GENERAL.getValue(), maxTempSerialNumber));
             list.add(operationRecord);

@@ -391,7 +391,7 @@ public interface ProjectService {
      * @param formList
      * @return
      */
-    Result changeKeyProjectToGeneral(List<ProjectCheckForm> formList);
+    Result changeKeyProjectToGeneral(List<ChangeKeyProjectToGeneralForm> formList);
 
     /**
      * 中期打回修改
