@@ -271,6 +271,13 @@ public interface ProjectService {
     Result midTermReviewPassed(List<ProjectCheckForm> list);
 
     /**
+     * 中期复核通过
+     * @param list
+     * @return
+     */
+    Result establishReviewPassed(List<ProjectCheckForm> list);
+
+    /**
      * 学院复核通过
      * @param projectGradeList
      * @return
@@ -392,6 +399,13 @@ public interface ProjectService {
     Result  midTermKeyProjectHitBack(List<ProjectCheckForm> list);
 
     /**
+     * 职能部门立项打回修改
+     * @param list
+     * @return
+     */
+    Result  establishProjectHitBack(List<ProjectCheckForm> list);
+
+    /**
      * 学院对普通项目给出评级
      * @param projectGradeList
      * @return
@@ -407,7 +421,7 @@ public interface ProjectService {
 
     /**
      * 职能部门给出评级
-     * @param List<ProjectCheckForm> list
+     * @param list<ProjectCheckForm> list
      * @return
      */
     Result functionalGivesRating(List<ProjectCheckForm> list);

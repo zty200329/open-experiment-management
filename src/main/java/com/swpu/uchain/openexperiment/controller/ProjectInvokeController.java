@@ -163,6 +163,12 @@ public class ProjectInvokeController {
         return projectService.midTermReviewPassed(list);
     }
 
+    @ApiOperation("职能部门立项时复核通过")
+    @PostMapping("/establishReviewPassed")
+    public Result establishReviewPassed(@RequestBody List<ProjectCheckForm> list){
+        return projectService.midTermReviewPassed(list);
+    }
+
 //    @ApiOperation("资金报账(职能部门使用)")
 //    @PostMapping(value = "/appendCreateApply", name = "追加立项申请内容")
 //    public Result appendCreateApply(@Valid @RequestBody AppendApplyForm appendApplyForm){
@@ -235,6 +241,12 @@ public class ProjectInvokeController {
     @PostMapping("/midTermKeyProjectHitBack")
     public Result  midTermKeyProjectHitBack(@Valid @RequestBody List<ProjectCheckForm> list){
         return projectService.midTermKeyProjectHitBack(list);
+    }
+
+    @ApiOperation("职能部门立项打回")
+    @PostMapping("/establishProjectHitBack")
+    public Result  establishProjectHitBack(@Valid @RequestBody List<ProjectCheckForm> list){
+        return projectService.establishProjectHitBack(list);
     }
 
     @ApiOperation("学院初审对普通项目给出评级")

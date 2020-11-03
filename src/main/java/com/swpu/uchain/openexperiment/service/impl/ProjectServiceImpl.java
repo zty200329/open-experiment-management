@@ -405,12 +405,12 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Throwable.class)
     public Result applyUpdateProject(UpdateProjectApplyForm updateProjectApplyForm) {
 
         //TODO 起止时间有问题
         //验证时间限制
-        timeLimitService.validTime(TimeLimitType.DECLARE_LIMIT);
+//        timeLimitService.validTime(TimeLimitType.DECLARE_LIMIT);
 
         ProjectGroup projectGroup = selectByProjectGroupId(updateProjectApplyForm.getProjectGroupId());
         if (projectGroup == null) {
@@ -423,11 +423,11 @@ public class ProjectServiceImpl implements ProjectService {
         }
         //状态不是申报或者退回修改或者中期打回不允许修改
         if (!(projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) || projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue()) ||
-                projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()))) {
+                projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue())|| projectGroup.getStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue()))) {
             return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
         }
         //修改的话将状态修改为申报状态，中期打回不用
-        if (!projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue())) {
+        if (!projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue())&& !projectGroup.getStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue())) {
             projectGroup.setStatus(ProjectStatus.DECLARE.getValue());
         }
 
@@ -442,7 +442,7 @@ public class ProjectServiceImpl implements ProjectService {
             if (updateProjectApplyForm.getProjectType().equals(ProjectType.GENERAL.getValue())) {
                 endTime = dateFormat.parse("2021-06-01");
             } else {
-                endTime = dateFormat.parse("2020-11-01");
+                endTime = dateFormat.parse("2021-11-01");
             }
             updateProjectApplyForm.setEndTime(endTime);
         } catch (ParseException e) {
@@ -1447,6 +1447,16 @@ public class ProjectServiceImpl implements ProjectService {
         return setProjectStatusAndRecord(list, OperationType.MIDTERM_REVIEW_PASSED, OperationUnit.FUNCTIONAL_DEPARTMENT, ProjectStatus.ESTABLISH);
     }
 
+    /**
+     * 职能部门立项复核
+     * @param list
+     * @return
+     */
+    @Override
+    public Result establishReviewPassed(List<ProjectCheckForm> list) {
+        return setProjectStatusAndRecord(list, OperationType.FUNCTIONAL_ESTABLISH_PASSED, OperationUnit.FUNCTIONAL_DEPARTMENT, ProjectStatus.ESTABLISH);
+    }
+
     @Override
     public Result CollegeReviewPassed(List<ProjectGrade> projectGradeList) {
         User user = getUserService.getCurrentUser();
@@ -1970,22 +1980,30 @@ public class ProjectServiceImpl implements ProjectService {
 
         User user = getUserService.getCurrentUser();
 
+        //记录操作记录
         List<OperationRecord> list = new ArrayList<>();
-
+        int statu = 0;
+        //记录操作的id
         List<Long> projectGroupIdList = new LinkedList<>();
         for (ProjectCheckForm form : formList
         ) {
             Integer status = keyProjectStatusMapper.getStatusByProjectId(form.getProjectId());
             //验证当前状态
-            if (!ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue().equals(status)) {
+            if (!ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue().equals(status) && !ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue().equals(status)) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
+            statu = status;
             //批量插入数据
             OperationRecord operationRecord = new OperationRecord();
             operationRecord.setRelatedId(form.getProjectId());
             operationRecord.setOperationReason(form.getReason());
-            operationRecord.setOperationUnit(OperationUnit.LAB_ADMINISTRATOR.getValue());
-            operationRecord.setOperationType(OperationType.REPORT.getValue());
+            if(ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue().equals(status)){
+                operationRecord.setOperationUnit(OperationUnit.LAB_ADMINISTRATOR.getValue());
+                operationRecord.setOperationType(OperationType.REPORT.getValue());
+            }else{
+                operationRecord.setOperationUnit(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue());
+                operationRecord.setOperationType(OperationType.FUNCTIONAL_CHANGE_TO_GENERAL.getValue());
+            }
             operationRecord.setOperationCollege(user.getInstitute());
             operationRecord.setOperationExecutorId(Long.valueOf(user.getCode()));
 
@@ -1998,6 +2016,7 @@ public class ProjectServiceImpl implements ProjectService {
             //修改状态
 //            updateProjectStatus(form.getProjectId(), ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue());
 
+            //修改成普通项目
             projectGroupIdList.add(form.getProjectId());
             projectGroupMapper.updateProjectType(form.getProjectId(), ProjectType.GENERAL.getValue());
 
@@ -2009,11 +2028,16 @@ public class ProjectServiceImpl implements ProjectService {
             list.add(operationRecord);
         }
         ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(user.getInstitute(),ProjectType.GENERAL.getValue());
-        if(projectReview != null){
-            //需要评审
-            projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.PROJECT_REVIEW.getValue());
-        }else{
-            projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
+
+        if(ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue().equals(statu)){
+            if(projectReview != null){
+                //需要评审
+                projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.PROJECT_REVIEW.getValue());
+            }else{
+                projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
+            }
+        }else {
+            projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.ESTABLISH.getValue());
         }
         recordMapper.multiInsert(list);
         return Result.success();
@@ -2028,6 +2052,16 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Result midTermKeyProjectHitBack(List<ProjectCheckForm> list) {
         return ProjectHitBack(list, OperationUnit.FUNCTIONAL_DEPARTMENT, OperationType.INTERIM_RETURN);
+    }
+
+    /**
+     * 立项退回
+     * @param list
+     * @return
+     */
+    @Override
+    public Result establishProjectHitBack(List<ProjectCheckForm> list) {
+        return ProjectHitBack(list, OperationUnit.FUNCTIONAL_DEPARTMENT, OperationType.FUNCTIONAL_ESTABLISH_RETURN);
     }
 
     /**
@@ -2134,7 +2168,7 @@ public class ProjectServiceImpl implements ProjectService {
         for (ProjectCheckForm form : formList) {
             ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(form.getProjectId());
             Integer status = projectGroup.getStatus();
-            if (!status.equals(ProjectStatus.ESTABLISH.getValue()) && !status.equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())) {
+            if (!status.equals(ProjectStatus.ESTABLISH.getValue()) && !status.equals(ProjectStatus.COLLEGE_FINAL_SUBMISSION.getValue())&& !status.equals(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue())) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
             //批量插入数据
@@ -2152,7 +2186,9 @@ public class ProjectServiceImpl implements ProjectService {
                 updateProjectStatus(form.getProjectId(), ProjectStatus.COLLEGE_RETURNS.getValue());
             } else if (operationType.getValue().equals(OperationType.FUNCTIONAL_RETURNS.getValue())) {
                 updateProjectStatus(form.getProjectId(), ProjectStatus.FUNCTIONAL_RETURNS.getValue());
-            } else {
+            } else if (operationType.getValue().equals(OperationType.FUNCTIONAL_ESTABLISH_RETURN.getValue())){
+                updateProjectStatus(form.getProjectId(), ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue());
+            }else {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
             list.add(operationRecord);

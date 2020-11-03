@@ -28,9 +28,10 @@ public enum OperationType {
     FUNCTIONAL_RETURNS(14,"职能部门审核退回"),
     FUNCTIONAL_REVIEW_PASSED(15,"职能部门复核通过"),
     FUNCTIONAL_PASSED_THE_EXAMINATION(16,"职能部门结题审核通过"),
-
+    FUNCTIONAL_CHANGE_TO_GENERAL(17,"职能部门将重点立项转为普通立项"),
+    FUNCTIONAL_ESTABLISH_RETURN(18,"职能部门立项退回修改"),
+    FUNCTIONAL_ESTABLISH_PASSED(19,"职能部门立项复核通过"),
     ;
-
     private Integer value;
 
     private String tips;
