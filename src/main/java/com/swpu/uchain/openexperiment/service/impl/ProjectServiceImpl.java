@@ -210,13 +210,13 @@ public class ProjectServiceImpl implements ProjectService {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         //固定时间
         try {
-            Date startTime = dateFormat.parse("2019-12-05");
+            Date startTime = dateFormat.parse("2020-12-05");
             form.setStartTime(startTime);
             Date endTime;
             if (form.getProjectType().equals(ProjectType.GENERAL.getValue())) {
-                endTime = dateFormat.parse("2020-06-01");
+                endTime = dateFormat.parse("2021-06-01");
             } else {
-                endTime = dateFormat.parse("2020-11-01");
+                endTime = dateFormat.parse("2021-11-01");
             }
             form.setEndTime(endTime);
         } catch (ParseException e) {
@@ -1184,15 +1184,12 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
 
-        //验证项目状态
+        //验证项目状态 数据库查出的数据比较
         if (!checkProjectStatus(projectGroupIdList, ProjectStatus.LAB_ALLOWED.getValue())) {
             throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
         }
-
-        projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
-
-
         List<OperationRecord> list = new ArrayList<>();
+
         //添加历史记录
         for (ProjectCheckForm form : formList
         ) {
@@ -1212,8 +1209,17 @@ public class ProjectServiceImpl implements ProjectService {
 
             list.add(operationRecord);
 
-            projectGroupMapper.updateProjectStatus(form.getProjectId(), ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
+//            projectGroupMapper.updateProjectStatus(form.getProjectId(), ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
         }
+        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(user.getInstitute(),ProjectType.GENERAL.getValue());
+        if(projectReview != null){
+            //需要评审
+            projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.PROJECT_REVIEW.getValue());
+        }else{
+            projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
+        }
+
+
         //存储上报记录信息
         recordMapper.multiInsert(list);
 
@@ -1953,14 +1959,20 @@ public class ProjectServiceImpl implements ProjectService {
         return list;
     }
 
+    /**
+     * 重点转普通
+     * @param formList
+     * @return
+     */
     @Override
-    @Transactional(rollbackFor = GlobalException.class)
+    @Transactional(rollbackFor = Throwable.class)
     public Result changeKeyProjectToGeneral(List<ProjectCheckForm> formList) {
 
         User user = getUserService.getCurrentUser();
 
         List<OperationRecord> list = new ArrayList<>();
 
+        List<Long> projectGroupIdList = new LinkedList<>();
         for (ProjectCheckForm form : formList
         ) {
             Integer status = keyProjectStatusMapper.getStatusByProjectId(form.getProjectId());
@@ -1984,11 +1996,24 @@ public class ProjectServiceImpl implements ProjectService {
             }
 
             //修改状态
-            updateProjectStatus(form.getProjectId(), ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue());
+//            updateProjectStatus(form.getProjectId(), ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue());
 
+            projectGroupIdList.add(form.getProjectId());
             projectGroupMapper.updateProjectType(form.getProjectId(), ProjectType.GENERAL.getValue());
 
+            //设置项目创建编号
+            String maxTempSerialNumber = null;
+            maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(user.getInstitute(),1);
+            //计算编号并在数据库中插入编号
+            projectGroupMapper.updateProjectTempSerialNumber(form.getProjectId(), SerialNumberUtil.getSerialNumberOfProject(user.getInstitute(),ProjectType.GENERAL.getValue(), maxTempSerialNumber));
             list.add(operationRecord);
+        }
+        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(user.getInstitute(),ProjectType.GENERAL.getValue());
+        if(projectReview != null){
+            //需要评审
+            projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.PROJECT_REVIEW.getValue());
+        }else{
+            projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
         }
         recordMapper.multiInsert(list);
         return Result.success();

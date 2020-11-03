@@ -14,7 +14,7 @@ public class Html2PDFUtil {
 
     //
     public static void main(String[] args) {
-        convertHtml2PDF("/home/zty/open-experiment-management-system/apply_dir_2/5_立项申请主要内容.html",
+        convertHtml2PDF("/Users/zty/Desktop/openexperiment/5_立项申请主要内容.html",
                 "/home/zty/open-experiment-management-system/apply_dir_2/454515154_立项申请主要内容.pdf");
     }
 
@@ -42,7 +42,7 @@ public class Html2PDFUtil {
             // 实际项目中，可以获取改字体所在真实的服务器的路径,这个方法是本地地址和网络地址都支持的
             // 这里面添加的是宋体
 //            fontResolver.addFont("/usr/share/fonts/chinese/simsun.ttc",
-            fontResolver.addFont("C:\\Program Files (x86)\\OpenOffice 4\\simsun.ttc",
+            fontResolver.addFont("/Users/zty/Desktop/openexperiment/simsun.ttc",
                     BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
 

@@ -22,7 +22,7 @@ upload:
   pdf-temp-dir: "/Users/zty/Desktop/openexperiment/pdf_temp_dir"
   conclusion-dir: "/Users/zty/Desktop/openexperiment/conclusion_dir"
   material_sample: "/Users/zty/Desktop/openexperiment/material_sample"
-  conclusion-pdf: "/Users/zty/Desktop/openexperiment/onclusion_pdf"
+  conclusion-pdf: "/Users/zty/Desktop/openexperiment/conclusion_pdf"
   conclusion-annex: "/Users/zty/Desktop/openexperiment/conclusion_annex"
   achievement-annex: "/Users/zty/Desktop/openexperiment/achievement_annex"
 download:
@@ -30,7 +30,7 @@ download:
 file:
 #  ipaddress: "http://192.168.43.29:8083"
 #  ip-address: "http://192.168.43.153:8083"
-  ip-address: "http://10.20.0.3:8083"
+  ip-address: "http://192.168.1.101:8083"
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

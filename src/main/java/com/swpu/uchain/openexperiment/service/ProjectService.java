@@ -377,6 +377,11 @@ public interface ProjectService {
 
     Result rejectProjectReportByLabAdministrator(List<ProjectCheckForm> formList);
 
+    /**
+     * 重点转为普通项目
+     * @param formList
+     * @return
+     */
     Result changeKeyProjectToGeneral(List<ProjectCheckForm> formList);
 
     /**

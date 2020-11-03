@@ -73,4 +73,8 @@ public class PDFConvertUtil {
         System.out.println("转换完成！");
     }
 
+    public static void main(String[] args) throws IOException {
+        Word2Pdf("/Users/zty/Desktop/openexperiment/测试文档.doc","/Users/zty/Desktop/openexperiment/测试文档.pdf");
+    }
+
 }
