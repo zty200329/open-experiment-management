@@ -4,6 +4,7 @@ import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementPublishForm;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementUpdateForm;
+import com.swpu.uchain.openexperiment.form.announcement.HomePageNewsPublishForm;
 import com.swpu.uchain.openexperiment.form.announcement.QueryCondition;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AnnouncementService;
@@ -35,6 +36,12 @@ public class AnnouncementController {
     @PostMapping(value = "/publish", name = "发布公告")
     public Result publish(@RequestBody @Valid AnnouncementPublishForm publishForm){
         return announcementService.publishAnnouncement(publishForm);
+    }
+
+    @ApiOperation("首页发布新闻")
+    @PostMapping("/homePagePublishNews")
+    public Result homePagePublishNews(@RequestBody @Valid HomePageNewsPublishForm homePageNewsPublishForm){
+        return announcementService.homePagePublishNews(homePageNewsPublishForm);
     }
 
     @ApiOperation("阅读公告详情")

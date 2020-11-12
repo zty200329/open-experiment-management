@@ -79,7 +79,7 @@ public interface ProjectFileService {
      * @param file
      * @return
      */
-    Result uploadImages(MultipartFile file);
+    Object uploadImages(MultipartFile file);
 
     /**
      * 下载附件

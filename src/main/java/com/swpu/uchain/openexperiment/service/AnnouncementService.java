@@ -3,9 +3,13 @@ package com.swpu.uchain.openexperiment.service;
 import com.swpu.uchain.openexperiment.domain.Announcement;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementPublishForm;
 import com.swpu.uchain.openexperiment.form.announcement.AnnouncementUpdateForm;
+import com.swpu.uchain.openexperiment.form.announcement.HomePageNewsPublishForm;
 import com.swpu.uchain.openexperiment.form.announcement.QueryCondition;
 import com.swpu.uchain.openexperiment.result.Result;
 import io.swagger.models.auth.In;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.validation.Valid;
 
 /**
  * @Author: clf
@@ -41,6 +45,12 @@ public interface AnnouncementService {
      */
     Result publishAnnouncement(AnnouncementPublishForm publishForm);
 
+    /**
+     * 发布新闻
+     * @param homePageNewsPublishForm
+     * @return
+     */
+    Result homePagePublishNews(HomePageNewsPublishForm homePageNewsPublishForm);
     /**
      * 查看公告详情
      * @param announcementId

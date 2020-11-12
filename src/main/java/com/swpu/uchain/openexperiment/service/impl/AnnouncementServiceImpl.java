@@ -2,7 +2,10 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementListVO;
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementVO;
+import com.swpu.uchain.openexperiment.domain.NewsRelease;
+import com.swpu.uchain.openexperiment.form.announcement.HomePageNewsPublishForm;
 import com.swpu.uchain.openexperiment.mapper.AnnouncementMapper;
+import com.swpu.uchain.openexperiment.mapper.NewsReleaseMapper;
 import com.swpu.uchain.openexperiment.mapper.UserMapper;
 import com.swpu.uchain.openexperiment.domain.Announcement;
 import com.swpu.uchain.openexperiment.domain.User;
@@ -16,12 +19,14 @@ import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.AnnouncementKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AnnouncementService;
+import com.swpu.uchain.openexperiment.service.GetUserService;
 import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import sun.security.smartcardio.SunPCSC;
 
 import java.util.Date;
 import java.util.List;
@@ -40,6 +45,10 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     private RedisService redisService;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private GetUserService getUserService;
+    @Autowired
+    private NewsReleaseMapper newsReleaseMapper;
 
 
     @Override
@@ -90,6 +99,21 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             return Result.success();
         }
         return Result.error(CodeMsg.ADD_ERROR);
+    }
+
+    @Override
+    public Result homePagePublishNews(HomePageNewsPublishForm homePageNewsPublishForm) {
+        User currentUser = getUserService.getCurrentUser();
+        if (currentUser == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        NewsRelease newsRelease = new NewsRelease();
+        BeanUtils.copyProperties(homePageNewsPublishForm,newsRelease);
+        newsRelease.setPublishTime(new Date());
+        newsRelease.setUpdateTime(new Date());
+        newsRelease.setRealName(currentUser.getRealName());
+        newsReleaseMapper.insert(newsRelease);
+        return Result.success();
     }
 
     @Override

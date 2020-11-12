@@ -88,7 +88,7 @@ public class FileController {
 
     @ApiOperation("富文本图片上传")
     @PostMapping(value = "/uploadNewsImages", name = "上传富文本图片")
-    public Result uploadImages(@RequestParam("file") MultipartFile file){
+    public Object uploadImages(@RequestParam("file") MultipartFile file){
         return projectFileService.uploadImages(file);
     }
 

@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.DTO.AttachmentFileDTO;
 import com.swpu.uchain.openexperiment.DTO.ConclusionDTO;
+import com.swpu.uchain.openexperiment.VO.announcement.NewsImagesVO;
 import com.swpu.uchain.openexperiment.VO.file.AttachmentFileVO;
 import com.swpu.uchain.openexperiment.VO.project.ProjectAnnex;
 import com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo;
@@ -443,7 +444,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
      * @return
      */
     @Override
-    public Result uploadImages(MultipartFile file) {
+    public Object uploadImages(MultipartFile file) {
         if (file == null) {
             throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
@@ -456,7 +457,11 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 file, filePath)) {
             return Result.error(CodeMsg.UPLOAD_ERROR);
         }
-        return Result.success(ipAddress+"/newsImages/"+fileName);
+        NewsImagesVO newsImagesVO = new NewsImagesVO();
+        newsImagesVO.setUploaded("1");
+        newsImagesVO.setUrl(ipAddress+"/newsImages/"+fileName);
+
+        return newsImagesVO;
     }
 
     public static void main(String[] args) {
