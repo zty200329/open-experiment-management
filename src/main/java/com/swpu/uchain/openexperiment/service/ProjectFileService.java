@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.service;
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import com.swpu.uchain.openexperiment.form.file.ConcludingReportForm;
 import com.swpu.uchain.openexperiment.result.Result;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -72,6 +73,13 @@ public interface ProjectFileService {
      * @return
      */
     Result uploadAttachmentFile(List<MultipartFile> multipartFile, Long projectId);
+
+    /**
+     * 富文本上传图片
+     * @param file
+     * @return
+     */
+    Result uploadImages(MultipartFile file);
 
     /**
      * 下载附件

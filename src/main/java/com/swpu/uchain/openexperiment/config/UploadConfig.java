@@ -61,5 +61,10 @@ public class UploadConfig {
      * 成果材料
      */
     private String achievementAnnex;
+
+    /**
+     * 富文本图片
+     */
+    private String newsImages;
 }
 

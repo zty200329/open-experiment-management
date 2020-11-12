@@ -18,7 +18,7 @@ public class SerialNumberUtil {
      * @param maxSerialNumber 最大编号   --防止删除后出现问题
      * @return 完整项目编号
      */
-    public static String getSerialNumberOfProject(Integer college, Integer projectType,String maxSerialNumber){
+    public synchronized static String getSerialNumberOfProject(Integer college, Integer projectType,String maxSerialNumber){
 
         if (projectType == null){
             throw new GlobalException(CodeMsg.PROJECT_TYPE_NULL_ERROR);

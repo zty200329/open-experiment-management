@@ -30,8 +30,12 @@ public class StaticResourceConfig implements WebMvcConfigurer {
         //定义到硬盘
         registry.addResourceHandler("/conclusionAnnex/**")
                 .addResourceLocations("file:"+uploadConfig.getConclusionAnnex()+"/").resourceChain(false);
+        //定义到硬盘
+        registry.addResourceHandler("/newsImages/**")
+                .addResourceLocations("file:"+uploadConfig.getNewsImages()+"/").resourceChain(false);
         //定义到相对路径
         registry.addResourceHandler("/material/**")
                 .addResourceLocations("classpath:/material_sample/").resourceChain(false);
+
     }
 }

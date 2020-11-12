@@ -86,6 +86,11 @@ public class FileController {
         return projectFileService.uploadAttachmentFile(multipartFile,projectId);
     }
 
+    @ApiOperation("富文本图片上传")
+    @PostMapping(value = "/uploadNewsImages", name = "上传富文本图片")
+    public Result uploadImages(@RequestParam("file") MultipartFile file){
+        return projectFileService.uploadImages(file);
+    }
 
     @ApiOperation("上传结题报告--重点项目和普通项目")
     @PostMapping(value = "/uploadConcludingReport", name = "上传结题报告")

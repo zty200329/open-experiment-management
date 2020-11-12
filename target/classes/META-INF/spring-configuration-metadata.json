@@ -148,6 +148,12 @@
       "sourceType": "com.swpu.uchain.openexperiment.config.UploadConfig"
     },
     {
+      "name": "upload.news-images",
+      "type": "java.lang.String",
+      "description": "富文本图片",
+      "sourceType": "com.swpu.uchain.openexperiment.config.UploadConfig"
+    },
+    {
       "name": "upload.pdf-temp-dir",
       "type": "java.lang.String",
       "description": "中间PDF存放位置",

@@ -438,6 +438,31 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     }
 
     /**
+     * 富文本上传图片
+     * @param file
+     * @return
+     */
+    @Override
+    public Result uploadImages(MultipartFile file) {
+        if (file == null) {
+            throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
+        }
+        if(FileUtil.getType(FileUtil.getMultipartFileSuffix(file)) != 4){
+            throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
+        }
+        String fileName = System.currentTimeMillis()+getFileSuffix(file.getOriginalFilename());
+        String filePath = uploadConfig.getNewsImages() + "/" + fileName;
+        if (!FileUtil.uploadFile(
+                file, filePath)) {
+            return Result.error(CodeMsg.UPLOAD_ERROR);
+        }
+        return Result.success(ipAddress+"/newsImages/"+fileName);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(System.currentTimeMillis()+getFileSuffix("297_附件_pexels-alan-daysh-5198585.jpg"));
+    }
+    /**
      * 下载附件
      *
      * @param fileId

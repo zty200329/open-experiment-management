@@ -1516,6 +1516,12 @@ public class ProjectServiceImpl implements ProjectService {
         /**
          * 4  1查看 实验室拟题审核通过的
          * 4  3查看 实验室项目审核通过
+         * 5  1查看 二级单位审核通过,待上报
+         * 5  3查看 二级单位审核通过并已上报
+         * 6  1 或者6  3都是查看 职能部门审核通过 立项了的
+         * 其他
+         * 42 52 是学院查看失败的普通项目
+         * 62是看全校
          */
         if (info.getOperationType().equals(OperationType.AGREE.getValue())
                 || info.getOperationType().equals(OperationType.REPORT.getValue())) {
