@@ -11,6 +11,7 @@ import com.swpu.uchain.openexperiment.service.AnnouncementService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jdk.nashorn.internal.objects.annotations.Getter;
+import org.apiguardian.api.API;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +44,13 @@ public class AnnouncementController {
     public Result homePagePublishNews(@RequestBody @Valid HomePageNewsPublishForm homePageNewsPublishForm){
         return announcementService.homePagePublishNews(homePageNewsPublishForm);
     }
+
+    @ApiOperation("获取所有新闻")
+    @GetMapping("/getHomePageNewsList")
+    public Result getHomePageNewsList(){
+        return announcementService.getHomePageNewsList();
+    }
+
 
     @ApiOperation("阅读公告详情")
     @GetMapping(value = "/readDetail", name = "阅读公告详情")

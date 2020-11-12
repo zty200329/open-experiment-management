@@ -51,6 +51,13 @@ public interface AnnouncementService {
      * @return
      */
     Result homePagePublishNews(HomePageNewsPublishForm homePageNewsPublishForm);
+
+    /**
+     * 返回所有已发布首页新闻
+     * @return
+     */
+    Result getHomePageNewsList();
+
     /**
      * 查看公告详情
      * @param announcementId

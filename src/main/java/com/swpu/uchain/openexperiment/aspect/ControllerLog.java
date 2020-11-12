@@ -37,11 +37,11 @@ public class ControllerLog {
 
     @AfterReturning(pointcut = "controller()",returning = "ret")
     public void after(Object ret){
-        Result result = (Result) ret;
-        if (result!=null&&result.getCode()!=0){
-            log.error(result.getMsg());
-        }
-        log.info("controller返回参数："+result);
+//        Result result = (Result) ret;
+//        if (result!=null&&result.getCode()!=0){
+//            log.error(result.getMsg());
+//        }
+        log.info("controller返回参数："+ret);
         log.info("-----------------------------------------------------");
     }
 }

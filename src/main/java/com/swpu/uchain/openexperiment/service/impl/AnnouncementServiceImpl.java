@@ -1,7 +1,9 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.oracle.tools.packager.Log;
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementListVO;
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementVO;
+import com.swpu.uchain.openexperiment.VO.announcement.HomePageNewsListVO;
 import com.swpu.uchain.openexperiment.domain.NewsRelease;
 import com.swpu.uchain.openexperiment.form.announcement.HomePageNewsPublishForm;
 import com.swpu.uchain.openexperiment.mapper.AnnouncementMapper;
@@ -21,6 +23,8 @@ import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AnnouncementService;
 import com.swpu.uchain.openexperiment.service.GetUserService;
 import io.swagger.models.auth.In;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.bcel.generic.NEW;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -28,7 +32,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import sun.security.smartcardio.SunPCSC;
 
+import javax.xml.ws.handler.LogicalHandler;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -38,6 +44,7 @@ import java.util.List;
  * 实现公告模块
  */
 @Service
+@Slf4j
 public class AnnouncementServiceImpl implements AnnouncementService {
     @Autowired
     private AnnouncementMapper announcementMapper;
@@ -114,6 +121,18 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         newsRelease.setRealName(currentUser.getRealName());
         newsReleaseMapper.insert(newsRelease);
         return Result.success();
+    }
+
+    @Override
+    public Result getHomePageNewsList() {
+        List<NewsRelease> newsReleaseList = newsReleaseMapper.selectAll();
+        List<HomePageNewsListVO> homePageNewsListVOS = new LinkedList<>();
+        for (NewsRelease newsRelease : newsReleaseList) {
+            HomePageNewsListVO homePageNewsListVO = new HomePageNewsListVO();
+            BeanUtils.copyProperties(newsRelease,homePageNewsListVO);
+            homePageNewsListVOS.add(homePageNewsListVO);
+        }
+        return Result.success(homePageNewsListVOS);
     }
 
     @Override
