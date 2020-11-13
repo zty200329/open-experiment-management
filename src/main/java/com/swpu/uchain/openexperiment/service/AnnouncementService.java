@@ -128,4 +128,107 @@ public interface AnnouncementService {
      * @return
      */
     Result publishAchievementShow(HomepageAchievementForm homepageAchievementForm);
+
+    /**
+     * 获取所有已发布的成果  不要展示状态
+     * @return
+     */
+    Result getPublishedAchievementShowList();
+
+    /**
+     * 获取所有的 展示状态
+     * @return
+     */
+    Result getAllAchievementShowList();
+
+    /**
+     * 获取成果详情
+     * @param idForm
+     * @return
+     */
+    Result getAchievementById(IdForm idForm);
+
+    /**
+     * 根据主键删除
+     * @param idForm
+     * @return
+     */
+    Result deleteAchievementById(IdForm idForm);
+
+    /**
+     * 修改成果展示状态为发布
+     * @param idForm
+     * @return
+     */
+    Result updateAchievementToPublished(IdForm idForm);
+
+    /**
+     * 修改成果展示状态为保存未发布
+     * @param idForm
+     * @return
+     */
+    Result updateAchievementToSave(IdForm idForm);
+
+    /**
+     * 修改成果展示
+     * @param updateNewsContentForm
+     * @return
+     */
+    Result updateAchievementContent(UpdateAchievementContentForm updateNewsContentForm);
+
+
+
+    /**
+     * 发布公告
+     * @param homePageNewsPublishForm
+     * @return
+     */
+    Result homePagePublishAnnouncement(HomePageNewsPublishForm homePageNewsPublishForm);
+
+    /**
+     * 返回所有已发布首页公告
+     * @return
+     */
+    Result getHomePageAnnouncementList();
+
+    /**
+     * 获取一条公告详情
+     * @param idForm
+     * @return
+     */
+    Result getAnnouncementById(IdForm idForm);
+
+    /**
+     * 更新状态为已发布
+     * @param idForm
+     * @return
+     */
+    Result updateAnnouncementToPublished(IdForm idForm);
+
+
+    /**
+     * 更新状态为已发布
+     * @param idForm
+     * @return
+     */
+    Result updateAnnouncementToSave(IdForm idForm);
+
+    /**
+     * 根据主键id删除
+     * @param idForm
+     * @return
+     */
+    Result deleteAnnouncementById(IdForm idForm);
+
+    /**
+     * 获取所有新闻
+     * @return
+     */
+    Result getAllAnnouncementList();
+    /**
+     * 修改文章内容
+     * @param updateNewsContentForm
+     * @return
+     */
+    Result updateAnnouncementContent(UpdateNewsContentForm updateNewsContentForm);
 }

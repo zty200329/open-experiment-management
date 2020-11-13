@@ -56,6 +56,12 @@ public class RedisCache implements Cache {
             getRedisTemplate().expire(id.toString(),1, TimeUnit.HOURS);
         }
 
+        if("com.swpu.uchain.openexperiment.mapper.HomepageAchievementMapper".equals(id)){
+            //缓存超时
+            log.debug(id);
+            getRedisTemplate().expire(id.toString(),2, TimeUnit.HOURS);
+        }
+
 
 
 

@@ -1,18 +1,13 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
 import com.oracle.tools.packager.Log;
+import com.swpu.uchain.openexperiment.VO.announcement.AchievementShowVO;
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementListVO;
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementVO;
 import com.swpu.uchain.openexperiment.VO.announcement.HomePageNewsListVO;
-import com.swpu.uchain.openexperiment.domain.HomepageAchievement;
-import com.swpu.uchain.openexperiment.domain.NewsRelease;
+import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.form.announcement.*;
-import com.swpu.uchain.openexperiment.mapper.AnnouncementMapper;
-import com.swpu.uchain.openexperiment.mapper.HomepageAchievementMapper;
-import com.swpu.uchain.openexperiment.mapper.NewsReleaseMapper;
-import com.swpu.uchain.openexperiment.mapper.UserMapper;
-import com.swpu.uchain.openexperiment.domain.Announcement;
-import com.swpu.uchain.openexperiment.domain.User;
+import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.enums.AnnouncementStatus;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
@@ -59,6 +54,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     private NewsReleaseMapper newsReleaseMapper;
     @Autowired
     private HomepageAchievementMapper homepageAchievementMapper;
+    @Autowired
+    private HomepageAnnouncementMapper homepageAnnouncementMapper;
 
 
     @Override
@@ -280,6 +277,133 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         homepageAchievement.setUpdateTime(new Date());
         homepageAchievementMapper.insert(homepageAchievement);
         return Result.success();
+    }
+
+    @Override
+    public Result getAchievementById(IdForm idForm) {
+        HomepageAchievement homepageAchievement = homepageAchievementMapper.selectByPrimaryKey(idForm.getId());
+
+        return Result.success(homepageAchievement);
+    }
+
+    @Override
+    public Result deleteAchievementById(IdForm idForm) {
+        homepageAchievementMapper.deleteByPrimaryKey(idForm.getId());
+        return Result.success();
+    }
+
+    @Override
+    public Result updateAchievementToPublished(IdForm idForm) {
+        homepageAchievementMapper.updateStatusByPrimaryKey(1,idForm.getId());
+        return Result.success();
+    }
+
+    @Override
+    public Result updateAchievementToSave(IdForm idForm) {
+        homepageAchievementMapper.updateStatusByPrimaryKey(2,idForm.getId());
+        return Result.success();
+    }
+
+    @Override
+    public Result homePagePublishAnnouncement(HomePageNewsPublishForm homePageNewsPublishForm) {
+        User currentUser = getUserService.getCurrentUser();
+        if (currentUser == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        HomepageAnnouncement homepageAnnouncement = new HomepageAnnouncement();
+        BeanUtils.copyProperties(homePageNewsPublishForm,homepageAnnouncement);
+        homepageAnnouncement.setPublishTime(new Date());
+        homepageAnnouncement.setUpdateTime(new Date());
+        homepageAnnouncement.setRealName(currentUser.getRealName());
+        homepageAnnouncementMapper.insert(homepageAnnouncement);
+        return Result.success();
+    }
+
+    @Override
+    public Result getHomePageAnnouncementList() {
+        List<HomepageAnnouncement> homepageAnnouncements = homepageAnnouncementMapper.selectAllByPublished();
+        List<HomePageNewsListVO> homePageNewsListVOS = new LinkedList<>();
+        for (HomepageAnnouncement newsRelease : homepageAnnouncements) {
+            HomePageNewsListVO homePageNewsListVO = new HomePageNewsListVO();
+            BeanUtils.copyProperties(newsRelease,homePageNewsListVO);
+            homePageNewsListVOS.add(homePageNewsListVO);
+        }
+        return Result.success(homePageNewsListVOS);
+    }
+
+    @Override
+    public Result getAnnouncementById(IdForm idForm) {
+        HomepageAnnouncement homepageAnnouncement = homepageAnnouncementMapper.selectByPrimaryKey(idForm.getId());
+        return Result.success(homepageAnnouncement);
+    }
+
+    @Override
+    public Result updateAnnouncementToPublished(IdForm idForm) {
+        homepageAnnouncementMapper.updateStatusByPrimaryKey((short)1,idForm.getId());
+        return Result.success();
+    }
+
+    @Override
+    public Result updateAnnouncementToSave(IdForm idForm) {
+        homepageAnnouncementMapper.updateStatusByPrimaryKey((short)2,idForm.getId());
+        return Result.success();
+    }
+
+    @Override
+    public Result deleteAnnouncementById(IdForm idForm) {
+        homepageAnnouncementMapper.deleteByPrimaryKey(idForm.getId());
+        return Result.success();
+    }
+
+    @Override
+    public Result updateAnnouncementContent(UpdateNewsContentForm updateNewsContentForm) {
+        homepageAnnouncementMapper.updateByPrimaryKey(updateNewsContentForm);
+
+        return Result.success();
+    }
+
+    @Override
+    public Result getAllAnnouncementList() {
+        List<HomepageAnnouncement> homepageAnnouncements = homepageAnnouncementMapper.selectAll();
+        List<HomePageNewsListVO> homePageNewsListVOS = new LinkedList<>();
+        for (HomepageAnnouncement newsRelease : homepageAnnouncements) {
+            HomePageNewsListVO homePageNewsListVO = new HomePageNewsListVO();
+            BeanUtils.copyProperties(newsRelease,homePageNewsListVO);
+            homePageNewsListVOS.add(homePageNewsListVO);
+        }
+        return Result.success(homePageNewsListVOS);
+    }
+
+    @Override
+    public Result updateAchievementContent(UpdateAchievementContentForm updateNewsContentForm) {
+        homepageAchievementMapper.updateByPrimaryKey(updateNewsContentForm);
+        return Result.success();
+    }
+
+    @Override
+    public Result getAllAchievementShowList() {
+        List<HomepageAchievement> achievements = homepageAchievementMapper.selectAll();
+        return getResult(achievements);
+    }
+
+    private Result getResult(List<HomepageAchievement> achievements) {
+        List<AchievementShowVO> achievementShowVOList = new LinkedList<>();
+        for (HomepageAchievement achievement : achievements) {
+            AchievementShowVO achievementShowVO = new AchievementShowVO();
+            BeanUtils.copyProperties(achievement,achievementShowVO);
+            achievementShowVOList.add(achievementShowVO);
+        }
+        return Result.success(achievementShowVOList);
+    }
+
+    /**
+     * 获取所有已发布的 有二级缓存
+     * @return
+     */
+    @Override
+    public Result getPublishedAchievementShowList() {
+        List<HomepageAchievement> achievements = homepageAchievementMapper.selectAllPublished();
+        return getResult(achievements);
     }
 
     @Override

@@ -99,9 +99,5 @@ public class AnnouncementController {
         return announcementService.cancelPublish(announcementId);
     }
 
-    @ApiOperation("发布成果展示")
-    @PostMapping("/publishAchievementShow")
-    public Result publishAchievementShow(@RequestBody @Valid HomepageAchievementForm homepageAchievementForm){
-        return announcementService.publishAchievementShow(homepageAchievementForm);
-    }
+
 }
