@@ -1,8 +1,6 @@
 package com.swpu.uchain.openexperiment.controller;
 
-import com.swpu.uchain.openexperiment.form.announcement.HomePageNewsPublishForm;
-import com.swpu.uchain.openexperiment.form.announcement.IdForm;
-import com.swpu.uchain.openexperiment.form.announcement.UpdateNewsContentForm;
+import com.swpu.uchain.openexperiment.form.announcement.*;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AnnouncementService;
 import io.swagger.annotations.Api;
@@ -49,7 +47,7 @@ public class HomePageController {
         return announcementService.getNewsById(idForm);
     }
 
-    @ApiOperation("根据主键id删除")
+    @ApiOperation("根据主键id删除新闻")
     @GetMapping("/deleteNewsById")
     public Result deleteNewsById(@RequestBody @Valid IdForm idForm){
         return announcementService.deleteNewsById(idForm);
@@ -73,6 +71,102 @@ public class HomePageController {
         return announcementService.updateNewsContent(updateNewsContentForm);
     }
 
+    @ApiOperation("发布成果展示")
+    @PostMapping("/publishAchievementShow")
+    public Result publishAchievementShow(@RequestBody @Valid HomepageAchievementForm homepageAchievementForm){
+        return announcementService.publishAchievementShow(homepageAchievementForm);
+    }
+
+    @ApiOperation("获取所有已发布成果  不用展示状态")
+    @GetMapping("/getPublishedAchievementShowList")
+    public Result getPublishedAchievementShowList(){
+        return announcementService.getPublishedAchievementShowList();
+    }
+
+    @ApiOperation("获取所有成果  展示状态")
+    @GetMapping("/getAllAchievementShowList")
+    public Result getAllAchievementShowList(){
+        return announcementService.getAllAchievementShowList();
+    }
+
+    @ApiOperation("获取一条成果详情")
+    @GetMapping("/getAchievementById")
+    public Result getAchievementById(@RequestBody @Valid IdForm idForm){
+        return announcementService.getAchievementById(idForm);
+    }
 
 
+    @ApiOperation("根据主键id删除成果")
+    @GetMapping("/deleteAchievementById")
+    public Result deleteAchievementById(@RequestBody @Valid IdForm idForm){
+        return announcementService.deleteAchievementById(idForm);
+    }
+
+    @ApiOperation("修改成果展示状态为发布")
+    @GetMapping("/updateAchievementToPublished")
+    public Result updateAchievementToPublished(@RequestBody @Valid IdForm idForm){
+        return announcementService.updateAchievementToPublished(idForm);
+    }
+
+    @ApiOperation("修改成果展示状态为保存未发布")
+    @GetMapping("/updateAchievementToSave")
+    public Result updateAchievementToSave(@RequestBody @Valid IdForm idForm){
+        return announcementService.updateAchievementToSave(idForm);
+    }
+
+    @ApiOperation("修改成果展示")
+    @PostMapping("/updateAchievementContent")
+    public Result updateAchievementContent(@RequestBody @Valid UpdateAchievementContentForm updateNewsContentForm){
+        return announcementService.updateAchievementContent(updateNewsContentForm);
+    }
+
+
+
+    @ApiOperation("首页发布公告")
+    @PostMapping("/homePagePublishAnnouncement")
+    public Result homePagePublishAnnouncement(@RequestBody @Valid HomePageNewsPublishForm homePageNewsPublishForm){
+        return announcementService.homePagePublishAnnouncement(homePageNewsPublishForm);
+    }
+
+    @ApiOperation("获取所有已发布公告  不用展示状态")
+    @GetMapping("/getHomePageNewsList")
+    public Result getHomePageAnnouncementList(){
+        return announcementService.getHomePageAnnouncementList();
+    }
+
+    @ApiOperation("获取所有公告 用于后台展示 要展示状态")
+    @GetMapping("/getAllAnnouncementList")
+    public Result getAllAnnouncementList(){
+        return announcementService.getAllAnnouncementList();
+    }
+
+    @ApiOperation("获取一条公告详情")
+    @GetMapping("/getAnnouncementById")
+    public Result getAnnouncementById(@RequestBody @Valid IdForm idForm){
+        return announcementService.getAnnouncementById(idForm);
+    }
+
+    @ApiOperation("根据主键id删除公告")
+    @GetMapping("/deleteAnnouncementById")
+    public Result deleteAnnouncementById(@RequestBody @Valid IdForm idForm){
+        return announcementService.deleteAnnouncementById(idForm);
+    }
+
+    @ApiOperation("修改公告状态为发布")
+    @GetMapping("/updateAnnouncementToPublished")
+    public Result updateAnnouncementToPublished(@RequestBody @Valid IdForm idForm){
+        return announcementService.updateAnnouncementToPublished(idForm);
+    }
+
+    @ApiOperation("修改公告状态为保存未发布")
+    @GetMapping("/updateAnnouncementToSave")
+    public Result updateAnnouncementToSave(@RequestBody @Valid IdForm idForm){
+        return announcementService.updateAnnouncementToSave(idForm);
+    }
+
+    @ApiOperation("修改新闻内容")
+    @PostMapping("/updateAnnouncementContent")
+    public Result updateAnnouncementContent(@RequestBody @Valid UpdateNewsContentForm updateNewsContentForm){
+        return announcementService.updateAnnouncementContent(updateNewsContentForm);
+    }
 }
