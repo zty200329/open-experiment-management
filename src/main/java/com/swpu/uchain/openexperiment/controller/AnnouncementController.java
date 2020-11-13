@@ -2,10 +2,7 @@ package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
-import com.swpu.uchain.openexperiment.form.announcement.AnnouncementPublishForm;
-import com.swpu.uchain.openexperiment.form.announcement.AnnouncementUpdateForm;
-import com.swpu.uchain.openexperiment.form.announcement.HomePageNewsPublishForm;
-import com.swpu.uchain.openexperiment.form.announcement.QueryCondition;
+import com.swpu.uchain.openexperiment.form.announcement.*;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AnnouncementService;
 import io.swagger.annotations.Api;
@@ -57,7 +54,35 @@ public class AnnouncementController {
         return announcementService.getAllNewsList();
     }
 
+    @ApiOperation("获取一条新闻详情")
+    @GetMapping("/getNewsById")
+    public Result getNewsById(@RequestBody @Valid IdForm idForm){
+        return announcementService.getNewsById(idForm);
+    }
 
+    @ApiOperation("根据主键id删除")
+    @GetMapping("/deleteNewsById")
+    public Result deleteNewsById(@RequestBody @Valid IdForm idForm){
+        return announcementService.deleteNewsById(idForm);
+    }
+
+    @ApiOperation("修改新闻状态为发布")
+    @GetMapping("/updateToPublished")
+    public Result updateToPublished(@RequestBody @Valid IdForm idForm){
+        return announcementService.updateToPublished(idForm);
+    }
+
+    @ApiOperation("修改新闻状态为保存未发布")
+    @GetMapping("/updateToSave")
+    public Result updateToSave(@RequestBody @Valid IdForm idForm){
+        return announcementService.updateToSave(idForm);
+    }
+
+    @ApiOperation("修改新闻内容")
+    @PostMapping("/updateNewsContent")
+    public Result updateNewsContent(@RequestBody @Valid UpdateNewsContentForm updateNewsContentForm){
+        return announcementService.updateNewsContent(updateNewsContentForm);
+    }
 
     @ApiOperation("阅读公告详情")
     @GetMapping(value = "/readDetail", name = "阅读公告详情")

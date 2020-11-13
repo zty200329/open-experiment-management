@@ -24,14 +24,18 @@
       #{publishTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=SMALLINT}, 
       #{content,jdbcType=LONGVARCHAR})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.NewsRelease" >
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.form.announcement.UpdateNewsContentForm" >
     update news_release
-    set real_name = #{realName,jdbcType=VARCHAR},
+    set
       title = #{title,jdbcType=VARCHAR},
-      publish_time = #{publishTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      `status` = #{status,jdbcType=SMALLINT},
       content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateStatusByPrimaryKey" parameterType="java.lang.Integer" >
+    update news_release
+    set
+      `status` = #{status,jdbcType=SMALLINT},
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >

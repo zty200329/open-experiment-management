@@ -5,7 +5,7 @@ import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementListVO;
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementVO;
 import com.swpu.uchain.openexperiment.VO.announcement.HomePageNewsListVO;
 import com.swpu.uchain.openexperiment.domain.NewsRelease;
-import com.swpu.uchain.openexperiment.form.announcement.HomePageNewsPublishForm;
+import com.swpu.uchain.openexperiment.form.announcement.*;
 import com.swpu.uchain.openexperiment.mapper.AnnouncementMapper;
 import com.swpu.uchain.openexperiment.mapper.NewsReleaseMapper;
 import com.swpu.uchain.openexperiment.mapper.UserMapper;
@@ -14,9 +14,6 @@ import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.AnnouncementStatus;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
-import com.swpu.uchain.openexperiment.form.announcement.AnnouncementPublishForm;
-import com.swpu.uchain.openexperiment.form.announcement.AnnouncementUpdateForm;
-import com.swpu.uchain.openexperiment.form.announcement.QueryCondition;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.AnnouncementKey;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -27,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.generic.NEW;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.metrics.export.newrelic.NewRelicMetricsExportAutoConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -109,6 +107,40 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
+    public Result getNewsById(IdForm idForm) {
+        NewsRelease newsRelease = newsReleaseMapper.selectByPrimaryKey(idForm.getId());
+        return Result.success(newsRelease);
+    }
+
+    /**
+     * 保存状态改为发布状态
+     * @param idForm
+     * @return
+     */
+    @Override
+    public Result updateToPublished(IdForm idForm) {
+        newsReleaseMapper.updateStatusByPrimaryKey((short)1,idForm.getId());
+        return Result.success();
+    }
+
+    /**
+     * 保存状态改为发布状态
+     * @param idForm
+     * @return
+     */
+    @Override
+    public Result updateToSave(IdForm idForm) {
+        newsReleaseMapper.updateStatusByPrimaryKey((short)2,idForm.getId());
+        return Result.success();
+    }
+
+    @Override
+    public Result deleteNewsById(IdForm idForm) {
+        newsReleaseMapper.deleteByPrimaryKey(idForm.getId());
+        return Result.success();
+    }
+
+    @Override
     public Result getAllNewsList() {
         List<NewsRelease> newsReleaseList = newsReleaseMapper.selectAll();
         List<HomePageNewsListVO> homePageNewsListVOS = new LinkedList<>();
@@ -145,6 +177,18 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             homePageNewsListVOS.add(homePageNewsListVO);
         }
         return Result.success(homePageNewsListVOS);
+    }
+
+    /**
+     * 修改文章内容
+     * @param updateNewsContentForm
+     * @return
+     */
+    @Override
+    public Result updateNewsContent(UpdateNewsContentForm updateNewsContentForm) {
+        newsReleaseMapper.updateByPrimaryKey(updateNewsContentForm);
+
+        return Result.success();
     }
 
     @Override

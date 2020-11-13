@@ -1,10 +1,7 @@
 package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.Announcement;
-import com.swpu.uchain.openexperiment.form.announcement.AnnouncementPublishForm;
-import com.swpu.uchain.openexperiment.form.announcement.AnnouncementUpdateForm;
-import com.swpu.uchain.openexperiment.form.announcement.HomePageNewsPublishForm;
-import com.swpu.uchain.openexperiment.form.announcement.QueryCondition;
+import com.swpu.uchain.openexperiment.form.announcement.*;
 import com.swpu.uchain.openexperiment.result.Result;
 import io.swagger.models.auth.In;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -58,6 +55,34 @@ public interface AnnouncementService {
      */
     Result getHomePageNewsList();
 
+    /**
+     * 获取一条新闻详情
+     * @param idForm
+     * @return
+     */
+    Result getNewsById(IdForm idForm);
+
+    /**
+     * 更新状态为已发布
+     * @param idForm
+     * @return
+     */
+    Result updateToPublished(IdForm idForm);
+
+
+    /**
+     * 更新状态为已发布
+     * @param idForm
+     * @return
+     */
+    Result updateToSave(IdForm idForm);
+
+    /**
+     * 根据主键id删除
+     * @param idForm
+     * @return
+     */
+    Result deleteNewsById(IdForm idForm);
 
     /**
      * 获取所有新闻
@@ -72,6 +97,13 @@ public interface AnnouncementService {
      */
     Result readAnnouncementDetail(Long announcementId);
 
+
+    /**
+     * 修改文章内容
+     * @param updateNewsContentForm
+     * @return
+     */
+    Result updateNewsContent(UpdateNewsContentForm updateNewsContentForm);
 
     /**
      * 获取公告指定分页数据
