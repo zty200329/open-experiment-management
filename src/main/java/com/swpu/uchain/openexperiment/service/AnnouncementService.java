@@ -58,6 +58,13 @@ public interface AnnouncementService {
      */
     Result getHomePageNewsList();
 
+
+    /**
+     * 获取所有新闻
+     * @return
+     */
+    Result getAllNewsList();
+
     /**
      * 查看公告详情
      * @param announcementId

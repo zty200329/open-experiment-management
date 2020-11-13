@@ -109,6 +109,18 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
+    public Result getAllNewsList() {
+        List<NewsRelease> newsReleaseList = newsReleaseMapper.selectAll();
+        List<HomePageNewsListVO> homePageNewsListVOS = new LinkedList<>();
+        for (NewsRelease newsRelease : newsReleaseList) {
+            HomePageNewsListVO homePageNewsListVO = new HomePageNewsListVO();
+            BeanUtils.copyProperties(newsRelease,homePageNewsListVO);
+            homePageNewsListVOS.add(homePageNewsListVO);
+        }
+        return Result.success(homePageNewsListVOS);
+    }
+
+    @Override
     public Result homePagePublishNews(HomePageNewsPublishForm homePageNewsPublishForm) {
         User currentUser = getUserService.getCurrentUser();
         if (currentUser == null){
@@ -125,7 +137,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     @Override
     public Result getHomePageNewsList() {
-        List<NewsRelease> newsReleaseList = newsReleaseMapper.selectAll();
+        List<NewsRelease> newsReleaseList = newsReleaseMapper.selectAllByPublished();
         List<HomePageNewsListVO> homePageNewsListVOS = new LinkedList<>();
         for (NewsRelease newsRelease : newsReleaseList) {
             HomePageNewsListVO homePageNewsListVO = new HomePageNewsListVO();

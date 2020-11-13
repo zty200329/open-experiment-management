@@ -31,7 +31,7 @@ download:
 file:
 #  ipaddress: "http://192.168.43.29:8083"
 #  ip-address: "http://192.168.43.153:8083"
-  ip-address: "http://192.168.1.113:8083"
+  ip-address: "http://192.168.1.102:8083"
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

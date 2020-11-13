@@ -45,11 +45,18 @@ public class AnnouncementController {
         return announcementService.homePagePublishNews(homePageNewsPublishForm);
     }
 
-    @ApiOperation("获取所有新闻")
+    @ApiOperation("获取所有已发布新闻  不用展示状态")
     @GetMapping("/getHomePageNewsList")
     public Result getHomePageNewsList(){
         return announcementService.getHomePageNewsList();
     }
+
+    @ApiOperation("获取所有新闻 用于后台展示 要展示状态")
+    @GetMapping("/getAllNewsList")
+    public Result getAllNewsList(){
+        return announcementService.getAllNewsList();
+    }
+
 
 
     @ApiOperation("阅读公告详情")

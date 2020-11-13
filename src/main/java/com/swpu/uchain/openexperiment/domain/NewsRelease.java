@@ -27,7 +27,7 @@ public class NewsRelease implements Serializable {
     private Date updateTime;
 
     /**
-     * 状态 1发布 0保存
+     * 状态 1发布 2保存
      */
     private Short status;
 

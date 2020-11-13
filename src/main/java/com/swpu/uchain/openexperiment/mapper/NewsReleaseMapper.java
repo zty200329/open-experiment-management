@@ -16,7 +16,7 @@ public interface NewsReleaseMapper {
     List<NewsRelease> selectAll();
 
     /**
-     * 根据是否发布来查询
+     * 查询所有发布的
      * @return
      */
     List<NewsRelease> selectAllByPublished();
