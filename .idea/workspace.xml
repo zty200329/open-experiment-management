@@ -32,19 +32,12 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="82ec9892-b480-433b-9f2a-71559d579314" name="Default Changelist" comment="1112首页 引入新闻更新">
+    <list default="true" id="82ec9892-b480-433b-9f2a-71559d579314" name="Default Changelist" comment="1112首页 新闻部分">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/controller/AnnouncementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/controller/AnnouncementController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/mapper/NewsReleaseMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/mapper/NewsReleaseMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/AnnouncementService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/AnnouncementService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/AnnouncementServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/AnnouncementServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mappers/NewsReleaseMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mappers/NewsReleaseMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/VO/announcement/HomePageNewsListVO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/VO/announcement/HomePageNewsListVO.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/controller/AnnouncementController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/controller/AnnouncementController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/mapper/NewsReleaseMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/mapper/NewsReleaseMapper.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/AnnouncementService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/AnnouncementService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/impl/AnnouncementServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/swpu/uchain/openexperiment/service/impl/AnnouncementServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/mappers/NewsReleaseMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/mappers/NewsReleaseMapper.xml" afterDir="false" />
     </list>
     <list id="5e1931cf-d658-4ee3-948b-de25b54beb91" name="添加评审分组" comment="添加评审分组&#10;&#10;(cherry picked from commit 92bc631d0655aea324425ff2517f297a3751aa59)">
       <changelist_data name="panghu" email="792559738@qq.com" date="1569981204000" />
@@ -127,7 +120,7 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.appearance" />
     <property name="show.run.dashboard.notification" value="false" />
   </component>
   <component name="ReactorSettings">
@@ -434,21 +427,7 @@
       <workItem from="1603981323288" duration="11997000" />
       <workItem from="1604370130930" duration="21558000" />
       <workItem from="1604995033252" duration="3133000" />
-      <workItem from="1605146458848" duration="23520000" />
-    </task>
-    <task id="LOCAL-00093" summary="714 重点项目职能部门复核">
-      <created>1594723813689</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1594723813689</updated>
-    </task>
-    <task id="LOCAL-00094" summary="716">
-      <created>1594889580953</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
-      <option name="project" value="LOCAL" />
-      <updated>1594889580954</updated>
+      <workItem from="1605146458848" duration="25751000" />
     </task>
     <task id="LOCAL-00095" summary="716">
       <created>1594891294760</created>
@@ -779,7 +758,21 @@
       <option name="project" value="LOCAL" />
       <updated>1605235579931</updated>
     </task>
-    <option name="localTasksCounter" value="142" />
+    <task id="LOCAL-00142" summary="1112首页 新闻部分">
+      <created>1605238663676</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1605238663676</updated>
+    </task>
+    <task id="LOCAL-00143" summary="1112首页 新闻部分">
+      <created>1605238669827</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1605238669827</updated>
+    </task>
+    <option name="localTasksCounter" value="144" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -846,7 +839,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="104更新 新加一张表 need_project_review" />
     <MESSAGE value="104更新 2" />
     <MESSAGE value="106更新" />
     <MESSAGE value="普通项目修改前" />
@@ -871,7 +863,8 @@
     <MESSAGE value="1112首页更新" />
     <MESSAGE value="1112首页 引入新闻更新 引入mybatis二级缓存" />
     <MESSAGE value="1112首页 引入新闻更新" />
-    <option name="LAST_COMMIT_MESSAGE" value="1112首页 引入新闻更新" />
+    <MESSAGE value="1112首页 新闻部分" />
+    <option name="LAST_COMMIT_MESSAGE" value="1112首页 新闻部分" />
   </component>
   <component name="WindowStateProjectService">
     <state x="347" y="14" key="#AmountLimitMapperTest.test_(1)" timestamp="1601780807791">
@@ -891,10 +884,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1601797765364" />
-    <state x="576" y="200" width="331" height="499" key="#com.intellij.ide.util.MemberChooser" timestamp="1605237878793">
+    <state x="576" y="200" width="331" height="499" key="#com.intellij.ide.util.MemberChooser" timestamp="1605238534603">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="576" y="200" width="331" height="499" key="#com.intellij.ide.util.MemberChooser/0.0.1440.900/1440.-180.1920.1080@0.0.1440.900" timestamp="1605237878793" />
+    <state x="576" y="200" width="331" height="499" key="#com.intellij.ide.util.MemberChooser/0.0.1440.900/1440.-180.1920.1080@0.0.1440.900" timestamp="1605238534603" />
     <state x="614" y="183" width="337" height="456" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602133126777" />
     <state x="576" y="218" key="#com.intellij.ide.util.MemberChooser/0.23.1440.877/1440.-180.1920.1025@0.23.1440.877" timestamp="1605187707489" />
     <state x="328" y="351" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1601989433297">
@@ -1151,11 +1144,11 @@
     </state>
     <state x="2515" y="280" key="MultipleFileMergeDialog/0.0.1536.824/1920.0.1920.1040/1919.1080.1366.984@1920.0.1920.1040" timestamp="1603184795738" />
     <state x="2515" y="280" key="MultipleFileMergeDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603163790623" />
-    <state x="134" y="0" width="1306" height="900" key="SettingsEditor" timestamp="1605180457158">
+    <state x="134" y="0" width="1306" height="900" key="SettingsEditor" timestamp="1605258978332">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="134" y="0" key="SettingsEditor/0.0.1440.900/1440.-157.1920.1057@0.0.1440.900" timestamp="1603785516516" />
-    <state x="134" y="0" width="1306" height="900" key="SettingsEditor/0.0.1440.900/1440.-180.1920.1080@0.0.1440.900" timestamp="1605180457158" />
+    <state x="134" y="0" width="1306" height="900" key="SettingsEditor/0.0.1440.900/1440.-180.1920.1080@0.0.1440.900" timestamp="1605258978332" />
     <state x="1618" y="-180" key="SettingsEditor/0.0.1440.900/1440.-180.1920.1080@1440.-180.1920.1080" timestamp="1603863279006" />
     <state x="347" y="0" key="SettingsEditor/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1601797157325" />
     <state x="2281" y="77" width="1393" height="955" key="SettingsEditor/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601774934536" />
@@ -1167,10 +1160,10 @@
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="2468" y="199" key="VCS.ChangeListViewerDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603163706171" />
-    <state x="492" y="275" width="800" height="532" key="Vcs.Push.Dialog.v2" timestamp="1605192039246">
+    <state x="217" y="122" width="800" height="532" key="Vcs.Push.Dialog.v2" timestamp="1605238679866">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="492" y="275" key="Vcs.Push.Dialog.v2/0.0.1440.900/1440.-180.1920.1080@0.0.1440.900" timestamp="1605192039246" />
+    <state x="217" y="122" key="Vcs.Push.Dialog.v2/0.0.1440.900/1440.-180.1920.1080@0.0.1440.900" timestamp="1605238679866" />
     <state x="2475" y="264" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040/1919.1080.1366.984@1920.0.1920.1040" timestamp="1603185262031" />
     <state x="444" y="209" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1602729015743" />
     <state x="2475" y="264" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603247004344" />
@@ -1182,7 +1175,7 @@
       <screen x="1440" y="-180" width="1920" height="1080" />
     </state>
     <state x="2198" y="281" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1440.900/1440.-180.1920.1080@0.0.1440.900" timestamp="1605192208067" />
-    <state x="1440" y="-180" width="1920" height="1080" key="dock-window-1" timestamp="1605235623609">
+    <state x="1440" y="-180" width="1920" height="1080" key="dock-window-1" timestamp="1605257229904">
       <screen x="1440" y="-180" width="1920" height="1080" />
     </state>
     <state x="1440" y="-180" width="1920" height="1080" key="dock-window-1/0.0.1440.821/1440.-157.1920.1057@0.0.1440.821" timestamp="1603963939363" />
@@ -1192,7 +1185,7 @@
     <state x="1440" y="-180" width="1920" height="1080" key="dock-window-1/0.0.1440.900/1440.-157.1920.1057@0.0.1440.900" timestamp="1605189277078" />
     <state x="1440" y="-180" width="1920" height="1080" key="dock-window-1/0.0.1440.900/1440.-157.1920.977@0.0.1440.900" timestamp="1604371699029" />
     <state x="1440" y="-180" width="1920" height="1080" key="dock-window-1/0.0.1440.900/1440.-180.1920.1000@0.23.1440.877" timestamp="1604281302508" />
-    <state x="1440" y="-180" width="1920" height="1080" maximized="true" key="dock-window-1/0.0.1440.900/1440.-180.1920.1080@0.0.1440.900" timestamp="1605191882936" />
+    <state x="1440" y="-180" width="1920" height="1080" key="dock-window-1/0.0.1440.900/1440.-180.1920.1080@0.0.1440.900" timestamp="1605257229904" />
     <state x="1440" y="-180" width="1920" height="1080" maximized="true" key="dock-window-1/0.0.1440.900/1440.-180.1920.1080@0.23.1440.822" timestamp="1605234594841" />
     <state x="0" y="0" width="1440" height="900" key="dock-window-1/0.0.1440.900@0.0.1440.900" timestamp="1604297109999" />
     <state x="2336" y="0" width="963" height="810" maximized="true" key="dock-window-1/0.0.1536.824/1920.-540.2560.1400@0.0.1536.824" timestamp="1603591931160" />
