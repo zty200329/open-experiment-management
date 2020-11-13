@@ -4,9 +4,11 @@ import com.oracle.tools.packager.Log;
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementListVO;
 import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementVO;
 import com.swpu.uchain.openexperiment.VO.announcement.HomePageNewsListVO;
+import com.swpu.uchain.openexperiment.domain.HomepageAchievement;
 import com.swpu.uchain.openexperiment.domain.NewsRelease;
 import com.swpu.uchain.openexperiment.form.announcement.*;
 import com.swpu.uchain.openexperiment.mapper.AnnouncementMapper;
+import com.swpu.uchain.openexperiment.mapper.HomepageAchievementMapper;
 import com.swpu.uchain.openexperiment.mapper.NewsReleaseMapper;
 import com.swpu.uchain.openexperiment.mapper.UserMapper;
 import com.swpu.uchain.openexperiment.domain.Announcement;
@@ -19,6 +21,7 @@ import com.swpu.uchain.openexperiment.redis.key.AnnouncementKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AnnouncementService;
 import com.swpu.uchain.openexperiment.service.GetUserService;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.generic.NEW;
@@ -54,6 +57,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     private GetUserService getUserService;
     @Autowired
     private NewsReleaseMapper newsReleaseMapper;
+    @Autowired
+    private HomepageAchievementMapper homepageAchievementMapper;
 
 
     @Override
@@ -254,6 +259,26 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     public Result cancelPublish(Long announcementId) {
         redisService.delete(AnnouncementKey.getById, announcementId + "");
         announcementMapper.updateAnnouncementStatusById(AnnouncementStatus.SAVE.getValue(),announcementId);
+        return Result.success();
+    }
+
+    /**
+     * 发布成果展示
+     * @param homepageAchievementForm
+     * @return
+     */
+    @Override
+    public Result publishAchievementShow(HomepageAchievementForm homepageAchievementForm) {
+        User currentUser = getUserService.getCurrentUser();
+        if (currentUser == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        HomepageAchievement homepageAchievement = new HomepageAchievement();
+        BeanUtils.copyProperties(homepageAchievementForm,homepageAchievement);
+        homepageAchievement.setRealName(currentUser.getRealName());
+        homepageAchievement.setPublishTime(new Date());
+        homepageAchievement.setUpdateTime(new Date());
+        homepageAchievementMapper.insert(homepageAchievement);
         return Result.success();
     }
 

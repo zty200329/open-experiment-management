@@ -121,4 +121,11 @@ public interface AnnouncementService {
     Result cancelPublish(Long announcementId);
 
     Result queryByCondition(QueryCondition condition);
+
+    /**
+     * 发布成果展示
+     * @param homepageAchievementForm
+     * @return
+     */
+    Result publishAchievementShow(HomepageAchievementForm homepageAchievementForm);
 }

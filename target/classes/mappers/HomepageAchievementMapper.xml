@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swpu.uchain.openexperiment.mapper.HomepageAchievementMapper" >
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.HomepageAchievement" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+    <result column="project_name" property="projectName" jdbcType="VARCHAR" />
+    <result column="subordinate_college" property="subordinateCollege" jdbcType="VARCHAR" />
+    <result column="project_type" property="projectType" jdbcType="INTEGER" />
+    <result column="experiment_type" property="experimentType" jdbcType="INTEGER" />
+    <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from homepage_achievement
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.HomepageAchievement" >
+    insert into homepage_achievement (real_name, img_url,
+      project_name, subordinate_college, project_type, 
+      experiment_type, publish_time, update_time, 
+      `status`, start_date, end_time, 
+      content)
+    values ( #{realName,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR},
+      #{projectName,jdbcType=VARCHAR}, #{subordinateCollege,jdbcType=VARCHAR}, #{projectType,jdbcType=INTEGER}, 
+      #{experimentType,jdbcType=INTEGER}, #{publishTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER}, #{startDate,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.HomepageAchievement" >
+    update homepage_achievement
+    set real_name = #{realName,jdbcType=VARCHAR},
+      img_url = #{imgUrl,jdbcType=VARCHAR},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      subordinate_college = #{subordinateCollege,jdbcType=VARCHAR},
+      project_type = #{projectType,jdbcType=INTEGER},
+      experiment_type = #{experimentType,jdbcType=INTEGER},
+      publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      `status` = #{status,jdbcType=INTEGER},
+      start_date = #{startDate,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, real_name, img_url, project_name, subordinate_college, project_type, experiment_type, 
+    publish_time, update_time, `status`, start_date, end_time, content
+    from homepage_achievement
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, real_name, img_url, project_name, subordinate_college, project_type, experiment_type, 
+    publish_time, update_time, `status`, start_date, end_time, content
+    from homepage_achievement
+  </select>
+</mapper>
