@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.swpu.uchain.openexperiment.mapper.HomepageAchievementMapper" >
+  <!--开启mybatis二级缓存-->
+  <cache  type="com.swpu.uchain.openexperiment.cache.RedisCache"/>
   <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.HomepageAchievement" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="real_name" property="realName" jdbcType="VARCHAR" />
@@ -32,7 +34,13 @@
       #{status,jdbcType=INTEGER}, #{startDate,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
       #{content,jdbcType=LONGVARCHAR})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.HomepageAchievement" >
+  <update id="updateStatusByPrimaryKey" parameterType="java.lang.Integer" >
+    update homepage_achievement
+    set
+      `status` = #{status},
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.form.announcement.UpdateAchievementContentForm" >
     update homepage_achievement
     set real_name = #{realName,jdbcType=VARCHAR},
       img_url = #{imgUrl,jdbcType=VARCHAR},
@@ -40,8 +48,6 @@
       subordinate_college = #{subordinateCollege,jdbcType=VARCHAR},
       project_type = #{projectType,jdbcType=INTEGER},
       experiment_type = #{experimentType,jdbcType=INTEGER},
-      publish_time = #{publishTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
       `status` = #{status,jdbcType=INTEGER},
       start_date = #{startDate,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
@@ -58,5 +64,11 @@
     select id, real_name, img_url, project_name, subordinate_college, project_type, experiment_type, 
     publish_time, update_time, `status`, start_date, end_time, content
     from homepage_achievement
+  </select>
+  <select id="selectAllPublished" resultMap="BaseResultMap" >
+    select id, real_name, img_url, project_name, subordinate_college, project_type, experiment_type,
+    publish_time, update_time, `status`, start_date, end_time, content
+    from homepage_achievement
+    where status = 1
   </select>
 </mapper>

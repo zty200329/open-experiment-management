@@ -129,7 +129,7 @@ public class HomePageController {
     }
 
     @ApiOperation("获取所有已发布公告  不用展示状态")
-    @GetMapping("/getHomePageNewsList")
+    @GetMapping("/getHomePageAnnouncementList")
     public Result getHomePageAnnouncementList(){
         return announcementService.getHomePageAnnouncementList();
     }
