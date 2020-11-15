@@ -12,5 +12,5 @@ import javax.validation.constraints.NotNull;
 @Data
 public class IdForm {
     @NotNull(message = "id不能为空")
-    Integer id;
+    private Integer id;
 }
