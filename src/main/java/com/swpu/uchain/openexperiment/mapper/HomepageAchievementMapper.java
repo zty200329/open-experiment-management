@@ -25,5 +25,7 @@ public interface HomepageAchievementMapper {
 
     int updateByPrimaryKey(UpdateAchievementContentForm updateNewsContentFor);
 
-    int updateStatusByPrimaryKey(@Param("status") Integer status, @Param("id")Integer id);
+    int updateStatusByPrimaryKey1( @Param("id")Integer id);
+
+    int updateStatusByPrimaryKey2(@Param("id")Integer id);
 }

@@ -121,18 +121,18 @@ public class AnnouncementServiceImpl implements AnnouncementService {
      */
     @Override
     public Result updateToPublished(IdForm idForm) {
-        newsReleaseMapper.updateStatusByPrimaryKey((short)1,idForm.getId());
+        newsReleaseMapper.updateStatusByPrimaryKey1(idForm.getId());
         return Result.success();
     }
 
     /**
-     * 保存状态改为发布状态
+     * 改为保存
      * @param idForm
      * @return
      */
     @Override
     public Result updateToSave(IdForm idForm) {
-        newsReleaseMapper.updateStatusByPrimaryKey((short)2,idForm.getId());
+        newsReleaseMapper.updateStatusByPrimaryKey2(idForm.getId());
         return Result.success();
     }
 
@@ -294,13 +294,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     @Override
     public Result updateAchievementToPublished(IdForm idForm) {
-        homepageAchievementMapper.updateStatusByPrimaryKey(1,idForm.getId());
+        homepageAchievementMapper.updateStatusByPrimaryKey1(idForm.getId());
         return Result.success();
     }
 
     @Override
     public Result updateAchievementToSave(IdForm idForm) {
-        homepageAchievementMapper.updateStatusByPrimaryKey(2,idForm.getId());
+        homepageAchievementMapper.updateStatusByPrimaryKey2(idForm.getId());
         return Result.success();
     }
 
@@ -339,13 +339,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     @Override
     public Result updateAnnouncementToPublished(IdForm idForm) {
-        homepageAnnouncementMapper.updateStatusByPrimaryKey((short)1,idForm.getId());
+        homepageAnnouncementMapper.updateStatusByPrimaryKey1(idForm.getId());
         return Result.success();
     }
 
     @Override
     public Result updateAnnouncementToSave(IdForm idForm) {
-        homepageAnnouncementMapper.updateStatusByPrimaryKey((short)2,idForm.getId());
+        homepageAnnouncementMapper.updateStatusByPrimaryKey2(idForm.getId());
         return Result.success();
     }
 

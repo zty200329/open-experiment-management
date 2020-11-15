@@ -34,10 +34,16 @@
       #{status,jdbcType=INTEGER}, #{startDate,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
       #{content,jdbcType=LONGVARCHAR})
   </insert>
-  <update id="updateStatusByPrimaryKey" parameterType="java.lang.Integer" >
+  <update id="updateStatusByPrimaryKey1" parameterType="java.lang.Integer" >
     update homepage_achievement
     set
-      `status` = #{status},
+      `status` = 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateStatusByPrimaryKey2" parameterType="java.lang.Integer" >
+    update homepage_achievement
+    set
+      `status` = 2
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.form.announcement.UpdateAchievementContentForm" >

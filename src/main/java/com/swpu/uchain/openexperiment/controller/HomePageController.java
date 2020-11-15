@@ -42,25 +42,25 @@ public class HomePageController {
     }
 
     @ApiOperation("获取一条新闻详情")
-    @GetMapping("/getNewsById")
+    @PostMapping("/getNewsById")
     public Result getNewsById(@RequestBody @Valid IdForm idForm){
         return announcementService.getNewsById(idForm);
     }
 
     @ApiOperation("根据主键id删除新闻")
-    @GetMapping("/deleteNewsById")
+    @PostMapping("/deleteNewsById")
     public Result deleteNewsById(@RequestBody @Valid IdForm idForm){
         return announcementService.deleteNewsById(idForm);
     }
 
     @ApiOperation("修改新闻状态为发布")
-    @GetMapping("/updateToPublished")
+    @PostMapping("/updateToPublished")
     public Result updateToPublished(@RequestBody @Valid IdForm idForm){
         return announcementService.updateToPublished(idForm);
     }
 
     @ApiOperation("修改新闻状态为保存未发布")
-    @GetMapping("/updateToSave")
+    @PostMapping("/updateToSave")
     public Result updateToSave(@RequestBody @Valid IdForm idForm){
         return announcementService.updateToSave(idForm);
     }
@@ -90,26 +90,26 @@ public class HomePageController {
     }
 
     @ApiOperation("获取一条成果详情")
-    @GetMapping("/getAchievementById")
+    @PostMapping("/getAchievementById")
     public Result getAchievementById(@RequestBody @Valid IdForm idForm){
         return announcementService.getAchievementById(idForm);
     }
 
 
     @ApiOperation("根据主键id删除成果")
-    @GetMapping("/deleteAchievementById")
+    @PostMapping("/deleteAchievementById")
     public Result deleteAchievementById(@RequestBody @Valid IdForm idForm){
         return announcementService.deleteAchievementById(idForm);
     }
 
     @ApiOperation("修改成果展示状态为发布")
-    @GetMapping("/updateAchievementToPublished")
+    @PostMapping("/updateAchievementToPublished")
     public Result updateAchievementToPublished(@RequestBody @Valid IdForm idForm){
         return announcementService.updateAchievementToPublished(idForm);
     }
 
     @ApiOperation("修改成果展示状态为保存未发布")
-    @GetMapping("/updateAchievementToSave")
+    @PostMapping("/updateAchievementToSave")
     public Result updateAchievementToSave(@RequestBody @Valid IdForm idForm){
         return announcementService.updateAchievementToSave(idForm);
     }
@@ -141,25 +141,25 @@ public class HomePageController {
     }
 
     @ApiOperation("获取一条公告详情")
-    @GetMapping("/getAnnouncementById")
+    @PostMapping("/getAnnouncementById")
     public Result getAnnouncementById(@RequestBody @Valid IdForm idForm){
         return announcementService.getAnnouncementById(idForm);
     }
 
     @ApiOperation("根据主键id删除公告")
-    @GetMapping("/deleteAnnouncementById")
+    @PostMapping("/deleteAnnouncementById")
     public Result deleteAnnouncementById(@RequestBody @Valid IdForm idForm){
         return announcementService.deleteAnnouncementById(idForm);
     }
 
     @ApiOperation("修改公告状态为发布")
-    @GetMapping("/updateAnnouncementToPublished")
+    @PostMapping("/updateAnnouncementToPublished")
     public Result updateAnnouncementToPublished(@RequestBody @Valid IdForm idForm){
         return announcementService.updateAnnouncementToPublished(idForm);
     }
 
     @ApiOperation("修改公告状态为保存未发布")
-    @GetMapping("/updateAnnouncementToSave")
+    @PostMapping("/updateAnnouncementToSave")
     public Result updateAnnouncementToSave(@RequestBody @Valid IdForm idForm){
         return announcementService.updateAnnouncementToSave(idForm);
     }

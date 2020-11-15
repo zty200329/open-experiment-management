@@ -26,9 +26,10 @@ public interface NewsReleaseMapper {
 
     /**
      * 根据主键更改状态
-     * @param status
      * @param id
      * @return
      */
-    int updateStatusByPrimaryKey(@Param("status")Short status,@Param("id")Integer id);
+    int updateStatusByPrimaryKey1(@Param("id")Integer id);
+
+    int updateStatusByPrimaryKey2(@Param("id")Integer id);
 }
