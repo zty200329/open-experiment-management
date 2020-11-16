@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.form.user.FirstLoginForm;
 import com.swpu.uchain.openexperiment.form.user.GetAllPermissions;
 import com.swpu.uchain.openexperiment.form.user.LoginForm;
 import com.swpu.uchain.openexperiment.result.Result;
@@ -34,12 +35,17 @@ public class AnonController {
 
 
     @ApiOperation("登录接口")
+    @PostMapping(value = "/loginFirst", name = "登录接口")
+    public Object loginFirst(@Valid@RequestBody FirstLoginForm form, HttpServletRequest request){
+        String ip = ClientUtil.getClientIpAddress(request);
+        return userService.loginFirst(ip,form);
+    }
+    @ApiOperation("登录接口")
     @PostMapping(value = "/login", name = "登录接口")
     public Object login(@Valid@RequestBody LoginForm form, HttpServletRequest request){
-        String ip = ClientUtil.getClientIpAddress(request);
-//        LoginForm form = CASUtil.sessionUserToLoginForm(CASUtil.getUserInfoFromSession(request));
-        return userService.login(ip,form);
+        return userService.login(form);
     }
+
 
     @ApiOperation("根据学号工号查看权限")
     @PostMapping(value = "/getAllPermissions")

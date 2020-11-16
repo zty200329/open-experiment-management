@@ -76,6 +76,11 @@ public class HomePageController {
     public Result publishAchievementShow(@RequestBody @Valid HomepageAchievementForm homepageAchievementForm){
         return announcementService.publishAchievementShow(homepageAchievementForm);
     }
+    @ApiOperation("获取轮播的")
+    @GetMapping("/getTopPublishedAchievementShowList")
+    public Result getTopPublishedAchievementShowList(){
+        return announcementService.getTopPublishedAchievementShowList();
+    }
 
     @ApiOperation("获取所有已发布成果  不用展示状态")
     @GetMapping("/getPublishedAchievementShowList")
@@ -93,6 +98,11 @@ public class HomePageController {
     @PostMapping("/getAchievementById")
     public Result getAchievementById(@RequestBody @Valid IdForm idForm){
         return announcementService.getAchievementById(idForm);
+    }
+    @ApiOperation("取消轮播")
+    @PostMapping("/deleteAchievementTopById")
+    public Result deleteAchievementTopById(@RequestBody @Valid IdForm idForm){
+        return announcementService.deleteAchievementTopById(idForm);
     }
 
 

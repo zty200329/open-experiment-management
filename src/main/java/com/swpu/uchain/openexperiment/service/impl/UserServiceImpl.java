@@ -5,6 +5,7 @@ import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
 import com.swpu.uchain.openexperiment.domain.*;
+import com.swpu.uchain.openexperiment.form.user.FirstLoginForm;
 import com.swpu.uchain.openexperiment.form.user.GetAllPermissions;
 import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
@@ -159,13 +160,34 @@ public class UserServiceImpl implements UserService {
 //        redisService.delete(VerifyCodeKey.getByClientIp, clientIp);
 //        return Result.success(map);
 //    }
+@Override
+@Transactional(rollbackFor = Throwable.class)
+public Result loginFirst(String clientIp, FirstLoginForm loginForm) {
+    log.info("当前请求ip : {}",clientIp);
+    if (!checkVerifyCode(clientIp, loginForm.getVerifyCode())){
+        return Result.error(CodeMsg.VERIFY_CODE_ERROR);
+    }
+    User user = getUserService.selectByUserCode(loginForm.getUserCode());
+
+    //验证用户密码及其角色是否存在
+    if (user == null) {
+        return Result.error(CodeMsg.USER_NO_EXIST);
+    }
+    log.info("=============校验用户的密码================");
+    log.info(loginForm.getPassword());
+    boolean isTrue;
+    if(user.getPassword().equals(loginForm.getPassword())){
+        isTrue = true;
+    }else {
+        isTrue = false;
+    }
+    redisService.delete(VerifyCodeKey.getByClientIp, clientIp);
+    return Result.success(isTrue);
+}
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public Result login(String clientIp, LoginForm loginForm) {
-        log.info("当前请求ip : {}",clientIp);
-        if (!checkVerifyCode(clientIp, loginForm.getVerifyCode())){
-            return Result.error(CodeMsg.VERIFY_CODE_ERROR);
-        }
+    public Result login( LoginForm loginForm) {
+
         User user = getUserService.selectByUserCodeAndRole(loginForm.getUserCode(),loginForm.getRole());
 
         //验证用户密码及其角色是否存在
@@ -197,7 +219,6 @@ public class UserServiceImpl implements UserService {
         map.put("roles",role);
         map.put("userId",user.getCode());
         map.put("name",user.getRealName());
-        redisService.delete(VerifyCodeKey.getByClientIp, clientIp);
         return Result.success(map);
     }
 

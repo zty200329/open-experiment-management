@@ -1,10 +1,7 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
 import com.oracle.tools.packager.Log;
-import com.swpu.uchain.openexperiment.VO.announcement.AchievementShowVO;
-import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementListVO;
-import com.swpu.uchain.openexperiment.VO.announcement.AnnouncementVO;
-import com.swpu.uchain.openexperiment.VO.announcement.HomePageNewsListVO;
+import com.swpu.uchain.openexperiment.VO.announcement.*;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.form.announcement.*;
 import com.swpu.uchain.openexperiment.mapper.*;
@@ -26,12 +23,15 @@ import org.springframework.boot.actuate.autoconfigure.metrics.export.newrelic.Ne
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import sun.security.smartcardio.SunPCSC;
 
 import javax.xml.ws.handler.LogicalHandler;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.LongSummaryStatistics;
 
 /**
  * @Author: clf
@@ -56,6 +56,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     private HomepageAchievementMapper homepageAchievementMapper;
     @Autowired
     private HomepageAnnouncementMapper homepageAnnouncementMapper;
+    @Autowired
+    private HomepageAchievementIsTopMapper achievementIsTopMapper;
 
 
     @Override
@@ -265,6 +267,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Throwable.class)
     public Result publishAchievementShow(HomepageAchievementForm homepageAchievementForm) {
         User currentUser = getUserService.getCurrentUser();
         if (currentUser == null){
@@ -276,6 +279,11 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         homepageAchievement.setPublishTime(new Date());
         homepageAchievement.setUpdateTime(new Date());
         homepageAchievementMapper.insert(homepageAchievement);
+        if(homepageAchievementForm.getIsTop() == 1){
+            HomepageAchievementIsTop homepageAchievementIsTop = new HomepageAchievementIsTop();
+            homepageAchievementIsTop.setHomepageAchievementId(homepageAchievement.getId());
+            achievementIsTopMapper.insert(homepageAchievementIsTop);
+        }
         return Result.success();
     }
 
@@ -289,6 +297,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Override
     public Result deleteAchievementById(IdForm idForm) {
         homepageAchievementMapper.deleteByPrimaryKey(idForm.getId());
+        achievementIsTopMapper.deleteByAchievementKey(idForm.getId());
+        return Result.success();
+    }
+
+    @Override
+    public Result deleteAchievementTopById(IdForm idForm) {
+        achievementIsTopMapper.deleteByAchievementKey(idForm.getId());
         return Result.success();
     }
 
@@ -396,6 +411,12 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         return Result.success(achievementShowVOList);
     }
 
+    @Override
+    public Result getTopPublishedAchievementShowList() {
+        List<TopHomepageAchievement> homepageAchievementIsTops = achievementIsTopMapper.selectAll();
+
+        return Result.success(homepageAchievementIsTops);
+    }
     /**
      * 获取所有已发布的 有二级缓存
      * @return
@@ -403,7 +424,17 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Override
     public Result getPublishedAchievementShowList() {
         List<HomepageAchievement> achievements = homepageAchievementMapper.selectAllPublished();
-        return getResult(achievements);
+        List<Integer> integerList = achievementIsTopMapper.selectAllAchieveId();
+        List<AchievementShowVO> achievementShowVOList = new LinkedList<>();
+        for (HomepageAchievement achievement : achievements) {
+            AchievementShowVO achievementShowVO = new AchievementShowVO();
+            if(integerList.contains(achievement.getId())){
+                achievementShowVO.setIsTop(true);
+            }
+            BeanUtils.copyProperties(achievement,achievementShowVO);
+            achievementShowVOList.add(achievementShowVO);
+        }
+        return Result.success(achievementShowVOList);
     }
 
     @Override

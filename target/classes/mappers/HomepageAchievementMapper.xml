@@ -22,7 +22,7 @@
     delete from homepage_achievement
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.HomepageAchievement" >
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.HomepageAchievement" useGeneratedKeys="true" keyProperty="id">
     insert into homepage_achievement (real_name, img_url,
       project_name, subordinate_college, project_type, 
       experiment_type, publish_time, update_time, 

@@ -26,4 +26,6 @@ public class AchievementShowVO {
     private Date publishTime;
 
     private Integer status;
+
+    private Boolean isTop;
 }

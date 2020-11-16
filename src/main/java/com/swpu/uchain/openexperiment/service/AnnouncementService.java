@@ -130,6 +130,11 @@ public interface AnnouncementService {
     Result publishAchievementShow(HomepageAchievementForm homepageAchievementForm);
 
     /**
+     * 获取轮播
+     * @return
+     */
+    Result getTopPublishedAchievementShowList();
+    /**
      * 获取所有已发布的成果  不要展示状态
      * @return
      */
@@ -155,6 +160,13 @@ public interface AnnouncementService {
      */
     Result deleteAchievementById(IdForm idForm);
 
+    /**
+     * 取消轮播
+     *
+     * @param idForm
+     * @return
+     */
+    Result deleteAchievementTopById(IdForm idForm);
     /**
      * 修改成果展示状态为发布
      * @param idForm

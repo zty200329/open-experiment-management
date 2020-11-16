@@ -17,7 +17,7 @@ public class HomepageAchievementForm {
     /**
      * 图片url
      */
-    @NotNull(message = "图片不能为空")
+
     private String imgUrl;
 
     /**
@@ -66,4 +66,10 @@ public class HomepageAchievementForm {
      */
     @NotNull(message = "内容可不能为空")
     private String content;
+
+    /**
+     * 是否展示
+     */
+    @NotNull(message = "是否轮播不能为空")
+    private Integer isTop;
 }

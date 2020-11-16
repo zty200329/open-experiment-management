@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.UserType;
+import com.swpu.uchain.openexperiment.form.user.FirstLoginForm;
 import com.swpu.uchain.openexperiment.form.user.GetAllPermissions;
 import com.swpu.uchain.openexperiment.form.user.LoginForm;
 import com.swpu.uchain.openexperiment.form.user.UserUpdateForm;
@@ -46,7 +47,13 @@ public interface UserService {
      * @param loginForm
      * @return
      */
-    Result login(String clientIp, LoginForm loginForm);
+    Result loginFirst(String clientIp, FirstLoginForm loginForm);
+    /**
+     * 登录接口
+     * @param loginForm
+     * @return
+     */
+    Result login(LoginForm loginForm);
 
 
     /**

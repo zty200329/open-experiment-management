@@ -14,6 +14,8 @@ import java.util.Date;
  */
 @Data
 public class UpdateAchievementContentForm {
+
+    private String realName;
     @NotNull(message = "id不能为空")
     private Integer id;
 
