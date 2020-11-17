@@ -1,6 +1,5 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
-import com.oracle.tools.packager.Log;
 import com.swpu.uchain.openexperiment.VO.announcement.*;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.form.announcement.*;
@@ -13,25 +12,17 @@ import com.swpu.uchain.openexperiment.redis.key.AnnouncementKey;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AnnouncementService;
 import com.swpu.uchain.openexperiment.service.GetUserService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.bcel.generic.NEW;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.metrics.export.newrelic.NewRelicMetricsExportAutoConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import sun.security.smartcardio.SunPCSC;
 
-import javax.xml.ws.handler.LogicalHandler;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.LongSummaryStatistics;
 
 /**
  * @Author: clf
@@ -402,14 +393,28 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     private Result getResult(List<HomepageAchievement> achievements) {
+        List<Integer> integerList = achievementIsTopMapper.selectAllAchieveId();
         List<AchievementShowVO> achievementShowVOList = new LinkedList<>();
         for (HomepageAchievement achievement : achievements) {
             AchievementShowVO achievementShowVO = new AchievementShowVO();
+            if(integerList.contains(achievement.getId())){
+                achievementShowVO.setIsTop(true);
+            }
             BeanUtils.copyProperties(achievement,achievementShowVO);
             achievementShowVOList.add(achievementShowVO);
         }
         return Result.success(achievementShowVOList);
     }
+
+//    private Result getResult(List<HomepageAchievement> achievements) {
+//        List<AchievementShowVO> achievementShowVOList = new LinkedList<>();
+//        for (HomepageAchievement achievement : achievements) {
+//            AchievementShowVO achievementShowVO = new AchievementShowVO();
+//            BeanUtils.copyProperties(achievement,achievementShowVO);
+//            achievementShowVOList.add(achievementShowVO);
+//        }
+//        return Result.success(achievementShowVOList);
+//    }
 
     @Override
     public Result getTopPublishedAchievementShowList() {
@@ -424,17 +429,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Override
     public Result getPublishedAchievementShowList() {
         List<HomepageAchievement> achievements = homepageAchievementMapper.selectAllPublished();
-        List<Integer> integerList = achievementIsTopMapper.selectAllAchieveId();
-        List<AchievementShowVO> achievementShowVOList = new LinkedList<>();
-        for (HomepageAchievement achievement : achievements) {
-            AchievementShowVO achievementShowVO = new AchievementShowVO();
-            if(integerList.contains(achievement.getId())){
-                achievementShowVO.setIsTop(true);
-            }
-            BeanUtils.copyProperties(achievement,achievementShowVO);
-            achievementShowVOList.add(achievementShowVO);
-        }
-        return Result.success(achievementShowVOList);
+        return getResult(achievements);
     }
 
     @Override

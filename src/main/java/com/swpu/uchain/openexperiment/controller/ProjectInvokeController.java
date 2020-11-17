@@ -166,7 +166,7 @@ public class ProjectInvokeController {
     @ApiOperation("职能部门立项时复核通过")
     @PostMapping("/establishReviewPassed")
     public Result establishReviewPassed(@RequestBody List<ProjectCheckForm> list){
-        return projectService.midTermReviewPassed(list);
+        return projectService.establishReviewPassed(list);
     }
 
 //    @ApiOperation("资金报账(职能部门使用)")

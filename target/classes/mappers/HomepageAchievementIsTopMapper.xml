@@ -34,8 +34,8 @@
     from homepage_achievement_is_top
   </select>
   <select id="selectAll" resultType="com.swpu.uchain.openexperiment.VO.announcement.TopHomepageAchievement" >
-    select homepage_achievement_is_top.homepage_achievement_id,
-           homepage_achievement.img_url
+    select homepage_achievement_is_top.homepage_achievement_id as id,
+           homepage_achievement.img_url as imgUrl
     from homepage_achievement_is_top
     inner join homepage_achievement on homepage_achievement.id = homepage_achievement_is_top.homepage_achievement_id
     ORDER BY

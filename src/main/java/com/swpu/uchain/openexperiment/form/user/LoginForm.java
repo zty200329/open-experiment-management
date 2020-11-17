@@ -20,4 +20,6 @@ public class LoginForm {
     @ApiModelProperty("用户角色选择")
     @NotNull
     private Integer role;
+
+    private String verifyCode;
 }

@@ -271,7 +271,7 @@ public interface ProjectService {
     Result midTermReviewPassed(List<ProjectCheckForm> list);
 
     /**
-     * 中期复核通过
+     * 立项复核通过
      * @param list
      * @return
      */
