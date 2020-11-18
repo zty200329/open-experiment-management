@@ -25,7 +25,7 @@ upload:
   conclusion-pdf: "/usr/local/uchain/conclusion_pdf"
   conclusion-annex: "/usr/local/uchain/conclusion_annex"
   achievement-annex: "/usr/local/uchain/achievement_annex"
-  news-images: "/usr/SRoot/local/news_images"
+  news-images: "/usr/local/uchain/news_images"
 download:
   certificate-excel-download: "/usr/local/uchain/excel-temp/"
 file:

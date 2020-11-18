@@ -130,20 +130,20 @@ public class FileController {
     }
 
 
-    @ApiOperation("生成普通项目结题总览表,根据token判断学院，无bug")
+    @ApiOperation("生成普通项目学院结题总览表,根据token判断学院，无bug")
     @PostMapping(value = "generateConclusionExcel", name = "生成结题总览表")
     public void generateConclusionExcel(HttpServletResponse response){
         projectFileService.generateConclusionExcel(response);
     }
 
 
-    @ApiOperation("生成立项总览表")
+    @ApiOperation("生成学院同意立项总览表")
     @PostMapping(value = "/generateEstablishExcel", name = "生成立项总览表")
     public void generateEstablishExcel(HttpServletResponse response){
         projectFileService.generateEstablishExcel(response, ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue());
     }
 
-    @ApiOperation("生成项目信息总览表")
+    @ApiOperation("生成项目信息总览表，加状态信息")
     @PostMapping(value = "/generateProjectInfoExcel", name = "生成立项总览表")
     public void generateProjectInfoExcel(HttpServletResponse response){
         projectFileService.generateEstablishExcel(response,null);

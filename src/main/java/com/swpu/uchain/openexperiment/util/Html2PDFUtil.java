@@ -43,6 +43,7 @@ public class Html2PDFUtil {
             // 这里面添加的是宋体
 //            fontResolver.addFont("/usr/share/fonts/chinese/simsun.ttc",
             fontResolver.addFont("/usr/share/fonts/simsun.ttc",
+//            fontResolver.addFont("/Users/zty/Desktop/openexperiment/simsun.ttc",
                     BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 
 

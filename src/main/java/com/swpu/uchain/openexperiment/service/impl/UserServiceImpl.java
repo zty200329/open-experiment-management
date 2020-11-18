@@ -182,7 +182,11 @@ public Result loginFirst(String clientIp, FirstLoginForm loginForm) {
         isTrue = false;
     }
     redisService.delete(VerifyCodeKey.getByClientIp, clientIp);
-    return Result.success(isTrue);
+    if(isTrue){
+        return Result.success();
+    }else{
+        return Result.error(CodeMsg.PASSWORD_ERROR);
+    }
 }
     @Override
     @Transactional(rollbackFor = Throwable.class)

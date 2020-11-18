@@ -2009,7 +2009,7 @@ public class ProjectServiceImpl implements ProjectService {
         ) {
             Integer status = keyProjectStatusMapper.getStatusByProjectId(form.getProjectId());
             //验证当前状态
-            if (!ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue().equals(status) && !ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue().equals(status)) {
+            if (!ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue().equals(status) && !ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue().equals(status)&& !ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue().equals(status)) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
             statu = status;
