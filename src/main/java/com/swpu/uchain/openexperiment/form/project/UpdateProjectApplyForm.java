@@ -1,6 +1,7 @@
 package com.swpu.uchain.openexperiment.form.project;
 
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -79,6 +80,15 @@ public class UpdateProjectApplyForm{
 
     @ApiModelProperty("所需经费支持")
     private Float applyFunds;
+
+    @ApiModelProperty("是否开放选题")
+    private Integer isOpenTopic;
+
+    /**
+     * 主要内容
+     */
+    @ApiModelProperty("主要内容")
+    private String mainContent;
 
     @Null
     @ApiModelProperty("指导老师编号--选填")

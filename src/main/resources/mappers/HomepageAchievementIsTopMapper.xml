@@ -13,7 +13,7 @@
   </delete>
   <delete id="deleteByAchievementKey" parameterType="java.lang.Integer" >
     delete from homepage_achievement_is_top
-    where id = #{id,jdbcType=INTEGER}
+    where homepage_achievement_id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.HomepageAchievementIsTop" >
     insert into homepage_achievement_is_top (homepage_achievement_id)

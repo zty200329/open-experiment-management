@@ -49,7 +49,6 @@
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.form.announcement.UpdateAchievementContentForm" >
     update homepage_achievement
     set real_name = #{realName,jdbcType=VARCHAR},
-      img_url = #{imgUrl,jdbcType=VARCHAR},
       project_name = #{projectName,jdbcType=VARCHAR},
       subordinate_college = #{subordinateCollege,jdbcType=VARCHAR},
       project_type = #{projectType,jdbcType=INTEGER},
