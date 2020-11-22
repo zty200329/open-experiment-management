@@ -48,6 +48,8 @@ public class SerialNumberUtil {
             if(year==lastYear) {
                 index = Integer.parseInt(maxSerialNumber.substring(maxSerialNumber.length() - 3)) + 1;
             }
+        }else{
+            index = 001;
         }
         serialNumber = year+projectTypeValue+String.format("%02d", college)+String.format("%03d", index);
         return serialNumber;

@@ -368,7 +368,7 @@
            openexperiment.project_group.apply_funds,
            openexperiment.project_group.status
     from openexperiment.project_group
-        where openexperiment.project_group.subordinate_college = 0;
+        where openexperiment.project_group.subordinate_college = 000039;
     </select>
     
     
@@ -468,7 +468,7 @@
         <if test="projectType!=null">
             and project_type = #{projectType}
         </if>
-            or subordinate_college = 0 and project_group.`status` = 5
+            or subordinate_college = 000039 and project_group.`status` = 5
         order by create_time desc
     </select>
   <select id="selectByFuzzyName" resultMap="SelectProjectMap">

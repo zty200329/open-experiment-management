@@ -160,7 +160,7 @@
 
                 and key_project_status.`status` = 6
 
-                or project_group.subordinate_college = 0
+                or project_group.subordinate_college = 000039
         </where>
 
     </select>
