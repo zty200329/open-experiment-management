@@ -118,6 +118,7 @@ public class TimeLimitServiceImpl implements TimeLimitService {
     @Override
     public void validTime(TimeLimitType timeLimitType){
         Integer type = timeLimitType.getValue();
+        //获取学院
         Integer college = getUserService.getCurrentUser().getInstitute();
         if (college == null){
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
