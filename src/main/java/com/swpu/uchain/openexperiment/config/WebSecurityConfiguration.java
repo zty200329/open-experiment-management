@@ -94,7 +94,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/conclusionAnnex/**",
                         "/material/**",
                         "/newsImages/**",
-                        "/api/homePage/**"
+                        "/api/homePage/**",
+                        "/casToBusiness/**"
                 ).permitAll()
                 //配置swagger界面的匿名访问
                 .antMatchers(" /static/**").permitAll()
@@ -105,6 +106,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/configuration/ui").permitAll()
                 .antMatchers("/configuration/security").permitAll()
+                .antMatchers("/logout/**").permitAll()
                 //配置允许匿名访问的路径
                 .antMatchers("/api/anon/*").permitAll()
                 .antMatchers("/api/uchain/shutdown").permitAll()

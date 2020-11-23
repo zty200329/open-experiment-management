@@ -8,13 +8,12 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
- * @author clf
+ * @author zty
  * 启动类
  */
 @EnableAsync
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @SpringBootApplication
-
 @MapperScan("com.swpu.uchain.openexperiment.mapper")
 public class OpenExperimentApplication {
     public static void main(String[] args) {

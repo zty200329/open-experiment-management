@@ -264,6 +264,10 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         if (currentUser == null){
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
+        if(homepageAchievementForm.getIsTop() == 1 && homepageAchievementForm.getImgUrl() == null){
+
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
         HomepageAchievement homepageAchievement = new HomepageAchievement();
         BeanUtils.copyProperties(homepageAchievementForm,homepageAchievement);
         homepageAchievement.setRealName(currentUser.getRealName());
