@@ -17,11 +17,11 @@ import java.util.List;
 public class CasAutoConfig {
 	static final String separator = ","; //配置地址可以用逗号分隔 
 
-	private String validateFilters = "/casToBusiness/inBusiness";
+	private String validateFilters = "/casToHomePage/inCAS";
 	private String signOutFilters = "/logout";
-	private String authFilters = "/casToBusiness/inBusiness";
-	private String assertionFilters = "/casToBusiness/inBusiness";
-	private String requestWrapperFilters = "/casToBusiness/inBusiness";
+	private String authFilters = "/casToHomePage/inCAS";
+	private String assertionFilters = "/casToHomePage/inCAS";
+	private String requestWrapperFilters = "/casToHomePage/inCAS";
 	private String casServerUrlPrefix = "http://ids.swpu.edu.cn/sso";
 	private String casServerLoginUrl = "http://ids.swpu.edu.cn/sso/login";
 	private String serverName = "http://192.168.109.88";

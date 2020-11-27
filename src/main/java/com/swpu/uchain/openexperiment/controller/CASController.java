@@ -1,11 +1,14 @@
 package com.swpu.uchain.openexperiment.controller;
 
 import com.swpu.uchain.openexperiment.cas.CasAutoConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.validation.Assertion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.view.RedirectView;
@@ -16,7 +19,8 @@ import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/casToBusiness")
+@Slf4j
+@RequestMapping("/casToHomePage")
 public class CASController{
 
 	@Autowired
@@ -27,13 +31,11 @@ public class CASController{
 
 	/**
 	 * 点进入业务 系统
-	 * 
-	 * @param request
-	 * @param response
+	 *
 	 * @return
 	 */
-	@RequestMapping(value = "/inBusiness", method = { RequestMethod.GET, RequestMethod.POST })
-	public Object list(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+	@PostMapping(value = "/inCAS")
+	public Object list(HttpSession session) {
 		// 该方法通过cas获取到 登陆对象
 		Assertion assertion=
 				(Assertion)
@@ -54,8 +56,9 @@ public class CASController{
 		//用户姓名
 		String Name = (String)map.get("comsys_name");
 		String token = "1231";
+		log.info(ssoid);
 		// 重定向前端页面
-		return new RedirectView(autoconfig.getUiRrl() + "?ssoid=" + ssoid);
+		return new RedirectView(autoconfig.getUiRrl());
 	}
 
 	@RequestMapping(value = "/test", method = { RequestMethod.GET, RequestMethod.POST })
