@@ -31,6 +31,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
+    @Autowired
+    private MyDisableUrlSessionFilter myDisableUrlSessionFilter;
 
 
     @Qualifier("jwtUserDetailsServiceImpl")
@@ -64,6 +66,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
+        //用于客户端第一次访问时去掉URL中的jsessionid
+        httpSecurity.addFilterBefore(myDisableUrlSessionFilter,UsernamePasswordAuthenticationFilter.class);
+
         httpSecurity
                 //token的验证方式不需要开启csrf的防护
                 .csrf().disable()
@@ -95,7 +100,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/material/**",
                         "/newsImages/**",
                         "/api/homePage/**",
-                        "/casToHomePage/**"
+                        "/login/**"
                 ).permitAll()
                 //配置swagger界面的匿名访问
                 .antMatchers(" /static/**").permitAll()
@@ -113,6 +118,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/druid/**").permitAll()
                 .antMatchers("/api/**").permitAll()
                 .antMatchers("/document/**").permitAll()
+                .antMatchers("/casToHomePage/**").permitAll()
                 .anyRequest().authenticated();
 
         //配置自己的验证过滤器

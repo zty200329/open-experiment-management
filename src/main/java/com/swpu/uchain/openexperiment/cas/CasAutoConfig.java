@@ -24,8 +24,8 @@ public class CasAutoConfig {
 	private String requestWrapperFilters = "/casToHomePage/inCAS";
 	private String casServerUrlPrefix = "http://ids.swpu.edu.cn/sso";
 	private String casServerLoginUrl = "http://ids.swpu.edu.cn/sso/login";
-	private String serverName = "http://192.168.109.88";
-	private String uiRrl = "http://192.168.109.88";
+	private String serverName = "http://192.168.109.88/";
+	private String uiRrl = "http://192.168.109.88/";
 	private boolean useSession = true;
 	private boolean redirectAfterValidation = true;
 

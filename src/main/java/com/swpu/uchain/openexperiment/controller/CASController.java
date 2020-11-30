@@ -34,7 +34,7 @@ public class CASController{
 	 *
 	 * @return
 	 */
-	@PostMapping(value = "/inCAS")
+	@RequestMapping(value = "/inCAS",method = {RequestMethod.GET,RequestMethod.POST})
 	public Object list(HttpSession session) {
 		// 该方法通过cas获取到 登陆对象
 		Assertion assertion=
@@ -46,6 +46,7 @@ public class CASController{
 		 *其中，由于用户可能拥有多个角色，岗位，部门
 		 *所以角色，岗位，部门需要被转换为List<Map<String,String>类型
 		 */
+		String sessionId = session.getId();
 		Map<String, Object> map = assertion.getPrincipal().getAttributes();
 		// 通过该账号去组装我们与前端交互使用的token
 
@@ -58,7 +59,7 @@ public class CASController{
 		String token = "1231";
 		log.info(ssoid);
 		// 重定向前端页面
-		return new RedirectView(autoconfig.getUiRrl());
+		return new RedirectView(autoconfig.getUiRrl()+"?12312431231231");
 	}
 
 	@RequestMapping(value = "/test", method = { RequestMethod.GET, RequestMethod.POST })
