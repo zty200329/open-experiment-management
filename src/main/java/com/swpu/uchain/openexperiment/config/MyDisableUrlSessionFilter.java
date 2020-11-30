@@ -31,7 +31,6 @@ public class MyDisableUrlSessionFilter implements Filter {
 			throws IOException, ServletException {
  
 		// System.out.println("3.过滤器MyDisableUrlSessionFilter");
-		// skip non-http requests
 		if (!(request instanceof HttpServletRequest)) {
 			chain.doFilter(request, response);
 			return;
