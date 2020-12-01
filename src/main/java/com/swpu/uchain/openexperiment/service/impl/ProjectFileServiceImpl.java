@@ -253,7 +253,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, Long.valueOf(user.getCode()));
         if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.PROJECT_GROUP_LEADER.getValue())) {
             int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(projectGroupId);
-            if (SubordinateCollege != 0) {
+            if (SubordinateCollege != 39) {
                 throw new GlobalException(CodeMsg.PERMISSION_DENNY);
             }
         }

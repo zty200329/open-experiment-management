@@ -1868,7 +1868,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue()) && !status.equals(ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue())
         ) {
             int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(joinForm.getProjectGroupId());
-            if (SubordinateCollege != 0) {
+            if (SubordinateCollege != 39) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
         }
@@ -1876,7 +1876,7 @@ public class ProjectServiceImpl implements ProjectService {
         UserProjectGroup userProjectGroupOfCurrentUser = userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(), userId);
         if (userProjectGroupOfCurrentUser == null || !userProjectGroupOfCurrentUser.getMemberRole().equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
             int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(joinForm.getProjectGroupId());
-            if (SubordinateCollege != 0) {
+            if (SubordinateCollege != 39) {
                 throw new GlobalException(CodeMsg.USER_NOT_IN_GROUP);
             }
         }
@@ -2452,7 +2452,7 @@ public class ProjectServiceImpl implements ProjectService {
                 || !userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectId, currentUserId).getMemberRole()
                 .equals(MemberRole.GUIDANCE_TEACHER.getValue())) {
             int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(projectId);
-            if (SubordinateCollege != 0) {
+            if (SubordinateCollege != 39) {
                 throw new GlobalException(CodeMsg.PERMISSION_DENNY);
             }
         }

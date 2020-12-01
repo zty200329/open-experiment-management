@@ -51,6 +51,10 @@ public class KeyProjectQueryController {
         return keyProjectService.getToBeReviewedProject();
     }
 
+    /**
+     * 有点小问题
+     * @return
+     */
     @GetMapping(value = "/getKeyProjectApplyingListByFunctionalDepartment")
     @ApiOperation("职能部门获取项目待审核的重点项目信息")
     public Result getKeyProjectApplyingListByFunctionalDepartment(){

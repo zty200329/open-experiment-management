@@ -70,7 +70,7 @@ public class FileController {
         User currentUser = getUserService.getCurrentUser();
         if (userProjectService.selectByProjectGroupIdAndUserId(projectGroupId,Long.valueOf(currentUser.getCode())) == null) {
             int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(projectGroupId);
-            if (SubordinateCollege != 0) {
+            if (SubordinateCollege != 39) {
                 return Result.error(CodeMsg.PERMISSION_DENNY);
             }
         }

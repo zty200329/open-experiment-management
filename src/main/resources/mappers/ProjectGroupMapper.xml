@@ -369,7 +369,7 @@
            openexperiment.project_group.apply_funds,
            openexperiment.project_group.status
     from openexperiment.project_group
-        where openexperiment.project_group.subordinate_college = 000039;
+        where openexperiment.project_group.subordinate_college = 39;
     </select>
     
     
@@ -396,7 +396,7 @@
     <if test="projectType!=null">
         and project_type = #{projectType}
     </if>
-    <if  test="college!=0">
+    <if  test="college!=39">
         and subordinate_college = #{college}
     </if>
     order by create_time desc
@@ -425,7 +425,7 @@
         WHERE
         project_group.project_type = 1
         and project_group.`status` = #{status}
-        <if  test="college!=0">
+        <if  test="college!=39">
             and subordinate_college = #{college}
         </if>
 
@@ -447,7 +447,7 @@
         <if test="projectType!=null">
             and project_type = #{projectType}
         </if>
-        <if  test="college!=0">
+        <if  test="college!=39">
             and subordinate_college = #{college}
         </if>
         order by create_time desc
@@ -469,7 +469,7 @@
         <if test="projectType!=null">
             and project_type = #{projectType}
         </if>
-            or subordinate_college = 000039 and project_group.`status` = 5
+            or subordinate_college = 39 and project_group.`status` = 5
         order by create_time desc
     </select>
   <select id="selectByFuzzyName" resultMap="SelectProjectMap">

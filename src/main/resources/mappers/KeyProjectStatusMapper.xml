@@ -71,7 +71,7 @@
         WHERE
 	    project_group.project_type = 2 AND
 	    key_project_status.`status` = #{status}
-        <if  test="college!=0">
+        <if  test="college!=39">
             and project_group.subordinate_college = #{college}
         </if>
 
@@ -160,7 +160,7 @@
 
                 and key_project_status.`status` = 6
 
-                or project_group.subordinate_college = 000039
+                or project_group.subordinate_college = 39
         </where>
 
     </select>

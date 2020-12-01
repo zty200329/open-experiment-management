@@ -1123,7 +1123,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         ) {
             Long id = projectGroup.getId();
             projectGroup.setNumberOfTheSelected(userProjectGroupMapper.getMemberAmountOfProject(id,null));
-            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(null,id, JoinStatus.JOINED.getValue()));
+            projectGroup.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),id, JoinStatus.JOINED.getValue()));
         }
         return Result.success(list);
     }

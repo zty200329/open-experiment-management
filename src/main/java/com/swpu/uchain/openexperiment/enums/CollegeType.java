@@ -10,7 +10,7 @@ public enum  CollegeType {
     /**
      *
      */
-    FUNCTIONAL_DEPARTMENT(0,"职能部门"),
+    FUNCTIONAL_DEPARTMENT(39,"职能部门"),
     MARXISM_COLLEGE(1,"石油与天然气工程学院"),
     EARTH_COLLEGE(2,"地球科学与技术学院"),
     CHEMICAL_COLLEGE(3,"机电工程学院"),

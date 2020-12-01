@@ -246,7 +246,7 @@ public class UserProjectServiceImpl implements UserProjectService {
         if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue()) && !status.equals(ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue())
         ) {
             int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(aimForm.getProjectGroupId());
-            if (SubordinateCollege != 0) {
+            if (SubordinateCollege != 39) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
         }
