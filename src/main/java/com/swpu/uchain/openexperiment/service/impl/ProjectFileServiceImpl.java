@@ -449,7 +449,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
         if(FileUtil.getType(FileUtil.getMultipartFileSuffix(file)) != 4){
-            throw new GlobalException(CodeMsg.FORMAT_UNSUPPORTED);
+            return Result.error(CodeMsg.FORMAT_UNSUPPORTED);
         }
         String fileName = System.currentTimeMillis()+getFileSuffix(file.getOriginalFilename());
         String filePath = uploadConfig.getNewsImages() + "/" + fileName;

@@ -232,7 +232,8 @@
       start_time = #{startTime,jdbcType=TIMESTAMP},
       `status` = #{status,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      main_content = #{mainContent}
+      main_content = #{mainContent},
+      is_open_topic = #{isOpenTopic}
     where id = #{id,jdbcType=BIGINT}
   </update>
     <update id="updateProjectStatusOfList">

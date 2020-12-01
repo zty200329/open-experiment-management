@@ -98,7 +98,8 @@ public enum CodeMsg {
     FILE_EMPTY_ERROR(1610,"文件不能为空"),
     FOREWORD_DOC_EMPTY_ERROR(1611,"前端文件生成失败"),
     PDF_CONVERT_ERROR(1612,"PDF生成失败"),
-    IMG_URL_EMPIT(1613,"轮播图为空"),
+    IMG_URL_EMPTY(1613,"轮播图为空"),
+    PROJECT_NAME_IS_NULL(1614,"标题为空"),
 
 
     NOT_MATCH_LIMIT(517, "不符合条件,无法参与项目" ),
