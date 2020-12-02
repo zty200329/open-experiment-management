@@ -398,6 +398,16 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     public Result uploadAttachmentFile(List<MultipartFile> multipartFile, Long projectId) {
         //验证时间限制
 //        timeLimitService.validTime(TimeLimitType.UPLOADING_INFORMATION);
+        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectId);
+        if(projectGroup.getKeyProjectStatus() != null){
+            if(projectGroup.getKeyProjectStatus() <= 5){
+                throw new GlobalException(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+            }
+        }else {
+            if(projectGroup.getStatus() <= 5){
+                throw new GlobalException(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+            }
+        }
         if (multipartFile == null || multipartFile.size() == 0) {
             throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
@@ -494,6 +504,15 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     @Override
     public Result uploadConcludingReport(Long projectId, MultipartFile file) {
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectId);
+        if(projectGroup.getKeyProjectStatus() != null){
+            if(projectGroup.getKeyProjectStatus() <= 5){
+                throw new GlobalException(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+            }
+        }else {
+            if(projectGroup.getStatus() <= 5){
+                throw new GlobalException(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+            }
+        }
         if (file == null) {
             throw new GlobalException(CodeMsg.FILE_EMPTY_ERROR);
         }
@@ -562,6 +581,15 @@ public class ProjectFileServiceImpl implements ProjectFileService {
     public Result uploadExperimentReport(Long projectId, MultipartFile file) {
         //TODO 项目状态
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectId);
+        if(projectGroup.getKeyProjectStatus() != null){
+            if(projectGroup.getKeyProjectStatus() <= 5){
+                throw new GlobalException(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+            }
+        }else {
+            if(projectGroup.getStatus() <= 5){
+                throw new GlobalException(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+            }
+        }
         if (file == null) {
             throw new GlobalException(CodeMsg.FILE_EMPTY_ERROR);
         }
@@ -634,6 +662,16 @@ public class ProjectFileServiceImpl implements ProjectFileService {
      */
     @Override
     public Result uploadAchievementAnnex(Long projectGroupId, MultipartFile file) {
+        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectGroupId);
+        if(projectGroup.getKeyProjectStatus() != null){
+            if(projectGroup.getKeyProjectStatus() <= 5){
+                throw new GlobalException(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+            }
+        }else {
+            if(projectGroup.getStatus() <= 5){
+                throw new GlobalException(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+            }
+        }
         if (file == null) {
             throw new GlobalException(CodeMsg.UPLOAD_CANT_BE_EMPTY);
         }
@@ -811,6 +849,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             row.createCell(5).setCellValue(guideTeachers.toString());
             row.createCell(6).setCellValue(students.toString());
             row.createCell(7).setCellValue(studentsMajorAndGrade.toString());
+            log.info(projectTableInfo.getStartTime().substring(0, 10));
             row.createCell(8).setCellValue(projectTableInfo.getStartTime().substring(0, 10));
             row.createCell(9).setCellValue(projectTableInfo.getEndTime().substring(0, 10));
             row.createCell(10).setCellValue(projectTableInfo.getLabName());

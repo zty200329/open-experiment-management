@@ -1114,7 +1114,9 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     }
 
     private Result conditionallyQueryOfCheckedProject(QueryConditionForm form) {
-        List<Long>  projectIdList = projectGroupMapper.conditionQueryOfKeyProject(form);
+        List<Long> projectIdList = projectGroupMapper.conditionKeyQueryOfKeyProject(form);
+
+
         if (projectIdList.isEmpty()){
             return Result.success(null);
         }

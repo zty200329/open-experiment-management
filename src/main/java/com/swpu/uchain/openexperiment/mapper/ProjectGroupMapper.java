@@ -162,7 +162,15 @@ public interface ProjectGroupMapper {
      */
     List<Long> conditionQuery(QueryConditionForm form);
 
+
     List<Long> conditionQueryOfKeyProject(QueryConditionForm form);
+
+    /**
+     * 重点项目
+     * @param form
+     * @return
+     */
+    List<Long> conditionKeyQueryOfKeyProject(QueryConditionForm form);
 
     /**
      * 用于查询已经驳回的项目 --舍弃

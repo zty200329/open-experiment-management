@@ -9,8 +9,10 @@ import com.swpu.uchain.openexperiment.VO.project.ApplyKeyFormInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserDetailVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
 import com.swpu.uchain.openexperiment.VO.user.UserVO;
+import com.swpu.uchain.openexperiment.domain.Major;
 import com.swpu.uchain.openexperiment.enums.ExperimentType;
 import com.swpu.uchain.openexperiment.mapper.AclMapper;
+import com.swpu.uchain.openexperiment.mapper.MajorMapper;
 import com.swpu.uchain.openexperiment.mapper.RoleMapper;
 import com.swpu.uchain.openexperiment.domain.Acl;
 import com.swpu.uchain.openexperiment.domain.Role;
@@ -20,6 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +33,26 @@ import java.util.List;
  */
 @Service
 public class ConvertUtil {
+    @Autowired
+    private RedisUtil redisUtil;
 
     private AclMapper aclMapper;
 
     private RoleMapper roleMapper;
+    private static ConvertUtil convertUtil;
+    @Autowired
+    private MajorMapper majorMapper;
+    @PostConstruct
+    public void init(){
+        convertUtil = this;
+        convertUtil.majorMapper = this.majorMapper;
+    }
 
     @Autowired
     public ConvertUtil(AclMapper aclMapper, RoleMapper roleMapper) {
         this.aclMapper = aclMapper;
         this.roleMapper = roleMapper;
+
     }
 
     public List<String> fromAclsToUrls(List<Acl> acls) {
@@ -229,49 +243,49 @@ public class ConvertUtil {
         int result;
         switch (strCollege) {
             case "马克思主义学院":
-                result = 1;
-                break;
-            case "艺术学院":
-                result = 2;
-                break;
-            case "化学化工学院":
-                result = 3;
-                break;
-            case "地球科学与技术学院":
-                result = 4;
-                break;
-            case "石油与天然气工程学院":
-                result = 5;
-                break;
-            case "电气信息学院":
-                result = 6;
-                break;
-            case "经济管理学院":
-                result = 7;
-                break;
-            case "体育学院":
-                result = 8;
-                break;
-            case "机电工程学院":
-                result = 9;
-                break;
-            case "材料科学与工程学院":
-                result = 10;
-                break;
-            case "理学院":
-                result = 11;
-                break;
-            case "土木工程与建筑学院":
                 result = 12;
                 break;
-            case "法学院":
-                result = 13;
+            case "艺术学院":
+                result = 15;
                 break;
-            case "外国语学院":
+            case "化学化工学院":
+                result = 4;
+                break;
+            case "地球科学与技术学院":
+                result = 2;
+                break;
+            case "石油与天然气工程学院":
+                result = 1;
+                break;
+            case "电气信息学院":
+                result = 7;
+                break;
+            case "经济管理学院":
+                result = 10;
+                break;
+            case "体育学院":
                 result = 14;
                 break;
+            case "机电工程学院":
+                result = 3;
+                break;
+            case "新能源与材料学院":
+                result = 5;
+                break;
+            case "理学院":
+                result = 9;
+                break;
+            case "土木工程与测绘学院":
+                result = 8;
+                break;
+            case "法学院":
+                result = 11;
+                break;
+            case "外国语学院":
+                result = 13;
+                break;
             case "计算机科学学院":
-                result = 15;
+                result = 6;
                 break;
             default:
                 result = -1;
@@ -295,7 +309,7 @@ public class ConvertUtil {
                 result = "化学化工学院";
                 break;
             case 5:
-                result = "材料科学与工程学院";
+                result = "新能源与材料学院";
                 break;
             case 6:
                 result = "计算机科学学院";
@@ -304,7 +318,7 @@ public class ConvertUtil {
                 result = "电气信息学院";
                 break;
             case 8:
-                result = "土木工程与建筑学院";
+                result = "土木工程与测绘学院";
                 break;
             case 9:
                 result = "理学院";
@@ -316,16 +330,16 @@ public class ConvertUtil {
                 result = "法学院";
                 break;
             case 12:
-                result = "外国语学院";
+                result = "马克思学院";
                 break;
             case 13:
-                result = "体育学院";
+                result = "外国语学院";
                 break;
             case 14:
-                result = "艺术学院";
+                result = "体育学院";
                 break;
             case 15:
-                result = "马克思主义学院";
+                result = "艺术学院";
                 break;
             default:
                 result = "无";
@@ -373,9 +387,12 @@ public class ConvertUtil {
             return "";
         }
         String grade = gradeAndMajor.substring(0, 4);
-        Integer major = Integer.valueOf(gradeAndMajor.substring(4));
-        return grade + "级" + getMajorNameByNumber(major);
+//        Integer major = Integer.valueOf(gradeAndMajor.substring(4));
+        String major = convertUtil.majorMapper.selectById(gradeAndMajor.substring(4));
+        return grade + "级" + major;
     }
+
+
 
     public static void main(String[] args) {
         System.err.println(getGradeAndMajorByNumber(String.valueOf(201726)));
