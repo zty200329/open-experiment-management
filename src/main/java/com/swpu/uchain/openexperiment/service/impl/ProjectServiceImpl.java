@@ -421,10 +421,18 @@ public class ProjectServiceImpl implements ProjectService {
         if (userProjectGroup == null) {
             return Result.error(CodeMsg.USER_NOT_IN_GROUP);
         }
-        //状态不是申报或者退回修改或者中期打回不允许修改
-        if (!(projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) || projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue()) ||
-                projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue())|| projectGroup.getStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue()))) {
-            return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+        if(projectGroup.getProjectType() == 1) {
+            //状态不是申报或者退回修改或者中期打回不允许修改
+            if (!(projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) || projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue()) ||
+                    projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()) || projectGroup.getStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue()))) {
+                return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+            }
+        }else{
+            //状态不是申报或者退回修改或者中期打回不允许修改
+            if (!(projectGroup.getKeyProjectStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) || projectGroup.getKeyProjectStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue()) ||
+                    projectGroup.getKeyProjectStatus().equals(ProjectStatus.DECLARE.getValue()) || projectGroup.getKeyProjectStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue()))) {
+                return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+            }
         }
         //修改的话将状态修改为申报状态，中期打回不用
         if (!projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue())&& !projectGroup.getStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue())) {

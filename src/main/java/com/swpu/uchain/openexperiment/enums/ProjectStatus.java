@@ -13,7 +13,7 @@ public enum ProjectStatus {
     /**
      *
      */
-    FUNCTIONAL_ESTABLISH_RETURNS(-9,"职能部门结题审核退回修改"),
+    FUNCTIONAL_ESTABLISH_RETURNS(-9,"职能部门立项审核退回修改"),
 
     PROJECT_REVIEW(-8,"实验室审核通过，立项评审中"),
 
