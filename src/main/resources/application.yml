@@ -4,7 +4,7 @@ spring:
       max-file-size: 100MB
       enabled: true
   profiles:
-    active: dev2
+    active: dev3
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/openexperiment?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&&allowPublicKeyRetrieval=true
@@ -18,9 +18,9 @@ spring:
       min-evictable-idle-time-millis: 300000
   redis:
     database: 1 # Redis数据库索引（默认为0）
-    host: 106.15.248.34 # Redis服务器地址
-    port: 6379 # Redis服务器连接端口
-    password: 200329  # Redis服务器连接密码（默认为空）
+    host: 192.168.109.88 # Redis服务器地址
+    port: 6366 # Redis服务器连接端口
+    password: uchain  # Redis服务器连接密码（默认为空）
     jedis:
       pool:
         max-active: 200 #连接池最大连接数（使用负值表示没有限制）
@@ -36,13 +36,13 @@ jwt:
   secret: swpu-uchain
   expiration: 43000
 redis:
-  host: 106.15.248.34
-  port: 6379
+  host: 192.168.109.88
+  port: 6366
   timeout: 10
   poolMaxTotal: 1000
   poolMaxIdle: 500
   poolMaxWait: 500
-  password: 200329
+  password: uchain
 page:
   count:
     announcement: 10

@@ -10,9 +10,9 @@ import javax.validation.constraints.NotNull;
  * @Date: 19-1-25
  * @Description:
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Data
-public class AnnouncementUpdateForm extends AnnouncementPublishForm {
+public class AnnouncementUpdateForm  {
     @NotNull(message = "公告id不能为空")
     private Long announcementId;
 

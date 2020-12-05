@@ -341,6 +341,12 @@ public class ConvertUtil {
             case 15:
                 result = "艺术学院";
                 break;
+            case 61:
+                result = "网信中心";
+                break;
+            case 62:
+                result = "工程训练中心";
+                break;
             default:
                 result = "无";
         }

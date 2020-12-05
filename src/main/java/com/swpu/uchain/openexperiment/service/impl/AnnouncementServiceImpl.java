@@ -251,8 +251,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
         }
         QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setStatus(1);
         queryCondition.setCollege(currentUser.getInstitute());
-        List<AnnouncementListVO> listVOS = announcementMapper.selectByCollgeAndConditionAndOrderByTime(queryCondition);
+        List<AnnouncementListVO> listVOS = announcementMapper.selectByCollgeAndConditionAndOrderByTime1(queryCondition);
         return Result.success(listVOS);
     }
 
