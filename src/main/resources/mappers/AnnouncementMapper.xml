@@ -8,6 +8,7 @@
     <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="publish_time" jdbcType="TIMESTAMP" property="publishTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="college" jdbcType="INTEGER" property="college" />
   </resultMap>
   <resultMap id="ListResultMap" type="com.swpu.uchain.openexperiment.VO.announcement.AnnouncementListVO">
     <id column="id" jdbcType="BIGINT" property="announcementId" />
@@ -20,11 +21,11 @@
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.Announcement">
     insert into openexperiment.announcement (id, publisher_id, title,
-      content, publish_time, update_time,status
+      content, publish_time, update_time,status,college
       )
     values (#{id,jdbcType=BIGINT}, #{publisherId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
-      #{content,jdbcType=VARCHAR}, #{publishTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},#{status}
-      )
+      #{content,jdbcType=VARCHAR}, #{publishTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},#{status},
+      #{college})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.Announcement">
     update openexperiment.announcement
@@ -50,10 +51,13 @@
     select id, publisher_id, title, content, publish_time, update_time
     from openexperiment.announcement
   </select>
-  <select id="selectByConditionAndOrderByTime" resultMap="ListResultMap">
+  <select id="selectByCollgeAndConditionAndOrderByTime" resultMap="ListResultMap">
     select id, title, publish_time,status
     from openexperiment.announcement
     <where>
+      <if test="college!=null">
+        college = #{college}
+      </if>
       <if test="startTime!=null">
         publish_time &gt;= #{startTime}
       </if>
@@ -67,6 +71,52 @@
         and locate(#{title},title)
       </if>
     </where>
+    order by publish_time
+    desc
+  </select>
+  <select id="selectByCollgeAndConditionAndOrderByTime1" resultMap="ListResultMap">
+    select id, title, publish_time,status
+    from openexperiment.announcement
+    <where>
+      <if test="college!=null">
+        college = #{college}
+      </if>
+
+        and status= #{status}
+
+    </where>
+    order by publish_time
+    desc
+  </select>
+  <select id="selectByConditionAndOrderByTime" resultMap="ListResultMap">
+    select id, title, publish_time,status
+    from openexperiment.announcement
+    <where>
+        college IS NULL
+      <if test="startTime!=null">
+        publish_time &gt;= #{startTime}
+      </if>
+      <if test="endTime!=null">
+        and publish_time &lt;= #{endTime}
+      </if>
+      <if test="status!=null">
+        and status= #{status}
+      </if>
+      <if test="title!=null">
+        and locate(#{title},title)
+      </if>
+    </where>
+    order by publish_time
+    desc
+  </select>
+  <select id="selectByConditionAndOrderByTime1" resultMap="ListResultMap">
+    select id, title, publish_time,status
+    from openexperiment.announcement
+    where
+    college IS NULL
+    and status = 1
+
+
     order by publish_time
     desc
   </select>

@@ -43,6 +43,13 @@ public interface AnnouncementService {
     Result publishAnnouncement(AnnouncementPublishForm publishForm);
 
     /**
+     * 院内发布公告
+     * @param publishForm
+     * @return
+     */
+    Result collegePublish(AnnouncementPublishForm publishForm);
+
+    /**
      * 发布新闻
      * @param homePageNewsPublishForm
      * @return
@@ -111,10 +118,25 @@ public interface AnnouncementService {
      * @return
      */
     Result getList();
+    /**
+     * 获取公告指定分页数据
+     * @param
+     * @return
+     */
+    Result getList1();
+    /**
+     * 获取学院的
+     * @return
+     */
+    Result getCollegeList();
+
+    Result getCollegeList1();
 
     Result changeInfo(AnnouncementUpdateForm updateForm);
 
     Result createAndSave(AnnouncementPublishForm publishForm);
+
+    Result createCollegeAndSave(AnnouncementPublishForm publishForm);
 
     Result publishSavedAnnouncement(Long announcementId);
 

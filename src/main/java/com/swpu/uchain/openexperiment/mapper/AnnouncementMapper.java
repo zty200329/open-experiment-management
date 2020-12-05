@@ -24,7 +24,33 @@ public interface AnnouncementMapper {
 
     int updateByPrimaryKey(Announcement record);
 
+    /**
+     * 获取全校的
+     * @param condition
+     * @return
+     */
     List<AnnouncementListVO> selectByConditionAndOrderByTime(QueryCondition condition);
+
+    /**
+     * 获取全校的
+     * @param condition
+     * @return
+     */
+    List<AnnouncementListVO> selectByConditionAndOrderByTime1(QueryCondition condition);
+
+    /**
+     * 学院的
+     * @param condition
+     * @return
+     */
+    List<AnnouncementListVO> selectByCollgeAndConditionAndOrderByTime(QueryCondition condition);
+
+    /**
+     * 学院的
+     * @param condition
+     * @return
+     */
+    List<AnnouncementListVO> selectByCollgeAndConditionAndOrderByTime1(QueryCondition condition);
 
     int updateAnnouncementStatusById(@Param("status")Integer status,@Param("id") Long id);
 }

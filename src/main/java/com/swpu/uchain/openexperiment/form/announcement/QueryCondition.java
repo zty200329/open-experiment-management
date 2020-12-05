@@ -27,5 +27,5 @@ public class QueryCondition {
     @ApiModelProperty("终止时间")
     private Date endTime;
 
-
+    private Integer college;
 }

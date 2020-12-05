@@ -15,4 +15,8 @@ import javax.validation.constraints.NotNull;
 public class AnnouncementUpdateForm extends AnnouncementPublishForm {
     @NotNull(message = "公告id不能为空")
     private Long announcementId;
+
+    private String title;
+
+    private String content;
 }

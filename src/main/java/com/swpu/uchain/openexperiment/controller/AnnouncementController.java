@@ -36,6 +36,11 @@ public class AnnouncementController {
         return announcementService.publishAnnouncement(publishForm);
     }
 
+    @ApiOperation("学院发布公告")
+    @PostMapping(value = "/collegePublish", name = "发布公告")
+    public Result collegePublish(@RequestBody @Valid AnnouncementPublishForm publishForm){
+        return announcementService.collegePublish(publishForm);
+    }
 
     @ApiOperation("阅读公告详情")
     @GetMapping(value = "/readDetail", name = "阅读公告详情")
@@ -46,10 +51,27 @@ public class AnnouncementController {
         return announcementService.readAnnouncementDetail(announcementId);
     }
 
-    @ApiOperation("公告列表")
+    @ApiOperation("学校的后台公告列表")
     @GetMapping(value = "/list", name = "公告列表")
     public Result list(){
         return announcementService.getList();
+    }
+    @ApiOperation("学校的已发布公告列表")
+    @GetMapping(value = "/getList", name = "公告列表")
+    public Result getist(){
+        return announcementService.getList1();
+    }
+
+    @ApiOperation("实验室主任公告列表")
+    @GetMapping(value = "/collegeList", name = "公告列表")
+    public Result collegeList(){
+        return announcementService.getCollegeList();
+    }
+
+    @ApiOperation("学院已发布公告列表")
+    @GetMapping(value = "/getCollegeList", name = "公告列表")
+    public Result getCollegeList(){
+        return announcementService.getCollegeList1();
     }
 
     @ApiOperation("根据条件查询公告")
@@ -78,6 +100,12 @@ public class AnnouncementController {
     @PostMapping("/createAndSave")
     public Result createAndSave(@RequestBody @Valid AnnouncementPublishForm publishForm){
         return announcementService.createAndSave(publishForm);
+    }
+
+    @ApiOperation("学院创建并保存公告")
+    @PostMapping("/createCollegeAndSave")
+    public Result createCollegeAndSave(@RequestBody @Valid AnnouncementPublishForm publishForm){
+        return announcementService.createCollegeAndSave(publishForm);
     }
 
 

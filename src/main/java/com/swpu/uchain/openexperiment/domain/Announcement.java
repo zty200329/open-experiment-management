@@ -25,4 +25,6 @@ public class Announcement{
 
     private Integer status;
 
+    private Integer college;
+
 }

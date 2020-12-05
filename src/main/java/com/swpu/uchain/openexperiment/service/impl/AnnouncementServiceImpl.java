@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.swpu.uchain.openexperiment.VO.announcement.*;
 import com.swpu.uchain.openexperiment.domain.*;
+import com.swpu.uchain.openexperiment.enums.RoleType;
 import com.swpu.uchain.openexperiment.form.announcement.*;
 import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.enums.AnnouncementStatus;
@@ -93,6 +94,22 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Override
     public Result publishAnnouncement(AnnouncementPublishForm publishForm) {
         Announcement announcement = convertFormToModel(publishForm,AnnouncementStatus.PUBLISHED);
+        if (insertAndPublish(announcement)){
+            //设置阅读次数
+            redisService.set(AnnouncementKey.getClickTimesById, announcement.getId() + "", 0);
+            return Result.success();
+        }
+        return Result.error(CodeMsg.ADD_ERROR);
+    }
+
+    @Override
+    public Result collegePublish(AnnouncementPublishForm publishForm) {
+        User currentUser = getUserService.getCurrentUser();
+        if (currentUser == null) {
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        Announcement announcement = convertFormToModel(publishForm,AnnouncementStatus.PUBLISHED);
+        announcement.setCollege(currentUser.getInstitute());
         if (insertAndPublish(announcement)){
             //设置阅读次数
             redisService.set(AnnouncementKey.getClickTimesById, announcement.getId() + "", 0);
@@ -208,6 +225,36 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         List<AnnouncementListVO> listVOS = announcementMapper.selectByConditionAndOrderByTime(null);
         return Result.success(listVOS);
     }
+    @Override
+    public Result getList1() {
+        //使用无条件查询
+        List<AnnouncementListVO> listVOS = announcementMapper.selectByConditionAndOrderByTime1(null);
+        return Result.success(listVOS);
+    }
+    @Override
+    public Result getCollegeList() {
+        User currentUser = getUserService.getCurrentUser();
+        //检测用户是不是老师--后期可省略
+        if (currentUser == null) {
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setCollege(currentUser.getInstitute());
+        List<AnnouncementListVO> listVOS = announcementMapper.selectByCollgeAndConditionAndOrderByTime(queryCondition);
+        return Result.success(listVOS);
+    }
+
+    @Override
+    public Result getCollegeList1() {
+        User currentUser = getUserService.getCurrentUser();
+        if (currentUser == null) {
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setCollege(currentUser.getInstitute());
+        List<AnnouncementListVO> listVOS = announcementMapper.selectByCollgeAndConditionAndOrderByTime(queryCondition);
+        return Result.success(listVOS);
+    }
 
     @Override
     public Result changeInfo(AnnouncementUpdateForm updateForm) {
@@ -226,6 +273,19 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Override
     public Result createAndSave(AnnouncementPublishForm publishForm) {
         Announcement announcement = convertFormToModel(publishForm,AnnouncementStatus.SAVE);
+        announcementMapper.insert(announcement);
+        return Result.success();
+    }
+
+    @Override
+    public Result createCollegeAndSave(AnnouncementPublishForm publishForm) {
+        User currentUser = getUserService.getCurrentUser();
+        //检测用户是不是老师--后期可省略
+        if (currentUser == null) {
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        Announcement announcement = convertFormToModel(publishForm,AnnouncementStatus.SAVE);
+        announcement.setCollege(currentUser.getInstitute());
         announcementMapper.insert(announcement);
         return Result.success();
     }
@@ -440,6 +500,16 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     @Override
     public Result queryByCondition(QueryCondition condition) {
+        User currentUser = getUserService.getCurrentUser();
+        if (currentUser == null){
+            throw new GlobalException(CodeMsg.AUTHENTICATION_ERROR);
+        }
+        User user = getUserService.selectByUserCodeAndRole(currentUser.getCode(), RoleType.LAB_ADMINISTRATOR.getValue());
+        //如果是实验室主任
+        if(user != null){
+            condition.setCollege(user.getInstitute());
+            return Result.success(announcementMapper.selectByCollgeAndConditionAndOrderByTime(condition));
+        }
         return Result.success(announcementMapper.selectByConditionAndOrderByTime(condition));
     }
 
