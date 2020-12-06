@@ -9,9 +9,9 @@
     <result column="reason" property="reason" jdbcType="VARCHAR" />
     <result column="operate_user" property="operateUser" jdbcType="BIGINT" />
   </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByProjectId" parameterType="java.lang.Long" >
     delete from project_review
-    where id = #{id,jdbcType=INTEGER}
+    where project_id = #{project_id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.ProjectReviewResult" >
     insert into project_review ( project_id, score,

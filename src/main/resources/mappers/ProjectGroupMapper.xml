@@ -613,6 +613,8 @@
         select distinct
             project_group.id,
             case
+                when project_group.status = -9 then '职能部门立项审核退回修改'
+                when project_group.status = -8 then '实验室审核通过，立项评审中'
                 when project_group.status = -7 then '职能部门结题审核退回修改'
                 when project_group.status = -6 then '学院结题审核退回修改'
                 when project_group.status = -5 then '中期打回修改'
@@ -643,6 +645,8 @@
             project_group.suggest_group_type,
             project_group.subordinate_college  AS college,
             case
+                when project_group.status = -9 then '职能部门立项审核退回修改'
+                when project_group.status = -8 then '实验室审核通过，立项评审中'
                 when key_project_status.status = -7 then '职能部门结题审核退回修改'
                 when key_project_status.status = -6 then '学院结题审核退回修改'
                 when key_project_status.status = -5 then '中期打回修改'

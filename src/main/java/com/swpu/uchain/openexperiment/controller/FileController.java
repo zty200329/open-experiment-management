@@ -143,6 +143,12 @@ public class FileController {
         projectFileService.generateEstablishExcel(response, ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue());
     }
 
+    @ApiOperation("职能部门生成立项总览表")
+    @PostMapping(value = "/generateAllEstablishExcel", name = "生成立项总览表")
+    public void generateAllEstablishExcel(HttpServletResponse response){
+        projectFileService.generateAllEstablishExcel(response, ProjectStatus.ESTABLISH.getValue());
+    }
+
     @ApiOperation("生成项目信息总览表，加状态信息")
     @PostMapping(value = "/generateProjectInfoExcel", name = "生成立项总览表")
     public void generateProjectInfoExcel(HttpServletResponse response){

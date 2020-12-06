@@ -485,7 +485,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Throwable.class)
     public Result instructorsToDeleteItems(List<ProjectCheckForm> list) {
         User user = getUserService.getCurrentUser();
         if (user == null){
@@ -501,9 +501,13 @@ public class ProjectServiceImpl implements ProjectService {
                 }
             }
             //验证状态
-            if (!(projectGroup.getStatus() >= -2 && projectGroup.getStatus() <= 2)) {
+            if (!(projectGroup.getStatus() >= -2 && projectGroup.getStatus() <= 2) && !(projectGroup.getStatus() == -4)) {
                 return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
             }
+            if(projectGroup.getProjectType() == 2){
+                keyProjectStatusMapper.deleteByProjectId(projectGroup.getId());
+            }
+            projectReviewResultMapper.deleteByProjectId(projectCheckForm.getProjectId());
             projectGroupMapper.deleteByPrimaryKey(projectCheckForm.getProjectId());
             userProjectGroupMapper.deleteByProjectGroupId(projectCheckForm.getProjectId());
             recordMapper.deleteByGroupId(projectCheckForm.getProjectId());

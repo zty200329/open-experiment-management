@@ -728,6 +728,167 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         }
         Integer college = user.getInstitute();
         List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(college, projectStatus);
+
+        // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
+        XSSFWorkbook wb = new XSSFWorkbook();
+        // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
+        XSSFSheet sheet = wb.createSheet("workSheet");
+
+        sheet.setPrintGridlines(true);
+        //3.1设置字体居中
+        XSSFCellStyle cellStyle = wb.createCellStyle();
+        //自动换行
+        cellStyle.setWrapText(true);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        //当前行的位置
+        int index = 0;
+
+        //序号
+        XSSFRow title = sheet.createRow(index);
+        sheet.setColumnWidth(0, 256 * 150);
+        title.setHeight((short) (16 * 50));
+        title.createCell(index++).setCellValue("西南石油大学第" + getYear() / 100 + "期(" + getYear() + "-" + (getYear() + 1) + "年度)课外开放实验项目立项一览表");
+
+        XSSFRow info = sheet.createRow(index);
+        info.createCell(0).setCellValue("单位：（盖章）");
+        sheet.setColumnWidth(0, 256 * 20);
+        info.createCell(3).setCellValue("填报时间");
+        sheet.setColumnWidth(index, 256 * 20);
+        index++;
+
+        // 4.设置表头，即每个列的列名
+        String[] head = {"院/中心", "创建编号", "项目名称", "实验类型", "实验时数", "指导教师", "学生"
+                , "专业年级", "开始时间", "结束时间", "开放\r\n实验室", "实验室地点", "负责学生姓名", "负责学生\r\n电话"
+                , "申请经费（元）", "建议\r\n评审分组", "项目状态", "上报编号", "项目类型"};
+        // 4.1创建表头行
+        XSSFRow row = sheet.createRow(index++);
+
+        //创建行中的列
+        for (int i = 0; i < head.length; i++) {
+
+            // 给列写入数据,创建单元格，写入数据
+            row.setHeight((short) (16 * 40));
+            row.createCell(i).setCellValue(head[i]);
+
+        }
+
+        //写入数据
+        for (ProjectTableInfo projectTableInfo : list) {
+
+            //替换项目状态(如果项目是重点,替换项目状态)
+            if (projectTableInfo.getKeyProjectStatus() != null) {
+                projectTableInfo.setProjectStatus(projectTableInfo.getKeyProjectStatus());
+            }
+
+
+            //项目组组长
+            List<UserMemberVO> userMemberVOList =
+                    userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.PROJECT_GROUP_LEADER.getValue(), projectTableInfo.getId(), JoinStatus.JOINED.getValue());
+            StringBuilder students = new StringBuilder("");
+            StringBuilder studentsMajorAndGrade = new StringBuilder();
+            StringBuilder leaderName = new StringBuilder();
+            StringBuilder leaderPhone = new StringBuilder();
+            StringBuilder guideTeachers = new StringBuilder();
+            for (int i = 0; i < userMemberVOList.size(); i++) {
+                UserMemberVO userMemberVO = userMemberVOList.get(i);
+                leaderName.append(userMemberVO.getUserName());
+                if (userMemberVO.getPhone() != null) {
+                    leaderPhone.append(userMemberVO.getPhone());
+                }
+
+                students.append(userMemberVO.getUserName());
+                students.append("\r\n ");
+                studentsMajorAndGrade.append(ConvertUtil.getGradeAndMajorByNumber(userMemberVO.getGrade() + userMemberVO.getMajor()));
+                if (i != userMemberVOList.size() - 1) {
+                    studentsMajorAndGrade.append("\r\n ");
+                }
+            }
+
+
+            //项目成员
+            List<UserMemberVO> userMemberVOList2 =
+                    userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.NORMAL_MEMBER.getValue(), projectTableInfo.getId(), JoinStatus.JOINED.getValue());
+            for (int i = 0; i < userMemberVOList2.size(); i++) {
+                UserMemberVO userMemberVO = userMemberVOList2.get(i);
+                students.append(userMemberVO.getUserName());
+                students.append("\r\n ");
+                studentsMajorAndGrade.append(ConvertUtil.getGradeAndMajorByNumber(userMemberVO.getGrade() + userMemberVO.getMajor()));
+                if (i != userMemberVOList2.size() - 1) {
+                    studentsMajorAndGrade.append("\r\n ");
+                }
+            }
+
+            //指导教师
+            List<UserMemberVO> userMemberVOList3 =
+                    userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(), projectTableInfo.getId(), JoinStatus.JOINED.getValue());
+            for (int i = 0; i < userMemberVOList3.size(); i++) {
+                UserMemberVO userMemberVO = userMemberVOList3.get(i);
+                guideTeachers.append(userMemberVO.getUserName());
+                guideTeachers.append("\r\n ");
+                if (i != userMemberVOList3.size() - 1) {
+                    studentsMajorAndGrade.append("\r\n ");
+                }
+            }
+
+
+            //创建行
+            row = sheet.createRow(index++);
+
+            //设置行高
+            row.setHeight((short) (16 * 22));
+            // 序号
+            row.createCell(0).setCellValue(ConvertUtil.getStrCollege(projectTableInfo.getCollege()));
+            if (projectTableInfo.getTempSerialNumber() != null) {
+                row.createCell(1).setCellValue(projectTableInfo.getTempSerialNumber());
+            }
+            //项目名称
+            row.createCell(2).setCellValue(projectTableInfo.getProjectName());
+            //实验类型
+            row.createCell(3).setCellValue(ConvertUtil.getStrExperimentType(projectTableInfo.getExperimentType()));
+
+            row.createCell(4).setCellValue(projectTableInfo.getTotalHours());
+            row.createCell(5).setCellValue(guideTeachers.toString());
+            row.createCell(6).setCellValue(students.toString());
+            row.createCell(7).setCellValue(studentsMajorAndGrade.toString());
+            log.info(projectTableInfo.getStartTime().substring(0, 10));
+            row.createCell(8).setCellValue(projectTableInfo.getStartTime().substring(0, 10));
+            row.createCell(9).setCellValue(projectTableInfo.getEndTime().substring(0, 10));
+            row.createCell(10).setCellValue(projectTableInfo.getLabName());
+            row.createCell(11).setCellValue(projectTableInfo.getAddress());
+            row.createCell(12).setCellValue(leaderName.toString());
+            row.createCell(13).setCellValue(leaderPhone.length() == 0 ? "" : leaderPhone.toString());
+            row.createCell(14).setCellValue(projectTableInfo.getApplyFunds());
+            row.createCell(15).setCellValue(ConvertUtil.getStringSuggestGroupType(projectTableInfo.getSuggestGroupType()));
+            row.createCell(16).setCellValue(projectTableInfo.getProjectStatus());
+            row.createCell(17).setCellValue(projectTableInfo.getTempSerialNumber());
+            row.createCell(18).setCellValue(ConvertUtil.getStrProjectType(projectTableInfo.getProjectType()));
+
+        }
+
+        sheet.createRow(index++).createCell(0).setCellValue("注1：本表由学院（中心）汇总填报。注2：建议评审分组填A-F,数据来源立项申请表");
+        index++;
+
+        XSSFRow end = sheet.createRow(index);
+        end.createCell(0).setCellValue("主管院长签字:");
+        end.createCell(3).setCellValue("经办人");
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Content-disposition", "attachment;filename=" + "EstablishExcel" + ".xlsx");
+        try {
+            OutputStream os = response.getOutputStream();
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (IOException e) {
+            throw new GlobalException(CodeMsg.DOWNLOAD_ERROR);
+        }
+    }
+
+    @Override
+    public void generateAllEstablishExcel(HttpServletResponse response, Integer projectStatus) {
+
+        List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(null, projectStatus);
+
+        SortListUtil.sort(list,"college");
         // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
         XSSFWorkbook wb = new XSSFWorkbook();
         // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)

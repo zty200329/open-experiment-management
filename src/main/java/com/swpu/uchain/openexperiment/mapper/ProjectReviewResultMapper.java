@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Repository
 public interface ProjectReviewResultMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByProjectId(Long id);
 
     int insert(ProjectReviewResult record);
 
