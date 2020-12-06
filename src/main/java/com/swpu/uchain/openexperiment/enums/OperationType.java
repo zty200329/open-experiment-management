@@ -31,6 +31,7 @@ public enum OperationType {
     FUNCTIONAL_CHANGE_TO_GENERAL(17,"职能部门将重点立项转为普通立项"),
     FUNCTIONAL_ESTABLISH_RETURN(18,"职能部门立项退回修改"),
     FUNCTIONAL_ESTABLISH_PASSED(19,"职能部门立项复核通过"),
+    TURN_GENERAL(20,"重点转普通"),
     ;
     private Integer value;
 

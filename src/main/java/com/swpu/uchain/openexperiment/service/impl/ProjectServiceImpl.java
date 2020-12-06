@@ -428,10 +428,18 @@ public class ProjectServiceImpl implements ProjectService {
                 return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
             }
         }else{
-            //状态不是申报或者退回修改或者中期打回不允许修改
-            if (!(projectGroup.getKeyProjectStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) || projectGroup.getKeyProjectStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue()) ||
-                    projectGroup.getKeyProjectStatus().equals(ProjectStatus.DECLARE.getValue()) || projectGroup.getKeyProjectStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue()))) {
-                return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+            //判断是否有重点申请
+            if(projectGroup.getKeyProjectStatus() != null) {
+                //状态不是申报或者退回修改或者中期打回不允许修改
+                if (!(projectGroup.getKeyProjectStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) || projectGroup.getKeyProjectStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue()) ||
+                        projectGroup.getKeyProjectStatus().equals(ProjectStatus.DECLARE.getValue()) || projectGroup.getKeyProjectStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue()))) {
+                    return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+                }
+            }else {
+                if (!(projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) || projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue()) ||
+                        projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()) || projectGroup.getStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue()))) {
+                    return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
+                }
             }
         }
         //修改的话将状态修改为申报状态，中期打回不用
@@ -2031,8 +2039,14 @@ public class ProjectServiceImpl implements ProjectService {
             operationRecord.setOperationReason(form.getReason());
             if(ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue().equals(status)){
                 operationRecord.setOperationUnit(OperationUnit.LAB_ADMINISTRATOR.getValue());
-                operationRecord.setOperationType(OperationType.REPORT.getValue());
-            }else{
+                operationRecord.setOperationType(OperationType.TURN_GENERAL.getValue());
+            }else if(ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue().equals(status)){
+                operationRecord.setOperationUnit(OperationUnit.SECONDARY_UNIT.getValue());
+                operationRecord.setOperationType(OperationType.TURN_GENERAL.getValue());
+            }else if(ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue().equals(status)){
+                operationRecord.setOperationUnit(OperationUnit.SECONDARY_UNIT.getValue());
+                operationRecord.setOperationType(OperationType.TURN_GENERAL.getValue());
+            } else{
                 operationRecord.setOperationUnit(OperationUnit.FUNCTIONAL_DEPARTMENT.getValue());
                 operationRecord.setOperationType(OperationType.FUNCTIONAL_CHANGE_TO_GENERAL.getValue());
             }
@@ -2069,6 +2083,10 @@ public class ProjectServiceImpl implements ProjectService {
             }else{
                 projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue());
             }
+        }else if(ProjectStatus.LAB_ALLOWED_AND_REPORTED.getValue().equals(statu)){
+            projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue());
+        }else if(ProjectStatus.SECONDARY_UNIT_ALLOWED.getValue().equals(statu)){
+            projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue());
         }else {
             projectGroupMapper.updateProjectStatusOfList(projectGroupIdList, ProjectStatus.ESTABLISH.getValue());
         }
