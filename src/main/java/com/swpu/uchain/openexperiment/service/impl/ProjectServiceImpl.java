@@ -804,8 +804,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result getPendingApprovalProjectByLabAdministrator() {
-//        return getCheckInfo(ProjectStatus.DECLARE);
-        return getNewCheckList(ProjectStatus.DECLARE);
+        return getCheckInfo(ProjectStatus.DECLARE);
+//        return getNewCheckList(ProjectStatus.DECLARE);
     }
 
     @Override
