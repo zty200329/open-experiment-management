@@ -29,8 +29,10 @@ public class SerialNumberUtil {
         }
 
         String serialNumber;
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
+//        Calendar calendar = Calendar.getInstance();
+//        int year = calendar.get(Calendar.YEAR);
+
+        int year = 2020;
 
         String projectTypeValue;
         //如果重点项目
@@ -57,7 +59,7 @@ public class SerialNumberUtil {
     }
 
     public static void main(String[] args) {
-        String number = getSerialNumberOfProject(CollegeType.ECONOMIC_MANAGEMENT_COLLEGE.getValue(),ProjectType.GENERAL.getValue(),"2020KSP07001");
+        String number = getSerialNumberOfProject(CollegeType.ELECTRICAL_INFORMATION_COLLEGE.getValue(),ProjectType.GENERAL.getValue(),"2020KSP06009");
         System.err.println(number);
     }
 }

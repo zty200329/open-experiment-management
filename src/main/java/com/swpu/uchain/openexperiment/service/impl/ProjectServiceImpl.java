@@ -466,6 +466,19 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
 
+
+        if(!projectGroup.getProjectType().equals(updateProjectApplyForm.getProjectType())){
+            //设置项目创建编号
+            String maxTempSerialNumber = null;
+            if(updateProjectApplyForm.getProjectType() == 1){
+                maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(projectGroup.getSubordinateCollege(),1);
+            }else{
+                maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(projectGroup.getSubordinateCollege(),2);
+            }
+            //计算编号并在数据库中插入编号
+            projectGroupMapper.updateProjectTempSerialNumber(projectGroup.getId(), SerialNumberUtil.getSerialNumberOfProject(projectGroup.getSubordinateCollege(), updateProjectApplyForm.getProjectType(), maxTempSerialNumber));
+        }
+
         //更新项目组基本信息
         BeanUtils.copyProperties(updateProjectApplyForm, projectGroup);
         update(projectGroup);
@@ -478,6 +491,7 @@ public class ProjectServiceImpl implements ProjectService {
         operationRecord.setOperationExecutorId(Long.valueOf(currentUser.getCode()));
         //设置执行人
         setOperationExecutor(operationRecord);
+
 
         //修改项目状态
         if (!projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue())) {
@@ -2069,9 +2083,10 @@ public class ProjectServiceImpl implements ProjectService {
 
             //设置项目创建编号
             String maxTempSerialNumber = null;
-            maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(projectGroup.getSubordinateCollege(),1);
+            maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(projectGroup.getSubordinateCollege(), 1);
+            log.info(maxTempSerialNumber);
             //计算编号并在数据库中插入编号
-            projectGroupMapper.updateProjectTempSerialNumber(form.getProjectId(), SerialNumberUtil.getSerialNumberOfProject(user.getInstitute(),ProjectType.GENERAL.getValue(), maxTempSerialNumber));
+            projectGroupMapper.updateProjectTempSerialNumber(form.getProjectId(), SerialNumberUtil.getSerialNumberOfProject(user.getInstitute(), ProjectType.GENERAL.getValue(), maxTempSerialNumber));
             list.add(operationRecord);
         }
         ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(user.getInstitute(),ProjectType.GENERAL.getValue());
