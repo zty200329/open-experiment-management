@@ -608,6 +608,72 @@
                  left join openexperiment.key_project_status on key_project_status.project_id = project_group_id
         where project_group.id = #{projectId}
     </select>
+    <select id="getProjectTableInfoListByCollegeAndList1" resultMap="ProjectTableInfoResultMap"
+            resultType="com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo">
+        select distinct
+        project_group.id,
+        case
+        when project_group.status = -9 then '职能部门立项审核退回修改'
+        when project_group.status = -8 then '实验室审核通过，立项评审中'
+        when project_group.status = -7 then '职能部门结题审核退回修改'
+        when project_group.status = -6 then '学院结题审核退回修改'
+        when project_group.status = -5 then '中期打回修改'
+        when project_group.status = -4 then '重点项目申请'
+        when project_group.status = -3 then '立项失败'
+        when project_group.status = -2 then '驳回修改'
+        when project_group.status = -1 then '待指导老师确认'
+        when project_group.status = 0 then '待实验室审核'
+        when project_group.status = 1 then '实验室审核通过(待上报)'
+        when project_group.status = 2 then '实验室上报(待二级单位审核)'
+        when project_group.status = 3 then '二级单位审核通过(待上报)'
+        when project_group.status = 4 then '二级单位上报(待职能部门审核)'
+        when project_group.status = 5 then '职能部门审核通过,立项'
+        when project_group.status = 6 then '学院结题提交'
+        when project_group.status = 7 then '结题项目' end as projectStatus,
+        project_group.serial_number,
+        project_group.temp_serial_number,
+        project_group.address,
+        project_group.create_time,
+        project_group.start_time,
+        project_group.end_time,
+        project_group.total_hours,
+        project_group.project_name,
+        project_group.lab_name,
+        project_group.apply_funds,
+        project_group.project_type,
+        project_group.experiment_type,
+        project_group.suggest_group_type,
+        project_group.subordinate_college  AS college,
+        case
+        when project_group.status = -9 then '职能部门立项审核退回修改'
+        when project_group.status = -8 then '实验室审核通过，立项评审中'
+        when key_project_status.status = -7 then '职能部门结题审核退回修改'
+        when key_project_status.status = -6 then '学院结题审核退回修改'
+        when key_project_status.status = -5 then '中期打回修改'
+        when key_project_status.status = -4 then '重点项目申请'
+        when key_project_status.status = -3 then '立项失败'
+        when key_project_status.status = -2 then '驳回修改'
+        when key_project_status.status = -1 then '待指导老师确认'
+        when key_project_status.status = 0 then '待实验室审核'
+        when key_project_status.status = 1 then '实验室审核通过(待上报)'
+        when key_project_status.status = 2 then '实验室上报(待二级单位审核)'
+        when key_project_status.status = 3 then '二级单位审核通过(待上报)'
+        when key_project_status.status = 4 then '二级单位上报(待职能部门审核)'
+        when key_project_status.status = 5 then '职能部门审核通过,立项'
+        when key_project_status.status = 6 then '学院结题提交'
+        when key_project_status.status = 7 then '结题项目' end as keyProjectStatus
+        from openexperiment.project_group
+        left join openexperiment.key_project_status on project_group.id = key_project_status.project_id
+        <where>
+            <if test="college!=null">
+                project_group.subordinate_college = #{college}
+            </if>
+            <if test="status!=null">
+                and project_group.status >= #{status} or key_project_status.status >=  #{status}
+            </if>
+
+        </where>
+    </select>
     <select id="getProjectTableInfoListByCollegeAndList" resultMap="ProjectTableInfoResultMap"
             resultType="com.swpu.uchain.openexperiment.VO.project.ProjectTableInfo">
         select distinct

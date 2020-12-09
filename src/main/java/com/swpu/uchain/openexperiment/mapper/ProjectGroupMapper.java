@@ -148,6 +148,13 @@ public interface ProjectGroupMapper {
      */
     List<ProjectTableInfo> getProjectTableInfoListByCollegeAndList(@Param("college") Integer college,@Param("status")Integer status);
 
+    /**
+     * 总览表项目信息 大于
+     * @param college
+     * @return
+     */
+    List<ProjectTableInfo> getProjectTableInfoListByCollegeAndList1(@Param("college") Integer college,@Param("status")Integer status);
+
     int updateProjectStatus(@Param("id") Long projectId,@Param("status")Integer status);
 
 
