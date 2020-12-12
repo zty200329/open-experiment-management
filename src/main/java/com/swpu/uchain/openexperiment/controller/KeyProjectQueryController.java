@@ -45,6 +45,11 @@ public class KeyProjectQueryController {
         return keyProjectService.getKeyProjectApplyingListBySecondaryUnit();
     }
 
+    @GetMapping(value = "/getToBeReportedKeyProjectBySecondaryUnit")
+    @ApiOperation("二级单位获取待上报的项目")
+    public Result getToBeReportedProjectBySecondaryUnit(){
+        return keyProjectService.getToBeReportedProjectBySecondaryUnit ();
+    }
     @GetMapping(value = "/getToBeReviewedProject")
     @ApiOperation("获取待立项评审的项目")
     public Result getToBeReviewedProject(){
@@ -74,11 +79,7 @@ public class KeyProjectQueryController {
         return keyProjectService.getToBeReportedProjectByLabAdmin();
     }
 
-    @GetMapping(value = "/getToBeReportedKeyProjectBySecondaryUnit")
-    @ApiOperation("二级单位获取待上报的项目")
-    public Result getToBeReportedProjectBySecondaryUnit(){
-        return keyProjectService.getToBeReportedProjectBySecondaryUnit ();
-    }
+
 
     @GetMapping(value = "/getToReviewKeyProject")
     @ApiOperation("获取待立项评审的重点项目")

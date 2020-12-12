@@ -277,12 +277,13 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     @Override
     public Result getKeyProjectApplyingListBySecondaryUnit() {
         User user  = getUserService.getCurrentUser();
-        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(user.getInstitute(),ProjectType.GENERAL.getValue());
+        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(user.getInstitute(),ProjectType.KEY.getValue());
         if(projectReview != null){
             //需要评审
             return getReviewInfo2();
+        }else {
+            return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.LAB_ALLOWED_AND_REPORTED, user.getInstitute());
         }
-        return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.LAB_ALLOWED_AND_REPORTED,user.getInstitute());
     }
 
     @Override
@@ -675,6 +676,9 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 
         List<ProjectReviewResult> projectReviewResults = new LinkedList<ProjectReviewResult>();
         for (CollegeGiveScore giveScore : collegeGiveScores) {
+            if(giveScore.getScore()>100 || giveScore.getScore() < 0 ){
+                throw new GlobalException(CodeMsg.SCORE_ERROR);
+            }
             ProjectReviewResult reviewResult = new ProjectReviewResult();
             BeanUtils.copyProperties(giveScore,reviewResult);
             if(giveScore.getIsSupport()==0){
@@ -872,7 +876,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         User user  = getUserService.getCurrentUser();
         // 判断是否需要评审
         //这里需要采用缓存
-        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(user.getInstitute(),ProjectType.GENERAL.getValue());
+        ProjectReview projectReview = projectReviewMapper.selectByCollegeAndType(user.getInstitute(),ProjectType.KEY.getValue());
         if(projectReview != null){
             //需要评审
             return getReviewInfo();

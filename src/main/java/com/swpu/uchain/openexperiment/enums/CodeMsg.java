@@ -78,7 +78,7 @@ public enum CodeMsg {
     FIT_PEOPLE_ERROR(1526,"限选人数参数错误"),
     PROJECT_FIT_PEOPLE_ERROR(1527,"项目组人数不符合要求,无法通过"),
     CURRENT_MODIFY_PROJECT_TYPE_ERROR(1528,"当前修改项目非重点项目"),
-
+    SCORE_ERROR(1529,"分数需要在0-100区间"),
 
 
 

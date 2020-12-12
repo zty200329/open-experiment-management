@@ -1372,12 +1372,16 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Result collegeSetScore(List<CollegeGiveScore> collegeGiveScores) {
+
         return getResult(collegeGiveScores, projectReviewResultMapper);
     }
 
     Result getResult(List<CollegeGiveScore> collegeGiveScores, ProjectReviewResultMapper projectReviewResultMapper) {
         User user = getUserService.getCurrentUser();
         for (CollegeGiveScore giveScore : collegeGiveScores) {
+            if(giveScore.getScore()>100 || giveScore.getScore() < 0 ){
+                throw new GlobalException(CodeMsg.SCORE_ERROR);
+            }
             ProjectReviewResult reviewResult = new ProjectReviewResult();
             BeanUtils.copyProperties(giveScore,reviewResult);
             if(giveScore.getIsSupport()==0){
@@ -1555,8 +1559,17 @@ public class ProjectServiceImpl implements ProjectService {
          * 6  1 或者6  3都是查看 职能部门审核通过 立项了的
          * 其他
          * 42 52 是学院查看失败的普通项目
+         *
          * 62是看全校
-         */
+         *
+         *  @ApiModelProperty("操作单位 4, 实验室主任；5,二级单位(学院领导)；6,职能部门")
+         *     private Integer operationUnit;
+         *
+         *     /**
+         *      * {@link com.swpu.uchain.openexperiment.enums.OperationType}
+         *      */
+         //@ApiModelProperty("历史操作： 2,拒绝1|3,上报")private Integer operationType;
+
         if (info.getOperationType().equals(OperationType.AGREE.getValue())
                 || info.getOperationType().equals(OperationType.REPORT.getValue())) {
             //排除立项失败的

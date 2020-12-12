@@ -669,7 +669,7 @@
                 project_group.subordinate_college = #{college}
             </if>
             <if test="status!=null">
-                and project_group.status >= #{status} or key_project_status.status >=  #{status}
+                and (project_group.status >= #{status} or key_project_status.status >=  #{status})
             </if>
 
         </where>
@@ -1059,7 +1059,7 @@
         </if>
     </select>
     <select id="getCountOfSpecifiedStatusAndProjectProject" resultType="java.lang.Integer">
-        select count(id) from openexperiment.project_group where `status` = #{status} and  subordinate_college = #{college}
+        select count(id) from openexperiment.project_group where `status` >= #{status} and  subordinate_college = #{college}
     </select>
     <select id="getMaxTempSerialNumberByCollege" resultType="java.lang.String">
         select  max(temp_serial_number) from openexperiment.project_group where subordinate_college = #{college} and project_type = #{projectType}
@@ -1098,7 +1098,7 @@
                 and project_group.subordinate_college = #{college}
             </if>
             <if  test="status!=null">
-                and  project_group.`status` &gt;= #{status} and project_group.`status` != -3
+                and  project_group.`status` &gt;= #{status} or project_group.`status` = -9 and project_group.`status` != -3
                 and project_group.`status` != -2
             </if>
 
