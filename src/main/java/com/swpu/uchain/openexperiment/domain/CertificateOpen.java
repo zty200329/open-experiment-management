@@ -3,6 +3,9 @@ package com.swpu.uchain.openexperiment.domain;
 import lombok.Data;
 
 import java.io.Serializable;
+/**
+ * @author zty
+ */
 @Data
 public class CertificateOpen implements Serializable {
     private Integer id;
