@@ -27,7 +27,7 @@ upload:
   achievement-annex: "/usr/local/uchain/achievement_annex"
   news-images: "/usr/local/uchain/news_images"
 download:
-  certificate-excel-download: "/usr/local/uchain/excel-temp/"
+  certificate-excel-download: "/usr/local/uchain/excel-temp"
 file:
 #  ipaddress: "http://192.168.43.29:8083"
 #  ip-address: "http://192.168.43.153:8083"
