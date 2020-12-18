@@ -208,7 +208,11 @@ public class ProjectServiceImpl implements ProjectService {
         UserProjectAccount userProjectAccount = userProjectAccountMapper.selectByCode(currentUser.getCode());
         //存在该用户记录
         if(userProjectAccount != null) {
-            if (userProjectAccount.getKeyNum() > 1 || userProjectAccount.getGeneralNum() > 3) {
+            if ((userProjectAccount.getKeyNum()+userProjectAccount.getGeneralNum()) >= 4){
+                throw new GlobalException(CodeMsg.MAX_NUM_OF_TYPE);
+            }else if(form.getProjectType().equals(ProjectType.GENERAL.getValue()) && userProjectAccount.getGeneralNum() >= 3){
+                throw new GlobalException(CodeMsg.MAX_NUM_OF_TYPE);
+            }else if(form.getProjectType().equals(ProjectType.KEY.getValue()) && userProjectAccount.getGeneralNum() >= 1){
                 throw new GlobalException(CodeMsg.MAX_NUM_OF_TYPE);
             }else{
                 if(form.getProjectType().equals(ProjectType.GENERAL.getValue())){
@@ -222,11 +226,13 @@ public class ProjectServiceImpl implements ProjectService {
         }else{
             UserProjectAccount userAccount = new UserProjectAccount();
             userAccount.setCode(currentUser.getCode());
-            userAccount.setCollege(userAccount.getCollege());
+            userAccount.setCollege(String.valueOf(currentUser.getInstitute()));
             userAccount.setUserType(2);
             if(form.getProjectType().equals(ProjectType.GENERAL.getValue())){
                 userAccount.setGeneralNum(1);
+                userAccount.setKeyNum(0);
             }else {
+                userAccount.setGeneralNum(0);
                 userAccount.setKeyNum(1);
             }
             userProjectAccountMapper.insert(userAccount);
@@ -326,36 +332,39 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.FIT_PEOPLE_LIMIT_ERROR);
         }
 
-        for (String stuCode : stuCodes) {
-            UserProjectAccount userProjectAccount1 = userProjectAccountMapper.selectByCode(stuCode);
-            //存在该用户记录
-            if(userProjectAccount1 != null) {
-                if (userProjectAccount1.getKeyNum() + userProjectAccount1.getGeneralNum() > 3) {
-                    throw new GlobalException(CodeMsg.STU_MAX_NUM_OF_TYPE);
-                }else{
-                    if(form.getProjectType().equals(ProjectType.GENERAL.getValue())){
-                        userProjectAccount1.setGeneralNum(userProjectAccount.getGeneralNum()+1);
-                    }else {
-                        userProjectAccount1.setKeyNum(userProjectAccount.getKeyNum()+1);
+        if(stuCodes != null) {
+            for (String stuCode : stuCodes) {
+                UserProjectAccount userProjectAccount1 = userProjectAccountMapper.selectByCode(stuCode);
+                //存在该用户记录
+                if (userProjectAccount1 != null) {
+                    if (userProjectAccount1.getKeyNum() + userProjectAccount1.getGeneralNum() >= 3) {
+                        throw new GlobalException(CodeMsg.STU_MAX_NUM_OF_TYPE);
+                    } else {
+                        if (form.getProjectType().equals(ProjectType.GENERAL.getValue())) {
+                            userProjectAccount1.setGeneralNum(userProjectAccount.getGeneralNum() + 1);
+                        } else {
+                            userProjectAccount1.setKeyNum(userProjectAccount.getKeyNum() + 1);
+                        }
+                        userProjectAccountMapper.updateByPrimaryKey(userProjectAccount1);
                     }
-                    userProjectAccountMapper.updateByPrimaryKey(userProjectAccount1);
-                }
-                //不存在
-            }else{
-                UserProjectAccount userAccount = new UserProjectAccount();
-                userAccount.setCode(stuCode);
-                userAccount.setCollege(String.valueOf(userMapper.selectByUserCode(stuCode).getInstitute()));
-                userAccount.setUserType(1);
-                if(form.getProjectType().equals(ProjectType.GENERAL.getValue())){
-                    userAccount.setGeneralNum(1);
-                }else {
-                    userAccount.setKeyNum(1);
-                }
+                    //不存在
+                } else {
+                    UserProjectAccount userAccount = new UserProjectAccount();
+                    userAccount.setCode(stuCode);
+                    userAccount.setCollege(String.valueOf(userMapper.selectByUserCode(stuCode).getInstitute()));
+                    userAccount.setUserType(1);
+                    if(form.getProjectType().equals(ProjectType.GENERAL.getValue())){
+                        userAccount.setGeneralNum(1);
+                        userAccount.setKeyNum(0);
+                    }else {
+                        userAccount.setGeneralNum(0);
+                        userAccount.setKeyNum(1);
+                    }
 
-                userProjectAccountMapper.insert(userAccount);
+                    userProjectAccountMapper.insert(userAccount);
+                }
             }
         }
-
         userProjectService.addStuAndTeacherJoin(stuCodes, teacherArray, projectGroup.getId());
         //记录申请信息
         OperationRecord operationRecord = new OperationRecord();
@@ -1983,10 +1992,10 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         //判断加入数量是否已经满了
-        UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(user.getCode());
+        UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(String.valueOf(joinForm.getUserId()));
         //存在该用户记录
         if(userProjectAccount2 != null) {
-            if (userProjectAccount2.getKeyNum() + userProjectAccount2.getGeneralNum() > 3) {
+            if ((userProjectAccount2.getKeyNum() + userProjectAccount2.getGeneralNum()) >= 3) {
                 throw new GlobalException(CodeMsg.STU_MAX_NUM_OF_TYPE);
             }else{
                 if(projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())){
@@ -1999,12 +2008,14 @@ public class ProjectServiceImpl implements ProjectService {
             //不存在
         }else{
             UserProjectAccount userAccount = new UserProjectAccount();
-            userAccount.setCode(user.getCode());
-            userAccount.setCollege(String.valueOf(userMapper.selectByUserCode(user.getCode()).getInstitute()));
+            userAccount.setCode(String.valueOf(joinForm.getUserId()));
+            userAccount.setCollege(String.valueOf(userMapper.selectByUserCode(String.valueOf(joinForm.getUserId())).getInstitute()));
             userAccount.setUserType(1);
             if(projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())){
                 userAccount.setGeneralNum(1);
+                userAccount.setKeyNum(0);
             }else {
+                userAccount.setGeneralNum(0);
                 userAccount.setKeyNum(1);
             }
 
@@ -2621,6 +2632,18 @@ public class ProjectServiceImpl implements ProjectService {
         UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectId, userId);
         if (userProjectGroup == null) {
             throw new GlobalException(CodeMsg.USER_GROUP_NOT_EXIST);
+        }
+        //减去加入次数
+        UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(String.valueOf(userId));
+        //存在该用户记录
+        if(userProjectAccount2 != null) {
+            ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectId);
+            if (projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())) {
+                userProjectAccount2.setGeneralNum(userProjectAccount2.getGeneralNum() - 1);
+            } else {
+                userProjectAccount2.setKeyNum(userProjectAccount2.getKeyNum() - 1);
+            }
+            userProjectAccountMapper.updateByPrimaryKey(userProjectAccount2);
         }
         userProjectGroupMapper.deleteByPrimaryKey(userProjectGroup.getId());
         return Result.success();

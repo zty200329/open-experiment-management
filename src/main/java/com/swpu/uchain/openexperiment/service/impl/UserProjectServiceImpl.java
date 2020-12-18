@@ -142,8 +142,8 @@ public class UserProjectServiceImpl implements UserProjectService {
         UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(user.getCode());
         //存在该用户记录
         if(userProjectAccount2 != null) {
-            if (userProjectAccount2.getKeyNum() + userProjectAccount2.getGeneralNum() > 3) {
-                throw new GlobalException(CodeMsg.STU_MAX_NUM_OF_TYPE);
+            if (userProjectAccount2.getKeyNum() + userProjectAccount2.getGeneralNum() >= 3) {
+                throw new GlobalException(CodeMsg.MAX_NUM_OF_TYPE);
             }else{
                 if(projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())){
                     userProjectAccount2.setGeneralNum(userProjectAccount2.getGeneralNum()+1);
@@ -160,7 +160,9 @@ public class UserProjectServiceImpl implements UserProjectService {
             userAccount.setUserType(1);
             if(projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())){
                 userAccount.setGeneralNum(1);
+                userAccount.setKeyNum(0);
             }else {
+                userAccount.setGeneralNum(0);
                 userAccount.setKeyNum(1);
             }
 
