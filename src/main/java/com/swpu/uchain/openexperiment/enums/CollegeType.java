@@ -30,7 +30,8 @@ public enum  CollegeType {
     INFORMATION_COLLEGE(77,"信息学院"),
     FINANCE_COLLEGE(78,"财经学院"),
     NETWORK_INFORMATION_CENTER(61,"网信中心"),
-    ENGINEERING_TRAINING_CENTER(62,"工程训练中心");
+    ENGINEERING_TRAINING_CENTER(62,"工程训练中心"),
+    NATURAL_GAS(71,"海洋天然气水合物研究院");
 
 
     CollegeType(Integer value, String tips) {

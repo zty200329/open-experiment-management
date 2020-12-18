@@ -32,12 +32,9 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="82ec9892-b480-433b-9f2a-71559d579314" name="Default Changelist" comment="接口修改">
+    <list default="true" id="82ec9892-b480-433b-9f2a-71559d579314" name="Default Changelist" comment="1217线上">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/cas/CasAutoConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/cas/CasAutoConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/util/excel/TemplateFileUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/util/excel/TemplateFileUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev3.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-dev3.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mappers/ProjectReviewMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mappers/ProjectReviewMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/enums/CollegeType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/enums/CollegeType.java" afterDir="false" />
     </list>
     <list id="5e1931cf-d658-4ee3-948b-de25b54beb91" name="添加评审分组" comment="添加评审分组&#10;&#10;(cherry picked from commit 92bc631d0655aea324425ff2517f297a3751aa59)">
       <changelist_data name="panghu" email="792559738@qq.com" date="1569981204000" />
@@ -451,14 +448,7 @@
       <workItem from="1607251739221" duration="1991000" />
       <workItem from="1607481719887" duration="12517000" />
       <workItem from="1607777357337" duration="5627000" />
-      <workItem from="1608089972053" duration="1224000" />
-    </task>
-    <task id="LOCAL-00128" summary="1021">
-      <created>1603246999552</created>
-      <option name="number" value="00128" />
-      <option name="presentableId" value="LOCAL-00128" />
-      <option name="project" value="LOCAL" />
-      <updated>1603246999553</updated>
+      <workItem from="1608089972053" duration="2873000" />
     </task>
     <task id="LOCAL-00129" summary="1029">
       <created>1603948374423</created>
@@ -796,7 +786,14 @@
       <option name="project" value="LOCAL" />
       <updated>1607950158547</updated>
     </task>
-    <option name="localTasksCounter" value="177" />
+    <task id="LOCAL-00177" summary="1217线上">
+      <created>1608171356686</created>
+      <option name="number" value="00177" />
+      <option name="presentableId" value="LOCAL-00177" />
+      <option name="project" value="LOCAL" />
+      <updated>1608171356686</updated>
+    </task>
+    <option name="localTasksCounter" value="178" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -863,7 +860,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="1103" />
     <MESSAGE value="1103普通项目修改" />
     <MESSAGE value="1103重点项目修改" />
     <MESSAGE value="1103重点转普通修改" />
@@ -888,7 +884,8 @@
     <MESSAGE value="拟题接口修改" />
     <MESSAGE value="重点转普通接口修改" />
     <MESSAGE value="接口修改" />
-    <option name="LAST_COMMIT_MESSAGE" value="接口修改" />
+    <MESSAGE value="1217线上" />
+    <option name="LAST_COMMIT_MESSAGE" value="1217线上" />
   </component>
   <component name="WindowStateProjectService">
     <state x="347" y="14" key="#AmountLimitMapperTest.test_(1)" timestamp="1601780807791">
@@ -1221,9 +1218,10 @@
     </state>
     <state x="411" y="172" key="VCS.ChangeListViewerDialog/0.0.1440.900/1440.-180.1920.1080@0.0.1440.900" timestamp="1605288030306" />
     <state x="2468" y="199" key="VCS.ChangeListViewerDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603163706171" />
-    <state x="217" y="122" width="800" height="532" key="Vcs.Push.Dialog.v2" timestamp="1608171327647">
+    <state x="217" y="122" width="800" height="532" key="Vcs.Push.Dialog.v2" timestamp="1608183864159">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
+    <state x="217" y="122" key="Vcs.Push.Dialog.v2/0.0.1440.900/-250.-1080.1920.1080@0.0.1440.900" timestamp="1608183864159" />
     <state x="217" y="122" key="Vcs.Push.Dialog.v2/0.0.1440.900/1440.-180.1920.1080@0.0.1440.900" timestamp="1607950161609" />
     <state x="217" y="122" key="Vcs.Push.Dialog.v2/0.0.1440.900@0.0.1440.900" timestamp="1608171327647" />
     <state x="2475" y="264" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040/1919.1080.1366.984@1920.0.1920.1040" timestamp="1603185262031" />
@@ -1238,7 +1236,7 @@
       <screen x="1440" y="-180" width="1920" height="1080" />
     </state>
     <state x="2198" y="281" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1440.900/1440.-180.1920.1080@0.0.1440.900" timestamp="1605449852499" />
-    <state x="0" y="23" width="1920" height="822" key="dock-window-1" timestamp="1608035955600">
+    <state x="0" y="0" width="1440" height="900" key="dock-window-1" timestamp="1608257302673">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="1440" y="-180" width="1920" height="1080" key="dock-window-1/0.0.1440.821/1440.-157.1920.1057@0.0.1440.821" timestamp="1603963939363" />
@@ -1250,7 +1248,7 @@
     <state x="1440" y="-180" width="1920" height="1080" key="dock-window-1/0.0.1440.900/1440.-180.1920.1000@0.23.1440.877" timestamp="1604281302508" />
     <state x="1440" y="-180" width="1920" height="1080" key="dock-window-1/0.0.1440.900/1440.-180.1920.1080@0.0.1440.900" timestamp="1608000847739" />
     <state x="1440" y="-180" width="1920" height="1080" maximized="true" key="dock-window-1/0.0.1440.900/1440.-180.1920.1080@0.23.1440.822" timestamp="1605234594841" />
-    <state x="0" y="23" width="1920" height="822" key="dock-window-1/0.0.1440.900@0.0.1440.900" timestamp="1608035955600" />
+    <state x="0" y="0" width="1440" height="900" key="dock-window-1/0.0.1440.900@0.0.1440.900" timestamp="1608257302673" />
     <state x="2336" y="0" width="963" height="810" maximized="true" key="dock-window-1/0.0.1536.824/1920.-540.2560.1400@0.0.1536.824" timestamp="1603591931160" />
     <state x="1996" y="207" width="1153" height="533" maximized="true" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1603072358344" />
     <state x="14" y="0" width="1536" height="786" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1603163294377" />
@@ -1261,6 +1259,7 @@
     <state x="1440" y="-180" width="1920" height="1080" key="dock-window-1/0.23.1440.804/1440.-157.1920.1057@0.23.1440.804" timestamp="1604447451349" />
     <state x="1440" y="-180" width="1920" height="1080" key="dock-window-1/0.23.1440.806/1440.-157.1920.1057@0.23.1440.806" timestamp="1604412485553" />
     <state x="1440" y="-180" width="1920" height="1080" key="dock-window-1/0.23.1440.806/1440.-180.1920.1080@0.23.1440.806" timestamp="1604411293397" />
+    <state x="-250" y="-1080" width="1920" height="1080" key="dock-window-1/0.23.1440.822/-250.-1080.1920.1080@0.23.1440.822" timestamp="1608182870294" />
     <state x="1440" y="-157" width="1920" height="1057" maximized="true" key="dock-window-1/0.23.1440.822/1440.-157.1920.1057@0.23.1440.822" timestamp="1607852323517" />
     <state x="1440" y="-180" width="1920" height="1080" maximized="true" key="dock-window-1/0.23.1440.822/1440.-180.1920.1080@0.23.1440.822" timestamp="1607177223777" />
     <state x="0" y="66" width="1024" height="698" key="dock-window-1/0.23.1440.822@0.23.1440.822" timestamp="1607604618496" />
