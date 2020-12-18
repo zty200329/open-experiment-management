@@ -79,7 +79,8 @@ public enum CodeMsg {
     PROJECT_FIT_PEOPLE_ERROR(1527,"项目组人数不符合要求,无法通过"),
     CURRENT_MODIFY_PROJECT_TYPE_ERROR(1528,"当前修改项目非重点项目"),
     SCORE_ERROR(1529,"分数需要在0-100区间"),
-
+    MAX_NUM_OF_TYPE(1530,"项目数量已达到申请最大值"),
+    STU_MAX_NUM_OF_TYPE(1531,"有学生项目数量已达到申请最大值"),
 
 
     /**

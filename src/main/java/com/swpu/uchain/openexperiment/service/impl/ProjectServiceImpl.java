@@ -72,6 +72,7 @@ public class ProjectServiceImpl implements ProjectService {
     private FunctionGivesGradeMapper functionGivesGradeMapper;
     private ProjectReviewMapper projectReviewMapper;
     private ProjectReviewResultMapper projectReviewResultMapper;
+    private UserProjectAccountMapper userProjectAccountMapper;
 
     @Autowired
     public ProjectServiceImpl(UserService userService, ProjectGroupMapper projectGroupMapper,
@@ -86,7 +87,8 @@ public class ProjectServiceImpl implements ProjectService {
                               TimeLimitService timeLimitService, RedisUtil redisUtil, UserRoleService userRoleService,
                               HitBackMessageMapper hitBackMessageMapper, AchievementMapper achievementMapper,
                               CollegeGivesGradeMapper collegeGivesGradeMapper, FunctionGivesGradeMapper functionGivesGradeMapper,
-                              ProjectReviewMapper projectReviewMapper,ProjectReviewResultMapper projectReviewResultMapper) {
+                              ProjectReviewMapper projectReviewMapper,ProjectReviewResultMapper projectReviewResultMapper,
+                              UserProjectAccountMapper userProjectAccountMapper) {
         this.userService = userService;
         this.projectGroupMapper = projectGroupMapper;
         this.redisService = redisService;
@@ -112,6 +114,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.functionGivesGradeMapper = functionGivesGradeMapper;
         this.projectReviewMapper = projectReviewMapper;
         this.projectReviewResultMapper = projectReviewResultMapper;
+        this.userProjectAccountMapper = userProjectAccountMapper;
     }
 
     @Override
@@ -179,7 +182,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @return 申请立项操作结果
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Throwable.class)
     public Result applyCreateProject(CreateProjectApplyForm form) {
         //验证时间限制
         timeLimitService.validTime(TimeLimitType.DECLARE_LIMIT);
@@ -191,21 +194,51 @@ public class ProjectServiceImpl implements ProjectService {
 
         User currentUser = getUserService.getCurrentUser();
 
+        //判断用户类型 判断是否为指导教师
+        if (!userRoleService.validContainsUserRole(RoleType.MENTOR)) {
+            throw new GlobalException(CodeMsg.ONLY_TEACHER_CAN_APPLY);
+        }
         //验证学院信息
         Integer college = currentUser.getInstitute();
         if (college == null) {
             throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
         }
 
-        //验证项目是否达到申请上限
-        AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(null, form.getProjectType(), RoleType.MENTOR.getValue());
-        if (amountAndTypeVO != null) {
-            Integer maxAmount = amountAndTypeVO.getMaxAmount();
-            Integer currentCount = userProjectGroupMapper.geCountOfAppliedProject(Long.valueOf(currentUser.getCode()), form.getProjectType());
-            if (maxAmount >= currentCount) {
-                return Result.error(CodeMsg.MAXIMUM_APPLICATION);
+        //验证老师项目是否达到申请上限
+        UserProjectAccount userProjectAccount = userProjectAccountMapper.selectByCode(currentUser.getCode());
+        //存在该用户记录
+        if(userProjectAccount != null) {
+            if (userProjectAccount.getKeyNum() > 1 || userProjectAccount.getGeneralNum() > 3) {
+                throw new GlobalException(CodeMsg.MAX_NUM_OF_TYPE);
+            }else{
+                if(form.getProjectType().equals(ProjectType.GENERAL.getValue())){
+                    userProjectAccount.setGeneralNum(userProjectAccount.getGeneralNum()+1);
+                }else {
+                    userProjectAccount.setKeyNum(userProjectAccount.getKeyNum()+1);
+                }
+                userProjectAccountMapper.updateByPrimaryKey(userProjectAccount);
             }
+            //不存在
+        }else{
+            UserProjectAccount userAccount = new UserProjectAccount();
+            userAccount.setCode(currentUser.getCode());
+            userAccount.setCollege(userAccount.getCollege());
+            userAccount.setUserType(2);
+            if(form.getProjectType().equals(ProjectType.GENERAL.getValue())){
+                userAccount.setGeneralNum(1);
+            }else {
+                userAccount.setKeyNum(1);
+            }
+            userProjectAccountMapper.insert(userAccount);
         }
+//        AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(null, form.getProjectType(), RoleType.MENTOR.getValue());
+//        if (amountAndTypeVO != null) {
+//            Integer maxAmount = amountAndTypeVO.getMaxAmount();
+//            Integer currentCount = userProjectGroupMapper.geCountOfAppliedProject(Long.valueOf(currentUser.getCode()), form.getProjectType());
+//            if (maxAmount >= currentCount) {
+//                return Result.error(CodeMsg.MAXIMUM_APPLICATION);
+//            }
+//        }
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         //固定时间
@@ -223,10 +256,7 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.TIME_DEFINE_ERROR);
         }
 
-        //判断用户类型 判断是否为指导教师
-        if (!userRoleService.validContainsUserRole(RoleType.MENTOR)) {
-            throw new GlobalException(CodeMsg.ONLY_TEACHER_CAN_APPLY);
-        }
+
 
         //开放选题时,不进行学生选择
         if (form.getIsOpenTopic().equals(OpenTopicType.OPEN_TOPIC_ALL.getValue()) && form.getStuCodes() != null) {
@@ -282,6 +312,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
 
+
         String[] stuCodes = form.getStuCodes();
         //判定数量
         if (stuCodes != null && stuCodes.length > form.getFitPeopleNum()) {
@@ -295,6 +326,35 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.FIT_PEOPLE_LIMIT_ERROR);
         }
 
+        for (String stuCode : stuCodes) {
+            UserProjectAccount userProjectAccount1 = userProjectAccountMapper.selectByCode(stuCode);
+            //存在该用户记录
+            if(userProjectAccount1 != null) {
+                if (userProjectAccount1.getKeyNum() + userProjectAccount1.getGeneralNum() > 3) {
+                    throw new GlobalException(CodeMsg.STU_MAX_NUM_OF_TYPE);
+                }else{
+                    if(form.getProjectType().equals(ProjectType.GENERAL.getValue())){
+                        userProjectAccount1.setGeneralNum(userProjectAccount.getGeneralNum()+1);
+                    }else {
+                        userProjectAccount1.setKeyNum(userProjectAccount.getKeyNum()+1);
+                    }
+                    userProjectAccountMapper.updateByPrimaryKey(userProjectAccount1);
+                }
+                //不存在
+            }else{
+                UserProjectAccount userAccount = new UserProjectAccount();
+                userAccount.setCode(stuCode);
+                userAccount.setCollege(String.valueOf(userMapper.selectByUserCode(stuCode).getInstitute()));
+                userAccount.setUserType(1);
+                if(form.getProjectType().equals(ProjectType.GENERAL.getValue())){
+                    userAccount.setGeneralNum(1);
+                }else {
+                    userAccount.setKeyNum(1);
+                }
+
+                userProjectAccountMapper.insert(userAccount);
+            }
+        }
 
         userProjectService.addStuAndTeacherJoin(stuCodes, teacherArray, projectGroup.getId());
         //记录申请信息
