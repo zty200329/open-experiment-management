@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.service.impl;
 import com.swpu.uchain.openexperiment.VO.user.UserVO;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
+import com.swpu.uchain.openexperiment.mapper.UserProjectAccountMapper;
 import com.swpu.uchain.openexperiment.mapper.UserProjectGroupMapper;
 import com.swpu.uchain.openexperiment.enums.*;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
@@ -43,6 +44,8 @@ public class UserProjectServiceImpl implements UserProjectService {
     private TimeLimitService timeLimitService;
     @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    private UserProjectAccountMapper userProjectAccountMapper;
 
     @Override
     public boolean insert(UserProjectGroup userProjectGroup) {
@@ -135,6 +138,34 @@ public class UserProjectServiceImpl implements UserProjectService {
             throw new GlobalException(CodeMsg.PROJECT_USER_MAX_ERROR);
         }
 
+        //判断加入数量是否已经满了
+        UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(user.getCode());
+        //存在该用户记录
+        if(userProjectAccount2 != null) {
+            if (userProjectAccount2.getKeyNum() + userProjectAccount2.getGeneralNum() > 3) {
+                throw new GlobalException(CodeMsg.STU_MAX_NUM_OF_TYPE);
+            }else{
+                if(projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())){
+                    userProjectAccount2.setGeneralNum(userProjectAccount2.getGeneralNum()+1);
+                }else {
+                    userProjectAccount2.setKeyNum(userProjectAccount2.getKeyNum()+1);
+                }
+                userProjectAccountMapper.updateByPrimaryKey(userProjectAccount2);
+            }
+            //不存在
+        }else{
+            UserProjectAccount userAccount = new UserProjectAccount();
+            userAccount.setCode(user.getCode());
+            userAccount.setCollege(String.valueOf(user.getInstitute()));
+            userAccount.setUserType(1);
+            if(projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())){
+                userAccount.setGeneralNum(1);
+            }else {
+                userAccount.setKeyNum(1);
+            }
+
+            userProjectAccountMapper.insert(userAccount);
+        }
 
         //学生是否可以加入判断
         int allowed = 0;

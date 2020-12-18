@@ -32,12 +32,10 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="82ec9892-b480-433b-9f2a-71559d579314" name="Default Changelist" comment="1218线上">
+    <list default="true" id="82ec9892-b480-433b-9f2a-71559d579314" name="Default Changelist" comment="1218线上 拟题数量限制">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/enums/CodeMsg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/enums/CodeMsg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/ProjectServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/ProjectServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mybatis-generator/generatorConfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mybatis-generator/generatorConfig.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/UserProjectServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/swpu/uchain/openexperiment/service/impl/UserProjectServiceImpl.java" afterDir="false" />
     </list>
     <list id="5e1931cf-d658-4ee3-948b-de25b54beb91" name="添加评审分组" comment="添加评审分组&#10;&#10;(cherry picked from commit 92bc631d0655aea324425ff2517f297a3751aa59)">
       <changelist_data name="panghu" email="792559738@qq.com" date="1569981204000" />
@@ -207,6 +205,17 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -451,14 +460,7 @@
       <workItem from="1607251739221" duration="1991000" />
       <workItem from="1607481719887" duration="12517000" />
       <workItem from="1607777357337" duration="5627000" />
-      <workItem from="1608089972053" duration="8839000" />
-    </task>
-    <task id="LOCAL-00130" summary="1029">
-      <created>1603958712948</created>
-      <option name="number" value="00130" />
-      <option name="presentableId" value="LOCAL-00130" />
-      <option name="project" value="LOCAL" />
-      <updated>1603958712949</updated>
+      <workItem from="1608089972053" duration="11310000" />
     </task>
     <task id="LOCAL-00131" summary="1103">
       <created>1604371200535</created>
@@ -796,7 +798,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608257310977</updated>
     </task>
-    <option name="localTasksCounter" value="179" />
+    <task id="LOCAL-00179" summary="1218线上 拟题数量限制">
+      <created>1608293975099</created>
+      <option name="number" value="00179" />
+      <option name="presentableId" value="LOCAL-00179" />
+      <option name="project" value="LOCAL" />
+      <updated>1608293975099</updated>
+    </task>
+    <option name="localTasksCounter" value="180" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -863,7 +872,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="1103重点项目修改" />
     <MESSAGE value="1103重点转普通修改" />
     <MESSAGE value="1112首页更新" />
     <MESSAGE value="1112首页 引入新闻更新 引入mybatis二级缓存" />
@@ -888,7 +896,8 @@
     <MESSAGE value="接口修改" />
     <MESSAGE value="1217线上" />
     <MESSAGE value="1218线上" />
-    <option name="LAST_COMMIT_MESSAGE" value="1218线上" />
+    <MESSAGE value="1218线上 拟题数量限制" />
+    <option name="LAST_COMMIT_MESSAGE" value="1218线上 拟题数量限制" />
   </component>
   <component name="WindowStateProjectService">
     <state x="347" y="14" key="#AmountLimitMapperTest.test_(1)" timestamp="1601780807791">

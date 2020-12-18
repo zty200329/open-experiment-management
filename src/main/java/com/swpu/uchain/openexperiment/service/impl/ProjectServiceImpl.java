@@ -1968,6 +1968,8 @@ public class ProjectServiceImpl implements ProjectService {
             throw new GlobalException(CodeMsg.ADD_USER_INFO_NOT_COMPLETE);
         }
 
+
+
         ProjectGroup projectGroup = selectByProjectGroupId(joinForm.getProjectGroupId());
         Integer status = projectGroup.getStatus();
 
@@ -1978,6 +1980,35 @@ public class ProjectServiceImpl implements ProjectService {
             if (SubordinateCollege != 39) {
                 throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
             }
+        }
+
+        //判断加入数量是否已经满了
+        UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(user.getCode());
+        //存在该用户记录
+        if(userProjectAccount2 != null) {
+            if (userProjectAccount2.getKeyNum() + userProjectAccount2.getGeneralNum() > 3) {
+                throw new GlobalException(CodeMsg.STU_MAX_NUM_OF_TYPE);
+            }else{
+                if(projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())){
+                    userProjectAccount2.setGeneralNum(userProjectAccount2.getGeneralNum()+1);
+                }else {
+                    userProjectAccount2.setKeyNum(userProjectAccount2.getKeyNum()+1);
+                }
+                userProjectAccountMapper.updateByPrimaryKey(userProjectAccount2);
+            }
+            //不存在
+        }else{
+            UserProjectAccount userAccount = new UserProjectAccount();
+            userAccount.setCode(user.getCode());
+            userAccount.setCollege(String.valueOf(userMapper.selectByUserCode(user.getCode()).getInstitute()));
+            userAccount.setUserType(1);
+            if(projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())){
+                userAccount.setGeneralNum(1);
+            }else {
+                userAccount.setKeyNum(1);
+            }
+
+            userProjectAccountMapper.insert(userAccount);
         }
 
         UserProjectGroup userProjectGroupOfCurrentUser = userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(), userId);
@@ -2017,11 +2048,12 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(rollbackFor = Throwable.class)
     public Result removeStudentFromProject(JoinForm joinForm) {
         //验证项目状态
         Integer status = projectGroupMapper.selectByPrimaryKey(joinForm.getProjectGroupId()).getStatus();
         if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue())
-
+                && !status.equals(ProjectStatus.DECLARE.getValue())
         ) {
             throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
         }
@@ -2034,6 +2066,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
 
+
         User user = getUserService.getCurrentUser();
         Long userId = Long.valueOf(user.getCode());
         UserProjectGroup userProjectGroupOfCurrentUser = userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(), userId);
@@ -2043,6 +2076,17 @@ public class ProjectServiceImpl implements ProjectService {
         UserProjectGroup userProjectGroupOfJoinUser = userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getProjectGroupId(), joinForm.getUserId());
         if (userProjectGroupOfJoinUser == null) {
             throw new GlobalException(CodeMsg.USER_HAD_JOINED_CANT_REJECT);
+        }
+        //减去加入次数
+        UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(user.getCode());
+        //存在该用户记录
+        if(userProjectAccount2 != null) {
+            if (projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())) {
+                userProjectAccount2.setGeneralNum(userProjectAccount2.getGeneralNum() - 1);
+            } else {
+                userProjectAccount2.setKeyNum(userProjectAccount2.getKeyNum() - 1);
+            }
+            userProjectAccountMapper.updateByPrimaryKey(userProjectAccount2);
         }
         userProjectGroupMapper.deleteByPrimaryKey(userProjectGroupOfCurrentUser.getId());
         return Result.success();
