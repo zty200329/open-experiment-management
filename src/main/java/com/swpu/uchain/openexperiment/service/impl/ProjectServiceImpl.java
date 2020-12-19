@@ -1971,11 +1971,11 @@ public class ProjectServiceImpl implements ProjectService {
         User user = getUserService.getCurrentUser();
         Long userId = Long.valueOf(user.getCode());
 
-        //判断用户信息是否完整
-        User addUser = userMapper.selectByUserCode(joinForm.getUserId().toString());
-        if (addUser.getMobilePhone() == null) {
-            throw new GlobalException(CodeMsg.ADD_USER_INFO_NOT_COMPLETE);
-        }
+        //判断用户信息是否完整 暂时关闭
+        //User addUser = userMapper.selectByUserCode(joinForm.getUserId().toString());
+        //if (addUser.getMobilePhone() == null) {
+          //  throw new GlobalException(CodeMsg.ADD_USER_INFO_NOT_COMPLETE);
+      //  }
 
 
 

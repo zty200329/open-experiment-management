@@ -51,7 +51,7 @@ public class OperationRecordMapperTest {
                 UserProjectAccount userAccount = new UserProjectAccount();
                 userAccount.setCode(dto.getId());
                 userAccount.setCollege(dto.getCollege());
-                userAccount.setUserType(2);
+                userAccount.setUserType(dto.getType());
                 if(dto.getType().equals(ProjectType.GENERAL.getValue())){
                     userAccount.setGeneralNum(1);
                     userAccount.setKeyNum(0);
