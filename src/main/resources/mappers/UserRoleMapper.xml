@@ -12,9 +12,9 @@
     and role_id = #{param2}
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.UserRole">
-    insert into user_role (id, user_id, role_id
+    insert into user_role ( user_id, role_id
       )
-    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}
+    values ( #{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.UserRole">

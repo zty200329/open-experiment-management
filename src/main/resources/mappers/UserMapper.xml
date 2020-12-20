@@ -23,6 +23,11 @@
     delete from openexperiment.u_stu
     where id = #{id,jdbcType=BIGINT}
   </delete>
+
+    <delete id="deleteByCode" parameterType="java.lang.String">
+    delete from openexperiment.u_stu
+    where code = #{code,jdbcType=VARCHAR}
+  </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.swpu.uchain.openexperiment.domain.User">
     insert into openexperiment.u_stu (id, code, email,
       fix_phone, id_card, mobile_phone, 

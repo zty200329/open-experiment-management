@@ -212,7 +212,7 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new GlobalException(CodeMsg.MAX_NUM_OF_TYPE);
             }else if(form.getProjectType().equals(ProjectType.GENERAL.getValue()) && userProjectAccount.getGeneralNum() >= 3){
                 throw new GlobalException(CodeMsg.MAX_NUM_OF_TYPE);
-            }else if(form.getProjectType().equals(ProjectType.KEY.getValue()) && userProjectAccount.getGeneralNum() >= 1){
+            }else if(form.getProjectType().equals(ProjectType.KEY.getValue()) && userProjectAccount.getKeyNum() >= 1){
                 throw new GlobalException(CodeMsg.MAX_NUM_OF_TYPE);
             }else{
                 if(form.getProjectType().equals(ProjectType.GENERAL.getValue())){
