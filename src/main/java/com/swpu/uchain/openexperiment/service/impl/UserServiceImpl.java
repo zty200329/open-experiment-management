@@ -5,16 +5,13 @@ import com.swpu.uchain.openexperiment.VO.permission.RoleInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserInfoVO;
 import com.swpu.uchain.openexperiment.VO.user.UserManageInfo;
 import com.swpu.uchain.openexperiment.domain.*;
-import com.swpu.uchain.openexperiment.form.user.FirstLoginForm;
-import com.swpu.uchain.openexperiment.form.user.GetAllPermissions;
+import com.swpu.uchain.openexperiment.form.user.*;
 import com.swpu.uchain.openexperiment.mapper.*;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.JoinStatus;
 import com.swpu.uchain.openexperiment.enums.MemberRole;
 import com.swpu.uchain.openexperiment.enums.UserType;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
-import com.swpu.uchain.openexperiment.form.user.LoginForm;
-import com.swpu.uchain.openexperiment.form.user.UserUpdateForm;
 import com.swpu.uchain.openexperiment.redis.RedisService;
 import com.swpu.uchain.openexperiment.redis.key.UserKey;
 import com.swpu.uchain.openexperiment.redis.key.UserProjectGroupKey;
@@ -223,6 +220,41 @@ public Result loginFirst(String clientIp, FirstLoginForm loginForm) {
         map.put("roles",role);
         map.put("userId",user.getCode());
         map.put("name",user.getRealName());
+        return Result.success(map);
+    }
+
+    @Override
+    public Result loginChange(LoginChangeForm loginForm) {
+        User currentUser = getUserService.getCurrentUser();
+        User user = getUserService.selectByUserCodeAndRole(currentUser.getCode(),loginForm.getRole());
+
+        //验证用户密码及其角色是否存在
+        if (user == null) {
+            return Result.error(CodeMsg.USER_NO_EXIST);
+        }
+        Authentication token = new UsernamePasswordAuthenticationToken(user.getCode(), user.getPassword());
+        Authentication authentication = authenticationManager.authenticate(token);
+        //认证通过放入容器中
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        final UserDetails userDetails;
+
+        User user1 = getUserService.selectByUserCode(user.getCode());
+        if (user1==null) {
+            throw new UsernameNotFoundException(String.format(" user not exist with stuId ='%s'.", user.getCode()));
+        } else {
+            //若存在则返回userDetails对象
+            List<String> aclUrl = aclService.getUserAclUrl(Long.valueOf(user.getCode()));
+            userDetails =new JwtUser(user.getCode(), passwordEncoder.encode(user.getPassword()), aclUrl);
+        }
+        log.info("加载数据库中的userDetails: {}", userDetails);
+        //生成真正的token
+        final String realToken = jwtTokenUtil.generateToken(userDetails);
+        Role role = roleService.getUserRoles(Long.valueOf(user1.getCode()), Long.valueOf(loginForm.getRole()));
+        Map<String, Object> map = new HashMap<>(8);
+        map.put("token",realToken);
+        map.put("roles",role);
+        map.put("userId",currentUser.getCode());
+        map.put("name",currentUser.getRealName());
         return Result.success(map);
     }
 

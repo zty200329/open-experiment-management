@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.controller;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.form.user.FirstLoginForm;
 import com.swpu.uchain.openexperiment.form.user.GetAllPermissions;
+import com.swpu.uchain.openexperiment.form.user.LoginChangeForm;
 import com.swpu.uchain.openexperiment.form.user.LoginForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.UserService;
@@ -46,6 +47,12 @@ public class AnonController {
         return userService.login(form);
     }
 
+    @ApiOperation("登录接口")
+    @PostMapping(value = "/loginChange", name = "登录接口")
+    public Object loginChange(@Valid@RequestBody LoginChangeForm form){
+
+        return userService.loginChange(form);
+    }
 
     @ApiOperation("根据学号工号查看权限")
     @PostMapping(value = "/getAllPermissions")

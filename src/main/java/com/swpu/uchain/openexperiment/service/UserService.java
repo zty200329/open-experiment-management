@@ -2,10 +2,7 @@ package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.UserType;
-import com.swpu.uchain.openexperiment.form.user.FirstLoginForm;
-import com.swpu.uchain.openexperiment.form.user.GetAllPermissions;
-import com.swpu.uchain.openexperiment.form.user.LoginForm;
-import com.swpu.uchain.openexperiment.form.user.UserUpdateForm;
+import com.swpu.uchain.openexperiment.form.user.*;
 import com.swpu.uchain.openexperiment.result.Result;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -54,7 +51,12 @@ public interface UserService {
      * @return
      */
     Result login(LoginForm loginForm);
-
+    /**
+     * 登录接口
+     * @param loginForm
+     * @return
+     */
+    Result loginChange(LoginChangeForm loginForm);
 
     /**
      * 获取用户权限

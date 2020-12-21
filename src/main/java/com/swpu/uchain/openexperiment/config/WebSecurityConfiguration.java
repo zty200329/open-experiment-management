@@ -100,7 +100,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/material/**",
                         "/newsImages/**",
                         "/api/homePage/**",
-                        "/login/**"
+                        "/login/**",
+                        "/logout/**"
                 ).permitAll()
                 //配置swagger界面的匿名访问
                 .antMatchers(" /static/**").permitAll()

@@ -15,6 +15,9 @@ import com.swpu.uchain.openexperiment.service.RoleService;
 import com.swpu.uchain.openexperiment.service.UserService;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.validation.Assertion;
@@ -37,6 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Array;
+import java.net.URLEncoder;
 import java.util.*;
 
 @Controller
@@ -70,6 +74,7 @@ public class CASController{
 	 */
 	@RequestMapping(value = "/inCAS",method = {RequestMethod.GET,RequestMethod.POST})
 	public Object list(HttpSession session) {
+//		get();
 		// 该方法通过cas获取到 登陆对象
 		Assertion assertion=
 				(Assertion)
@@ -117,6 +122,21 @@ public class CASController{
 
 
 
+	}
+	public static void get() {
+		try {
+			String requestPath = "http://uoep.swpu.edu.cn:8083/logout";
+			HttpClient httpClient = new HttpClient();
+			GetMethod get = new GetMethod(requestPath);
+			int status = httpClient.executeMethod(get);
+			if (status == HttpStatus.SC_OK) {
+				System.out.println("GET返回结果：" + new String(get.getResponseBody()));
+			} else {
+				System.out.println("GET返回状态码：" + status);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	private  List<Integer> getAllPermissions(String stuId) {
 		List<Integer> roles = userRoleMapper.selectUserRolesById(Long.valueOf(stuId));
