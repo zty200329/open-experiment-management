@@ -88,38 +88,38 @@ public class OperationRecordMapperTest {
 
     }
     @Test
-    @Transactional
+
     public void insert() {
         List<TempDTO> dtos = userProjectAccountMapper.selectTemp();
-//        for (TempDTO dto : dtos) {
-//            //验证老师项目是否达到申请上限
-//            UserProjectAccount userProjectAccount = userProjectAccountMapper.selectByCode(dto.getId());
-//            //存在该用户记录
-//            if(userProjectAccount != null) {
-//
-//                    if(dto.getType().equals(ProjectType.GENERAL.getValue())){
-//                        userProjectAccount.setGeneralNum(userProjectAccount.getGeneralNum()+1);
-//                    }else {
-//                        userProjectAccount.setKeyNum(userProjectAccount.getKeyNum()+1);
-//                    }
-//                    userProjectAccountMapper.updateByPrimaryKey(userProjectAccount);
-//
-//                //不存在
-//            }else{
-//                UserProjectAccount userAccount = new UserProjectAccount();
-//                userAccount.setCode(dto.getId());
-//                userAccount.setCollege(dto.getCollege());
-//                userAccount.setUserType(dto.getType());
-//                if(dto.getType().equals(ProjectType.GENERAL.getValue())){
-//                    userAccount.setGeneralNum(1);
-//                    userAccount.setKeyNum(0);
-//                }else {
-//                    userAccount.setGeneralNum(0);
-//                    userAccount.setKeyNum(1);
-//                }
-//                userProjectAccountMapper.insert(userAccount);
-//            }
-//        }
+        for (TempDTO dto : dtos) {
+            //验证老师项目是否达到申请上限
+            UserProjectAccount userProjectAccount = userProjectAccountMapper.selectByCode(dto.getId());
+            //存在该用户记录
+            if(userProjectAccount != null) {
+
+                    if(dto.getType().equals(ProjectType.GENERAL.getValue())){
+                        userProjectAccount.setGeneralNum(userProjectAccount.getGeneralNum()+1);
+                    }else {
+                        userProjectAccount.setKeyNum(userProjectAccount.getKeyNum()+1);
+                    }
+                    userProjectAccountMapper.updateByPrimaryKey(userProjectAccount);
+
+                //不存在
+            }else{
+                UserProjectAccount userAccount = new UserProjectAccount();
+                userAccount.setCode(dto.getId());
+                userAccount.setCollege(dto.getCollege());
+                userAccount.setUserType(dto.getType());
+                if(dto.getType().equals(ProjectType.GENERAL.getValue())){
+                    userAccount.setGeneralNum(1);
+                    userAccount.setKeyNum(0);
+                }else {
+                    userAccount.setGeneralNum(0);
+                    userAccount.setKeyNum(1);
+                }
+                userProjectAccountMapper.insert(userAccount);
+            }
+        }
     }
 
     @Test

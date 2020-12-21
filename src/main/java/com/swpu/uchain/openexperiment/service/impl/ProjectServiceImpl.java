@@ -341,9 +341,9 @@ public class ProjectServiceImpl implements ProjectService {
                         throw new GlobalException(CodeMsg.STU_MAX_NUM_OF_TYPE);
                     } else {
                         if (form.getProjectType().equals(ProjectType.GENERAL.getValue())) {
-                            userProjectAccount1.setGeneralNum(userProjectAccount.getGeneralNum() + 1);
+                            userProjectAccount1.setGeneralNum((userProjectAccount1.getGeneralNum() + 1));
                         } else {
-                            userProjectAccount1.setKeyNum(userProjectAccount.getKeyNum() + 1);
+                            userProjectAccount1.setKeyNum((userProjectAccount1.getKeyNum() + 1));
                         }
                         userProjectAccountMapper.updateByPrimaryKey(userProjectAccount1);
                     }

@@ -52,7 +52,7 @@ page:
     manage-user: 7
     manage-role: 7
 
-#
+
 #spring:
 #  servlet:
 #    multipart:
@@ -107,4 +107,4 @@ page:
 #    manage-user: 7
 #    manage-role: 7
 #
-#
+

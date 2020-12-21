@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.service.impl;
 
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import com.swpu.uchain.openexperiment.VO.user.UserVO;
 import com.swpu.uchain.openexperiment.domain.*;
 import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
@@ -174,51 +175,74 @@ public class UserProjectServiceImpl implements UserProjectService {
 
         String limitGrade = projectGroup.getLimitGrade();
         String[] limitGradeArr = strToStrArr(limitGrade);
-        if (limitGradeArr == null) {
-            allowed += 1;
-        } else {
-            for (String grade : limitGradeArr
-            ) {
-                if (grade.equals(user.getGrade().toString())) {
+        if(limitGrade != null) {
+            if (!"[]".equals(limitGrade)) {
+                if (limitGradeArr == null) {
                     allowed += 1;
-                    log.info("年级符合要求----");
+                } else {
+                    for (String grade : limitGradeArr
+                    ) {
+                        if (grade.equals(user.getGrade().toString())) {
+                            allowed += 1;
+                            log.info("年级符合要求----");
+                        }
+                    }
                 }
+            } else {
+                allowed += 1;
             }
+        }else {
+            allowed += 1;
         }
 
         String limitCollege = projectGroup.getLimitCollege();
         String[] limitCollegeArr = strToStrArr(limitCollege);
-        if (limitCollegeArr == null) {
-            allowed += 1;
-        } else {
-            for (String grade : limitCollegeArr
-            ) {
-                if (grade.equals("\"" + user.getInstitute().toString() + "\"")) {
+        if(limitCollege != null ) {
+            if (!limitCollege.equals("[]")) {
+                if (limitCollegeArr == null) {
                     allowed += 1;
-                    log.info("学院符合要求----");
+                } else {
+                    for (String grade : limitCollegeArr
+                    ) {
+                        if (grade.equals("\"" + user.getInstitute().toString() + "\"")) {
+                            allowed += 1;
+                            log.info("学院符合要求----");
+                        }
+                    }
                 }
+            } else {
+                allowed += 1;
             }
+        }else {
+            allowed += 1;
         }
 
         String limitMajor = projectGroup.getLimitMajor();
         String[] limitMajorArr = strToStrArr(limitMajor);
         //大类专业直接通过
-        if (limitMajorArr == null || user.getMajor().equals("2019")) {
-            allowed += 1;
-        } else {
-            for (String grade : limitMajorArr
-            ) {
-                if (grade.equals("\"" + user.getMajor() + "\"")) {
+        if (limitMajor != null) {
+            if (!limitMajor.equals("[]")) {
+                if (limitMajorArr == null || user.getMajor().equals("2019")) {
                     allowed += 1;
-                    log.info("专业符合要求----");
+                } else {
+                    for (String grade : limitMajorArr
+                    ) {
+                        if (grade.equals("\"" + user.getMajor() + "\"")) {
+                            allowed += 1;
+                            log.info("专业符合要求----");
+                        }
+                    }
                 }
+            } else {
+                allowed += 1;
             }
+        }else {
+            allowed += 1;
         }
+
         if (allowed != 3) {
             throw new GlobalException(CodeMsg.NOT_MATCH_LIMIT);
         }
-
-
         //验证项目状态
         if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue())) {
             return Result.error(CodeMsg.PROJECT_IS_NOT_LAB_ALLOWED);
