@@ -598,17 +598,21 @@ public class ProjectServiceImpl implements ProjectService {
             if(projectGroup.getProjectType() == 2){
                 keyProjectStatusMapper.deleteByProjectId(projectGroup.getId());
             }
-            //减去加入次数
-            UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(user.getCode());
-            //存在该用户记录
-            if(userProjectAccount2 != null) {
-                if (projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())) {
-                    userProjectAccount2.setGeneralNum(userProjectAccount2.getGeneralNum() - 1);
-                } else {
-                    userProjectAccount2.setKeyNum(userProjectAccount2.getKeyNum() - 1);
+            List<UserProjectGroup> userProjectGroups = userProjectGroupMapper.selectByProjectGroupId(projectCheckForm.getProjectId());
+            for (UserProjectGroup group : userProjectGroups) {
+                //减去加入次数
+                UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(String.valueOf(group.getUserId()));
+                //存在该用户记录
+                if(userProjectAccount2 != null) {
+                    if (projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())) {
+                        userProjectAccount2.setGeneralNum(userProjectAccount2.getGeneralNum() - 1);
+                    } else {
+                        userProjectAccount2.setKeyNum(userProjectAccount2.getKeyNum() - 1);
+                    }
+                    userProjectAccountMapper.updateByPrimaryKey(userProjectAccount2);
                 }
-                userProjectAccountMapper.updateByPrimaryKey(userProjectAccount2);
             }
+
             projectReviewResultMapper.deleteByProjectId(projectCheckForm.getProjectId());
             projectGroupMapper.deleteByPrimaryKey(projectCheckForm.getProjectId());
             userProjectGroupMapper.deleteByProjectGroupId(projectCheckForm.getProjectId());
