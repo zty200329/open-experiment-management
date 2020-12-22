@@ -2,10 +2,13 @@ package com.swpu.uchain.openexperiment.service.impl;
 
 import com.sun.org.apache.xpath.internal.operations.Operation;
 import com.swpu.uchain.openexperiment.DTO.KeyProjectDTO;
+import com.swpu.uchain.openexperiment.DTO.KeyProjectDTO1;
 import com.swpu.uchain.openexperiment.DTO.OperationRecord;
 import com.swpu.uchain.openexperiment.DTO.ProjectHistoryInfo;
 import com.swpu.uchain.openexperiment.VO.limit.AmountAndTypeVO;
 import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
+import com.swpu.uchain.openexperiment.VO.project.CheckProjectVO;
+import com.swpu.uchain.openexperiment.VO.project.CheckProjectVO1;
 import com.swpu.uchain.openexperiment.VO.project.ProjectReviewVO;
 import com.swpu.uchain.openexperiment.VO.user.UserMemberVO;
 import com.swpu.uchain.openexperiment.accessctro.ExcelResources;
@@ -102,7 +105,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
      * @param form 申请表单
      * @return
      */
-    @Transactional(rollbackFor = GlobalException.class)
+    @Transactional(rollbackFor = Throwable.class)
     @Override
     public Result createKeyApply(KeyProjectApplyForm form) {
 
@@ -289,20 +292,29 @@ public class KeyProjectServiceImpl implements KeyProjectService {
          return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.GUIDE_TEACHER_ALLOWED,user.getInstitute());
     }
 
+
     /**
-     * 实验室主任查看学院审批前的重点项目
-     * @param status
-     * @param college
+     * 实验室主任获取拟题后所有
      * @return
      */
-    private Result getKeyProjectDTOListByStatusAndCollege3(ProjectStatus status, Integer college){
-        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(status.getValue(),college);
-        for (KeyProjectDTO keyProjectDTO :list) {
-            keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(keyProjectDTO.getId(),JoinStatus.JOINED.getValue()) );
-            keyProjectDTO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId(),JoinStatus.JOINED.getValue()));
+    @Override
+    public Result getKeyProjectAllListByLabAdmin() {
+        User user  = getUserService.getCurrentUser();
+        List<CheckProjectVO> list = keyProjectStatusMapper.getAllByCollege(user.getInstitute());
+        List<CheckProjectVO1> list1 = new LinkedList<>();
+        for (CheckProjectVO keyProjectDTO :list) {
+            CheckProjectVO1 checkProjectVO1 = new CheckProjectVO1();
+            BeanUtils.copyProperties(keyProjectDTO,checkProjectVO1);
+            if(keyProjectStatusMapper.getStatusByProjectId(keyProjectDTO.getId()) != null){
+                checkProjectVO1.setKeyStatus(keyProjectStatusMapper.getStatusByProjectId(keyProjectDTO.getId()));
+            }
+            checkProjectVO1.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(keyProjectDTO.getId(),JoinStatus.JOINED.getValue()) );
+            checkProjectVO1.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId(),JoinStatus.JOINED.getValue()));
+            list1.add(checkProjectVO1);
         }
-        return Result.success(list);
+        return Result.success(list1);
     }
+
 
     @Override
     public Result getKeyProjectApplyingListBySecondaryUnit() {

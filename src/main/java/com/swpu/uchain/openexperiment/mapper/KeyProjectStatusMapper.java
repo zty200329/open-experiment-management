@@ -1,6 +1,8 @@
 package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.DTO.KeyProjectDTO;
+import com.swpu.uchain.openexperiment.DTO.KeyProjectDTO1;
+import com.swpu.uchain.openexperiment.VO.project.CheckProjectVO;
 import com.swpu.uchain.openexperiment.VO.project.ProjectReviewVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -25,6 +27,8 @@ public interface KeyProjectStatusMapper {
     Integer getCollegeByProjectId(@Param("projectId") Long projectId);
 
     List<KeyProjectDTO> getKeyProjectDTOListByStatusAndCollege(@Param("status")Integer status, @Param("college")Integer college);
+
+    List<CheckProjectVO> getAllByCollege(@Param("college") Integer college);
 
     List<ProjectReviewVO> selectKeyHasReview(@Param("college")Integer college,@Param("status") Integer status);
 
