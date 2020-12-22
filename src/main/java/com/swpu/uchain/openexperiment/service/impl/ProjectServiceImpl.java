@@ -493,7 +493,8 @@ public class ProjectServiceImpl implements ProjectService {
         if(projectGroup.getProjectType() == 1) {
             //状态不是申报或者退回修改或者中期打回不允许修改
             if (!(projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) || projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue()) ||
-                    projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()) || projectGroup.getStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue()))) {
+                    projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()) || projectGroup.getStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue())
+                    || projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue()))) {
                 return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
             }
         }else{
@@ -501,12 +502,15 @@ public class ProjectServiceImpl implements ProjectService {
             if(projectGroup.getKeyProjectStatus() != null) {
                 //状态不是申报或者退回修改或者中期打回不允许修改
                 if (!(projectGroup.getKeyProjectStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) || projectGroup.getKeyProjectStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue()) ||
-                        projectGroup.getKeyProjectStatus().equals(ProjectStatus.DECLARE.getValue()) || projectGroup.getKeyProjectStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue()))) {
+                        projectGroup.getKeyProjectStatus().equals(ProjectStatus.DECLARE.getValue()) || projectGroup.getKeyProjectStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue())
+                        || projectGroup.getKeyProjectStatus().equals(ProjectStatus.LAB_ALLOWED.getValue()) || projectGroup.getKeyProjectStatus().equals(ProjectStatus.KEY_PROJECT_APPLY.getValue())
+                        || projectGroup.getKeyProjectStatus().equals(ProjectStatus.TO_DE_CONFIRMED.getValue()) || projectGroup.getKeyProjectStatus().equals(ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue()))) {
                     return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
                 }
             }else {
                 if (!(projectGroup.getStatus().equals(ProjectStatus.REJECT_MODIFY.getValue()) || projectGroup.getStatus().equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue()) ||
-                        projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()) || projectGroup.getStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue()))) {
+                        projectGroup.getStatus().equals(ProjectStatus.DECLARE.getValue()) || projectGroup.getStatus().equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue())
+                        || projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue()))) {
                     return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
                 }
             }
@@ -599,6 +603,7 @@ public class ProjectServiceImpl implements ProjectService {
                 keyProjectStatusMapper.deleteByProjectId(projectGroup.getId());
             }
             List<UserProjectGroup> userProjectGroups = userProjectGroupMapper.selectByProjectGroupId(projectCheckForm.getProjectId());
+            log.info(userProjectGroups.toString());
             for (UserProjectGroup group : userProjectGroups) {
                 //减去加入次数
                 UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(String.valueOf(group.getUserId()));

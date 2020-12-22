@@ -44,7 +44,7 @@ import java.util.List;
 @Service
 public class KeyProjectServiceImpl implements KeyProjectService {
 
-
+    private UserProjectAccountMapper userProjectAccountMapper;
     private ProjectGroupMapper projectGroupMapper;
     private UserProjectGroupMapper userProjectGroupMapper;
     private KeyProjectStatusMapper keyProjectStatusMapper;
@@ -74,7 +74,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                                  AchievementMapper achievementMapper,UserProjectService userProjectService,
                                  CollegeGivesGradeMapper collegeGivesGradeMapper,FunctionGivesGradeMapper functionGivesGradeMapper,CollegeLimitMapper collegeLimitMapper,
                                  AmountLimitService amountLimitService,ProjectReviewMapper projectReviewMapper,
-                                 ProjectReviewResultMapper projectReviewResultMapper) {
+                                 ProjectReviewResultMapper projectReviewResultMapper,UserProjectAccountMapper userProjectAccountMapper) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
@@ -93,6 +93,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         this.amountLimitService=amountLimitService;
         this.projectReviewMapper=projectReviewMapper;
         this.projectReviewResultMapper = projectReviewResultMapper;
+        this.userProjectAccountMapper = userProjectAccountMapper;
     }
 
 
@@ -191,6 +192,19 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         for (KeyProjectCheck keyProjectCheck : list) {
             Integer keyProjectStatus = keyProjectStatusMapper.getStatusByProjectId(keyProjectCheck.getProjectId());
 
+            List<UserProjectGroup> userProjectGroups = userProjectGroupMapper.selectByProjectGroupId(keyProjectCheck.getProjectId());
+            log.info(userProjectGroups.toString());
+            for (UserProjectGroup group : userProjectGroups) {
+                //减去加入次数
+                UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(String.valueOf(group.getUserId()));
+                //存在该用户记录
+                if(userProjectAccount2 != null) {
+
+                        userProjectAccount2.setKeyNum(userProjectAccount2.getKeyNum() - 1);
+
+                    userProjectAccountMapper.updateByPrimaryKey(userProjectAccount2);
+                }
+            }
             if (keyProjectStatus == null) {
                 //不存在则可以直接删除
                 projectGroupMapper.deleteByPrimaryKey(keyProjectCheck.getProjectId());
@@ -201,6 +215,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                 if (!(keyProjectStatus >= -4 && keyProjectStatus <= 2 && keyProjectStatus != -3)) {
                     return Result.error(CodeMsg.PROJECT_GROUP_INFO_CANT_CHANGE);
                 }
+
                 projectGroupMapper.deleteByPrimaryKey(keyProjectCheck.getProjectId());
                 userProjectGroupMapper.deleteByProjectGroupId(keyProjectCheck.getProjectId());
                 operationRecordMapper.deleteByGroupId(keyProjectCheck.getProjectId());

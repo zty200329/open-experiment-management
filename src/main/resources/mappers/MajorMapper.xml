@@ -25,7 +25,7 @@
   <select id="selectById" resultType="java.lang.String" parameterType="java.lang.String" >
     select major_name
     from major
-    where major_code = #{majorCode,jdbcType=VARCHAR}
+    where major_code = #{majorCode,jdbcType=VARCHAR} limit 1
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select id, major_code, major_name

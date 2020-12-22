@@ -355,9 +355,9 @@ public class ConvertUtil {
 
     public static String getStrProjectType(Integer type) {
         if (type == 1) {
-            return "重点";
-        } else {
             return "普通";
+        } else {
+            return "重点";
         }
     }
 
