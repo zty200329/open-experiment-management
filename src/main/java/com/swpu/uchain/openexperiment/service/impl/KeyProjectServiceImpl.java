@@ -289,6 +289,21 @@ public class KeyProjectServiceImpl implements KeyProjectService {
          return getKeyProjectDTOListByStatusAndCollege(ProjectStatus.GUIDE_TEACHER_ALLOWED,user.getInstitute());
     }
 
+    /**
+     * 实验室主任查看学院审批前的重点项目
+     * @param status
+     * @param college
+     * @return
+     */
+    private Result getKeyProjectDTOListByStatusAndCollege3(ProjectStatus status, Integer college){
+        List<KeyProjectDTO> list = keyProjectStatusMapper.getKeyProjectDTOListByStatusAndCollege(status.getValue(),college);
+        for (KeyProjectDTO keyProjectDTO :list) {
+            keyProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(keyProjectDTO.getId(),JoinStatus.JOINED.getValue()) );
+            keyProjectDTO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId(),JoinStatus.JOINED.getValue()));
+        }
+        return Result.success(list);
+    }
+
     @Override
     public Result getKeyProjectApplyingListBySecondaryUnit() {
         User user  = getUserService.getCurrentUser();

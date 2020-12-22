@@ -3,6 +3,7 @@ package com.swpu.uchain.openexperiment.service.impl;
 import com.swpu.uchain.openexperiment.VO.limit.AmountLimitVO;
 import com.swpu.uchain.openexperiment.domain.AmountLimit;
 import com.swpu.uchain.openexperiment.domain.TimeLimit;
+import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.domain.UserRole;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.RoleType;
@@ -13,6 +14,7 @@ import com.swpu.uchain.openexperiment.mapper.AmountLimitMapper;
 import com.swpu.uchain.openexperiment.mapper.TimeLimitMapper;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AmountLimitService;
+import com.swpu.uchain.openexperiment.service.GetUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,8 @@ public class AmountLimitServiceImpl implements AmountLimitService {
     private AmountLimitMapper amountLimitMapper;
 
     private TimeLimitMapper timeLimitMapper;
+    @Autowired
+    private GetUserService getUserService;
 
     @Autowired
     public AmountLimitServiceImpl(AmountLimitMapper amountLimitMapper,TimeLimitMapper timeLimitMapper) {
@@ -40,7 +44,8 @@ public class AmountLimitServiceImpl implements AmountLimitService {
 
     @Override
     public Result getAmountLimitVOListByCollegeAndProjectType(AmountSearchForm form) {
-        return Result.success(amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(form.getCollege(),form.getProjectType(),RoleType.SECONDARY_UNIT.getValue()));
+        User user = getUserService.getCurrentUser();
+        return Result.success(amountLimitMapper.getAmountLimitVOListByCollegeAndProjectType(user.getInstitute(),form.getProjectType(),RoleType.SECONDARY_UNIT.getValue()));
     }
 
     @Override

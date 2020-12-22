@@ -173,6 +173,7 @@
                 and user_id = #{userId}
             </if>
         </where>
+        limit 1
     </select>
     <select id="getProjectLeader" resultMap="BaseResultMap"
             resultType="com.swpu.uchain.openexperiment.domain.UserProjectGroup">
