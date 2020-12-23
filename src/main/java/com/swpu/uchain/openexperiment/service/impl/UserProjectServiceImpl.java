@@ -19,6 +19,7 @@ import com.swpu.uchain.openexperiment.util.CountUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -112,6 +113,7 @@ public class UserProjectServiceImpl implements UserProjectService {
     }
 
     @Override
+    @Transactional(rollbackFor = Throwable.class)
     public Result applyJoinProject(JoinProjectApplyForm joinProjectApplyForm) {
 
         //时间验证
@@ -139,36 +141,6 @@ public class UserProjectServiceImpl implements UserProjectService {
             throw new GlobalException(CodeMsg.PROJECT_USER_MAX_ERROR);
         }
 
-        //判断加入数量是否已经满了
-        UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(user.getCode());
-        //存在该用户记录
-        if(userProjectAccount2 != null) {
-            if (userProjectAccount2.getKeyNum() + userProjectAccount2.getGeneralNum() >= 3) {
-                throw new GlobalException(CodeMsg.MAX_NUM_OF_TYPE);
-            }else{
-                if(projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())){
-                    userProjectAccount2.setGeneralNum(userProjectAccount2.getGeneralNum()+1);
-                }else {
-                    userProjectAccount2.setKeyNum(userProjectAccount2.getKeyNum()+1);
-                }
-                userProjectAccountMapper.updateByPrimaryKey(userProjectAccount2);
-            }
-            //不存在
-        }else{
-            UserProjectAccount userAccount = new UserProjectAccount();
-            userAccount.setCode(user.getCode());
-            userAccount.setCollege(String.valueOf(user.getInstitute()));
-            userAccount.setUserType(1);
-            if(projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())){
-                userAccount.setGeneralNum(1);
-                userAccount.setKeyNum(0);
-            }else {
-                userAccount.setGeneralNum(0);
-                userAccount.setKeyNum(1);
-            }
-
-            userProjectAccountMapper.insert(userAccount);
-        }
 
         //学生是否可以加入判断
         int allowed = 0;
@@ -243,6 +215,37 @@ public class UserProjectServiceImpl implements UserProjectService {
         if (allowed != 3) {
             throw new GlobalException(CodeMsg.NOT_MATCH_LIMIT);
         }
+        //判断加入数量是否已经满了
+        UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(user.getCode());
+        //存在该用户记录
+        if(userProjectAccount2 != null) {
+            if (userProjectAccount2.getKeyNum() + userProjectAccount2.getGeneralNum() >= 3) {
+                throw new GlobalException(CodeMsg.MAX_NUM_OF_TYPE);
+            }else{
+                if(projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())){
+                    userProjectAccount2.setGeneralNum(userProjectAccount2.getGeneralNum()+1);
+                }else {
+                    userProjectAccount2.setKeyNum(userProjectAccount2.getKeyNum()+1);
+                }
+                userProjectAccountMapper.updateByPrimaryKey(userProjectAccount2);
+            }
+            //不存在
+        }else{
+            UserProjectAccount userAccount = new UserProjectAccount();
+            userAccount.setCode(user.getCode());
+            userAccount.setCollege(String.valueOf(user.getInstitute()));
+            userAccount.setUserType(1);
+            if(projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())){
+                userAccount.setGeneralNum(1);
+                userAccount.setKeyNum(0);
+            }else {
+                userAccount.setGeneralNum(0);
+                userAccount.setKeyNum(1);
+            }
+
+            userProjectAccountMapper.insert(userAccount);
+        }
+
         //验证项目状态
         if (!projectGroup.getStatus().equals(ProjectStatus.LAB_ALLOWED.getValue())) {
             return Result.error(CodeMsg.PROJECT_IS_NOT_LAB_ALLOWED);

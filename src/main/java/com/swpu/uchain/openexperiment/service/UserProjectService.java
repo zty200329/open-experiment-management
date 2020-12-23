@@ -83,8 +83,6 @@ public interface UserProjectService {
     Result applyJoinProject(JoinProjectApplyForm joinProjectApplyForm);
 
     /**
-     * 校验当前用户是满足进行申请加入条件
-     * @param user
      * @param projectGroup
      * @return
      */
