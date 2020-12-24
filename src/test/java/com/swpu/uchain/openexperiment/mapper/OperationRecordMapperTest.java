@@ -88,6 +88,21 @@ public class OperationRecordMapperTest {
 
     }
     @Test
+    public void SynchronousData(){
+        List<String> userCodes = userProjectAccountMapper.selectTemp2();
+        for (String userCode : userCodes) {
+
+            Integer real = userProjectAccountMapper.selectTemp3(userCode);
+            if(real != null) {
+                if(real == 1) {
+                    userProjectAccountMapper.updateByCode("2", userCode);
+                }else {
+                    userProjectAccountMapper.updateByCode("1", userCode);
+                }
+            }
+        }
+    }
+    @Test
 
     public void insert() {
         List<TempDTO> dtos = userProjectAccountMapper.selectTemp();

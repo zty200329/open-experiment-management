@@ -382,6 +382,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Throwable.class)
     public Result FunctionCreateCommonApply(FunctionCreateProjectApplyForm form) {
         //时间限制省略
 
@@ -1987,6 +1988,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Throwable.class)
     public Result addStudentToProject(JoinForm joinForm) {
         User user = getUserService.getCurrentUser();
         Long userId = Long.valueOf(user.getCode());
@@ -2638,6 +2640,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(rollbackFor = Throwable.class)
     public Result deleteMemberFromProject(Long projectId, Long userId) {
         User currentUser = getUserService.getCurrentUser();
         Long currentUserId = Long.valueOf(currentUser.getCode());
