@@ -55,4 +55,10 @@ public class UserController {
         return userService.getUserInfoByUserId(userId);
     }
 
+    @ApiOperation("根据用户工号查看学院和职称")
+    @GetMapping("/getInfoByUserId")
+    public Result getInfoByUserId(Long userId){
+        return userService.getInfoByUserId(userId);
+    }
+
 }

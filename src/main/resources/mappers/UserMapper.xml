@@ -92,6 +92,12 @@
           u_stu.class_num
     from openexperiment.u_stu where code = #{userCode}
   </select>
+    <select id="selectByUserCode1" resultType="com.swpu.uchain.openexperiment.VO.user.UserInfoVO2">
+    select
+          teacher.professional as professional,
+          teacher.college_name as collegeName
+    from openexperiment.teacher where user_number = #{userCode}
+  </select>
   <select id="selectProjectJoinedUsers" resultMap="BaseResultMap">
     select u_stu.id,
            u_stu.code,

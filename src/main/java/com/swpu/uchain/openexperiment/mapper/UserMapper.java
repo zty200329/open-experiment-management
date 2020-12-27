@@ -1,5 +1,6 @@
 package com.swpu.uchain.openexperiment.mapper;
 
+import com.swpu.uchain.openexperiment.VO.user.UserInfoVO2;
 import com.swpu.uchain.openexperiment.domain.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -21,6 +22,8 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     User selectByUserCode(String userCode);
+
+    UserInfoVO2 selectByUserCode1(String userCode);
 
     User selectByUserCodeAndRole(@Param("userCode") String userCode,@Param("role") Integer role);
 

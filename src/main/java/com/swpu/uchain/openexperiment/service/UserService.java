@@ -142,6 +142,7 @@ public interface UserService {
 
     Result getUserInfoByUserId(Long userId);
 
+    Result getInfoByUserId(Long userId);
 
 
 }

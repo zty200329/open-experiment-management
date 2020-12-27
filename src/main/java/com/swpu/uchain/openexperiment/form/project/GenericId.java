@@ -4,6 +4,9 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * @author zty
+ */
 @Data
 public class GenericId {
     @NotNull(message = "id不能为空")

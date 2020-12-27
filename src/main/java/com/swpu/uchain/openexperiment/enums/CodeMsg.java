@@ -81,6 +81,7 @@ public enum CodeMsg {
     SCORE_ERROR(1529,"分数需要在0-100区间"),
     MAX_NUM_OF_TYPE(1530,"项目数量已达到申请最大值"),
     STU_MAX_NUM_OF_TYPE(1531,"有学生项目数量已达到申请最大值"),
+    CANT_REMOVE(1532,"教师已同意，不能删除"),
 
 
     /**

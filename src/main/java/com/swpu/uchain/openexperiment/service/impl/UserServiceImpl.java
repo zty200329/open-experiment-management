@@ -414,6 +414,12 @@ public Result loginFirst(String clientIp, FirstLoginForm loginForm) {
         return Result.success(userMapper.selectByUserCode(String.valueOf(userId)));
     }
 
+    @Override
+    public Result getInfoByUserId(Long userId) {
+        return Result.success(userMapper.selectByUserCode1(String.valueOf(userId)));
+    }
+
+
 
 
     /**

@@ -1683,7 +1683,11 @@ public class ProjectServiceImpl implements ProjectService {
             }
             list = projectGroupMapper.selectGeneralPassedProjectList(college, status);
         } else {
-            list = projectGroupMapper.selectGeneralRejectedProjectList(college);
+            if(user.getInstitute() != 39) {
+                list = projectGroupMapper.selectGeneralRejectedProjectList(college);
+            }else {
+                list = projectGroupMapper.selectGeneralRejectedProjectList(null);
+            }
         }
 
         for (ProjectGroup projectGroup : list
@@ -2122,6 +2126,30 @@ public class ProjectServiceImpl implements ProjectService {
             userProjectAccountMapper.updateByPrimaryKey(userProjectAccount2);
         }
         userProjectGroupMapper.deleteByPrimaryKey(userProjectGroupOfCurrentUser.getId());
+        return Result.success();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    public Result cancelStudentFromProject(GenericId joinForm) {
+        User user = getUserService.getCurrentUser();
+        UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(joinForm.getId(), Long.valueOf(user.getCode()));
+        if(userProjectGroup.getStatus() == 2){
+            throw new GlobalException(CodeMsg.CANT_REMOVE);
+        }
+        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(joinForm.getId());
+        //减去加入次数
+        UserProjectAccount userProjectAccount2 = userProjectAccountMapper.selectByCode(user.getCode());
+        //存在该用户记录
+        if(userProjectAccount2 != null) {
+            if (projectGroup.getProjectType().equals(ProjectType.GENERAL.getValue())) {
+                userProjectAccount2.setGeneralNum(userProjectAccount2.getGeneralNum() - 1);
+            } else {
+                userProjectAccount2.setKeyNum(userProjectAccount2.getKeyNum() - 1);
+            }
+            userProjectAccountMapper.updateByPrimaryKey(userProjectAccount2);
+        }
+        userProjectGroupMapper.deleteByPrimaryKey(userProjectGroup.getId());
         return Result.success();
     }
 

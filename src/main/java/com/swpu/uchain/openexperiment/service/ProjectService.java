@@ -304,6 +304,8 @@ public interface ProjectService {
 
     Result removeStudentFromProject(JoinForm joinForm);
 
+    Result cancelStudentFromProject(GenericId joinForm);
+
     Result getToBeConcludingProject();
 
     /**
