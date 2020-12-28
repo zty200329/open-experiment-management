@@ -1,5 +1,5 @@
 server:
-  port: 8083
+  port: 8084
 spring:
   datasource:
     username: root
@@ -26,6 +26,8 @@ upload:
   conclusion-annex: "/usr/local/uchain/conclusion_annex"
   achievement-annex: "/usr/local/uchain/achievement_annex"
   news-images: "/usr/local/uchain/news_images"
+  download-temp: "/usr/local/uchain/download_temp"
+  download-zip-temp: "/usr/local/uchain/download_zip_temp"
 download:
   certificate-excel-download: "/usr/local/uchain/excel-temp"
 file:

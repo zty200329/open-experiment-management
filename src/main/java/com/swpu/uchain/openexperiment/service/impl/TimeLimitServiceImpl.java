@@ -136,4 +136,26 @@ public class TimeLimitServiceImpl implements TimeLimitService {
             throw new GlobalException(CodeMsg.NOT_IN_VALID_TIME);
         }
     }
+
+    @Override
+    public void validTime(TimeLimitType timeLimitType,Integer college){
+        Integer type = timeLimitType.getValue();
+        //获取学院
+
+        if (college == null){
+            throw new GlobalException(CodeMsg.COLLEGE_TYPE_NULL_ERROR);
+        }
+        TimeLimit timeLimit = getTimeLimitByType(type,college);
+        //如果不存在验证直接退出
+        if (timeLimit == null){
+            return;
+        }
+        Date startTime = timeLimit.getStartTime();
+        Date endTime = timeLimit.getEndTime();
+        Date currentTime = new Date();
+        //验证不通过，抛出自定义异常并捕捉
+        if (startTime.after(currentTime) || endTime.before(currentTime)){
+            throw new GlobalException(CodeMsg.NOT_IN_VALID_TIME);
+        }
+    }
 }

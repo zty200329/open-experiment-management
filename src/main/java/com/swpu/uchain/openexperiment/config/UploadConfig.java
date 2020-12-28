@@ -66,5 +66,15 @@ public class UploadConfig {
      * 富文本图片
      */
     private String newsImages;
+
+    /**
+     * 批量下载临时文件夹
+     */
+    private String downloadTemp;
+
+    /**
+     * 下载压缩包的临时文件夹
+     */
+    private String downloadZipTemp;
 }
 

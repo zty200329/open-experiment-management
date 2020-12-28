@@ -26,6 +26,8 @@ upload:
   conclusion-annex: "/Users/zty/Desktop/openexperiment/conclusion_annex"
   achievement-annex: "/Users/zty/Desktop/openexperiment/achievement_annex"
   news-images: "/Users/zty/Desktop/openexperiment/news_images"
+  download-temp: "/Users/zty/Desktop/openexperiment/download_temp"
+  download-zip-temp: "/Users/zty/Desktop/openexperiment/download_zip_temp"
 download:
   certificate-excel-download: "C:\\Users\\Administrator\\Desktop\\项目\\open-experiment-management-system\\src\\main\\resources\\excel-templates\\"
 file:

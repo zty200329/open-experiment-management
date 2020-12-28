@@ -4,6 +4,7 @@ import com.swpu.uchain.openexperiment.domain.User;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.enums.ProjectStatus;
 import com.swpu.uchain.openexperiment.form.project.DeleteIconicResultForm;
+import com.swpu.uchain.openexperiment.form.project.GenericId;
 import com.swpu.uchain.openexperiment.mapper.ProjectGroupMapper;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.GetUserService;
@@ -77,8 +78,12 @@ public class FileController {
         return projectFileService.uploadApplyDoc(file, headFile,projectGroupId);
     }
 
+    @ApiOperation("选择后批量下载")
+    @PostMapping("/batchDownload")
+    public void batchDownload(@RequestBody List<GenericId> genericIds,HttpServletResponse response){
 
-
+        projectFileService.batchDownload(genericIds,response);
+    }
 
     @ApiOperation("图片视频附件上传")
     @PostMapping(value = "/uploadAttachmentFile", name = "上传附件")
@@ -147,6 +152,12 @@ public class FileController {
     @PostMapping(value = "/generateAllEstablishExcel", name = "生成立项总览表")
     public void generateAllEstablishExcel(HttpServletResponse response){
         projectFileService.generateAllEstablishExcel(response, ProjectStatus.ESTABLISH.getValue());
+    }
+
+    @ApiOperation("职能部门生成待立项审批总览表")
+    @PostMapping(value = "/generateWaitEstablishExcel", name = "生成立项总览表")
+    public void generateWaitEstablishExcel(HttpServletResponse response){
+        projectFileService.generateAllEstablishExcel(response, ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue());
     }
 
     @ApiOperation("生成项目信息总览表，加状态信息")

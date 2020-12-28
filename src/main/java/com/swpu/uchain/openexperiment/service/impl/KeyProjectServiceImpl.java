@@ -581,7 +581,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                 for (KeyProjectCheck check:list
                 ) {
                     //更新重点项目，回到拟题通过状态
-                    keyProjectStatusMapper.update(check.getProjectId(),ProjectStatus.TO_DE_CONFIRMED.getValue());
+                    keyProjectStatusMapper.update(check.getProjectId(),ProjectStatus.REJECT_MODIFY.getValue());
                     //进行重点项目申请的时候该状态也会被改变
                     projectGroupMapper.updateProjectStatus(check.getProjectId(),ProjectStatus.LAB_ALLOWED.getValue());
                 }

@@ -50,6 +50,7 @@
     <orderEntry type="library" name="Maven: io.netty:netty-resolver:4.1.29.Final" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-handler:4.1.29.Final" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-codec:4.1.29.Final" level="project" />
+    <orderEntry type="library" name="Maven: cn.hutool:hutool-all:4.5.15" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.1.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-json:2.1.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.7" level="project" />

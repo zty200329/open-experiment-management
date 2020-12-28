@@ -2,7 +2,9 @@ package com.swpu.uchain.openexperiment.service;
 
 import com.swpu.uchain.openexperiment.domain.ProjectFile;
 import com.swpu.uchain.openexperiment.form.file.ConcludingReportForm;
+import com.swpu.uchain.openexperiment.form.project.GenericId;
 import com.swpu.uchain.openexperiment.result.Result;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,6 +47,12 @@ public interface ProjectFileService {
      * @return:
      */
     Result uploadApplyDoc(MultipartFile file,MultipartFile headFile, Long projectGroupId);
+
+    /**
+     * 选中后批量下载
+     * @param genericIds
+     */
+    void batchDownload(List<GenericId> genericIds,HttpServletResponse response);
 
     /**
      * 下载立项申请正文文件
@@ -122,6 +130,12 @@ public interface ProjectFileService {
      * 生成立项总览表
      */
     void generateAllEstablishExcel(HttpServletResponse response,Integer projectStatus);
+
+
+    /**
+     * 生成待立项审核总览表
+     */
+    void generateWaitEstablishExcel(HttpServletResponse response,Integer projectStatus);
 
     /**
      * 生成结题总览表

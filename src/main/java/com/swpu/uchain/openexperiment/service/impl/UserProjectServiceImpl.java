@@ -116,8 +116,7 @@ public class UserProjectServiceImpl implements UserProjectService {
     @Transactional(rollbackFor = Throwable.class)
     public Result applyJoinProject(JoinProjectApplyForm joinProjectApplyForm) {
 
-        //时间验证
-        timeLimitService.validTime(TimeLimitType.JOIN_APPLY_LIMIT);
+
 
         User user = getUserService.getCurrentUser();
         if (user.getMobilePhone() == null || user.getQqNum() == null) {
@@ -129,8 +128,10 @@ public class UserProjectServiceImpl implements UserProjectService {
             throw new GlobalException(CodeMsg.PERMISSION_DENNY);
         }
 
-        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(joinProjectApplyForm.getProjectGroupId());
 
+        ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(joinProjectApplyForm.getProjectGroupId());
+        //时间验证
+        timeLimitService.validTime(TimeLimitType.JOIN_APPLY_LIMIT,projectGroup.getSubordinateCollege());
         //验证项目是否存在
         if (projectGroup == null) {
             return Result.error(CodeMsg.PROJECT_GROUP_NOT_EXIST);

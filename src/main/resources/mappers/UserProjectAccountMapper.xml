@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swpu.uchain.openexperiment.mapper.UserProjectAccountMapper" >
+  <resultMap id="BaseResultMap" type="com.swpu.uchain.openexperiment.domain.UserProjectAccount" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="college" property="college" jdbcType="VARCHAR" />
+    <result column="general_num" property="generalNum" jdbcType="INTEGER" />
+    <result column="key_num" property="keyNum" jdbcType="INTEGER" />
+    <result column="user_type" property="userType" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_project_account
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectAccount" >
+    insert into user_project_account ( college, general_num,
+      key_num, user_type, code
+      )
+    values ( #{college,jdbcType=VARCHAR}, #{generalNum,jdbcType=INTEGER},
+      #{keyNum,jdbcType=INTEGER}, #{userType,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.swpu.uchain.openexperiment.domain.UserProjectAccount" >
+    update user_project_account
+    set college = #{college,jdbcType=VARCHAR},
+      general_num = #{generalNum,jdbcType=INTEGER},
+      key_num = #{keyNum,jdbcType=INTEGER},
+      user_type = #{userType,jdbcType=INTEGER},
+      code = #{code,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, college, general_num, key_num, user_type, code
+    from user_project_account
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select id, college, general_num, key_num, user_type, code
+    from user_project_account
+    where code = #{code,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, college, general_num, key_num, user_type, code
+    from user_project_account
+  </select>
+
+  <select id="selectTemp" resultType="com.swpu.uchain.openexperiment.DTO.TempDTO" >
+    SELECT
+	user_project_group.user_id as id,
+	project_group.project_type as type,
+	user_project_group.member_role as role ,
+	u_stu.institute as college
+FROM
+	project_group
+	INNER JOIN
+	user_project_group
+	ON
+		project_group.id = user_project_group.project_group_id
+	INNER JOIN
+	u_stu
+	ON
+		user_project_group.user_id = u_stu.`code`
+  </select>
+    <select id="selectTemp1" resultType="com.swpu.uchain.openexperiment.DTO.TempDTO1" >
+	SELECT
+	teacher.user_name as name,
+	teacher.gender as sex,
+	teacher.user_number as code,
+	teacher.college_code as college,
+	teacher.telephone as telephone
+    FROM
+	teacher
+  </select>
+    <update id="updateByCode" parameterType="java.lang.String">
+    update openexperiment.u_stu
+    set
+      sex = #{sex}
+    where code = #{userCode}
+  </update>
+    <select id="selectTemp2" resultType="java.lang.String" >
+	SELECT
+	student.user_number
+    FROM
+	student
+	where student.grade_code = 2020
+  </select>
+    <select id="selectTemp3" parameterType="java.lang.String" resultType="java.lang.Integer" >
+	SELECT
+	student.gender
+    FROM
+	student
+	where student.user_number = #{number}
+	limit 1
+  </select>
+</mapper>

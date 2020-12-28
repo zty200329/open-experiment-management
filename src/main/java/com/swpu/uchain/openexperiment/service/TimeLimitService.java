@@ -18,5 +18,6 @@ public interface TimeLimitService {
     TimeLimit getTimeLimitByTypeAndCollege(TimeLimitType timeLimitType,Integer college);
 
     void validTime(TimeLimitType timeLimitType);
+    void validTime(TimeLimitType timeLimitType, Integer college);
 
 }
