@@ -342,10 +342,13 @@ public class ConvertUtil {
                 result = "艺术学院";
                 break;
             case 61:
-                result = "网信中心";
+                result = "网络与信息化中心";
                 break;
             case 62:
                 result = "工程训练中心";
+                break;
+            case 71:
+                result = "海洋天然气水合物研究院";
                 break;
             default:
                 result = "无";

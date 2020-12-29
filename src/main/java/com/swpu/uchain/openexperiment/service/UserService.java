@@ -144,5 +144,14 @@ public interface UserService {
 
     Result getInfoByUserId(Long userId);
 
+    /**
+     * 更新用户学院信息
+     * @param updateUserCollegeForm
+     * @return
+     */
+    Result updateUserCollege(UpdateUserCollegeForm updateUserCollegeForm);
+
+    Result determineLeader(Long projectGroupId);
+
 
 }

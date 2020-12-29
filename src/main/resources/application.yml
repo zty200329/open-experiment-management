@@ -1,68 +1,13 @@
-spring:
-  servlet:
-    multipart:
-      max-file-size: 100MB
-      enabled: true
-  profiles:
-    active: dev3
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.109.88:3306/openexperiment?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&&allowPublicKeyRetrieval=true
-    type: com.alibaba.druid.pool.DruidDataSource
-    druid:
-      initial-size: 5
-      min-idle: 5
-      max-active: 50
-      max-wait: 60000
-      time-between-eviction-runs-millis: 60000
-      min-evictable-idle-time-millis: 300000
-  redis:
-    database: 1 # Redis数据库索引（默认为0）
-    host: 192.168.109.88 # Redis服务器地址
-    port: 6366 # Redis服务器连接端口
-    password: uchain  # Redis服务器连接密码（默认为空）
-    jedis:
-      pool:
-        max-active: 200 #连接池最大连接数（使用负值表示没有限制）
-        max-wait: -1   # 连接池最大阻塞等待时间（使用负值表示没有限制）
-        max-idle: 10  # 连接池中的最大空闲连接
-        min-idle: 0 # 连接池中的最小空闲连接
-    timeout: 1000 # 连接超时时间（毫秒）
-
-mybatis:
-  type-aliases-package: com.swpu.uchain.openexperiment.domain
-  mapper-locations: classpath:mappers/*.xml
-jwt:
-  secret: swpu-uchain
-  expiration: 43000
-redis:
-  host: 192.168.109.88
-  port: 6366
-  timeout: 10
-  poolMaxTotal: 1000
-  poolMaxIdle: 500
-  poolMaxWait: 500
-  password: uchain
-page:
-  count:
-    announcement: 10
-    project: 5
-    check-user: 10
-    check-project: 7
-    manage-user: 7
-    manage-role: 7
-
-#
 #spring:
 #  servlet:
 #    multipart:
 #      max-file-size: 100MB
 #      enabled: true
 #  profiles:
-#    active: dev2
+#    active: dev3
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://127.0.0.1:3306/openexperiment?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&&allowPublicKeyRetrieval=true
+#    url: jdbc:mysql://192.168.109.88:3306/openexperiment?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&&allowPublicKeyRetrieval=true
 #    type: com.alibaba.druid.pool.DruidDataSource
 #    druid:
 #      initial-size: 5
@@ -73,9 +18,9 @@ page:
 #      min-evictable-idle-time-millis: 300000
 #  redis:
 #    database: 1 # Redis数据库索引（默认为0）
-#    host: 106.15.248.34 # Redis服务器地址
-#    port: 6379 # Redis服务器连接端口
-#    password: 200329  # Redis服务器连接密码（默认为空）
+#    host: 192.168.109.88 # Redis服务器地址
+#    port: 6366 # Redis服务器连接端口
+#    password: uchain  # Redis服务器连接密码（默认为空）
 #    jedis:
 #      pool:
 #        max-active: 200 #连接池最大连接数（使用负值表示没有限制）
@@ -91,13 +36,13 @@ page:
 #  secret: swpu-uchain
 #  expiration: 43000
 #redis:
-#  host: 106.15.248.34
-#  port: 6379
+#  host: 192.168.109.88
+#  port: 6366
 #  timeout: 10
 #  poolMaxTotal: 1000
 #  poolMaxIdle: 500
 #  poolMaxWait: 500
-#  password: 200329
+#  password: uchain
 #page:
 #  count:
 #    announcement: 10
@@ -106,3 +51,58 @@ page:
 #    check-project: 7
 #    manage-user: 7
 #    manage-role: 7
+
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      enabled: true
+  profiles:
+    active: dev2
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/openexperiment?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&&allowPublicKeyRetrieval=true
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 50
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+  redis:
+    database: 1 # Redis数据库索引（默认为0）
+    host: 106.15.248.34 # Redis服务器地址
+    port: 6379 # Redis服务器连接端口
+    password: 200329  # Redis服务器连接密码（默认为空）
+    jedis:
+      pool:
+        max-active: 200 #连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1   # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 10  # 连接池中的最大空闲连接
+        min-idle: 0 # 连接池中的最小空闲连接
+    timeout: 1000 # 连接超时时间（毫秒）
+
+mybatis:
+  type-aliases-package: com.swpu.uchain.openexperiment.domain
+  mapper-locations: classpath:mappers/*.xml
+jwt:
+  secret: swpu-uchain
+  expiration: 43000
+redis:
+  host: 106.15.248.34
+  port: 6379
+  timeout: 10
+  poolMaxTotal: 1000
+  poolMaxIdle: 500
+  poolMaxWait: 500
+  password: 200329
+page:
+  count:
+    announcement: 10
+    project: 5
+    check-user: 10
+    check-project: 7
+    manage-user: 7
+    manage-role: 7

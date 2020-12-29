@@ -61,6 +61,18 @@
       class_num = #{classNum,jdbcType=INTEGER}
     where code = #{code,jdbcType=BIGINT}
   </update>
+    <update id="updateCollegeByCode" parameterType="com.swpu.uchain.openexperiment.form.user.UpdateUserCollegeForm">
+    update openexperiment.u_stu
+    set
+      institute = #{college,jdbcType=VARCHAR}
+    where code = #{userId,jdbcType=BIGINT}
+  </update>
+    <update id="updateProjectCollegeByCode" parameterType="com.swpu.uchain.openexperiment.form.user.UpdateUserCollegeForm">
+    update openexperiment.project_group
+    set
+      subordinate_college = #{college,jdbcType=VARCHAR}
+    where creator_id = #{userId,jdbcType=BIGINT}
+  </update>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select id, code, email, fix_phone, id_card, mobile_phone, `password`, qq_num, real_name, 

@@ -2,6 +2,7 @@ package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.VO.user.UserInfoVO2;
 import com.swpu.uchain.openexperiment.domain.User;
+import com.swpu.uchain.openexperiment.form.user.UpdateUserCollegeForm;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +21,10 @@ public interface UserMapper {
     List<User> selectAll();
 
     int updateByPrimaryKey(User record);
+
+    int updateCollegeByCode(UpdateUserCollegeForm updateUserCollegeForm);
+
+    int updateProjectCollegeByCode(UpdateUserCollegeForm updateUserCollegeForm);
 
     User selectByUserCode(String userCode);
 

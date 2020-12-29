@@ -1,5 +1,10 @@
 package com.swpu.uchain.openexperiment.controller;
 
+import com.swpu.uchain.openexperiment.domain.UserProjectGroup;
+import com.swpu.uchain.openexperiment.enums.CodeMsg;
+import com.swpu.uchain.openexperiment.enums.MemberRole;
+import com.swpu.uchain.openexperiment.exception.GlobalException;
+import com.swpu.uchain.openexperiment.form.user.UpdateUserCollegeForm;
 import com.swpu.uchain.openexperiment.form.user.UserUpdateForm;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.UserService;
@@ -59,6 +64,18 @@ public class UserController {
     @GetMapping("/getInfoByUserId")
     public Result getInfoByUserId(Long userId){
         return userService.getInfoByUserId(userId);
+    }
+
+    @ApiOperation("改变用户及其所属项目的学院")
+    @PostMapping("/updateUserCollege")
+    public Result updateUserCollege(@RequestBody @Valid UpdateUserCollegeForm updateUserCollegeForm){
+        return userService.updateUserCollege(updateUserCollegeForm);
+    }
+
+    @ApiOperation("判断用户是否是项目组长")
+    @PostMapping("/determineLeader")
+    public Result determineLeader(Long projectGroupId){
+        return userService.determineLeader(projectGroupId);
     }
 
 }

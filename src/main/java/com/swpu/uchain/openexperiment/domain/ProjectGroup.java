@@ -120,7 +120,7 @@ public class ProjectGroup implements Serializable {
     /**
      * 项目开展进度
      */
-    @JsonIgnore
+
     private Integer status;
 
     /**

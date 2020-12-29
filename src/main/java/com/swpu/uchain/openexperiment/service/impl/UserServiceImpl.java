@@ -419,7 +419,24 @@ public Result loginFirst(String clientIp, FirstLoginForm loginForm) {
         return Result.success(userMapper.selectByUserCode1(String.valueOf(userId)));
     }
 
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    public Result updateUserCollege(UpdateUserCollegeForm updateUserCollegeForm) {
+        userMapper.updateCollegeByCode(updateUserCollegeForm);
+        userMapper.updateProjectCollegeByCode(updateUserCollegeForm);
+        return Result.success();
+    }
 
+    @Override
+    public Result determineLeader(Long projectGroupId) {
+        User currentUser = getUserService.getCurrentUser();
+        //校验当前用户是否有权进行上传
+        UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, Long.valueOf(currentUser.getCode()));
+        if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.PROJECT_GROUP_LEADER.getValue())) {
+                throw new GlobalException(CodeMsg.UPLOAD_PERMISSION_DENNY);
+        }
+        return Result.success();
+    }
 
 
     /**

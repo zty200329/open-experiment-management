@@ -209,6 +209,14 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
         User user = getUserService.getCurrentUser();
 
+        //校验当前用户是否有权进行上传
+        UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, Long.valueOf(user.getCode()));
+        if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.PROJECT_GROUP_LEADER.getValue())) {
+            int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(projectGroupId);
+            if (SubordinateCollege != 39) {
+                throw new GlobalException(CodeMsg.UPLOAD_PERMISSION_DENNY);
+            }
+        }
         ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(projectGroupId);
 
         //如果是职能部门，不需要验证项目的状态
@@ -250,14 +258,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             return Result.error(CodeMsg.FORMAT_UNSUPPORTED);
         }
 
-        //校验当前用户是否有权进行上传
-        UserProjectGroup userProjectGroup = userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, Long.valueOf(user.getCode()));
-        if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.PROJECT_GROUP_LEADER.getValue())) {
-            int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(projectGroupId);
-            if (SubordinateCollege != 39) {
-                throw new GlobalException(CodeMsg.UPLOAD_PERMISSION_DENNY);
-            }
-        }
+
+        //TODO 上传时间不能太频繁
+//        ProjectFile projectFile1 = projectFileMapper.selectByProjectGroupIdAndMaterialType(projectGroupId,MaterialType.APPLY_MATERIAL.getValue(), null);
+
         ProjectFile projectFile = new ProjectFile();
         projectFile.setUploadUserId(Long.valueOf(user.getCode()));
         projectFile.setFileType(FileType.WORD.getValue());
