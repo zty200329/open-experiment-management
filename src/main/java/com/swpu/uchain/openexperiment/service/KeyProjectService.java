@@ -42,6 +42,8 @@ public interface KeyProjectService {
      */
     Result getKeyProjectAllListByLabAdmin();
 
+    Result getKeyProjectAllListBySchool();
+
     Result getKeyProjectApplyingListBySecondaryUnit();
 
     /**

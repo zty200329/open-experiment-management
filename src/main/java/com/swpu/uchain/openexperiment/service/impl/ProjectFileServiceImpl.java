@@ -221,10 +221,10 @@ public class ProjectFileServiceImpl implements ProjectFileService {
                 //判定是否为重点项目驳回状态,该状态可进行文件提交
                 if(!keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.TO_DE_CONFIRMED.getValue())
                         && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue())){
-                    throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+                    throw new GlobalException(CodeMsg.UPLOAD_PROJECT_CURRENT_STATUS_ERROR);
                 }
             }else{
-                throw new GlobalException(CodeMsg.PROJECT_CURRENT_STATUS_ERROR);
+                throw new GlobalException(CodeMsg.UPLOAD_PROJECT_CURRENT_STATUS_ERROR);
             }
         }
 
@@ -255,7 +255,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         if (userProjectGroup == null || !userProjectGroup.getMemberRole().equals(MemberRole.PROJECT_GROUP_LEADER.getValue())) {
             int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(projectGroupId);
             if (SubordinateCollege != 39) {
-                throw new GlobalException(CodeMsg.PERMISSION_DENNY);
+                throw new GlobalException(CodeMsg.UPLOAD_PERMISSION_DENNY);
             }
         }
         ProjectFile projectFile = new ProjectFile();

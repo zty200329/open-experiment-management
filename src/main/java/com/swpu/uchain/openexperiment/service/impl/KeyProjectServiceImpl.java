@@ -315,6 +315,27 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         return Result.success(list1);
     }
 
+    /**
+     * 职能部门查看所有重点项目
+     * @return
+     */
+    @Override
+    public Result getKeyProjectAllListBySchool() {
+        User user  = getUserService.getCurrentUser();
+        List<CheckProjectVO> list = keyProjectStatusMapper.getAllByCollege(user.getInstitute());
+        List<CheckProjectVO1> list1 = new LinkedList<>();
+        for (CheckProjectVO keyProjectDTO :list) {
+            CheckProjectVO1 checkProjectVO1 = new CheckProjectVO1();
+            BeanUtils.copyProperties(keyProjectDTO,checkProjectVO1);
+            if(keyProjectStatusMapper.getStatusByProjectId(keyProjectDTO.getId()) != null){
+                checkProjectVO1.setKeyStatus(keyProjectStatusMapper.getStatusByProjectId(keyProjectDTO.getId()));
+            }
+            checkProjectVO1.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(keyProjectDTO.getId(),JoinStatus.JOINED.getValue()) );
+            checkProjectVO1.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),keyProjectDTO.getId(),JoinStatus.JOINED.getValue()));
+            list1.add(checkProjectVO1);
+        }
+        return Result.success(list1);
+    }
 
     @Override
     public Result getKeyProjectApplyingListBySecondaryUnit() {

@@ -45,6 +45,12 @@ public class KeyProjectQueryController {
         return keyProjectService.getKeyProjectAllListByLabAdmin();
     }
 
+    @GetMapping(value = "/getKeyProjectAllListBySchool")
+    @ApiOperation("职能部门获取所有重点项目信息")
+    public Result getKeyProjectAllListBySchool(){
+        return keyProjectService.getKeyProjectAllListBySchool();
+    }
+
     @GetMapping(value = "/getKeyProjectApplyingListBySecondaryUnit")
     @ApiOperation("二级单位获取项目待审核的重点项目信息")
     public Result getKeyProjectApplyingListBySecondaryUnit(){

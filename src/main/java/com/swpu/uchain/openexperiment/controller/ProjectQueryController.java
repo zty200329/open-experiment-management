@@ -98,7 +98,6 @@ public class ProjectQueryController {
     public Result getPendingApprovalProjectBySecondaryUnit (){
         return projectService.getPendingApprovalProjectBySecondaryUnit();
     }
-
     /**
      * 大bug
      * @return
@@ -113,6 +112,19 @@ public class ProjectQueryController {
     @GetMapping(value = "getConclusionProject")
     public Result getConclusionProject (){
         return projectService.getConclusionProject();
+    }
+
+    @ApiOperation("职能部门获取所有的普通项目")
+    @GetMapping(value = "getAllGeneralProject")
+    public Result getAllGeneralProject (){
+        return projectService.getAllGeneralProject();
+    }
+
+
+    @ApiOperation("学院获取所有的普通项目")
+    @GetMapping(value = "getAllGeneralProjectBySchool")
+    public Result getAllGeneralProjectBySchool (){
+        return projectService.getAllGeneralProject();
     }
 
     @ApiOperation("职能部门获取待中期检查的项目")

@@ -41,6 +41,7 @@ public enum CodeMsg {
     ONLY_TEACHER_CAN_APPLY(1423,"非教师不得进行项目申请"),
     DOES_NOT_HAVE_DEFAULT_PROJECT_PERMISSIONS(1424,"不具备内定项目权限"),
     THIS_USER_CANNOT_BE_A_TUTOR(1425,"该用户不能作为指导教师"),
+    UPLOAD_PERMISSION_DENNY(1426,"请项目组长进行操作" ),
 
 
 
@@ -82,6 +83,7 @@ public enum CodeMsg {
     MAX_NUM_OF_TYPE(1530,"项目数量已达到申请最大值"),
     STU_MAX_NUM_OF_TYPE(1531,"有学生项目数量已达到申请最大值"),
     CANT_REMOVE(1532,"教师已同意，不能删除"),
+    UPLOAD_PROJECT_CURRENT_STATUS_ERROR(1533,"请在实验室拟题通过后或项目被驳回后上传"),
 
 
     /**
@@ -90,7 +92,7 @@ public enum CodeMsg {
     FILE_EXIST(1601,"文件已存在" ),
     FILE_NOT_EXIST(1602,"文件不存在"),
     UPLOAD_CANT_BE_EMPTY(1603,"上传文件不能为空"),
-    FORMAT_UNSUPPORTED(1604,"文件格式不支持" ),
+    FORMAT_UNSUPPORTED(1604,"文件格式不支持，仅支持doc文件" ),
     UPLOAD_ERROR(1605,"文件上传失败"),
     DIR_NOT_EXIST(1606,"文件夹不存在" ),
     FILE_OVERSIZE(1607,"文件过大"),

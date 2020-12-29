@@ -144,7 +144,9 @@ public interface ProjectService {
 
     Result getPendingApprovalProjectByFunctionalDepartment();
 
-    Result getConclusionProject ();
+    Result getConclusionProject();
+
+    Result getAllGeneralProject();
 
     /**
      * 上报学院领导

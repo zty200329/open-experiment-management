@@ -16,6 +16,12 @@ import java.util.List;
  */
 @Repository
 public interface ProjectGroupMapper {
+    /**
+     * 获取所有普通项目信息
+     * @param college
+     * @return
+     */
+    List<CheckProjectVO> getAllGeneralByCollege(@Param("college") Integer college);
 
     /**
      * 根据项目id查询指导教师

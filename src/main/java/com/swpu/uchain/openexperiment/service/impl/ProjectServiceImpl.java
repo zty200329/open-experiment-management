@@ -953,6 +953,23 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     /**
+     * 职能部门查看所有普通项目
+     * @return
+     */
+    @Override
+    public Result getAllGeneralProject() {
+        User user  = getUserService.getCurrentUser();
+        List<CheckProjectVO> list = projectGroupMapper.getAllGeneralByCollege(user.getInstitute());
+//        List<CheckProjectVO1> list1 = new LinkedList<>();
+        for (CheckProjectVO ProjectDTO :list) {
+
+            ProjectDTO.setNumberOfTheSelected(userProjectGroupMapper.selectStuCount(ProjectDTO.getId(),JoinStatus.JOINED.getValue()) );
+            ProjectDTO.setGuidanceTeachers(userProjectGroupMapper.selectUserMemberVOListByMemberRoleAndProjectId(MemberRole.GUIDANCE_TEACHER.getValue(),ProjectDTO.getId(),JoinStatus.JOINED.getValue()));
+
+        }
+        return Result.success(list);
+    }
+    /**
      * 职能部门获取待结题项目
      *
      * @return
