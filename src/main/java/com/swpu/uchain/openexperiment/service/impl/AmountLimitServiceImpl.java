@@ -97,7 +97,7 @@ public class AmountLimitServiceImpl implements AmountLimitService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = GlobalException.class)
+    @Transactional(rollbackFor = Throwable.class)
     public Result updateAmountLimit(AmountUpdateForm form) {
         for (AmountAndType amountAndType:form.getList()
              ) {
@@ -112,9 +112,9 @@ public class AmountLimitServiceImpl implements AmountLimitService {
             }else {
                 result = amountLimitMapper.updateTimeLimit(amountLimit.getId(),amountLimit.getMaxAmount());
             }
-            if (result != 1) {
-                throw new GlobalException(CodeMsg.UPDATE_ERROR);
-            }
+//            if (result != 1) {
+//                throw new GlobalException(CodeMsg.UPDATE_ERROR);
+//            }
         }
         TimeLimit timeLimit = new TimeLimit();
         BeanUtils.copyProperties(form,timeLimit);

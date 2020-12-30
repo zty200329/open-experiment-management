@@ -23,6 +23,7 @@ import com.swpu.uchain.openexperiment.service.ProjectFileService;
 import com.swpu.uchain.openexperiment.service.TimeLimitService;
 import com.swpu.uchain.openexperiment.service.UserProjectService;
 import com.swpu.uchain.openexperiment.util.*;
+import io.lettuce.core.GeoArgs;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -760,7 +761,9 @@ public class ProjectFileServiceImpl implements ProjectFileService {
         Integer college = user.getInstitute();
         //查出大于等于学院上报的姓名
         List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList1(college, projectStatus);
-
+        SortListUtil.sort(list,"projectType");
+        SortListUtil.sort(list,"college");
+        SortListUtil.sort(list,"tempSerialNumber");
         // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
         XSSFWorkbook wb = new XSSFWorkbook();
         // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
@@ -920,7 +923,11 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
         List<ProjectTableInfo> list = projectGroupMapper.getProjectTableInfoListByCollegeAndList(null, projectStatus);
 
+
+
+        SortListUtil.sort(list,"projectType");
         SortListUtil.sort(list,"college");
+        SortListUtil.sort(list,"tempSerialNumber");
         // 1.创建HSSFWorkbook，一个HSSFWorkbook对应一个Excel文件
         XSSFWorkbook wb = new XSSFWorkbook();
         // 2.在workbook中添加一个sheet,对应Excel文件中的sheet(工作栏)
@@ -1280,6 +1287,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
         //写入数据
         List<ConclusionDTO> list = projectGroupMapper.selectConclusionDTOs(college);
+
         int count = 0;
         String now = null;
         String before = null;

@@ -9,7 +9,7 @@ import java.util.Date;
  * @author panghu
  */
 @Data
-public class Announcement{
+public class Announcement implements Serializable{
 
     private Long id;
 

@@ -105,7 +105,7 @@ public class UserProjectServiceImpl implements UserProjectService {
         return userProjectGroupMapper.selectByProjectGroupIdAndUserId(projectGroupId, userId);
     }
 
-    private String[] strToStrArr(String str) {
+    private  String[] strToStrArr(String str) {
         if (str == null) {
             return null;
         }
@@ -195,12 +195,14 @@ public class UserProjectServiceImpl implements UserProjectService {
         //大类专业直接通过
         if (limitMajor != null) {
             if (!limitMajor.equals("[]")) {
-                if (limitMajorArr == null || user.getMajor().equals("2019")) {
+                if (limitMajorArr == null || user.getMajor().length() == 4) {
                     allowed += 1;
                 } else {
                     for (String grade : limitMajorArr
                     ) {
-                        if (grade.equals("\"" + user.getMajor() + "\"")) {
+//                        if (grade.equals("\"" + user.getMajor() + "\"")) {
+
+                        if (grade.contains("\"" + user.getMajor().substring(0,6))) {
                             allowed += 1;
                             log.info("专业符合要求----");
                         }
@@ -270,6 +272,10 @@ public class UserProjectServiceImpl implements UserProjectService {
         return Result.success("已申请");
     }
 
+    public static void main(String[] args) {
+        System.out.println("0804".substring(0,6));
+        System.out.println("[\"080203Z\"".contains("[\"080203"));
+    }
     @Override
     public Result checkUserMatch(User user, ProjectGroup projectGroup) {
         List<User> users = userService.selectProjectJoinedUsers(projectGroup.getId());

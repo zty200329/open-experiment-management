@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author dengg
@@ -36,11 +37,12 @@ public class FundsController {
     }
 
 
-    @ApiOperation("二级单位修改项目金额")
+    @ApiOperation("修改项目金额")
     @PostMapping(value = "/updateProjectApplyFundsBySecondaryUnit")
     public Result updateProjectApplyFundsBySecondaryUnit(@Valid @RequestBody FundsUpdateForm form){
         return fundsService.updateProjectApplyFundsBySecondaryUnit(form);
     }
+
 
 
 }
