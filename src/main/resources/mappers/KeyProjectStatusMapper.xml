@@ -253,6 +253,10 @@
         select count(project_id) from openexperiment.key_project_status where `status` = #{status} and  subordinate_college = #{college}
     </select>
 
+    <select id="getAllTest" resultType="java.lang.Long">
+        select key_project_status.project_id from openexperiment.key_project_status where `status` = 4
+    </select>
+
 
 </mapper>
 

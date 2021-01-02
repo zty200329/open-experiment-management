@@ -13,6 +13,16 @@
             )
         </foreach>
     </insert>
+    <insert id="insert">
+        insert into openexperiment.time_limit(limit_type, start_time, end_time,limit_college)
+        value
+            (
+            #{timeLimitType},
+            #{startTime},
+            #{endTime},
+            #{limitCollege}
+            )
+    </insert>
     <update id="update">
         update openexperiment.time_limit set start_time = #{startTime}, end_time = #{endTime}
             where limit_type = #{timeLimitType} and limit_college = #{limitCollege}

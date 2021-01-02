@@ -229,7 +229,8 @@ public class ProjectFileServiceImpl implements ProjectFileService {
             if(keyProjectStatusMapper.getStatusByProjectId(projectGroupId) !=null){
                 //判定是否为重点项目驳回状态,该状态可进行文件提交
                 if(!keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.TO_DE_CONFIRMED.getValue())
-                        && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue())){
+                        && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.INTERIM_RETURN_MODIFICATION.getValue())
+                        && !keyProjectStatusMapper.getStatusByProjectId(projectGroupId).equals(ProjectStatus.FUNCTIONAL_ESTABLISH_RETURNS.getValue())){
                     throw new GlobalException(CodeMsg.UPLOAD_PROJECT_CURRENT_STATUS_ERROR);
                 }
             }else{

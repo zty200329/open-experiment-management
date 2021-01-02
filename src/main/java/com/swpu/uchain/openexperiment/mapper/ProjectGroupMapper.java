@@ -16,6 +16,7 @@ import java.util.List;
  */
 @Repository
 public interface ProjectGroupMapper {
+
     /**
      * 获取所有普通项目信息
      * @param college

@@ -36,6 +36,11 @@ public interface KeyProjectStatusMapper {
 
     List<KeyProjectDTO> getKeyProjectListByUserIdAndProjectStatus(@Param("userId") Long userId,@Param("status")Integer status);
 
+    /**
+     * 获取所有状态为4的重点
+     * @return
+     */
+    List<Long> getAllTest();
     Integer getCountOfSpecifiedStatusAndProjectProject(@Param("status") Integer status,@Param("college")Integer college);
 
     int deleteByProjectId(@Param("projectId") Long projectId);

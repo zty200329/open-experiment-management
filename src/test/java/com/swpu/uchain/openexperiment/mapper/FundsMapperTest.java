@@ -1,6 +1,9 @@
 package com.swpu.uchain.openexperiment.mapper;
 
 import com.swpu.uchain.openexperiment.domain.Funds;
+import com.swpu.uchain.openexperiment.domain.MaxBigFunds;
+import com.swpu.uchain.openexperiment.domain.ProjectGroup;
+import org.docx4j.wml.P;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,13 @@ public class FundsMapperTest {
 
     @Autowired
     private FundsMapper fundsMapper;
+    @Autowired
+    private KeyProjectStatusMapper keyProjectStatusMapper;
 
+    @Autowired
+    private ProjectGroupMapper projectGroupMapper;
+    @Autowired
+    private MaxBigFundsMapper maxBigFundsMapper;
     @Test
     public void multiInsert() {
 
@@ -30,5 +39,28 @@ public class FundsMapperTest {
             list.add(funds);
         }
         fundsMapper.multiInsert(list);
+    }
+
+    @Test
+    public void multiInsert2() {
+
+
+        List<Long> ids = keyProjectStatusMapper.getAllTest();
+        for (Long id : ids) {
+            ProjectGroup projectGroup = projectGroupMapper.selectByPrimaryKey(id);
+            if(projectGroup.getApplyFunds() == 5000){
+                MaxBigFunds maxBigFunds = maxBigFundsMapper.selectByCollege(String.valueOf(projectGroup.getSubordinateCollege()));
+                if(maxBigFunds == null){
+                    MaxBigFunds maxBigFunds1 = new MaxBigFunds();
+                    maxBigFunds1.setNum(1);
+                    maxBigFunds1.setCollege(String.valueOf(projectGroup.getSubordinateCollege()));
+                    maxBigFundsMapper.insert(maxBigFunds1);
+                }else{
+                    maxBigFunds.setNum(maxBigFunds.getNum()+1);
+                    maxBigFundsMapper.updateByPrimaryKey(maxBigFunds);
+                }
+            }
+        }
+
     }
 }

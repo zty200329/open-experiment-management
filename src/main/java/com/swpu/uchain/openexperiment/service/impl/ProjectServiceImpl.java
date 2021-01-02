@@ -23,6 +23,7 @@ import com.swpu.uchain.openexperiment.util.ConvertUtil;
 import com.swpu.uchain.openexperiment.util.RedisUtil;
 import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
 import com.swpu.uchain.openexperiment.util.SortListUtil;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,7 +184,7 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public Result applyCreateProject(CreateProjectApplyForm form) {
+    public synchronized Result applyCreateProject(CreateProjectApplyForm form) {
         //验证时间限制
         timeLimitService.validTime(TimeLimitType.DECLARE_LIMIT);
 
@@ -2024,13 +2025,23 @@ public class ProjectServiceImpl implements ProjectService {
 
         ProjectGroup projectGroup = selectByProjectGroupId(joinForm.getProjectGroupId());
         Integer status = projectGroup.getStatus();
-
-        //验证项目状态
-        if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue()) && !status.equals(ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue())
-        ) {
-            int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(joinForm.getProjectGroupId());
-            if (SubordinateCollege != 39) {
-                throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+        Integer keyStatus = keyProjectStatusMapper.getStatusByProjectId(joinForm.getProjectGroupId());
+        if(keyStatus == null) {
+            //验证项目状态
+            if (!status.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !status.equals(ProjectStatus.REJECT_MODIFY.getValue()) && !status.equals(ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue())
+            ) {
+                int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(joinForm.getProjectGroupId());
+                if (SubordinateCollege != 39) {
+                    throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+                }
+            }
+        }else{
+            if (!keyStatus.equals(ProjectStatus.LAB_ALLOWED.getValue()) && !keyStatus.equals(ProjectStatus.REJECT_MODIFY.getValue()) && !keyStatus.equals(ProjectStatus.GUIDE_TEACHER_ALLOWED.getValue())
+            ) {
+                int SubordinateCollege = projectGroupMapper.selectSubordinateCollege(joinForm.getProjectGroupId());
+                if (SubordinateCollege != 39) {
+                    throw new GlobalException(CodeMsg.CURRENT_PROJECT_STATUS_ERROR);
+                }
             }
         }
 
@@ -2277,8 +2288,10 @@ public class ProjectServiceImpl implements ProjectService {
             projectGroupMapper.updateProjectType(form.getProjectId(), ProjectType.GENERAL.getValue(),form.getApplyFunds());
 
             //设置项目创建编号
-            String maxTempSerialNumber = null;
-            maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(projectGroup.getSubordinateCollege(), 1);
+            String maxTempSerialNumber = projectGroupMapper.getMaxTempSerialNumberByCollege(user.getInstitute(),1);
+
+
+
             log.info(maxTempSerialNumber);
             //计算编号并在数据库中插入编号
             projectGroupMapper.updateProjectTempSerialNumber(form.getProjectId(), SerialNumberUtil.getSerialNumberOfProject(user.getInstitute(), ProjectType.GENERAL.getValue(), maxTempSerialNumber));

@@ -15,11 +15,13 @@ import com.swpu.uchain.openexperiment.mapper.TimeLimitMapper;
 import com.swpu.uchain.openexperiment.result.Result;
 import com.swpu.uchain.openexperiment.service.AmountLimitService;
 import com.swpu.uchain.openexperiment.service.GetUserService;
+import javafx.animation.Timeline;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -120,7 +122,13 @@ public class AmountLimitServiceImpl implements AmountLimitService {
         BeanUtils.copyProperties(form,timeLimit);
         timeLimit.setLimitCollege(form.getCollege());
         timeLimit.setTimeLimitType(TimeLimitType.SECONDARY_UNIT_REPORT_LIMIT.getValue());
-        int result = timeLimitMapper.update(timeLimit);
+        TimeLimit timeLimit1 = timeLimitMapper.getTimeLimitByTypeAndCollege(TimeLimitType.SECONDARY_UNIT_REPORT_LIMIT.getValue(),form.getCollege());
+        int result = 0;
+        if(timeLimit1 != null) {
+            result = timeLimitMapper.update(timeLimit);
+        }else {
+            result = timeLimitMapper.insert(timeLimit);
+        }
         if (result != 1){
             throw new GlobalException(CodeMsg.UPDATE_ERROR);
         }

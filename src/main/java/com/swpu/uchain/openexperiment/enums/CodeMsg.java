@@ -84,6 +84,7 @@ public enum CodeMsg {
     STU_MAX_NUM_OF_TYPE(1531,"有学生项目数量已达到申请最大值"),
     CANT_REMOVE(1532,"教师已同意，不能删除"),
     UPLOAD_PROJECT_CURRENT_STATUS_ERROR(1533,"请在实验室拟题通过后或项目被驳回后上传"),
+    KEY_PROJECT_AMOUNT_LIMIT2(1534,"重点项目5000预算上报数量超过最大限制"),
 
 
     /**

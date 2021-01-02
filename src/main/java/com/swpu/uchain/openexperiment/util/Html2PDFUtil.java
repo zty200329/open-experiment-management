@@ -6,15 +6,17 @@ import java.io.*;
 import com.itextpdf.text.DocumentException;
 import com.swpu.uchain.openexperiment.enums.CodeMsg;
 import com.swpu.uchain.openexperiment.exception.GlobalException;
+import lombok.extern.slf4j.Slf4j;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import com.lowagie.text.pdf.BaseFont;
 
+@Slf4j
 public class Html2PDFUtil {
 
     //
     public static void main(String[] args) {
-        convertHtml2PDF("/Users/zty/Desktop/openexperiment/5_立项申请主要内容.html",
+        convertHtml2PDF("/Users/zty/Desktop/openexperiment/394_立项申请主要内容.html",
                 "/home/zty/open-experiment-management-system/apply_dir_2/454515154_立项申请主要内容.pdf");
     }
 

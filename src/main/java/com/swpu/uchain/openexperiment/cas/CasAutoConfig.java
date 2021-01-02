@@ -15,7 +15,8 @@ import java.util.List;
 @Component
 @Data
 public class CasAutoConfig {
-	static final String separator = ","; //配置地址可以用逗号分隔 
+	//配置地址可以用逗号分隔
+	static final String separator = ",";
 
 	private String validateFilters = "/casToHomePage/inCAS";
 	private String signOutFilters = "/logout";

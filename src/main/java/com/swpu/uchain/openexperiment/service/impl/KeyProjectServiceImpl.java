@@ -28,6 +28,7 @@ import com.swpu.uchain.openexperiment.util.SerialNumberUtil;
 import com.swpu.uchain.openexperiment.util.SortListUtil;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import net.sf.jsqlparser.statement.select.Join;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,8 +67,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
     private AmountLimitService amountLimitService;
     private ProjectReviewMapper projectReviewMapper;
     private ProjectReviewResultMapper projectReviewResultMapper;
-
-
+    private MaxBigFundsMapper maxBigFundsMapper;
     @Autowired
     public KeyProjectServiceImpl(ProjectGroupMapper projectGroupMapper, UserProjectGroupMapper userProjectGroupMapper,
                                  KeyProjectStatusMapper keyProjectStatusMapper,GetUserService getUserService,
@@ -77,7 +77,8 @@ public class KeyProjectServiceImpl implements KeyProjectService {
                                  AchievementMapper achievementMapper,UserProjectService userProjectService,
                                  CollegeGivesGradeMapper collegeGivesGradeMapper,FunctionGivesGradeMapper functionGivesGradeMapper,CollegeLimitMapper collegeLimitMapper,
                                  AmountLimitService amountLimitService,ProjectReviewMapper projectReviewMapper,
-                                 ProjectReviewResultMapper projectReviewResultMapper,UserProjectAccountMapper userProjectAccountMapper) {
+                                 ProjectReviewResultMapper projectReviewResultMapper,MaxBigFundsMapper maxBigFundsMapper,
+                                 UserProjectAccountMapper userProjectAccountMapper) {
         this.projectGroupMapper = projectGroupMapper;
         this.userProjectGroupMapper = userProjectGroupMapper;
         this.keyProjectStatusMapper = keyProjectStatusMapper;
@@ -97,6 +98,7 @@ public class KeyProjectServiceImpl implements KeyProjectService {
         this.projectReviewMapper=projectReviewMapper;
         this.projectReviewResultMapper = projectReviewResultMapper;
         this.userProjectAccountMapper = userProjectAccountMapper;
+        this.maxBigFundsMapper = maxBigFundsMapper;
     }
 
 
@@ -864,6 +866,41 @@ public class KeyProjectServiceImpl implements KeyProjectService {
 //        }
 
         AmountAndTypeVO amountAndTypeVO = amountLimitMapper.getAmountAndTypeVOByCollegeAndProjectType(college,ProjectType.KEY.getValue(),RoleType.SECONDARY_UNIT.getValue());
+
+        MaxBigFunds maxBigFunds = maxBigFundsMapper.selectByCollege(String.valueOf(user.getInstitute()));
+        if(maxBigFunds == null){
+            int sum = 0;
+            for (KeyProjectCheck keyProjectCheck : list) {
+                 Float funds = projectGroupMapper.selectByPrimaryKey(keyProjectCheck.getProjectId()).getApplyFunds();
+                 if(funds == 5000){
+                     sum++;
+                 }
+            }
+            if(sum > amountAndTypeVO.getMaxAmount()*0.2){
+                throw new GlobalException(CodeMsg.KEY_PROJECT_AMOUNT_LIMIT2);
+            }
+            MaxBigFunds maxBigFunds1 = new MaxBigFunds();
+            maxBigFunds1.setCollege(String.valueOf(user.getInstitute()));
+            maxBigFunds1.setNum(sum);
+
+            maxBigFundsMapper.insert(maxBigFunds1);
+        }else {
+            maxBigFunds = maxBigFundsMapper.selectByCollege(String.valueOf(user.getInstitute()));
+            int sum = maxBigFunds.getNum();
+
+            for (KeyProjectCheck keyProjectCheck : list) {
+                Float funds = projectGroupMapper.selectByPrimaryKey(keyProjectCheck.getProjectId()).getApplyFunds();
+                if(funds == 5000){
+                    sum++;
+                }
+            }
+            if(sum > amountAndTypeVO.getMaxAmount()*0.2){
+                throw new GlobalException(CodeMsg.KEY_PROJECT_AMOUNT_LIMIT2);
+            }
+            maxBigFunds.setNum(sum);
+            maxBigFundsMapper.updateByPrimaryKey(maxBigFunds);
+
+        }
         Integer currentAmount = keyProjectStatusMapper.getCountOfSpecifiedStatusAndProjectProject(ProjectStatus.SECONDARY_UNIT_ALLOWED_AND_REPORTED.getValue(),college);
         if (currentAmount + list.size() > amountAndTypeVO.getMaxAmount()) {
             throw new GlobalException(CodeMsg.KEY_PROJECT_AMOUNT_LIMIT);
